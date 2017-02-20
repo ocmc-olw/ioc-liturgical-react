@@ -8,7 +8,7 @@ The ioc-liturgical-react package provides React js components for creating web a
 
 1. Login - a React component that renders a login form and handles the submit by interacting with the REST API.
 
-Components are to come soon.
+Components are to come in the near future.
 
 ## Usage
 
