@@ -3714,7 +3714,7 @@ number-is-nan@^1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/number-is-nan/-/number-is-nan-1.0.1.tgz#097b602b53422a522c1afb8790318336941a011d"
 
-nwb@0.15.x:
+nwb@0.15.6:
   version "0.15.6"
   resolved "https://registry.yarnpkg.com/nwb/-/nwb-0.15.6.tgz#1448bec35c91cb026e9c115eda85c1aa80e63a42"
   dependencies:
@@ -4486,7 +4486,7 @@ react-deep-force-update@^1.0.0:
   version "15.3.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.3.2.tgz#c46b0aa5380d7b838e7a59c4a7beff2ed315531f"
 
-react-dom@^15.4.1:
+react-dom@^15.4.2:
   version "15.4.2"
   resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-15.4.2.tgz#015363f05b0a1fd52ae9efdd3a0060d90695208f"
   dependencies:
