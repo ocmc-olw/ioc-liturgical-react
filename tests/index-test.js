@@ -8,28 +8,8 @@ var loginCallback = () => {
 
 }
 
-describe('Login', () => {
-  let node
-
-  beforeEach(() => {
-    node = document.createElement('div')
-  })
-
-  afterEach(() => {
-    unmountComponentAtNode(node)
-  })
-
-  it('Login render is not null', () => {
-
-    render(<Login
-        formMsg=""
-        formPrompt="Please enter login data:"
-        loginCallback={loginCallback}
-        username=""
-        password=""
-        restServer="https://ioc-liturgical-ws.org"
-    />, node, () => {
-      expect(node.innerHTML !== null);
-    })
+describe('Index', () => {
+  it('Exports Login', () => {
+      expect('Login').toExist();
   })
 })
