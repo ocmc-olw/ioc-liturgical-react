@@ -19,10 +19,10 @@ When you import a component into your Javascript, use braces around the name of 
 import {Login} from 'ioc-liturgical-react'
 
 [build-badge]: https://img.shields.io/travis/user/repo/master.png?style=flat-square
-[build]: https://travis-ci.org/user/repo
+[build]: https://travis-ci.org/OCMC-Translation-Projects/ioc-liturgical-react
 
 [npm-badge]: https://img.shields.io/npm/v/npm-package.png?style=flat-square
-[npm]: https://www.npmjs.org/package/npm-package
+[npm]: https://www.npmjs.org/package/ioc-liturgical-react
 
 [coveralls-badge]: https://img.shields.io/coveralls/user/repo/master.png?style=flat-square
-[coveralls]: https://coveralls.io/github/user/repo
+[coveralls]: https://coveralls.io/github/OCMC-Translation-Projects/ioc-liturgical-react
