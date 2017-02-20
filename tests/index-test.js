@@ -2,9 +2,13 @@ import expect from 'expect'
 import React from 'react'
 import {render, unmountComponentAtNode} from 'react-dom'
 
-import Component from 'src/'
+import {Login} from '../src/index'
 
-describe('Component', () => {
+var loginCallback = () => {
+
+}
+
+describe('Login', () => {
   let node
 
   beforeEach(() => {
@@ -15,9 +19,17 @@ describe('Component', () => {
     unmountComponentAtNode(node)
   })
 
-  it('displays a welcome message', () => {
-    render(<Component/>, node, () => {
-      expect(node.innerHTML).toContain('Welcome to React components')
+  it('Login render is not null', () => {
+
+    render(<Login
+        formMsg=""
+        formPrompt="Please enter login data:"
+        loginCallback={loginCallback}
+        username=""
+        password=""
+        restServer="https://ioc-liturgical-ws.org"
+    />, node, () => {
+      expect(node.innerHTML !== null);
     })
   })
 })
