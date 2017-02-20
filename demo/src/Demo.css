@@ -1,0 +1,273 @@
+.App {
+    background-color: #f9f9f9;
+}
+
+.App-title {
+    color: gold;
+    padding: 10px 30px;
+}
+
+.App-menu {
+    background-color: black;
+}
+
+.App-nav {
+    padding: 10px 10px;
+}
+
+@media (max-width: 10800px) {
+    .nav li { display: none; float: right}
+    .nav:before { content: "\2261"; font-size: 30pt; padding-left: 5px;}
+    .nav.visible li { display: block; font-size: 12pt;}
+}
+
+.App-firstletter {
+    padding-left: 3px;
+    color: red;
+}
+.App-content-row {
+    text-align: left;
+    padding-top: 20px;
+    position: absolute;
+    z-index:-5;
+    overflow:auto;
+}
+
+.App-header-nav-link {
+    color: white;
+    display: inline;
+}
+
+.App-info-anchor {
+    color: blue;
+}
+
+a {
+    color: white;
+}
+
+.App-logo {
+    font-style: italic;
+    font-size: larger;
+    color: gold;
+    position: fixed;
+    top: 6px;
+    left: 50px;
+    right: 0;
+}
+
+.App-menu {
+    color: gold;
+    position: fixed;
+    top: 0;
+    left: 0px;
+    right: 0;
+}
+
+.App-welcome {
+    text-align: center;
+}
+
+.App-home {
+    background-color: white;
+    padding: 50%;
+}
+
+.App-header {
+    background-color: black;
+    padding-right: 60px;
+    padding-bottom: 65px;
+    color: white;
+    z-index:10;
+}
+
+.jumbotron {
+    padding: 10px;
+}
+
+.App-page-logout {
+    padding-top: 20%;
+}
+.App-page-help {
+    margin: 5% 20%;
+    max-width: 60%;
+}
+
+.App-references {
+    margin: 5% 20%;
+    padding: 10px;
+}
+
+.App-footer {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    padding: 1rem;
+    background-color: black;
+    color: white;
+    text-align: center;
+}
+
+.App-browser-queries {
+    padding: 10px 20px;
+}
+
+.App-browser-iFrame {
+    position: fixed;
+    padding-top: 0px;
+    background-color: black;
+}
+
+.App-header-title {
+}
+
+.App-home {
+    margin: 0% 20%;
+    max-width: 100%;
+    padding: 10px;
+    position: relative;
+    text-align: center;
+}
+
+.App-link {
+    color: blue;
+}
+.App-home {
+    text-align: left;
+    margin: 5% 20%;
+    padding: 10px;
+}
+
+.App-bars {
+    color: darkgoldenrod;
+}
+
+.App-home-image {
+    margin-top: 10px;
+}
+
+.App-page-about {
+    margin: 5% 20%;
+    padding: 10px;
+}
+
+.App-page-texts {
+    margin: 5% 20%;
+    padding: 10px;
+}
+
+.App-page-editor {
+    padding-top: 20px;
+}
+
+.App-page-oslw {
+    margin: 5% 20%;
+    padding: 10px;
+}
+
+@keyframes App-logo-spin {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.active {
+    color: gold;
+}
+
+.control-label,  .resourceSelectorPrompt {
+    color: #5bc0de;
+}
+
+.App-login {
+    margin: 20%;
+}
+
+.App-col-selector {
+    width: 10px;
+    min-width: 10px;
+}
+.App-row-selector {
+    background-color: green;
+    max-width: 10px;
+}
+
+.App-search-form-option-label {
+    font-weight: 200;
+    color: #007eff;
+    padding: 10px;
+}
+.App-search-options {
+    background-color: white;
+}
+.App-search-text-input {
+    color: black;
+    background-color: white;
+    height: auto;
+    resize: vertical;
+    width: 90%
+}
+.App-search-by-id-parts-icon {
+    color: black;
+}
+.form-control {
+    color: black;
+    background-color: white;
+    height: auto;
+    resize: vertical;
+}
+
+.App-hymnographers {
+    min-height: 150px;
+    min-width: 150px;
+    width:100%;
+    max-width:300px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    display: table-cell;
+    vertical-align: middle
+}
+.App-search-form {
+    background-color: #eaeced;
+}
+
+.App-search-results {
+    background-color: #eaeced;
+}
+
+.row {
+    margin: 0px;
+}
+
+.App-search-checkbox {
+    margin: 10px;
+}
+.react-bs-table table tr {
+    padding: 10px;
+}
+.react-bs-table table td {
+    white-space: -o-pre-wrap;
+    word-wrap: break-word;
+    white-space: pre-wrap;
+    white-space: -moz-pre-wrap;
+}
+
+
+.fa {
+    padding: 10px;
+}
+
+.fa-info-circle {
+    color: green;
+}
+.fa-lightbulb-o {
+    color: darkgoldenrod;
+}
+.fa-exclamation-triangle {
+    color: red;
+}
