@@ -1,7 +1,7 @@
 # ioc-liturgical-react
 
 [![Travis][build-badge]][build]
-[![npm package][npm-badge]][npm]
+[![NPM version][npm-badge]][npm]
 [![Coveralls][coveralls-badge]][coveralls]
 
 The ioc-liturgical-react package provides React js components for creating web applications that access the International Orthodox Christian (IOC) Liturgical Web Service (ioc-liturgical-ws). The web service provides a REST API as a front-end to the IOC Liturgical Database (ioc-liturgical-db).  The components provided by this package include:
