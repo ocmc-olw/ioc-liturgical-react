@@ -243,6 +243,7 @@ class Demo extends React.Component {
           />
         </Panel>
         <Panel header="TBD" eventKey="5">
+          Placeholder
         </Panel>
       </Accordion>
     </div>
