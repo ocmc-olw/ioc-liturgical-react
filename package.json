@@ -20,10 +20,11 @@
     "postinstall": "echo 'done'"
   },
   "devDependencies": {
-    "nwb": "0.15.6",
-    "react": "^15.4.2",
-    "react-dom": "^15.4.2",
-    "react-markdown": "^2.4.4"
+    "nwb": "0.15.6"
+    , "phantomjs-prebuilt": "2.1.14"
+    , "react": "^15.4.2"
+    , "react-dom": "^15.4.2"
+    , "react-markdown": "^2.4.4"
   },
   "dependencies": {
     "axios": "^0.15.3",
