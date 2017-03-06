@@ -216,3 +216,9 @@ div[class*='App-page'] {
 div.App-logo.navbar-header {
     overflow: scroll;
 }
+
+.App-demo-version {
+    margin-left: 20px;
+    color: #5bc0de;
+}
+

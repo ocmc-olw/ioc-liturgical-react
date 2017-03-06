@@ -4,7 +4,7 @@ import SearchOptionsAdvanced from "./modules/SearchOptionsAdvanced";
 import SearchOptionsSimple from "./modules/SearchOptionsSimple";
 import ModalCompareDocs from './modules/ModalCompareDocs';
 import FontAwesome from 'react-fontawesome';
-import {Panel, PanelGroup} from 'react-bootstrap';
+import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 
@@ -98,8 +98,8 @@ export class Search extends React.Component {
         {key: "topic", label: ""},
         {key: "key", label: ""}
       ]
-      ,
-      showIdPartSelector: false
+      , showIdPartSelector: false
+      , selectedValue: ""
       , showModalCompareDocs: false
       , idColumnSize: "80px"
     };
@@ -116,8 +116,8 @@ export class Search extends React.Component {
     this.handleSearchFormTypeChange = this.handleSearchFormTypeChange.bind(this);
     this.toogleIdPattern = this.toogleIdPattern.bind(this);
     this.showSelectionButtons = this.showSelectionButtons.bind(this);
-    this.handleCompareRequest = this.handleCompareRequest.bind(this);
-    this.handleExpandRequest = this.handleExpandRequest.bind(this);
+    this.handleCancelRequest = this.handleCancelRequest.bind(this);
+    this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
     this.getDocComparison = this.getDocComparison.bind(this);
@@ -126,10 +126,15 @@ export class Search extends React.Component {
   }
 
   componentWillMount = () => {
+    let showSelectionButtons = false;
+    if (this.props.callback) {
+      showSelectionButtons = true;
+    }
     this.setState({
           message: this.props.searchLabels.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
+          , showSelectionButtons: showSelectionButtons
         }
     );
     let config = {
@@ -280,7 +285,7 @@ export class Search extends React.Component {
           <Panel  className="App-search-panel" header={this.props.searchLabels.simple} eventKey="1">
             <SearchOptionsSimple
                 valueTitle=""
-                placeholder={this.props.compSimpleSearchLabels.prompt}
+                placeholder={this.props.searchLabels.prompt}
                 handleSubmit={this.handleSimpleSearchSubmit}
             />
           </Panel>
@@ -326,60 +331,42 @@ export class Search extends React.Component {
     }
   }
 
-  handleCompareRequest() {
-    if (this.state.selectedIdParts) {
-      this.setState({
-            domain: "*"
-            , selectedBook: "*"
-            , selectedChapter: "*"
-            , docProp: "id"
-            , matcher: "rx"
-            , query: ".*"
-            + this.state.selectedIdParts[1].label
-            + "~.*"
-            + this.state.selectedIdParts[2].label
-          }
-          , function () {
-            this.fetchData();
-          }
-      );
+  handleCancelRequest() {
+    if (this.props.callback) {
+      this.props.callback("","");
     }
   }
 
-  handleExpandRequest() {
-    if (this.state.selectedIdParts) {
-      this.setState({
-            domain: "*"
-            , selectedBook: "*"
-            , selectedChapter: "*"
-            , docProp: "id"
-            , matcher: "rx"
-            , query: this.state.selectedIdParts[0].label
-            + "~"
-            + this.state.selectedIdParts[1].label
-            + "~.*"
-          }
-          , function () {
-            this.fetchData();
-          }
-      );
+  handleDoneRequest() {
+    if (this.props.callback) {
+      this.props.callback(this.state.selectedID, this.state.selectedValue);
     }
   }
 
   getSelectedDocOptions() {
     return (
-        <div>Selected doc: <span className="App-selected">{this.state.selectedID}</span>
-          <span
-              className="App-search-form-option-label"
-              onClick={this.handleCompareRequest}>
-                <FontAwesome name="ellipsis-v"/>Compare
-              </span>
-          <span
-              className="App-search-form-option-label"
-              onClick={this.handleExpandRequest}>
-                <FontAwesome name="arrows-h"/>Expand
-              </span>
-        </div>
+        <Panel>
+          <FormGroup>
+            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <FormControl
+              type="text"
+              value={this.state.selectedID}
+              disabled
+            />
+            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <FormControl
+                type="text"
+                value={this.state.selectedValue}
+                disabled
+            />
+            <div>
+          <ButtonGroup bsSize="xsmall">
+            <Button onClick={this.handleCancelRequest}>Cancel</Button>
+            <Button onClick={this.handleDoneRequest}>Done</Button>
+          </ButtonGroup>
+            </div>
+          </FormGroup>
+        </Panel>
     )
   }
 
@@ -448,23 +435,32 @@ export class Search extends React.Component {
         {key: "topic", label: idParts[1]},
         {key: "key", label: idParts[2]}
       ]
+      , selectedValue: row["doc.value"]
       , showIdPartSelector: true
       , showModalCompareDocs: true
-    }, this.showRowComparison(row["doc.id"]));
+    }, this.showRowComparison(row["doc.id"], row["doc.value"]));
   }
-//    }, this.showSelectionButtons(row["doc.id"]));
 
-  showRowComparison = (id) => {
+  showRowComparison = (id, value) => {
     this.setState({
       showModalCompareDocs: true
       , selectedID: id
+      , selectedValue: value
     })
   }
 
-  handleCloseDocComparison = () => {
-    this.setState({
-      showModalCompareDocs: false
-    })
+  handleCloseDocComparison = (id, value) => {
+    if (id && id.length > 0) {
+      this.setState({
+        showModalCompareDocs: false
+        , selectedID: id
+        , selectedValue: value
+      })
+    } else {
+      this.setState({
+        showModalCompareDocs: false
+      })
+    }
   }
 
   getDocComparison = () => {
@@ -613,6 +609,7 @@ export class Search extends React.Component {
     return (
         <div className="App-page App-search">
           <h3>{this.props.searchLabels.pageTitle}</h3>
+          {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
               <div className="col-sm-12 col-md-12 col-lg-12">
@@ -629,7 +626,6 @@ export class Search extends React.Component {
             {this.props.searchLabels.msg5} {this.props.searchLabels.msg6}
           </div>
           }
-          {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           {this.state.showModalCompareDocs && this.getDocComparison()}
           {this.state.showSearchResults &&
           <div className="App-search-results">
@@ -638,7 +634,7 @@ export class Search extends React.Component {
                   data={this.state.data.values}
                   trClassName={"App-data-tr"}
                   search
-                  searchPlaceholder={this.props.compTableLabels.filterPrompt}
+                  searchPlaceholder={this.props.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -654,19 +650,19 @@ export class Search extends React.Component {
                 <TableHeaderColumn
                     dataField='doc.domain'
                     dataSort={ true }
-                    width={this.state.idColumnSize}>{this.props.compTableLabels.headerDomain}</TableHeaderColumn>
+                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerDomain}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='doc.topic'
                     dataSort={ true }
-                    width={this.state.idColumnSize}>{this.props.compTableLabels.headerTopic}</TableHeaderColumn>
+                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerTopic}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='doc.key'
                     dataSort={ true }
-                    width={this.state.idColumnSize}>{this.props.compTableLabels.headerKey}</TableHeaderColumn>
+                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerKey}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='doc.value'
                     dataSort={ true }
-                >{this.props.compTableLabels.headerValue}</TableHeaderColumn>
+                >{this.props.resultsTableLabels.headerValue}</TableHeaderColumn>
               </BootstrapTable>
             </div>
           </div>
@@ -680,10 +676,9 @@ Search.propTypes = {
   restServer: React.PropTypes.string.isRequired
   , username: React.PropTypes.string.isRequired
   , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func.isRequired
+  , callback: React.PropTypes.func
   , searchLabels: React.PropTypes.object.isRequired
-  , compSimpleSearchLabels: React.PropTypes.object.isRequired
-  , compTableLabels: React.PropTypes.object.isRequired
+  , resultsTableLabels: React.PropTypes.object.isRequired
 };
 
 export default Search;

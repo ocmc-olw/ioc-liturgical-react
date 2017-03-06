@@ -39,7 +39,9 @@ export class ModalCompareDocs extends React.Component {
       ,
       showSelectionButtons: false
       ,
-      selectedID: ""
+      selectedId: ""
+      ,
+      selectedValue: ""
       ,
       selectedIdPartsPrompt: "Select one or more ID parts, then click on the search icon:"
       ,
@@ -58,6 +60,7 @@ export class ModalCompareDocs extends React.Component {
     this.open = this.open.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
   };
 
   componentWillMount = () => {
@@ -158,12 +161,25 @@ export class ModalCompareDocs extends React.Component {
 
   close() {
     this.setState({showModal: false});
-    this.props.onClose();
+    this.props.onClose(this.state.selectedId, this.state.selectedValue);
   };
 
   open() {
     this.setState({showModal: true});
   };
+
+  handleRowSelect = (row, isSelected, e) => {
+    let idParts = row["doc.id"].split("~");
+    this.setState({
+      selectedId: row["doc.id"]
+      , selectedIdParts: [
+        {key: "domain", label: idParts[0]},
+        {key: "topic", label: idParts[1]},
+        {key: "key", label: idParts[2]}
+      ]
+      , selectedValue: row["doc.value"]
+    });
+  }
 
   render() {
     return (
@@ -177,7 +193,6 @@ export class ModalCompareDocs extends React.Component {
                   name={this.state.messageIcon}/>{this.state.message}</span>
               </div>
               {this.state.showSelectionButtons && this.getSelectedDocOptions()}
-              {this.state.showModalCompareDocs && this.getDocComparison()}
               {this.state.showSearchResults &&
               <div className="App-search-results">
                 <div className="row">

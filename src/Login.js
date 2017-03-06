@@ -21,7 +21,6 @@ class Login extends React.Component {
     };
     axios.get(this.props.restServer + server.getWsServerResourcesApi(), config)
         .then(response => {
-          console.log(response);
           auth.setCredentials(
               formData.username
               , formData.password
@@ -57,7 +56,7 @@ class Login extends React.Component {
               <h3 className="App-login-prompt">{this.props.formPrompt}</h3>
               <Form schema={this.state.data.schema}
                     uiSchema={this.state.data.uiSchema}
-                    formData={formData}
+                    formData={this.formData}
                     onSubmit={this.onSubmit}
               />
               <p className="App-login-msg">{this.props.formMsg}</p>
