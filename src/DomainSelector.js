@@ -19,7 +19,6 @@ class DomainSelector extends React.Component {
 
   onSelect = (index) => {
     let item = this.state.items[index];
-    console.log(item);
     let idParts = item.value.split("|");
     let domain = item.value;
     if (idParts.length === 3) {
@@ -42,7 +41,6 @@ class DomainSelector extends React.Component {
     this.setState({serverNotCalled: false});
     axios.get(this.props.restServer + server.getDbServerDropdownsApi(), config)
         .then(response => {
-          console.log(response.data);
           this.setState( { items: response.data.values[0].domains} );
         })
         .catch( (error) => {
