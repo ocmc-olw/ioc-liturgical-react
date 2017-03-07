@@ -9,7 +9,7 @@ import logo from './images/ioc-liturgical-react-logo.png'
 import CodeExample from './helpers/CodeExample'
 import {render} from 'react-dom';
 
-import {DomainSelector, Flag, Labels, LiturgicalDayProperties, Login, Search} from '../../src';
+import {Configuration, DomainSelector, Flag, Labels, LiturgicalDayProperties, Login, Search} from '../../src';
 
 const initialStateExample = "this.state = {\n    restServer: \"https://ioc-liturgical-ws.org/\"\n    , username: \"\"\n    , password: \"\"\n    , authenticated: false\n    , language: {\n      language: \"en\"\n      , labels: {\n        , resultsTable: Labels.labels.en.resultsTable\n        , header: Labels.labels.en.header\n        , help: Labels.labels.en.help\n        , pageAbout: Labels.labels.en.pageAbout\n        , pageLogin: Labels.labels.en.pageLogin\n        , search: Labels.labels.en.search\n  }\n}\n};";
 const languageChangeHandlerExample = "handleLanguageChange = (code) => {\nif (code.length > 0 && code !== \"undefined\") {\n  this.setState({\n    language: {\n      code: code\n      , labels: {\n        compSimpleSearch: Labels.getCompSimpleSearchLabels(code)\n        , resultsTable: Labels.getResultsTableLabels(code)\n        , header: Labels.getHeaderLabels(code)\n        , help: Labels.getHelpLabels(code)\n        , pageAbout: Labels.getPageAboutLabels(code)\n        , pageLogin: Labels.getPageLoginLabels(code)\n        , search: Labels.getSearchLabels(code)\n      }\n    }\n  });\n}\n};";
@@ -468,6 +468,16 @@ class Demo extends React.Component {
                   labels={this.state.language.labels.ldp}
               />
             </Panel> {/* LiturgicalDayProperties */}
+            <Panel header="Application Information" eventKey="info">
+              <Configuration
+                  appVersion="1.2"
+                  appVersionLabel={this.state.language.labels.pageAbout.appVersion}
+                  dbServerLabel={this.state.language.labels.pageAbout.DbServer}
+                  restServer={this.state.restServer}
+                  restServerLabel={this.state.language.labels.pageAbout.RestServer}
+                  wsVersionLabel={this.state.language.labels.pageAbout.wsVersion}
+              />
+            </Panel> {/* Configuration */}
         <Panel header="TBD" eventKey="tbd">
           Placeholder
         </Panel> {/* TDB */}
