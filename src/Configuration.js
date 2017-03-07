@@ -2,6 +2,7 @@ import React from 'react';
 import axios from 'axios';
 import server from './helpers/Server';
 import {Alert} from 'react-bootstrap';
+import versionNumbers from './helpers/VersionNumbers'
 
 /**
  * Provides information about the running version.
@@ -44,6 +45,7 @@ class Configuration extends React.Component {
             <div className="App-DomainSelector">
               <Alert bsStyle="info">
                 <p>{this.props.appVersionLabel} {this.props.appVersion}.</p>
+                <p>ioc-liturgical-react {versionNumbers.getPackageNumber()}.</p>
                 <p>{this.props.dbServerLabel} {this.state.dbServerDomain}</p>
                 <p>{this.props.restServerLabel} {this.props.restServer}</p>
                 <p>{this.props.wsVersionLabel} {this.state.wsVersion}</p>
