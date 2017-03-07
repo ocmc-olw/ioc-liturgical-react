@@ -123,6 +123,7 @@ export class Search extends React.Component {
     this.getDocComparison = this.getDocComparison.bind(this);
     this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
     this.getBars = this.getBars.bind(this);
+    this.docTypes = this.getDocTypes.bind(this);
   }
 
   componentWillMount = () => {
@@ -310,7 +311,7 @@ export class Search extends React.Component {
       case (this.searchFormTypes.advanced): {
         return (
             <SearchOptionsAdvanced
-                docTypes={this.state.docTypes}
+                docTypes={this.getDocTypes()}
                 dropDowns={this.state.dropdowns}
                 properties={this.state.propertyTypes}
                 matchers={this.state.matcherTypes}
@@ -461,6 +462,16 @@ export class Search extends React.Component {
         showModalCompareDocs: false
       })
     }
+  }
+
+  getDocTypes = () => {
+    return (
+      [
+          {label: this.props.searchLabels.docTypeAny, value: "all"}
+            , {label: this.props.searchLabels.biblical, value: "Biblical"}
+            , {label: this.props.searchLabels.liturgical, value: "Liturgical"}
+            ]
+    );
   }
 
   getDocComparison = () => {
