@@ -1,7 +1,5 @@
 import React from 'react'
-//import flag from './graphics/flags/en.ico'
-
-var flag = require("file-loader!./graphics/flags/en.ico")
+import flag from './graphics/flags/en.png'
 
 export class FlagEn extends React.Component {
 

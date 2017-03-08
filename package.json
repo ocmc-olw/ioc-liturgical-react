@@ -11,14 +11,14 @@
     "umd"
   ],
   "scripts": {
-    "build": "nwb build-react-component",
+    "build": "nwb build-react-component && npm run postbuild",
     "clean": "nwb clean-module && npm clean-demo",
     "start": "nwb serve-react-demo",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server",
     "postinstall": "echo 'done'"
-  },
+    , "postbuild" : "mkdir -p es/images/graphics/flags && mkdir -p lib/images/graphics/flags && cp -R src/images/graphics ./es/images/ && cp -R 'src/images/graphics' ./lib/images/"  },
   "devDependencies": {
     "nwb": "0.15.6"
     , "phantomjs-prebuilt": "2.1.14"
