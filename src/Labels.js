@@ -48,7 +48,7 @@ const   labels = {
       , username: "username"
     }
     , help: {
-      pageTitle: "How to Use the IOC Liturgical Database"
+      pageTitle: "How to Search the IOC Liturgical Database"
       , para01: "Please keep in mind that the primary purpose of the database is to be the backend of applications that provide tools for translation of liturgical texts, and the generation of services and books. The texts are not stored as books. The liturgical text has been broken into paragraphs, and sometimes even a single word or phrase."
       , para02: "Although the primary purpose of the database is for use by applications, as a public service to the Orthodox Christian community worldwide, we have provided a search capability on this website. Below is information that will help you use the search function. Click on a topic to open its contents. Click again to hide them."
       , para03: "The user interface for searching the database is still being worked on. What you see on screens and how they look on the help page might be different for short periods of time."
@@ -230,7 +230,7 @@ const   labels = {
       , username: "όνομα χρήστη"
     }
     , help: {
-      pageTitle: "Πώς χρησιμοποιείται το IOC Λειτουργικής Βάσης Δεδομένων"
+      pageTitle: "Πώς να Κάνετε Αναζήτηση στο IOC Λειτουργικής Βάσης Δεδομένων"
       , para01: "Παρακαλώ να έχετε κατά νου ότι πρωταρχικός σκοπός της Βάσης Δεδομένων έιναι να αποτελεί την περάτωση των εφαρμογών που παρέχει εργαλεία για μετάφραση των Λειτουργικών κειμένων, και την παραγωγή υπηρεσιών και βιβλίων. Τα κείμενα δεν αποθηκεύονται σαν βιβλία. Το Λειτουργικό κείμενο είναι χωρισμένο σε παραγράφους, και μερικές φορές σε μία μόνο λέξη ή φράση."
       , para02: "Παρόλο που ο πρωταρχικός σκοπός της Βάσης Δεδομένων είναι η χρήση σε εφαρμογές, σαν κοινή υπηρεσία με την Ορθόδοξη Χριστιανική κοινότητα παγκοσμίως, εμείς παρέχουμε τη δυνατότητα αναζήτησης στην ιστοσελίδα. Παρακάτω είναι η πληροφορία που θα σε βοηθήσει να χρησιμοποιήσεις τη λειτουργία της αναζήτησης. Κάνε κλικ σε ένα θέμα για να ανοίξουν τα περιεχόμενά του. Κάνε ξανά κλικ για να τα κρύψεις."
       , para03: "Το περιβάλλον εργασίας του χρήστη στην αναζήτηση βάσης δεδομένων συνεχίζει να δουλεύει. Αυτό που βλέπεις στις οθόνες και πως φαίνονται στη βοηθητική σελίδα μπορεί να είναι διαφορετικό ανά τακτά χρονικά διαστήματα."

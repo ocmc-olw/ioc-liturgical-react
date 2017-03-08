@@ -9,7 +9,7 @@ import logo from './images/ioc-liturgical-react-logo.png'
 import CodeExample from './helpers/CodeExample'
 import {render} from 'react-dom';
 
-import {Configuration, DomainSelector, Flag, Labels, LiturgicalDayProperties, Login, Search} from '../../src';
+import {Configuration, DomainSelector, Flag, HelpSearch, Labels, LiturgicalDayProperties, Login, Search} from '../../src';
 import VersionNumbers from '../../src/helpers/VersionNumbers'
 
 const initialStateExample = "this.state = {\n    restServer: \"https://ioc-liturgical-ws.org/\"\n    , username: \"\"\n    , password: \"\"\n    , authenticated: false\n    , language: {\n      language: \"en\"\n      , labels: {\n        , resultsTable: Labels.labels.en.resultsTable\n        , header: Labels.labels.en.header\n        , help: Labels.labels.en.help\n        , pageAbout: Labels.labels.en.pageAbout\n        , pageLogin: Labels.labels.en.pageLogin\n        , search: Labels.labels.en.search\n  }\n}\n};";
@@ -480,6 +480,9 @@ class Demo extends React.Component {
                   wsVersionLabel={this.state.language.labels.pageAbout.wsVersion}
               />
             </Panel> {/* Configuration */}
+        <Panel header="Help - for Search Component" eventKey="helpSearch">
+          <HelpSearch labels={this.state.language.labels}/>
+        </Panel> {/* TDB */}
         <Panel header="TBD" eventKey="tbd">
           Placeholder
         </Panel> {/* TDB */}
