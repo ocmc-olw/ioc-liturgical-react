@@ -58,11 +58,11 @@ class Configuration extends React.Component {
 }
 
 Configuration.propTypes = {
-  restServer: React.PropTypes.string.isRequired
+  appVersion: React.PropTypes.string.isRequired
+  , appVersionLabel: React.PropTypes.string.isRequired
+  , restServer: React.PropTypes.string.isRequired
   , restServerLabel: React.PropTypes.string.isRequired
   , wsVersionLabel: React.PropTypes.string.isRequired
-  , appVersion: React.PropTypes.string.isRequired
-  , appVersionLabel: React.PropTypes.string.isRequired
   , dbServerLabel: React.PropTypes.string.isRequired
 };
 
