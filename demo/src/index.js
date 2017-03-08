@@ -481,7 +481,7 @@ class Demo extends React.Component {
               />
             </Panel> {/* Configuration */}
         <Panel header="Help - for Search Component" eventKey="helpSearch">
-          <HelpSearch labels={this.state.language.labels}/>
+          <HelpSearch labels={this.state.language.labels.help.search}/>
         </Panel> {/* TDB */}
         <Panel header="TBD" eventKey="tbd">
           Placeholder

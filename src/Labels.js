@@ -48,6 +48,7 @@ const   labels = {
       , username: "username"
     }
     , help: {
+      search: {
       pageTitle: "How to Search the IOC Liturgical Database"
       , para01: "Please keep in mind that the primary purpose of the database is to be the backend of applications that provide tools for translation of liturgical texts, and the generation of services and books. The texts are not stored as books. The liturgical text has been broken into paragraphs, and sometimes even a single word or phrase."
       , para02: "Although the primary purpose of the database is for use by applications, as a public service to the Orthodox Christian community worldwide, we have provided a search capability on this website. Below is information that will help you use the search function. Click on a topic to open its contents. Click again to hide them."
@@ -145,6 +146,11 @@ const   labels = {
       , secDocIdPartsSearch: "Αναγνωριστικά μέρη έρευνας"
       , secDocVersionComparisonTitle: "Comparing Versions"
       , secDocVersionComparisonP01: "The search results show each doc as a separate row.  What if you want to compare versions, using the same topic and key?  Note that the first column of each row has a radio button.  If you click the radio button of the row you want to compare, a popup window appears and shows all the versions that have the same topic and key for the row you selected."
+      , headerDomain: "Domain"
+      , headerKey: "Key"
+      , headerTopic: "Topic"
+      , headerValue: "Value"
+     }
     }
     , search: {
       advanced: "Advanced Search"
@@ -230,6 +236,7 @@ const   labels = {
       , username: "όνομα χρήστη"
     }
     , help: {
+      search: {
       pageTitle: "Πώς να Κάνετε Αναζήτηση στο IOC Λειτουργικής Βάσης Δεδομένων"
       , para01: "Παρακαλώ να έχετε κατά νου ότι πρωταρχικός σκοπός της Βάσης Δεδομένων έιναι να αποτελεί την περάτωση των εφαρμογών που παρέχει εργαλεία για μετάφραση των Λειτουργικών κειμένων, και την παραγωγή υπηρεσιών και βιβλίων. Τα κείμενα δεν αποθηκεύονται σαν βιβλία. Το Λειτουργικό κείμενο είναι χωρισμένο σε παραγράφους, και μερικές φορές σε μία μόνο λέξη ή φράση."
       , para02: "Παρόλο που ο πρωταρχικός σκοπός της Βάσης Δεδομένων είναι η χρήση σε εφαρμογές, σαν κοινή υπηρεσία με την Ορθόδοξη Χριστιανική κοινότητα παγκοσμίως, εμείς παρέχουμε τη δυνατότητα αναζήτησης στην ιστοσελίδα. Παρακάτω είναι η πληροφορία που θα σε βοηθήσει να χρησιμοποιήσεις τη λειτουργία της αναζήτησης. Κάνε κλικ σε ένα θέμα για να ανοίξουν τα περιεχόμενά του. Κάνε ξανά κλικ για να τα κρύψεις."
@@ -326,6 +333,11 @@ const   labels = {
       , secSearchResults: "Αποτέλεσμα Αναζήτησης"
       , secDocVersionComparisonTitle: "Συγκρίνοντας Εκδόσεις"
       , secDocVersionComparisonP01: "  Τα αποτελέσματα της αναζήτησης εμφανίζουν κάθε έγγραφο σε ξεχωριστή σειρά. Τι γίνεται αν θέλετε να συγκρίνετε εκδόσεις, χρησιμοποιώντας το ίδιο θέμα και κλειδί; Σημειώστε ότι η πρώτη στήλη κάθε σειράς έχει ένα κουμπί επιλογής. Εάν πληκτρολογήσετε το κουμπί επιλογής της γραμμής που θέλετε να συγκρίνετε, εμφανίζεται ένα αναδυόμενο παράθυρο και δείχνει όλες τις εκδόσεις που έχουν το ίδιο θέμα και κλειδί για τη γραμμή που έχετε επιλέξει."
+      , headerDomain: "Τομέας"
+      , headerKey: "Κλειδί"
+      , headerTopic: "Θέμα"
+      , headerValue: "Τιμή"
+      }
     }
     , search: {
       advanced: "Προχωρημένη αναζήτηση"
