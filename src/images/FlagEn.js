@@ -1,8 +1,4 @@
 import React from 'react'
-<<<<<<< HEAD
-
-=======
->>>>>>> dev
 import flag from './graphics/flags/en.png'
 
 export class FlagEn extends React.Component {

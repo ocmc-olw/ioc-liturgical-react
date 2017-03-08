@@ -1,8 +1,4 @@
 import React from 'react'
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
 import flag from './graphics/flags/el.png'
 
 export default React.createClass({
