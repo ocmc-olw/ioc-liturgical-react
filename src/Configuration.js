@@ -25,7 +25,6 @@ class Configuration extends React.Component {
   fetchData() {
     axios.get(this.props.restServer + server.getWsServerVersionApi())
         .then(response => {
-          console.log(response.data);
           this.setState( {
             dataLoaded: true
             ,dbServerDomain: response.data.dbServerDomain

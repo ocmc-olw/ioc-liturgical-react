@@ -18,9 +18,7 @@ yarn-error.log*
 /demo/dist
 /es
 /lib
-/node_modules
 /umd
-npm-debug.log*
 .idea/encodings.xml
 .idea/ioc-liturgical-react.iml
 .idea/jsLibraryMappings.xml

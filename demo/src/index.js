@@ -18,6 +18,7 @@ const menuLanguageChangeExample = "<MenuItem eventKey={6.2} id=\"el\" onClick={t
 const localLanguageChangeHandlerExample = "handleLanguageChange = (event) => {\n  if (event.target.id) {\n    this.props.changeHandler(event.target.id);\n    event.preventDefault();\n  }\n};";
 const loginSample = "<Login\n\trestServer={this.state.restServer} // e.g. https://ioc-liturgical-ws.org/\n\tusername={this.state.username} // initially set to \"\"\n\tpassword={this.state.password} // initially set to \"\"\n\tloginCallback={this.handleLoginCallback}\n\tformPrompt={this.state.language.labels.pageLogin.prompt}\n\tformMsg={this.state.loginFormMsg} // initially set to \"\"\n />";
 const searchSample = "<Search\n restServer={this.state.restServer}\n username={this.state.username}\n password={this.state.password}\n callback={this.handleSearchCallback}\n searchLabels={this.state.language.labels.search}\n resultsTableLabels={this.state.language.labels.resultsTable}\n/>"
+const searchCallbackSample = "\nhandleSearchCallback(id, value) {\n\tif (id && id.length > 0) {\n\t\tthis.setState({\n\t\t\tsearching: false\n\t\t\t, data : {\n\t\t\t\t\"idReferredByText\": id,\n\t\t\t\t\"referredByText\": value\n\t\t\t}\n\t\t});\n\t}\n};";
 
 class Demo extends React.Component {
   constructor(props) {
@@ -28,7 +29,7 @@ class Demo extends React.Component {
      */
 
       this.state = {
-        demoVersion: "0.0.3"
+        demoVersion: "0.0.4"
       , npmVersion: VersionNumbers.getPackageNumber()
       , restServer: RestServer.getWsServer()
       , username: ""
@@ -452,7 +453,7 @@ class Demo extends React.Component {
                 <p/>
                 <p>Below is an example callback handler:</p>
                 <CodeExample
-                    codeText={searchSample}
+                    codeText={searchCallbackSample}
                 />
               </Panel>
           </Accordion>

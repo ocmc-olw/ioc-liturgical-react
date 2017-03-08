@@ -1,7 +1,5 @@
 import React from 'react'
-//import flag from './graphics/flags/el.ico'
-
-var flag = require("file-loader!./graphics/flags/el.ico")
+import flag from './graphics/flags/el.png'
 
 export default React.createClass({
   render() {

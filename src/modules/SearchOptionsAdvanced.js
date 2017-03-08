@@ -154,14 +154,12 @@ class SearchOptions extends Component {
   };
 
   handleBookChange = (selection) => {
-    console.log("Book: " + selection["value"]);
     this.setState({
       selectedBook: selection["value"]
     }, this.setChaptersDropdown(selection["value"]));
   };
 
   handleChapterChange = (selection) => {
-    console.log(selection)
     this.setState({
       selectedChapter: selection["value"]
       , dropDownChapters: {
