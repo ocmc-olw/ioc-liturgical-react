@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.0.12",
+  "version": "0.0.13",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -11,16 +11,18 @@
     "umd"
   ],
   "scripts": {
-    "build": "nwb build-react-component",
+    "build": "nwb build-react-component && npm run postbuild",
     "clean": "nwb clean-module && npm clean-demo",
     "start": "nwb serve-react-demo",
     "test": "nwb test-react",
     "test:coverage": "nwb test-react --coverage",
     "test:watch": "nwb test-react --server",
     "postinstall": "echo 'done'"
+    , "postbuild" : "mkdir -p es/images/graphics/flags && mkdir -p lib/images/graphics/flags && cp -R src/images/graphics/flags ./es/images/graphics/ && cp -R 'src/images/graphics/flags' ./lib/images/graphics/"
   },
   "devDependencies": {
     "nwb": "0.15.6"
+    , "copy-webpack-plugin": "4.0.1"
     , "phantomjs-prebuilt": "2.1.14"
     , "react": "^15.4.2"
     , "react-dom": "^15.4.2"
