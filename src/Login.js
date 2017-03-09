@@ -9,6 +9,8 @@ class Login extends React.Component {
     super(props);
     this.state = {
       path:""
+      , username: ""
+      , password: ""
     };
   }
 
@@ -26,10 +28,23 @@ class Login extends React.Component {
               , formData.password
               , true
           );
-          this.props.loginCallback(response.status, true, formData.username, formData.password);
+          this.props.loginCallback(
+              response.status
+              , true
+              , formData.username
+              , formData.password);
         })
         .catch( (error) => {
-          this.props.loginCallback(error.message, false, formData.username, formData.password);
+          auth.setCredentials(
+              formData.username
+              , formData.password
+              , false
+          );
+          this.props.loginCallback(
+              error.message
+              , false
+              , formData.username
+              , formData.password);
         });
   }
 
@@ -40,7 +55,12 @@ class Login extends React.Component {
         })
         .catch( (error) => {
           this.setState( { data: error.message, path: this.props.path });
-          this.props.loginCallback(error.message, false, formData.username, formData.password);
+          this.props.loginCallback(
+              error.message
+              , false
+              , this.state.formData.username
+              , this.state.formData.password
+          );
         });
   }
 
@@ -56,7 +76,7 @@ class Login extends React.Component {
               <h3 className="App-login-prompt">{this.props.formPrompt}</h3>
               <Form schema={this.state.data.schema}
                     uiSchema={this.state.data.uiSchema}
-                    formData={this.formData}
+                    formData={formData}
                     onSubmit={this.onSubmit}
               />
               <p className="App-login-msg">{this.props.formMsg}</p>

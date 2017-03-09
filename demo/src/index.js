@@ -42,6 +42,7 @@ const localLanguageChangeHandlerExample = "handleLanguageChange = (event) => {\n
 const loginSample = "<Login\n\trestServer={this.state.restServer} // e.g. https://ioc-liturgical-ws.org/\n\tusername={this.state.username} // initially set to \"\"\n\tpassword={this.state.password} // initially set to \"\"\n\tloginCallback={this.handleLoginCallback}\n\tformPrompt={this.state.language.labels.pageLogin.prompt}\n\tformMsg={this.state.loginFormMsg} // initially set to \"\"\n />";
 const searchSample = "<Search\n restServer={this.state.restServer}\n username={this.state.username}\n password={this.state.password}\n callback={this.handleSearchCallback}\n searchLabels={this.state.language.labels.search}\n resultsTableLabels={this.state.language.labels.resultsTable}\n/>"
 const searchCallbackSample = "\nhandleSearchCallback(id, value) {\n\tif (id && id.length > 0) {\n\t\tthis.setState({\n\t\t\tsearching: false\n\t\t\t, data : {\n\t\t\t\t\"idReferredByText\": id,\n\t\t\t\t\"referredByText\": value\n\t\t\t}\n\t\t});\n\t}\n};";
+const loginCallbackSample = "handleLoginCallback(status, valid, username, password) {\n  // save the username and password regardless of status so it will not be erased when Login re-renders\n  this.setState({username: username, password: password});\n  if (valid) {\n    this.setState({authenticated: true, loginFormMsg: \"Login successful!\"});\n  } else {\n    this.setState({authenticated: false, loginFormMsg: \"Login failed\"});\n  }\n};"
 
 class Demo extends React.Component {
   constructor(props) {
@@ -70,7 +71,7 @@ class Demo extends React.Component {
           , ldp: Labels.labels.en.ldp
         }
       }
-      , loginFormMsg: "" // TODO: this should be part of the labels
+      , loginFormMsg: ""
       , data: {
         "idReferredByText": "gr_gr_cog~me.m01.d01~meVE.Stichera01.text",
         "referredByText": "Συγκαταβαίνων ὁ Σωτήρ, τῷ γένει τῶν ἀνθρώπων, κατεδέξατο σπαργάνων περιβολήν, οὐκ ἐβδελύξατο σαρκὸς τὴν περιτομήν, ὁ ὀκταήμερος κατὰ τὴν Μητέρα, ὁ ἄναρχος κατὰ τὸν Πατέρα. Αὐτῷ πιστοὶ βοήσωμεν. Σὺ εἶ ὁ Θεὸς ἡμῶν, ἐλέησον ἡμᾶς."
@@ -137,9 +138,9 @@ class Demo extends React.Component {
     // save the username and password regardless of status so it will not be erased when Login re-renders
     this.setState({username: username, password: password});
     if (valid) {
-      this.setState({authenticated: true, loginFormMsg: "Login successful!"});
+      this.setState({authenticated: true, loginFormMsg: this.state.language.labels.pageLogin.good});
     } else {
-      this.setState({authenticated: false, loginFormMsg: "Login failed"});
+      this.setState({authenticated: false, loginFormMsg: this.state.language.labels.pageLogin.bad});
     }
   };
 
@@ -354,6 +355,9 @@ class Demo extends React.Component {
                     </tr>
                     </tbody>
                   </Table>
+                  <CodeExample
+                    codeText={loginCallbackSample}
+                  />
                 </Panel>
               </Accordion>
             </Panel> {/* Login */}

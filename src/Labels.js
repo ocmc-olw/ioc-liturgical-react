@@ -46,6 +46,8 @@ const   labels = {
       password: "password"
       , prompt: "Please login to view the requested page:"
       , username: "username"
+      , good: "Logged in OK."
+      , bad: "Incorrect username or password."
     }
     , help: {
       search: {
@@ -234,6 +236,8 @@ const   labels = {
       password: "κωδικός"
       , prompt: "Παρακαλώ συνδεθείτε για να δείτε τη σελίδα που ζητήθηκε:"
       , username: "όνομα χρήστη"
+      , good: "Εντάξει..."
+      , bad: "Το όνομα χρήστη ή ο κωδικός δεν είναι σωστό."
     }
     , help: {
       search: {
