@@ -33,8 +33,8 @@ class Configuration extends React.Component {
           } );
         })
         .catch( (error) => {
+          console.log(error.message);
           this.setState( { data: error.message });
-          this.props.callback(error.message, "");
         });
   }
 
