@@ -1,3 +1,4 @@
+import AboutDatabase from './AboutDatabase';
 import Configuration from './Configuration';
 import DomainSelector from './DomainSelector';
 import Flag from './Flag';
@@ -7,4 +8,4 @@ import Search from './Search';
 import HelpSearch from './HelpSearch';
 import LiturgicalDayProperties from './LiturgicalDayProperties'
 
-export {Configuration, DomainSelector, Flag, HelpSearch, Labels, LiturgicalDayProperties, Login, Search}
+export {AboutDatabase, Configuration, DomainSelector, Flag, HelpSearch, Labels, LiturgicalDayProperties, Login, Search}
