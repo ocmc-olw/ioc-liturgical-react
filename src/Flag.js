@@ -2,9 +2,15 @@ import React from 'react';
 import En from './images/FlagEn';
 import El from './images/FlagEl';
 
-/**
- * Copy this to create a new component.
- */
+
+// To get more flags:
+// git clone git@github.com:hjnilsson/country-flags.git
+
+// To compute width and height, see
+// https://en.wikipedia.org/wiki/List_of_aspect_ratios_of_national_flags
+
+// if we use a standard width of 20px, then 20/ratio as a decimal = height
+
 export class Flag extends React.Component {
 
   constructor(props) {
@@ -25,6 +31,7 @@ export class Flag extends React.Component {
   };
 
   render() {
+    console.log(this.props.code);
     return (
         <span>{this.getFlag(this.props.code)}</span>
     )

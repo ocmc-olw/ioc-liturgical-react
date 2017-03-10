@@ -24,9 +24,10 @@ div.container-fluid {
     font-style: italic;
 }
 .App-flag {
-    height: 20px;
-    width: 20px;
+    height: 1em;
+    width: 1.3em;
 }
+
 #basic-nav-dropdown {
     padding-top: 21px;
     padding-left: 22px;
@@ -221,4 +222,3 @@ div.App-logo.navbar-header {
     margin-left: 20px;
     color: #5bc0de;
 }
-

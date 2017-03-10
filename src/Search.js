@@ -616,6 +616,7 @@ export class Search extends React.Component {
     )
   };
 
+
   render() {
     return (
         <div className="App-page App-search">
@@ -643,6 +644,7 @@ export class Search extends React.Component {
             <div className="row">
               <BootstrapTable
                   data={this.state.data.values}
+                  exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
                   searchPlaceholder={this.props.resultsTableLabels.filterPrompt}
@@ -656,18 +658,23 @@ export class Search extends React.Component {
                     isKey
                     dataField='doc.id'
                     dataSort={ true }
+                    export={ true }
                     hidden
                 >ID</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='doc.domain'
                     dataSort={ true }
+                    export={ false }
+                    tdClassname="tdDomain"
                     width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerDomain}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='doc.topic'
                     dataSort={ true }
+                    export={ false }
                     width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerTopic}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='doc.key'
+                    export={ false }
                     dataSort={ true }
                     width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerKey}</TableHeaderColumn>
                 <TableHeaderColumn
