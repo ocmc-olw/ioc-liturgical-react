@@ -4674,17 +4674,13 @@ react-file-download@^0.3.2:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/react-fontawesome/-/react-fontawesome-1.5.0.tgz#879d1b2aa5c48bba551e9237f84993217b5645c4"
 
-react-iframe@^0.0.04:
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/react-iframe/-/react-iframe-0.0.4.tgz#24f2f63439f1d141788b0971acc10cdd06fd7b75"
-
 react-input-autosize@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-1.1.0.tgz#3fe1ac832387d8abab85f6051ceab1c9e5570853"
 
-react-jsonschema-form@^0.41.2:
-  version "0.41.2"
-  resolved "https://registry.yarnpkg.com/react-jsonschema-form/-/react-jsonschema-form-0.41.2.tgz#a77921ceff102fc5d04344e50b8e622a7e0373c2"
+react-jsonschema-form@^0.43.0:
+  version "0.43.0"
+  resolved "https://registry.yarnpkg.com/react-jsonschema-form/-/react-jsonschema-form-0.43.0.tgz#586b69de7bda6d3a9cd9f74c1bee9b7fa353d1e5"
   dependencies:
     jsonschema "^1.0.2"
     lodash.topath "^4.5.2"

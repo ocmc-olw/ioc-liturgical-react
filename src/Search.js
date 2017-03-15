@@ -31,10 +31,10 @@ export class Search extends React.Component {
       matcher: "c"
       ,
       matcherTypes: [
-        {label: "contains", value: "c"}
-        , {label: "starts with", value: "sw"}
-        , {label: "ends with", value: "ew"}
-        , {label: "matches regular expression", value: "rx"}
+        {label: this.props.searchLabels.matchesAnywhere, value: "c"}
+        , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
+        , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
+        , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
       ]
       ,
       suggestedQuery: ""
@@ -123,7 +123,8 @@ export class Search extends React.Component {
     this.getDocComparison = this.getDocComparison.bind(this);
     this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
     this.getBars = this.getBars.bind(this);
-    this.docTypes = this.getDocTypes.bind(this);
+    this.getDocTypes = this.getDocTypes.bind(this);
+    this.getMatcherTypes = this.getMatcherTypes.bind(this);
   }
 
   componentWillMount = () => {
@@ -296,7 +297,7 @@ export class Search extends React.Component {
                     docTypes={this.state.docTypes}
                     dropDowns={this.state.dropdowns}
                     properties={this.state.propertyTypes}
-                    matchers={this.state.matcherTypes}
+                    matchers={this.getMatcherTypes()}
                     handleSubmit={this.handleAdvancedSearchSubmit}
                     labels={this.props.searchLabels}
                 />
@@ -332,6 +333,16 @@ export class Search extends React.Component {
     }
   }
 
+  getMatcherTypes () {
+    return (
+        [
+            {label: this.props.searchLabels.matchesAnywhere, value: "c"}
+            , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
+            , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
+            , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+            ]
+    )
+  }
   handleCancelRequest() {
     if (this.props.callback) {
       this.props.callback("","");

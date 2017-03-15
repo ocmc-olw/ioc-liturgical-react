@@ -152,6 +152,10 @@ const   labels = {
       , headerKey: "Key"
       , headerTopic: "Topic"
       , headerValue: "Value"
+      , matchesAtTheStart: "at the beginning"
+      , matchesAtTheEnd: "at the end"
+      , matchesAnywhere: "anywhere"
+      , matchesRegEx: "as a regular expression"
      }
     }
     , search: {
@@ -341,6 +345,10 @@ const   labels = {
       , headerKey: "Κλειδί"
       , headerTopic: "Θέμα"
       , headerValue: "Τιμή"
+      , matchesAtTheStart: "στην αρχή"
+      , matchesAtTheEnd: "στο τέλος"
+      , matchesAnywhere: "παντού"
+      , matchesRegEx: "σαν ένα regular expression"
       }
     }
     , search: {

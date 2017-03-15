@@ -51,10 +51,10 @@ export default React.createClass({
             </ul>
           <li>{this.props.labels.secDocSearchAdvancedP14}</li>
             <ul>
-              <li>contains</li>
-              <li>starts with</li>
-              <li>ends with</li>
-              <li>matches regular expression</li>
+              <li>{this.props.labels.matchesAtTheStart}</li>
+              <li>{this.props.labels.matchesAnywhere}</li>
+              <li>{this.props.labels.matchesAtTheEnd}</li>
+              <li>{this.props.labels.matchesRegEx}</li>
             </ul>
           <li>
             {this.props.labels.secDocSearchAdvancedP19}

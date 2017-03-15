@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.0.21",
+  "version": "0.0.22",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -41,7 +41,7 @@
     "react-dom": "^15.4.2",
     "react-file-download": "^0.3.2",
     "react-fontawesome": "^1.5.0 ",
-    "react-jsonschema-form": "^0.41.2",
+    "react-jsonschema-form": "^0.43.0",
     "react-select": "^1.0.0-rc.2",
     "svgo": "^0.7.1",
     "url-loader": "^0.5.7"
