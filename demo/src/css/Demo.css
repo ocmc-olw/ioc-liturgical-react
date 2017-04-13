@@ -34,6 +34,7 @@ div.container-fluid {
 }
 .App-search-form {
     padding-top: 15px;
+    padding-bottom: 15px;
 }
 .App-search-panel {
     cursor: pointer;
@@ -133,9 +134,10 @@ a.collapsed {
 }
 .react-bs-table table tr {
     padding: 10px;
+    max-width: 80%;
 }
 .react-bs-table table td {
-    white-space: -o-pre-wrap;
+    white-space: -o-pre-wrap !important;
     word-wrap: break-word;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
@@ -222,3 +224,10 @@ div.App-logo.navbar-header {
     margin-left: 20px;
     color: #5bc0de;
 }
+.Select-control {
+    max-width: 90%;
+}
+.App-data-tr {
+    max-width: 90%;
+}
+

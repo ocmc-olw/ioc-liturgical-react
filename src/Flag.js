@@ -31,7 +31,6 @@ export class Flag extends React.Component {
   };
 
   render() {
-    console.log(this.props.code);
     return (
         <span>{this.getFlag(this.props.code)}</span>
     )

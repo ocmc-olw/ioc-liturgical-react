@@ -1,30 +1,18 @@
 import React from 'react';
 import axios from 'axios';
-import SearchOptionsAdvanced from "./modules/SearchOptionsAdvanced";
-import SearchOptionsSimple from "./modules/SearchOptionsSimple";
-import ModalCompareDocs from './modules/ModalCompareDocs';
+import LinkSearchOptions from "./modules/LinkSearchOptions";
+import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 
-export class Search extends React.Component {
+export class SearchRelationships extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      docType: "Liturgical",
-      docTypes: [
-        {label: "All", value: "all"}
-        , {label: "Biblical", value: "Biblical"}
-        , {label: "Liturgical", value: "Liturgical"}
-      ]
-      ,
       domain: "*"
-      ,
-      selectedBook: "*"
-      ,
-      selectedChapter: "*"
       ,
       query: ""
       ,
@@ -38,8 +26,6 @@ export class Search extends React.Component {
       ]
       ,
       suggestedQuery: ""
-      ,
-      docProp: "nnp"
       ,
       propertyTypes: [
         {label: "ID", value: "id"}
@@ -69,7 +55,7 @@ export class Search extends React.Component {
       ,
       resultCount: 0
       ,
-      data: {values: [{"doc.id": "", "doc.value:": ""}]}
+      data: {values: [{"id": "", "value:": ""}]}
       ,
       options: {
         sizePerPage: 30
@@ -88,42 +74,25 @@ export class Search extends React.Component {
       }
       ,
       showSelectionButtons: false
-      ,
-      selectedID: ""
-      ,
-      selectedIdPartsPrompt: "Select one or more ID parts, then click on the search icon:"
-      ,
-      selectedIdParts: [
-        {key: "domain", label: ""},
-        {key: "topic", label: ""},
-        {key: "key", label: ""}
-      ]
-      , showIdPartSelector: false
-      , selectedValue: ""
+      , selectedId: ""
+      , selectedLibrary: ""
+      , selectedTopic: ""
+      , selectedKey: ""
+      , title: ""
       , showModalCompareDocs: false
       , idColumnSize: "80px"
     };
-    this.handleIdQuerySelection = this.handleIdQuerySelection.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.onSizePerPageList = this.onSizePerPageList.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.toggleSearchForm = this.toggleSearchForm.bind(this);
     this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
-    this.handleSimpleSearchSubmit = this.handleSimpleSearchSubmit.bind(this);
     this.getSearchForm = this.getSearchForm.bind(this);
-    this.getSearchAccordion = this.getSearchAccordion.bind(this);
-    this.searchFormOptionIcons = this.searchFormOptionIcons.bind(this);
-    this.handleSearchFormTypeChange = this.handleSearchFormTypeChange.bind(this);
-    this.toogleIdPattern = this.toogleIdPattern.bind(this);
-    this.showSelectionButtons = this.showSelectionButtons.bind(this);
     this.handleCancelRequest = this.handleCancelRequest.bind(this);
     this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
     this.getDocComparison = this.getDocComparison.bind(this);
     this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
-    this.getBars = this.getBars.bind(this);
-    this.getDocTypes = this.getDocTypes.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
   }
 
@@ -145,26 +114,25 @@ export class Search extends React.Component {
         , password: this.props.password
       }
     };
-    let path = this.props.restServer + Server.getWsServerDbApi() + 'dropdowns';
+    let path = this.props.restServer + Server.getDbServerDropdownsSearchRelationshipsApi();
     axios.get(path, config)
         .then(response => {
+          // literals used as keys to get data from the response
+          let valueKey = "dropdown";
+          let listKey = "typeList";
+          let libsKey = "typeLibraries";
+          let propsKey = "typeProps";
+          let tagsKey = "typeTags";
+          let tagOperatorsKey = "tagOperators";
+
+          let values = response.data.values[0][valueKey];
           this.setState({
                 dropdowns: {
-                  Biblical: {
-                    all: {
-                      books: response.data.values[0]["all"][0]["books"]
-                      , chapters: response.data.values[0]["all"][0]["chapters"]
-                    }
-                    , domains: response.data.values[0]["domains"]
-                    , topics: response.data.values[0]["topics"]
-                  }
-                  , Liturgical: {
-                    all: {
-                      books: response.data.values[1]["all"][0]["books"]
-                    }
-                    , domains: response.data.values[1]["domains"]
-                    , topics: response.data.values[1]["topics"]
-                  }
+                  linkTypes: values[listKey]
+                  , linkTypeLibraries: values[libsKey]
+                  , linkTypeProps: values[propsKey]
+                  , linkTypeTags: values[tagsKey]
+                  , linkTagOperators: values[tagOperatorsKey]
                   , loaded: true
                 }
               }
@@ -174,163 +142,38 @@ export class Search extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 401) {
-            message = server.getDbServerPath() + " is a protected database.  Please login and try again.";
+            message = Server.getWsServerDbApi() + " is a protected database.  Please login and try again.";
             messageIcon = this.messageIcons.error;
           } else if (error && error.response && error.response.status === 404) {
             message = "error retrieving values for dropdowns";
             messageIcon = this.messageIcons.error;
           } else if (error && error.message && error.message.toLowerCase() === "network error") {
-            message = "The database server " + server.getDbServerPath() + " is not available.";
+            message = "The database server " + Server.getWsServerDbApi() + " is not available.";
             messageIcon = this.messageIcons.error;
           }
           this.setState({data: message, message: message, messageIcon: messageIcon});
         });
   };
 
-  login(loginRequired) {
-    if (loginRequired) {
-      this.props.router.replace('/login');
-    }
-  }
 
-  toggleSearchForm = () => {
-    let showing = this.state.searchFormType;
-    let searchFormToggleIcon;
-    let searchFormToggleMessage;
-
-    if (showing) {
-      searchFormToggleIcon = this.messageIcons.toggleOn;
-      searchFormToggleMessage = this.state.advancedSearchMessage;
-    } else {
-      searchFormToggleIcon = this.messageIcons.toggleOff;
-      searchFormToggleMessage = this.state.simpleSearchMessage;
-    }
-    this.setState({
-      searchFormType: !showing
-      , searchFormToggle: searchFormToggleIcon
-      , searchFormToggleMessage: searchFormToggleMessage
-    });
-  }
-  searchFormOptionIcons() {
+  getSearchForm() {
     return (
-        <div>
-          Search Type:
-          <span className="App-search-options">
-          <label
-              id={this.searchFormTypes.simple}
-              className="App-search-form-option-label control-label"
-              onClick={this.handleSearchFormTypeChange}>
-            <FontAwesome
-                id={this.searchFormTypes.simple}
-                onClick={this.handleSearchFormTypeChange}
-                name={this.messageIcons.simpleSearch}
-            />Simple
-          </label>
-          <label
-              id={this.searchFormTypes.advanced}
-              onClick={this.handleSearchFormTypeChange}
-              className="App-search-form-option-label control-label">
-            <FontAwesome
-                id={this.searchFormTypes.advanced}
-                onClick={this.handleSearchFormTypeChange}
-                name={this.messageIcons.advancedSearch}
-            />
-            Advanced
-          </label>
-          </span>
-        </div>
-    );
-  }
-
-  handleSearchFormTypeChange (event) {
-    switch(event.target.id) {
-      case (this.searchFormTypes.simple): {
-        this.setState({
-          searchFormType: this.searchFormTypes.simple
-        });
-        break;
-      }
-      case (this.searchFormTypes.advanced): {
-        this.setState({
-          searchFormType: this.searchFormTypes.advanced
-        });
-        break;
-      }
-      case (this.searchFormTypes.idPattern): {
-        this.setState({
-          searchFormType: this.searchFormTypes.idPattern
-        });
-        break;
-      }
-      default: {
-        break;
-      }
-    }
-  }
-
-  formOptionStyles = {
-    hidden: { display: 'none' }
-    , visible: { display: 'inline' }
-  }
-
-  toogleIdPattern (id) {
-    if (id.length > 0) {
-      return this.formOptionStyles.visible;
-    } else {
-      return this.formOptionStyles.hidden;
-    }
-  }
-
-  getSearchAccordion() {
-    return (
-        <PanelGroup defaultActiveKey="1" accordion>
-          <Panel  className="App-search-panel" header={this.props.searchLabels.simple} eventKey="1">
-            <SearchOptionsSimple
-                valueTitle=""
-                placeholder={this.props.searchLabels.prompt}
-                handleSubmit={this.handleSimpleSearchSubmit}
-            />
-          </Panel>
-          <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
+            <div>
             {this.state.dropdowns ?
-                <SearchOptionsAdvanced
-                    docTypes={this.state.docTypes}
-                    dropDowns={this.state.dropdowns}
-                    properties={this.state.propertyTypes}
+                <LinkSearchOptions
+                    types={this.state.dropdowns.linkTypes}
+                    libraries={this.state.dropdowns.linkTypeLibraries}
+                    properties={this.state.dropdowns.linkTypeProps}
                     matchers={this.getMatcherTypes()}
+                    tags={this.state.dropdowns.linkTypeTags}
+                    tagOperators={this.state.dropdowns.linkTagOperators}
                     handleSubmit={this.handleAdvancedSearchSubmit}
                     labels={this.props.searchLabels}
                 />
-                : "Loading dropdowns for advanced search..."}
-          </Panel>
-        </PanelGroup>
+                : "Loading dropdowns for search..."
+            }
+            </div>
     );
-  }
-
-  getSearchForm(type) {
-    switch(type) {
-      case (this.searchFormTypes.advanced): {
-        return (
-            <SearchOptionsAdvanced
-                docTypes={this.getDocTypes()}
-                dropDowns={this.state.dropdowns}
-                properties={this.state.propertyTypes}
-                matchers={this.state.matcherTypes}
-                handleSubmit={this.handleAdvancedSearchSubmit}
-                labels={this.props.searchLabels}
-            />
-        );
-      }
-      default: {
-        return (
-            <SearchOptionsSimple
-                valueTitle=""
-                placeholder="enter a word or phrase and press the search icon..."
-                handleSubmit={this.handleSimpleSearchSubmit}
-            />
-        );
-      }
-    }
   }
 
   getMatcherTypes () {
@@ -351,7 +194,7 @@ export class Search extends React.Component {
 
   handleDoneRequest() {
     if (this.props.callback) {
-      this.props.callback(this.state.selectedID, this.state.selectedValue);
+      this.props.callback(this.state.selectedId, this.state.selectedValue);
     }
   }
 
@@ -362,7 +205,7 @@ export class Search extends React.Component {
             <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
               type="text"
-              value={this.state.selectedID}
+              value={this.state.selectedId}
               disabled
             />
             <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
@@ -382,82 +225,49 @@ export class Search extends React.Component {
     )
   }
 
-  handleIdQuerySelection(value) {
-    this.setState({
-          domain: "*"
-          , selectedBook: "*"
-          , selectedChapter: "*"
-          , docProp: "id"
-          , matcher: "rx"
-          , query: value
-        }
-        , function () {
-          this.fetchData();
-        }
-    );
-  }
-
   handleAdvancedSearchSubmit = (
       type
       , domain
-      , book
-      , chapter
       , property
       , matcher
       , value
+      , tagOperator
+      , tags
   ) => {
+    console.log("handleAdvancedSearchSubmit");
+    console.log(tagOperator);
+    console.log(tags);
     this.setState({
           docType: type
           , domain: domain
-          , selectedBook: book
-          , selectedChapter: chapter
           , docProp: property
           , matcher: matcher
           , query: value
+          , tagOperator: tagOperator
+          , tags: tags
         }
         , function () {
           this.fetchData();
         }
     );
   };
-
-  handleSimpleSearchSubmit = (value) => {
-    this.setState({
-          docType: "Liturgical"
-          , domain: "*"
-          , selectedBook: "*"
-          , selectedChapter: "*"
-          , docProp: "nnp"
-          , matcher: "c"
-          , query: value
-        }
-        , function () {
-          this.fetchData();
-        }
-    );
-  };
-
 
   handleRowSelect = (row, isSelected, e) => {
-    let idParts = row["doc.id"].split("~");
     this.setState({
-      selectedId: row["doc.id"]
-      , selectedIdParts: [
-        {key: "domain", label: idParts[0]},
-        {key: "topic", label: idParts[1]},
-        {key: "key", label: idParts[2]}
-      ]
-      , selectedValue: row["doc.value"]
+      selectedId: row["library"] + "~" + row["fromId"] + "~" + row["toId"]
+      , selectedLibrary: row["library"]
+      , selectedTopic: row["fromId"]
+      , selectedKey: row["toId"]
+      , title: row["fromId"] + " " + row["type"] + " " + row["toId"]
       , showIdPartSelector: true
       , showModalCompareDocs: true
-    }, this.showRowComparison(row["doc.id"], row["doc.value"]));
+    });
   }
 
-  showRowComparison = (id, value) => {
+  showRowComparison = (id) => {
     this.setState({
       showModalCompareDocs: true
-      , selectedID: id
-      , selectedValue: value
+      , selectedId: id
     })
   }
 
@@ -465,7 +275,7 @@ export class Search extends React.Component {
     if (id && id.length > 0) {
       this.setState({
         showModalCompareDocs: false
-        , selectedID: id
+        , selectedId: id
         , selectedValue: value
       })
     } else {
@@ -475,37 +285,22 @@ export class Search extends React.Component {
     }
   }
 
-  getDocTypes = () => {
-    return (
-      [
-          {label: this.props.searchLabels.docTypeAny, value: "all"}
-            , {label: this.props.searchLabels.biblical, value: "Biblical"}
-            , {label: this.props.searchLabels.liturgical, value: "Liturgical"}
-            ]
-    );
-  }
-
   getDocComparison = () => {
     return (
-        <ModalCompareDocs
+        <ModalSchemaBasedEditor
             restServer={this.props.restServer}
+            restPath={Server.getDbServerLinksApi()}
             username={this.props.username}
             password={this.props.password}
             showModal={this.state.showModalCompareDocs}
-            title={this.state.selectedID}
-            docType={this.state.docType}
-            selectedIdParts={this.state.selectedIdParts}
+            title={this.state.title}
+            idLibrary={this.state.selectedLibrary}
+            idTopic={this.state.selectedTopic}
+            idKey={this.state.selectedKey}
             onClose={this.handleCloseDocComparison}
             labels={this.props.searchLabels}
         />
     )
-  }
-
-  showSelectionButtons = (id) => {
-    this.setState({
-      showSelectionButtons: true
-      , selectedID: id
-    });
   }
 
   onSizePerPageList = (sizePerPage) => {
@@ -544,7 +339,10 @@ export class Search extends React.Component {
   }
 
   fetchData(event) {
-    this.setState({message: this.props.searchLabels.msg2, messageIcon: this.messageIcons.info});
+    this.setState({
+      message: this.props.searchLabels.msg2
+      , messageIcon: this.messageIcons.info
+    });
     let config = {
       auth: {
         username: this.props.username
@@ -555,13 +353,13 @@ export class Search extends React.Component {
     let parms =
             "?t=" + encodeURIComponent(this.state.docType)
             + "&d=" + encodeURIComponent(this.state.domain)
-            + "&b=" + encodeURIComponent(this.state.selectedBook)
-            + "&c=" + encodeURIComponent(this.state.selectedChapter)
             + "&q=" + encodeURIComponent(this.state.query)
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)
+            + "&l=" + encodeURIComponent(this.state.tags)
+            + "&o=" + encodeURIComponent(this.state.tagOperator)
         ;
-    let path = this.props.restServer + Server.getWsServerDbApi() + 'docs' + parms;
+    let path = this.props.restServer + Server.getDbServerLinksApi() + parms;
     axios.get(path, config)
         .then(response => {
           this.setState({
@@ -603,31 +401,6 @@ export class Search extends React.Component {
         });
   }
 
-  /**
-   * If the type of doc is
-   *  Liturgical
-   * and selected selectedBook is
-   *  eothinon
-   *  menaion
-   *  octoechos
-   * then display the additional two dropdown boxes, e.g. for month and day
-   *
-   *  Biblical
-   *  then display selectedChapter numbers <-- must vary based on selectedBook!
-   *
-   * TODO: in Java, query database for each domain and collect the possible values for each part of the topic.
-   * @returns {XML}
-   */
-
-//          <div>Search Form: <FontAwesome onClick={this.toggleSearchForm} name={this.state.searchFormToggle}/>{this.state.searchFormToggleMessage}</div>
-
-  getBars = () => {
-    return (
-        <span><FontAwesome name="bars"/></span>
-    )
-  };
-
-
   render() {
     return (
         <div className="App-page App-search">
@@ -636,7 +409,7 @@ export class Search extends React.Component {
           <div className="App-search-form">
             <div className="row">
               <div className="col-sm-12 col-md-12 col-lg-12">
-                {this.getSearchAccordion(this.state.searchFormType)}
+                {this.getSearchForm()}
               </div>
             </div>
           </div>
@@ -667,31 +440,43 @@ export class Search extends React.Component {
               >
                 <TableHeaderColumn
                     isKey
-                    dataField='doc.id'
+                    dataField='id'
                     dataSort={ true }
                     export={ true }
                     hidden
-                >ID</TableHeaderColumn>
+                >ID
+                </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='doc.domain'
+                    dataField='library'
                     dataSort={ true }
                     export={ false }
                     tdClassname="tdDomain"
-                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerDomain}</TableHeaderColumn>
+                    width={"10%"}
+                >{this.props.resultsTableLabels.headerDomain}
+                </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='doc.topic'
+                    dataField='fromId'
                     dataSort={ true }
                     export={ false }
-                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerTopic}</TableHeaderColumn>
+                >{this.props.resultsTableLabels.headerFromId}
+                </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='doc.key'
+                    dataField='type'
+                    dataSort={ true }
+                >{this.props.resultsTableLabels.headerType}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='toId'
                     export={ false }
                     dataSort={ true }
-                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerKey}</TableHeaderColumn>
+                >{this.props.resultsTableLabels.headerToId}
+                </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='doc.value'
+                    dataField='tags'
+                    export={ false }
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerValue}</TableHeaderColumn>
+                >{this.props.resultsTableLabels.headerTags}
+                </TableHeaderColumn>
               </BootstrapTable>
             </div>
           </div>
@@ -701,7 +486,7 @@ export class Search extends React.Component {
   }
 }
 
-Search.propTypes = {
+SearchRelationships.propTypes = {
   restServer: React.PropTypes.string.isRequired
   , username: React.PropTypes.string.isRequired
   , password: React.PropTypes.string.isRequired
@@ -710,4 +495,4 @@ Search.propTypes = {
   , resultsTableLabels: React.PropTypes.object.isRequired
 };
 
-export default Search;
+export default SearchRelationships;

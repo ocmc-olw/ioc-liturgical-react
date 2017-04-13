@@ -1,5 +1,6 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
+import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import './css/Demo.css'; // important that you load this as the last css
 import RestServer from './helpers/restServer'
 
@@ -31,7 +32,8 @@ import {
   Labels,
   LiturgicalDayProperties,
   Login,
-  Search
+  SearchText,
+  SearchRelationships
 } from '../../src';
 import VersionNumbers from '../../src/helpers/VersionNumbers'
 
@@ -40,7 +42,7 @@ const languageChangeHandlerExample = "handleLanguageChange = (code) => {\nif (co
 const menuLanguageChangeExample = "<MenuItem eventKey={6.2} id=\"el\" onClick={this.handleLanguageChange}><Flag code=\"el\"/></MenuItem>";
 const localLanguageChangeHandlerExample = "handleLanguageChange = (event) => {\n  if (event.target.id) {\n    this.props.changeHandler(event.target.id);\n    event.preventDefault();\n  }\n};";
 const loginSample = "<Login\n\trestServer={this.state.restServer} // e.g. https://ioc-liturgical-ws.org/\n\tusername={this.state.username} // initially set to \"\"\n\tpassword={this.state.password} // initially set to \"\"\n\tloginCallback={this.handleLoginCallback}\n\tformPrompt={this.state.language.labels.pageLogin.prompt}\n\tformMsg={this.state.loginFormMsg} // initially set to \"\"\n />";
-const searchSample = "<Search\n restServer={this.state.restServer}\n username={this.state.username}\n password={this.state.password}\n callback={this.handleSearchCallback}\n searchLabels={this.state.language.labels.search}\n resultsTableLabels={this.state.language.labels.resultsTable}\n/>"
+const searchSample = "<SearchText\n restServer={this.state.restServer}\n username={this.state.username}\n password={this.state.password}\n callback={this.handleSearchCallback}\n searchLabels={this.state.language.labels.search}\n resultsTableLabels={this.state.language.labels.resultsTable}\n/>"
 const searchCallbackSample = "\nhandleSearchCallback(id, value) {\n\tif (id && id.length > 0) {\n\t\tthis.setState({\n\t\t\tsearching: false\n\t\t\t, data : {\n\t\t\t\t\"idReferredByText\": id,\n\t\t\t\t\"referredByText\": value\n\t\t\t}\n\t\t});\n\t}\n};";
 const loginCallbackSample = "handleLoginCallback(status, valid, username, password) {\n  // save the username and password regardless of status so it will not be erased when Login re-renders\n  this.setState({username: username, password: password});\n  if (valid) {\n    this.setState({authenticated: true, loginFormMsg: \"Login successful!\"});\n  } else {\n    this.setState({authenticated: false, loginFormMsg: \"Login failed\"});\n  }\n};"
 
@@ -63,11 +65,13 @@ class Demo extends React.Component {
         language: "en"
         , labels: {
           resultsTable: Labels.labels.en.resultsTable
+          , linkSearchResultsTable: Labels.labels.en.linkSearchResultsTable
           , header: Labels.labels.en.header
           , help: Labels.labels.en.help
           , pageAbout: Labels.labels.en.pageAbout
           , pageLogin: Labels.labels.en.pageLogin
           , search: Labels.labels.en.search
+          , searchLinks: Labels.labels.en.searchLinks
           , ldp: Labels.labels.en.ldp
         }
       }
@@ -88,6 +92,7 @@ class Demo extends React.Component {
     this.handleDomainSelectionCallback = this.handleDomainSelectionCallback.bind(this);
     this.handleLoginCallback = this.handleLoginCallback.bind(this);
     this.handleSearchCallback = this.handleSearchCallback.bind(this);
+    this.handleSearchLinksCallback = this.handleSearchLinksCallback.bind(this);
     this.handleLdpCallback = this.handleLdpCallback.bind(this);
     this.doNothingHandler = this.doNothingHandler.bind(this);
     this.handleSearchRequest = this.handleSearchRequest.bind(this);
@@ -104,11 +109,13 @@ class Demo extends React.Component {
           code: code
           , labels: {
             resultsTable: Labels.getResultsTableLabels(code)
+            , linkSearchResultsTable: Labels.getLinkSearchResultsTableLabels(code)
             , header: Labels.getHeaderLabels(code)
             , help: Labels.getHelpLabels(code)
             , pageAbout: Labels.getPageAboutLabels(code)
             , pageLogin: Labels.getPageLoginLabels(code)
             , search: Labels.getSearchLabels(code)
+            , searchLinks: Labels.getSearchLinksLabels(code)
             , ldp: Labels.getLdpLabels(code)
           }
         }
@@ -154,6 +161,10 @@ class Demo extends React.Component {
         }
       });
     }
+  };
+
+  handleSearchLinksCallback(id, value) {
+    // TODO
   };
 
   handleLdpCallback(value) {
@@ -468,7 +479,7 @@ class Demo extends React.Component {
                   <p>Use the Search component without a callback prop if all you want to do is give the user a means to
                     search the database, and the app does not need to know which doc the user selected from the search
                     results.</p>
-                  <Search
+                  <SearchText
                       restServer={this.state.restServer}
                       username={this.state.username}
                       password={this.state.password}
@@ -480,7 +491,7 @@ class Demo extends React.Component {
                   <p>Use the Search component with a callback prop if you are giving the user a means to search the
                     database in order to select a specific doc from the search results.</p>
                   {this.state.searching ?
-                      <Search
+                      <SearchText
                           restServer={this.state.restServer}
                           username={this.state.username}
                           password={this.state.password}
@@ -507,6 +518,17 @@ class Demo extends React.Component {
                       </FormGroup>
                   }
                 </Panel> {/* Select a Doc */}
+                <Panel header="Search Relationships" eventKey="5a">
+                  <p>Use the Search component relationships component to search properties of relationships between two docs.</p>
+                  <SearchRelationships
+                      restServer={this.state.restServer}
+                      username={this.state.username}
+                      password={this.state.password}
+//                      callback={this.handleSearchLinksCallback}
+                      searchLabels={this.state.language.labels.searchLinks}
+                      resultsTableLabels={this.state.language.labels.linkSearchResultsTable}
+                  />
+                </Panel> {/* Search */}
                 <Panel header="Code and Props" eventKey="searchCode">
                   <CodeExample
                       codeText={searchSample}

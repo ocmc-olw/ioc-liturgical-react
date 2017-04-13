@@ -11,6 +11,14 @@ const   labels = {
       , headerTopic: "Topic"
       , headerValue: "Value"
     }
+    , linkSearchResultsTable: {
+      filterPrompt: "type here to filter search results..."
+      , headerDomain: "Domain"
+      , headerFromId: "From (Topic)"
+      , headerType: "Type"
+      , headerToId: "To (Key)"
+      , headerTags: "Tags"
+    }
     , header: {
       about: "About"
       , browser: "Cypher"
@@ -190,6 +198,32 @@ const   labels = {
       , simple: "Simple Search"
       , close: "Close"
     }
+    , searchLinks: {
+      prompt: "enter a word or phrase"
+      , findWhereTypeIs: "Find link(s) where type is..."
+      , typeAny: "any"
+      , domainIs: "and the domain is..."
+      , propertyIs: "and the property is..."
+      , propertyTextIs: "and has this text..."
+      , matcherIs: "that matches..."
+      , matchesAtTheStart: "at the beginning"
+      , matchesAtTheEnd: "at the end"
+      , matchesAnywhere: "anywhere"
+      , matchesRegEx: "as a regular expression"
+      , msg1: "Important messages will appear here..."
+      , msg2: "searching..."
+      , msg3: "Found"
+      , msg4: "Links"
+      , msg5: "You can use the box below to filter the results."
+      , msg6: "To edit a link, click the radio button of the row you are interested in."
+      , pageTitle: "Search the Database for Links between Docs"
+      , resultLabel: "Search Result"
+      , close: "Close"
+      , has: "and has"
+      , tags: "of the these tags"
+      , typeAll: "all"
+      , tagsAny: "any"
+    }
     , ldp: {
       prompt: "Pick the calendar type and date for which you want to view Liturgical Day Properties..."
       , calendar: "Calendar"
@@ -204,6 +238,14 @@ const   labels = {
       , headerKey: "Κλειδί"
       , headerTopic: "Θέμα"
       , headerValue: "Τιμή"
+    }
+    , linkSearchResultsTable: {
+      filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
+      , headerDomain: "Τομέας"
+      , headerFromId: "Από (Θέμα)"
+      , headerType: "Τύπος"
+      , headerToId: "Προς (Κλειδί)"
+      , headerTags: "Ετικέτες"
     }
     , header: {
       about: "Σχετικά"
@@ -386,6 +428,31 @@ const   labels = {
       , simple: "Απλή αναζήτηση"
       , close: "Κλείστε"
     }
+    , searchLinks: {
+      prompt: "εισάγετε μία λέξη ή φράση"
+      , findWhereTypeIs: "Βρες σχέσεις όπου ο τύπος είναι..."
+      , docTypeAny: "οποιαδήποτε"
+      , propertyIs: "και η ιδιότητα είναι:"
+      , propertyTextIs: "και έχει αυτό το κείμενο..."
+      , matcherIs: "που ταιριάζει..."
+      , matchesAtTheStart: "στην αρχή"
+      , matchesAtTheEnd: "στο τέλος"
+      , matchesAnywhere: "παντού"
+      , matchesRegEx: "σαν ένα regular expression"
+      , msg1: "Σημαντικά μηνύματα θα εμφανίζονται εδώ..."
+      , msg2: "αναζήτηση..."
+      , msg3: "Βρέθηκε"
+      , msg4: "σχέσεις"
+      , msg5: "Μπορείτε να χρησιμοποιήσετε το παρακάτω πλαίσιο για να φιλτράρετε τα αποτελέσματα."
+      , msg6: "Για να επεξεργαστείτε μια σχέση, πατήστε το κουμπί της γραμμής που σας ενδιαφέρει."
+      , pageTitle: "Αναζητήστε τη βάση δεδομένων για τα κείμενα"
+      , resultLabel: "Αποτέλεσμα αναζήτησης"
+      , close: "Κλείστε"
+      , has: "και έχει"
+      , tags: "αυτές τις ετκέτες"
+      , tagsAll: "όλες"
+      , tagsAny: "οποιαδήποτε από"
+    }
     , ldp: {
       prompt: "Επιλέξτε τον τύπο ημερολογίου και ημερομηνιών από τον οποίο θέλετε να δείτε τα Λειτουργικά Θέματα των Ημερών..."
       , calendar: "Ημερολόγιο"
@@ -399,10 +466,12 @@ module.exports = {
   labels : labels
   , getAllLabels: (code) => { return labels[code];}
   , getResultsTableLabels: (code) => { return labels[code].resultsTable;}
+  , getLinkSearchResultsTableLabels: (code) => { return labels[code].linkSearchResultsTable;}
   , getHeaderLabels: (code) => { return labels[code].header;}
   , getHelpLabels: (code) => { return labels[code].help;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
   , getSearchLabels: (code) => { return labels[code].search;}
+  , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
 }

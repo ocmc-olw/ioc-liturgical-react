@@ -39,7 +39,7 @@ class DomainSelector extends React.Component {
       }
     };
     this.setState({serverNotCalled: false});
-    axios.get(this.props.restServer + server.getDbServerDropdownsApi(), config)
+    axios.get(this.props.restServer + server.getDbServerDropdownsSearchTextApi(), config)
         .then(response => {
           this.setState( { items: response.data.values[0].domains} );
         })

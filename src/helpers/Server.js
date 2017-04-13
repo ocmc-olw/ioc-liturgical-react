@@ -8,9 +8,11 @@ const ldpApi = "/ldp/api/v1/";
 const resources = "resources";
 const version = "info";
 const login = "login";
+const links = "links";
 const adminDomains = "misc/domains";
-const dbDropdowns = "dropdowns";
+const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownDomains = "dropdowns/domains";
+const dbDropdownsSearchRelationships = "dropdowns/relationships";
 const ldp = "ldp";
 
 module.exports = {
@@ -21,6 +23,8 @@ module.exports = {
   , getWsServerVersionApi: () => { return adminApi + version;}
   , getWsServerResourcesApi: () => { return adminApi + resources;}
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
-  , getDbServerDropdownsApi: () => {return dbApi + dbDropdowns;}
+  , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
+  , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}
+  , getDbServerLinksApi: () => {return dbApi + links;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
 }

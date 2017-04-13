@@ -450,6 +450,7 @@ class SearchOptions extends Component {
                     initialValue={this.state.docType}
                     resources={this.props.docTypes}
                     changeHandler={this.handleDocTypeChange}
+                    multiSelect={false}
                 />
               </div>
             </div>
@@ -461,6 +462,7 @@ class SearchOptions extends Component {
                     initialValue={this.state.domain}
                     resources={this.state.dropDownDomains.source}
                     changeHandler={this.handleDomainChange}
+                    multiSelect={false}
                 />
               </div>
             </div>
@@ -473,6 +475,7 @@ class SearchOptions extends Component {
                     initialValue={this.state.selectedBook}
                     resources={this.state.dropDownBooks.source}
                     changeHandler={this.handleBookChange}
+                    multiSelect={false}
                 />
               </div>
             </div>
@@ -485,6 +488,7 @@ class SearchOptions extends Component {
                     initialValue={this.state.selectedChapter}
                     resources={this.state.dropDownChapters.source}
                     changeHandler={this.handleChapterChange}
+                    multiSelect={false}
                 />
               </div>
             </div>
@@ -498,6 +502,7 @@ class SearchOptions extends Component {
                   initialValue={this.state.property}
                   resources={this.props.properties}
                   changeHandler={this.handlePropertyChange}
+                  multiSelect={false}
               />
               <form onSubmit={this.handleSubmit}>
                 <div className="control-label">{this.props.labels.propertyTextIs}</div>
@@ -518,6 +523,7 @@ class SearchOptions extends Component {
                   initialValue={this.state.matcher}
                   resources={this.props.matchers}
                   changeHandler={this.handleMatcherChange}
+                  multiSelect={false}
               />
             </div>
           </div>

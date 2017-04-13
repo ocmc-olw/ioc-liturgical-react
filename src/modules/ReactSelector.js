@@ -1,7 +1,6 @@
-import React from 'react';
+import React, {PropTypes} from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
-
 
 export class ReactSelector extends React.Component {
 
@@ -26,10 +25,18 @@ export class ReactSelector extends React.Component {
               value={this.state.value}
               options={this.props.resources}
               onChange={this.handleChange}
+              multi={this.props.multiSelect}
           />
         </div>
     )
   }
 }
+
+ReactSelector.propTypes = {
+  initialValue: PropTypes.string.isRequired
+  , resources: PropTypes.array.isRequired
+  , changeHandler: PropTypes.func.isRequired
+  , multiSelect: PropTypes.bool.isRequired
+};
 
 export default ReactSelector;

@@ -19,7 +19,7 @@ export class ModalCompareDocs extends React.Component {
       ,
       messageIcon: this.messageIcons.info
       ,
-      data: {values: [{"doc.id": "", "doc.value:": ""}]}
+      data: {values: [{"id": "", "value:": ""}]}
       ,
       options: {
         sizePerPage: 30
@@ -169,15 +169,15 @@ export class ModalCompareDocs extends React.Component {
   };
 
   handleRowSelect = (row, isSelected, e) => {
-    let idParts = row["doc.id"].split("~");
+    let idParts = row["id"].split("~");
     this.setState({
-      selectedId: row["doc.id"]
+      selectedId: row["id"]
       , selectedIdParts: [
         {key: "domain", label: idParts[0]},
         {key: "topic", label: idParts[1]},
         {key: "key", label: idParts[2]}
       ]
-      , selectedValue: row["doc.value"]
+      , selectedValue: row["value"]
     });
   }
 
@@ -207,16 +207,16 @@ export class ModalCompareDocs extends React.Component {
                   >
                     <TableHeaderColumn
                         isKey
-                        dataField='doc.id'
+                        dataField='id'
                         dataSort={ true }
                         hidden
                     >ID</TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField='doc.domain'
+                        dataField='library'
                         dataSort={ true }
                         width={this.state.idColumnSize}>Domain</TableHeaderColumn>
                     <TableHeaderColumn
-                        dataField='doc.value'
+                        dataField='value'
                         dataSort={ true }
                     >Value</TableHeaderColumn>
                   </BootstrapTable>
