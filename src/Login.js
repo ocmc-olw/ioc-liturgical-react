@@ -21,7 +21,7 @@ class Login extends React.Component {
         , password: formData.password
       }
     };
-    axios.get(this.props.restServer + server.getWsServerResourcesApi(), config)
+    axios.get(this.props.restServer + server.getWsServerResourcesApi() + "/*", config)
         .then(response => {
           auth.setCredentials(
               formData.username
@@ -32,7 +32,9 @@ class Login extends React.Component {
               response.status
               , true
               , formData.username
-              , formData.password);
+              , formData.password
+              , response.data
+          );
         })
         .catch( (error) => {
           auth.setCredentials(
@@ -44,7 +46,8 @@ class Login extends React.Component {
               error.message
               , false
               , formData.username
-              , formData.password);
+              , formData.password
+          );
         });
   }
 

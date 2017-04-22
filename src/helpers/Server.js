@@ -5,7 +5,7 @@
 const adminApi = "/admin/api/v1/";
 const dbApi = "/db/api/v1/";
 const ldpApi = "/ldp/api/v1/";
-const resources = "resources";
+const resources = "docs/new";
 const version = "info";
 const login = "login";
 const links = "links";
@@ -21,7 +21,7 @@ module.exports = {
   , getWsServerDbApi: () => { return dbApi;}
   , getWsServerLoginApi: () => { return adminApi + login;}
   , getWsServerVersionApi: () => { return adminApi + version;}
-  , getWsServerResourcesApi: () => { return adminApi + resources;}
+  , getWsServerResourcesApi: () => { return dbApi + resources;}
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
   , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
   , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}

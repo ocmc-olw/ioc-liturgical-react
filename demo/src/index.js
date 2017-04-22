@@ -61,6 +61,7 @@ class Demo extends React.Component {
       , username: ""
       , password: ""
       , authenticated: false
+      , forms: []
       , language: {
         language: "en"
         , labels: {
@@ -140,10 +141,28 @@ class Demo extends React.Component {
    * @param valid - boolean true if login was successful, false if not
    * @param username - the username the person entered into the login form - save to state
    * @param password - the password the person entered into the login form - save to state
+   * @param forms - an array of the forms used to create new items
    */
-  handleLoginCallback(status, valid, username, password) {
+  handleLoginCallback(
+      status
+      , valid
+      , username
+      , password
+      , forms
+  ) {
+    console.log(forms);
+    Object.keys(forms.valueSchemas).forEach(function(key,index) {
+      // key: the name of the object key
+      // index: the ordinal position of the key within the object
+      const theFormSchema = forms.valueSchemas[key];
+      console.log(key + ": " + theFormSchema.schema.title);
+    });
     // save the username and password regardless of status so it will not be erased when Login re-renders
-    this.setState({username: username, password: password});
+    this.setState({
+      username: username
+      , password: password
+      , forms: forms
+    });
     if (valid) {
       this.setState({authenticated: true, loginFormMsg: this.state.language.labels.pageLogin.good});
     } else {
