@@ -1,6 +1,7 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
+
 import './css/Demo.css'; // important that you load this as the last css
 import RestServer from './helpers/restServer'
 
@@ -24,17 +25,21 @@ import CodeExample from './helpers/CodeExample'
 import {render} from 'react-dom';
 
 import {
-  AboutDatabase,
-  Configuration,
-  DomainSelector,
-  Flag,
-  HelpSearch,
-  Labels,
-  LiturgicalDayProperties,
-  Login,
-  SearchText,
-  SearchRelationships
+  AboutDatabase
+  , Configuration
+  , DomainSelector
+  , Flag
+  , HelpSearch
+  , Labels
+  , LiturgicalDayProperties
+  , Login
+  , NewItem
+  , ParaRowTextEditor
+  , SearchOntology
+  , SearchText
+  , SearchRelationships
 } from '../../src';
+
 import VersionNumbers from '../../src/helpers/VersionNumbers'
 
 const initialStateExample = "this.state = {\n    restServer: \"https://ioc-liturgical-ws.org/\"\n    , username: \"\"\n    , password: \"\"\n    , authenticated: false\n    , language: {\n      language: \"en\"\n      , labels: {\n        , resultsTable: Labels.labels.en.resultsTable\n        , header: Labels.labels.en.header\n        , help: Labels.labels.en.help\n        , pageAbout: Labels.labels.en.pageAbout\n        , pageLogin: Labels.labels.en.pageLogin\n        , search: Labels.labels.en.search\n  }\n}\n};";
@@ -61,9 +66,12 @@ class Demo extends React.Component {
       , username: ""
       , password: ""
       , authenticated: false
-      , forms: []
+      , domains: {}
+      , formsDropdown: []
+      , formsValueSchemas: {}
+      , formsValues: []
       , language: {
-        language: "en"
+        code: "en"
         , labels: {
           resultsTable: Labels.labels.en.resultsTable
           , linkSearchResultsTable: Labels.labels.en.linkSearchResultsTable
@@ -73,6 +81,7 @@ class Demo extends React.Component {
           , pageLogin: Labels.labels.en.pageLogin
           , search: Labels.labels.en.search
           , searchLinks: Labels.labels.en.searchLinks
+          , searchOntology: Labels.labels.en.searchOntology
           , ldp: Labels.labels.en.ldp
         }
       }
@@ -83,6 +92,7 @@ class Demo extends React.Component {
       }
       , searching: false
       , selectedDomain: "Your selection will appear here:"
+      , translatedText: ""
     };
 
     // language change functions
@@ -93,8 +103,11 @@ class Demo extends React.Component {
     this.handleDomainSelectionCallback = this.handleDomainSelectionCallback.bind(this);
     this.handleLoginCallback = this.handleLoginCallback.bind(this);
     this.handleSearchCallback = this.handleSearchCallback.bind(this);
+    this.handleSearchOntologyCallback = this.handleSearchOntologyCallback.bind(this);
     this.handleSearchLinksCallback = this.handleSearchLinksCallback.bind(this);
     this.handleLdpCallback = this.handleLdpCallback.bind(this);
+    this.handleNewItemCallback = this.handleNewItemCallback.bind(this);
+    this.handleParallelTextEditorCallback = this.handleParallelTextEditorCallback.bind(this);
     this.doNothingHandler = this.doNothingHandler.bind(this);
     this.handleSearchRequest = this.handleSearchRequest.bind(this);
   }
@@ -117,6 +130,7 @@ class Demo extends React.Component {
             , pageLogin: Labels.getPageLoginLabels(code)
             , search: Labels.getSearchLabels(code)
             , searchLinks: Labels.getSearchLinksLabels(code)
+            , searchOntology: Labels.getSearchOntologyLabels(code)
             , ldp: Labels.getLdpLabels(code)
           }
         }
@@ -150,13 +164,6 @@ class Demo extends React.Component {
       , password
       , forms
   ) {
-    console.log(forms);
-    Object.keys(forms.valueSchemas).forEach(function(key,index) {
-      // key: the name of the object key
-      // index: the ordinal position of the key within the object
-      const theFormSchema = forms.valueSchemas[key];
-      console.log(key + ": " + theFormSchema.schema.title);
-    });
     // save the username and password regardless of status so it will not be erased when Login re-renders
     this.setState({
       username: username
@@ -164,9 +171,24 @@ class Demo extends React.Component {
       , forms: forms
     });
     if (valid) {
-      this.setState({authenticated: true, loginFormMsg: this.state.language.labels.pageLogin.good});
+      this.setState({
+        authenticated: true
+        , loginFormMsg: this.state.language.labels.pageLogin.good
+        , domains: forms.domains
+        , formsDropdown: forms.formsDropdown
+        , formsValueSchemas: forms.valueSchemas
+        , formsValues: forms.values
+        , ontologyDropdowns: forms.ontologyDropdowns
+      });
     } else {
-      this.setState({authenticated: false, loginFormMsg: this.state.language.labels.pageLogin.bad});
+      this.setState({
+        authenticated: false
+        , loginFormMsg: this.state.language.labels.pageLogin.bad
+        , domains: {}
+        , formsDropdown: []
+        , formsValueSchemas: {}
+        , formsValues: []
+      });
     }
   };
 
@@ -186,9 +208,26 @@ class Demo extends React.Component {
     // TODO
   };
 
-  handleLdpCallback(value) {
-    console.log(value);
+  handleSearchOntologyCallback(id, value) {
+    // TODO
   };
+
+  handleLdpCallback(value) {
+    // TODO
+  };
+
+  handleNewItemCallback(value) {
+    // TODO
+  };
+
+
+  handleParallelTextEditorCallback(value) {
+    console.log(value);
+    this.setState({
+      translatedText: value
+    });
+  };
+
 
   handleDomainSelectionCallback(id, description, domainObject) {
     this.setState({selectedDomain: "You selected: " + id + ": " + description});
@@ -494,7 +533,7 @@ class Demo extends React.Component {
                 can be used as a means for the user to look up a specific doc and let your app know which one he/she
                 selected.</p>
               <Accordion>
-                <Panel header="Search without a Callback" eventKey="4a">
+                <Panel header="Search Text without a Callback" eventKey="4a">
                   <p>Use the Search component without a callback prop if all you want to do is give the user a means to
                     search the database, and the app does not need to know which doc the user selected from the search
                     results.</p>
@@ -504,9 +543,10 @@ class Demo extends React.Component {
                       password={this.state.password}
                       searchLabels={this.state.language.labels.search}
                       resultsTableLabels={this.state.language.labels.resultsTable}
+                      initialDocType="Liturgical"
                   />
-                </Panel> {/* Search */}
-                <Panel header="Search with a Callback" eventKey="searchWithCallback">
+                </Panel> {/* Search Text without Callback*/}
+                <Panel header="Search Text with a Callback" eventKey="searchWithCallback">
                   <p>Use the Search component with a callback prop if you are giving the user a means to search the
                     database in order to select a specific doc from the search results.</p>
                   {this.state.searching ?
@@ -517,6 +557,7 @@ class Demo extends React.Component {
                           callback={this.handleSearchCallback}
                           searchLabels={this.state.language.labels.search}
                           resultsTableLabels={this.state.language.labels.resultsTable}
+                          initialDocType="Liturgical"
                       />
                       :
                       <FormGroup>
@@ -536,7 +577,7 @@ class Demo extends React.Component {
                         <Button onClick={this.handleSearchRequest} bsStyle="success">Search</Button>
                       </FormGroup>
                   }
-                </Panel> {/* Select a Doc */}
+                </Panel> {/* Search Text with a Callback */}
                 <Panel header="Search Relationships" eventKey="5a">
                   <p>Use the Search component relationships component to search properties of relationships between two docs.</p>
                   <SearchRelationships
@@ -547,7 +588,18 @@ class Demo extends React.Component {
                       searchLabels={this.state.language.labels.searchLinks}
                       resultsTableLabels={this.state.language.labels.linkSearchResultsTable}
                   />
-                </Panel> {/* Search */}
+                </Panel> {/* Search Relationships */}
+                <Panel header="Search Ontology Instances" eventKey="searchOntology">
+                  <p>Use the Search Ontology Component to search for instances of Ontology entries.</p>
+                  <SearchOntology
+                      restServer={this.state.restServer}
+                      username={this.state.username}
+                      password={this.state.password}
+                      callback={this.handleSearchOntologyCallback}
+                      languageCode={this.state.language.code}
+                      editor={true}
+                  />
+                </Panel> {/* Search Relationships */}
                 <Panel header="Code and Props" eventKey="searchCode">
                   <CodeExample
                       codeText={searchSample}
@@ -648,6 +700,48 @@ class Demo extends React.Component {
             <Panel header="About the Database" eventKey="aboutdb">
               <AboutDatabase labels={this.state.language.labels.pageAbout}/>
             </Panel> {/* About Database */}
+            <Panel header="Add a New Item" eventKey="newitem">
+              { this.state.authenticated ?
+                  <p>Add a New Item.</p>
+                  :
+                  <p>Add a New Item.  You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated &&
+              <NewItem
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  domains={this.state.domains}
+                  ontologyDropdowns={this.state.ontologyDropdowns}
+                  formsDropdown={this.state.formsDropdown}
+                  formsSchemas={this.state.formsValueSchemas}
+                  forms={this.state.formsValues}
+                  changeHandler={this.handleNewItemCallback}
+              />
+              }
+            </Panel> {/* New Item */}
+            <Panel header="Parallel Row Text Editor" eventKey="prte">
+              { this.state.authenticated ?
+                  <p>Parallel Row Text Editor. Shows source text and existing translations as rows in a table.  The user can enter his/her own translation.</p>
+                  :
+                  <p>Parallel Row Text Editor.  You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated &&
+              <ParaRowTextEditor
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  docType="Liturgical"
+                  idLibrary="en_us_dedes"
+                  idTopic="hi.s01"
+                  idKey="hiVE.Key0108.text"
+                  value={this.state.translatedText}
+                  callback={this.handleParallelTextEditorCallback}
+              />
+              }
+            </Panel> {/* TDB */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

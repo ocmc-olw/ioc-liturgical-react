@@ -1,21 +1,34 @@
 import React from 'react';
-import {Button, Modal} from 'react-bootstrap';
+
+import {
+  Button
+  , ControlLabel
+  , FormControl
+  , FormGroup
+  , Well
+} from 'react-bootstrap';
+
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
-import Server from '../helpers/Server';
+import Server from './helpers/Server';
+import Labels from './Labels';
 
 /**
  * Display modal content.
  */
-export class ModalCompareDocs extends React.Component {
+export class ParaRowTextEditor extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      showSearchResults: false
-      , message: this.props.labels.msg1
+      labels: {
+        thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
+        , search: Labels.getSearchLabels(this.props.languageCode)
+      }
+      , showSearchResults: false
+      , message: Labels.getSearchLabels(this.props.languageCode).msg1
       ,
       messageIcon: this.messageIcons.info
       ,
@@ -54,6 +67,7 @@ export class ModalCompareDocs extends React.Component {
       showIdPartSelector: false
       , showModalCompareDocs: false
       , idColumnSize: "80px"
+      , editorValue: ""
     }
 
     this.close = this.close.bind(this);
@@ -61,6 +75,8 @@ export class ModalCompareDocs extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
   };
 
   componentWillMount = () => {
@@ -72,15 +88,28 @@ export class ModalCompareDocs extends React.Component {
           , docProp: "id"
           , matcher: "rx"
           , query: ".*"
-          + this.props.selectedIdParts[1].label
+          + this.props.idTopic
           + "~.*"
-          + this.props.selectedIdParts[2].label
+          + this.props.idKey
         }
         , function () {
           this.fetchData();
         }
     );
 
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+          labels: {
+            thisClass: Labels.getComponentParaTextEditorLabels(nextProps.languageCode)
+            , search: Labels.getSearchLabels(nextProps.languageCode)
+          }
+        }
+        , function () {
+          this.fetchData();
+        }
+    );
   }
 
   /**
@@ -107,7 +136,7 @@ export class ModalCompareDocs extends React.Component {
   }
 
   fetchData() {
-    this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
+    this.setState({message: this.state.labels.search.msg2, messageIcon: this.messageIcons.info});
     let config = {
       auth: {
         username: this.props.username
@@ -133,11 +162,11 @@ export class ModalCompareDocs extends React.Component {
           );
           let message = "No docs found...";
           if (response.data.valueCount && response.data.valueCount > 0) {
-            message = this.props.labels.msg3
+            message = this.state.labels.search.msg3
                 + " "
                 + response.data.valueCount
                 + " "
-                + this.props.labels.msg4
+                + this.state.labels.search.msg4
                 + "."
           }
           this.setState({
@@ -185,21 +214,26 @@ export class ModalCompareDocs extends React.Component {
     });
   }
 
+  handleEditorChange = (event) => {
+    this.setState({
+      editorValue: event.target.value
+    });
+  }
+
+  handleSubmit = () => {
+    this.props.callback(this.state.editorValue);
+  }
+
   render() {
     return (
         <div>
-          <Modal show={this.state.showModal} onHide={this.close}>
-            <Modal.Header closeButton>
-              <Modal.Title>{this.props.title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              <div>{this.props.labels.resultLabel}: <span className="App-message"><FontAwesome
-                  name={this.state.messageIcon}/>{this.state.message}</span>
-              </div>
-              {this.state.showSelectionButtons && this.getSelectedDocOptions()}
               {this.state.showSearchResults &&
               <div className="App-search-results">
+                <ControlLabel>
+                  {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
+                </ControlLabel>
                 <div className="row">
+                  <Well>
                   <BootstrapTable
                       data={this.state.data.values}
                       trClassName={"App-data-tr"}
@@ -207,7 +241,6 @@ export class ModalCompareDocs extends React.Component {
                       hover
                       pagination
                       options={ this.state.options }
-                      selectRow={ this.state.selectRow }
                   >
                     <TableHeaderColumn
                         isKey
@@ -224,28 +257,51 @@ export class ModalCompareDocs extends React.Component {
                         dataSort={ true }
                     >Value</TableHeaderColumn>
                   </BootstrapTable>
+                  </Well>
+                </div>
+                <div>
+                  <Well>
+                    <form onSubmit={this.handleSubmit}>
+                        <FormGroup controlId="formControlsTextarea">
+                          <ControlLabel>
+                            {this.state.labels.thisClass.yourTranslation
+                            + " (" + this.props.idLibrary + ")"}
+                            </ControlLabel>
+                          <div>
+                          <textarea
+                              rows="4"
+                              cols="100"
+                              spellCheck="true"
+                              value={this.state.editorValue}
+                              onChange={this.handleEditorChange}
+                          >
+                          </textarea>
+                          </div>
+                        </FormGroup>
+                        <Button type="submit" bsStyle="primary">
+                          {this.state.labels.thisClass.submit}
+                        </Button>
+                      </form>
+                  </Well>
                 </div>
               </div>
               }
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.close}>{this.props.labels.close}</Button>
-            </Modal.Footer>
-          </Modal>
         </div>
     );
   }
 }
-ModalCompareDocs.propTypes = {
+
+ParaRowTextEditor.propTypes = {
   restServer: React.PropTypes.string.isRequired
   , username: React.PropTypes.string.isRequired
   , password: React.PropTypes.string.isRequired
-  , onClose: React.PropTypes.func.isRequired
-  , showModal: React.PropTypes.bool.isRequired
-  , title: React.PropTypes.string.isRequired
+  , languageCode: React.PropTypes.string.isRequired
   , docType: React.PropTypes.string.isRequired
-  , selectedIdParts: React.PropTypes.array.isRequired
-  , labels: React.PropTypes.object.isRequired
+  , idLibrary: React.PropTypes.string.isRequired
+  , idTopic: React.PropTypes.string.isRequired
+  , idKey: React.PropTypes.string.isRequired
+  , value: React.PropTypes.string.isRequired
+  , callback: React.PropTypes.func.isRequired
 };
-export default ModalCompareDocs;
+export default ParaRowTextEditor;
 

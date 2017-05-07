@@ -21,7 +21,13 @@ class Login extends React.Component {
         , password: formData.password
       }
     };
-    axios.get(this.props.restServer + server.getWsServerResourcesApi() + "/*", config)
+    axios.get(
+        this.props.restServer
+        + server.getWsServerResourcesApi()
+        + "/"
+        + formData.username
+        , config
+    )
         .then(response => {
           auth.setCredentials(
               formData.username
@@ -56,7 +62,7 @@ class Login extends React.Component {
         .then(response => {
           this.setState( { data: response.data , path: this.props.path} );
         })
-        .catch( (error) => {
+        .catch(error => {
           this.setState( { data: error.message, path: this.props.path });
           this.props.loginCallback(
               error.message
@@ -100,10 +106,6 @@ class Login extends React.Component {
   }
 }
 
-/**
- * Need a router callback
- * Need a callback to set credentials
- */
 
 Login.propTypes = {
   restServer: React.PropTypes.string.isRequired

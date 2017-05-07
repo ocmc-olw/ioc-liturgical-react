@@ -11,6 +11,12 @@ export class ReactSelector extends React.Component {
     };
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      value: nextProps.initialValue
+    });
+  }
+
   handleChange = (selection) => {
     this.props.changeHandler(selection, true);
     this.setState({ value: selection });

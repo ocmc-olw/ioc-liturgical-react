@@ -1,8 +1,9 @@
 import React from 'react';
 import {Button, Modal} from 'react-bootstrap';
 import axios from 'axios';
-import Server from '../helpers/Server';
+import Labels from '../Labels';
 import Form from "react-jsonschema-form";
+import FontAwesome from 'react-fontawesome';
 
 /**
  * Display modal content.
@@ -17,12 +18,13 @@ export class ModalSchemaBasedEditor extends React.Component {
       , schema: {}
       , uiSchema: {}
       , formData: {}
-      , message: this.props.labels.msg1
+      , message: this.props.searchLabels.msg1
       , messageIcon: this.messageIcons.info
       , data: {values: [{"id": "", "value:": ""}]}
       , showForm: false
       , topicText: ""
       , keyText: ""
+      , httpCodeLabels: Labels.getHttpCodeLabels(this.props.languageCode)
     }
 
     this.close = this.close.bind(this);
@@ -42,6 +44,12 @@ export class ModalSchemaBasedEditor extends React.Component {
         }
     );
 
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+     httpCodeLabels: Labels.getHttpCodeLabels(this.props.languageCode)
+    });
   }
 
   /**
@@ -68,7 +76,10 @@ export class ModalSchemaBasedEditor extends React.Component {
   }
 
   fetchData() {
-    this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
+    this.setState({
+      message: this.props.searchLabels.msg2
+      , messageIcon: this.messageIcons.info
+    });
     let config = {
       auth: {
         username: this.props.username
@@ -97,6 +108,8 @@ export class ModalSchemaBasedEditor extends React.Component {
                   , uiSchema:dataUiSchema
                   , formData: data
                   , showForm: true
+                  , message: this.props.searchLabels.msg3
+                  , messageIcon: this.messageIcons.info
                 }
             );
           }
@@ -184,10 +197,20 @@ export class ModalSchemaBasedEditor extends React.Component {
                     uiSchema={this.state.uiSchema}
                     formData={this.state.formData}
                     onSubmit={this.onSubmit}
-              />
+              >
+                <div>
+                  <Button bsStyle="primary" type="submit">{this.props.searchLabels.submit}</Button>
+                </div>
+              </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.close}>{this.props.labels.close}</Button>
+              <div>
+                <span className="App-message"><FontAwesome
+                  name={this.state.messageIcon}/>
+                  {this.state.message}
+                  </span>
+              </div>
+              <Button onClick={this.close}>{this.props.searchLabels.close}</Button>
             </Modal.Footer>
           </Modal>
         </div>
@@ -205,7 +228,8 @@ ModalSchemaBasedEditor.propTypes = {
   , idLibrary: React.PropTypes.string.isRequired
   , idTopic: React.PropTypes.string.isRequired
   , idKey: React.PropTypes.string.isRequired
-  , labels: React.PropTypes.object.isRequired
+  , searchLabels: React.PropTypes.object.isRequired
+  , languageCode: React.PropTypes.string.isRequired
 };
 export default ModalSchemaBasedEditor;
 

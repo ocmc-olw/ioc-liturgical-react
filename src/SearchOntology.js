@@ -1,29 +1,35 @@
 import React from 'react';
 import axios from 'axios';
-import LinkSearchOptions from "./modules/LinkSearchOptions";
+import OntologySearchOptions from "./modules/OntologySearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
+import Labels from './Labels';
 
-export class SearchRelationships extends React.Component {
+export class SearchOntology extends React.Component {
 
   constructor(props) {
+
     super(props);
+
+    let theSearchLabels = Labels.getSearchOntologyLabels(this.props.languageCode);
     this.state = {
-      domain: "*"
+      searchLabels: theSearchLabels
+      , resultsTableLabels: Labels.getResultsTableLabels(this.props.languageCode)
+      , filterMessage: theSearchLabels.msg5
+      , selectMessage: theSearchLabels.msg6
+      , matcherTypes: [
+        {label: theSearchLabels.matchesAnywhere, value: "c"}
+        , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
+        , {label: theSearchLabels.matchesAtTheEnd, value: "ew"}
+        , {label: theSearchLabels.matchesRegEx, value: "rx"}
+      ]
+      , matcher: "c"
+      , genericType: "*"
       ,
       query: ""
-      ,
-      matcher: "c"
-      ,
-      matcherTypes: [
-        {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-        , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-        , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-        , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
-      ]
       ,
       suggestedQuery: ""
       ,
@@ -44,10 +50,6 @@ export class SearchRelationships extends React.Component {
       searchFormToggle: this.messageIcons.toggleOff
       ,
       showSearchForm: true
-      ,
-      filterMessage: this.props.searchLabels.msg5
-      ,
-      selectMessage: this.props.searchLabels.msg6
       ,
       searchFormType: "simple"
       ,
@@ -102,7 +104,7 @@ export class SearchRelationships extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.props.searchLabels.msg1
+          message: this.state.searchLabels.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
@@ -114,13 +116,12 @@ export class SearchRelationships extends React.Component {
         , password: this.props.password
       }
     };
-    let path = this.props.restServer + Server.getDbServerDropdownsSearchRelationshipsApi();
+    let path = this.props.restServer + Server.getDbServerDropdownsSearchOntologyApi();
     axios.get(path, config)
         .then(response => {
           // literals used as keys to get data from the response
           let valueKey = "dropdown";
           let listKey = "typeList";
-          let libsKey = "typeLibraries";
           let propsKey = "typeProps";
           let tagsKey = "typeTags";
           let tagOperatorsKey = "tagOperators";
@@ -128,11 +129,10 @@ export class SearchRelationships extends React.Component {
           let values = response.data.values[0][valueKey];
           this.setState({
                 dropdowns: {
-                  linkTypes: values[listKey]
-                  , linkTypeLibraries: values[libsKey]
-                  , linkTypeProps: values[propsKey]
-                  , linkTypeTags: values[tagsKey]
-                  , linkTagOperators: values[tagOperatorsKey]
+                  types: values[listKey]
+                  , typeProps: values[propsKey]
+                  , typeTags: values[tagsKey]
+                  , tagOperators: values[tagOperatorsKey]
                   , loaded: true
                 }
               }
@@ -156,7 +156,19 @@ export class SearchRelationships extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
+    let theSearchLabels = Labels.getSearchOntologyLabels(nextProps.languageCode);
+
     this.setState({
+      searchLabels: theSearchLabels
+      , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
+      , filterMessage: theSearchLabels.msg5
+      , selectMessage: theSearchLabels.msg6
+      , matcherTypes: [
+        {label: theSearchLabels.matchesAnywhere, value: "c"}
+        , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
+        , {label: theSearchLabels.matchesAtTheEnd, value: "ew"}
+        , {label: theSearchLabels.matchesRegEx, value: "rx"}
+      ]
     });
   }
 
@@ -164,15 +176,14 @@ export class SearchRelationships extends React.Component {
     return (
             <div>
             {this.state.dropdowns ?
-                <LinkSearchOptions
-                    types={this.state.dropdowns.linkTypes}
-                    libraries={this.state.dropdowns.linkTypeLibraries}
-                    properties={this.state.dropdowns.linkTypeProps}
+                <OntologySearchOptions
+                    types={this.state.dropdowns.types}
+                    properties={this.state.dropdowns.typeProps}
                     matchers={this.getMatcherTypes()}
-                    tags={this.state.dropdowns.linkTypeTags}
-                    tagOperators={this.state.dropdowns.linkTagOperators}
+                    tags={this.state.dropdowns.typeTags}
+                    tagOperators={this.state.dropdowns.tagOperators}
                     handleSubmit={this.handleAdvancedSearchSubmit}
-                    labels={this.props.searchLabels}
+                    labels={this.state.searchLabels}
                 />
                 : "Loading dropdowns for search..."
             }
@@ -183,10 +194,10 @@ export class SearchRelationships extends React.Component {
   getMatcherTypes () {
     return (
         [
-            {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+            {label: this.state.searchLabels.matchesAnywhere, value: "c"}
+            , {label: this.state.searchLabels.matchesAtTheStart, value: "sw"}
+            , {label: this.state.searchLabels.matchesAtTheEnd, value: "ew"}
+            , {label: this.state.searchLabels.matchesRegEx, value: "rx"}
             ]
     )
   }
@@ -206,13 +217,13 @@ export class SearchRelationships extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedId}
               disabled
             />
-            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedValue}
@@ -231,7 +242,7 @@ export class SearchRelationships extends React.Component {
 
   handleAdvancedSearchSubmit = (
       type
-      , domain
+      , genericType
       , property
       , matcher
       , value
@@ -240,7 +251,7 @@ export class SearchRelationships extends React.Component {
   ) => {
     this.setState({
           docType: type
-          , domain: domain
+          , genericType: genericType
           , docProp: property
           , matcher: matcher
           , query: value
@@ -255,21 +266,27 @@ export class SearchRelationships extends React.Component {
 
   handleRowSelect = (row, isSelected, e) => {
     this.setState({
-      selectedId: row["library"] + "~" + row["fromId"] + "~" + row["toId"]
+      selectedId: row["id"]
       , selectedLibrary: row["library"]
-      , selectedTopic: row["fromId"]
-      , selectedKey: row["toId"]
-      , title: row["fromId"] + " " + row["type"] + " " + row["toId"]
+      , selectedTopic: row["topic"]
+      , selectedKey: row["key"]
+      , title: row["name"]
       , showIdPartSelector: true
-      , showModalCompareDocs: true
+      , showModalCompareDocs: this.props.editor
     });
   }
 
   showRowComparison = (id) => {
-    this.setState({
-      showModalCompareDocs: true
-      , selectedId: id
-    })
+    if (this.props.editor) {
+      this.setState({
+        showModalCompareDocs: true
+        , selectedId: id
+      })
+    } else {
+      this.setState({
+        selectedId: id
+      })
+    }
   }
 
   handleCloseDocComparison = (id, value) => {
@@ -290,7 +307,7 @@ export class SearchRelationships extends React.Component {
     return (
         <ModalSchemaBasedEditor
             restServer={this.props.restServer}
-            restPath={Server.getDbServerLinksApi()}
+            restPath={Server.getDbServerDocsApi()}
             username={this.props.username}
             password={this.props.password}
             showModal={this.state.showModalCompareDocs}
@@ -299,7 +316,8 @@ export class SearchRelationships extends React.Component {
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
             onClose={this.handleCloseDocComparison}
-            labels={this.props.searchLabels}
+            searchLabels={this.state.searchLabels}
+            languageCode={this.props.languageCode}
         />
     )
   }
@@ -341,7 +359,7 @@ export class SearchRelationships extends React.Component {
 
   fetchData(event) {
     this.setState({
-      message: this.props.searchLabels.msg2
+      message: this.state.searchLabels.msg2
       , messageIcon: this.messageIcons.info
     });
     let config = {
@@ -353,16 +371,17 @@ export class SearchRelationships extends React.Component {
 
     let parms =
             "?t=" + encodeURIComponent(this.state.docType)
-            + "&d=" + encodeURIComponent(this.state.domain)
+            + "&g=" + encodeURIComponent(this.state.genericType)
             + "&q=" + encodeURIComponent(this.state.query)
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)
             + "&l=" + encodeURIComponent(this.state.tags)
             + "&o=" + encodeURIComponent(this.state.tagOperator)
         ;
-    let path = this.props.restServer + Server.getDbServerLinksApi() + parms;
+    let path = this.props.restServer + Server.getDbServerOntologyApi() + parms;
     axios.get(path, config)
         .then(response => {
+          // response.data will contain: "id, library, topic, key, name, description, tags"
           this.setState({
                 data: response.data
               }
@@ -371,16 +390,16 @@ export class SearchRelationships extends React.Component {
           let message = "No docs found...";
           if (response.data.valueCount && response.data.valueCount > 0) {
             resultCount = response.data.valueCount;
-            message = this.props.searchLabels.msg3
+            message = this.state.searchLabels.msg3
                 + " "
                 + response.data.valueCount
                 + " "
-                + this.props.searchLabels.msg4
+                + this.state.searchLabels.msg4
                 + "."
           } else {
-            message = this.props.searchLabels.msg3
+            message = this.state.searchLabels.msg3
                 + " 0 "
-                + this.props.searchLabels.msg4
+                + this.state.searchLabels.msg4
                 + "."
           }
           this.setState({
@@ -405,7 +424,7 @@ export class SearchRelationships extends React.Component {
   render() {
     return (
         <div className="App-page App-search">
-          <h3>{this.props.searchLabels.pageTitle}</h3>
+          <h3>{this.state.searchLabels.pageTitle}</h3>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
@@ -415,12 +434,12 @@ export class SearchRelationships extends React.Component {
             </div>
           </div>
 
-          <div>{this.props.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.props.searchLabels.msg3} {this.state.resultCount} {this.props.searchLabels.msg4} </span>
+          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
+              name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} </span>
           </div>
           {this.state.showSearchResults &&
           <div>
-            {this.props.searchLabels.msg5} {this.props.searchLabels.msg6}
+            {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
           </div>
           }
           {this.state.showModalCompareDocs && this.getDocComparison()}
@@ -432,7 +451,7 @@ export class SearchRelationships extends React.Component {
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
-                  searchPlaceholder={this.props.resultsTableLabels.filterPrompt}
+                  searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -448,35 +467,35 @@ export class SearchRelationships extends React.Component {
                 >ID
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='library'
+                    dataField='topic'
                     dataSort={ true }
                     export={ false }
-                    tdClassname="tdDomain"
+                    tdClassname="tdTopic"
                     width={"10%"}
-                >{this.props.resultsTableLabels.headerDomain}
+                >{this.state.resultsTableLabels.headerTopic}
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='fromId'
+                    dataField='key'
                     dataSort={ true }
+                    tdClassname="tdKey"
+                >{this.state.resultsTableLabels.headerKey}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='name'
+                    dataSort={ true }
+                >{this.state.resultsTableLabels.headerName}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='description'
                     export={ false }
-                >{this.props.resultsTableLabels.headerFromId}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='type'
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerType}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='toId'
-                    export={ false }
-                    dataSort={ true }
-                >{this.props.resultsTableLabels.headerToId}
+                >{this.state.resultsTableLabels.headerDesc}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
                     export={ false }
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerTags}
+                >{this.state.resultsTableLabels.headerTags}
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>
@@ -487,13 +506,13 @@ export class SearchRelationships extends React.Component {
   }
 }
 
-SearchRelationships.propTypes = {
+SearchOntology.propTypes = {
   restServer: React.PropTypes.string.isRequired
   , username: React.PropTypes.string.isRequired
   , password: React.PropTypes.string.isRequired
   , callback: React.PropTypes.func
-  , searchLabels: React.PropTypes.object.isRequired
-  , resultsTableLabels: React.PropTypes.object.isRequired
+  , languageCode: React.PropTypes.string.isRequired
+  , editor: React.PropTypes.bool.isRequired
 };
 
-export default SearchRelationships;
+export default SearchOntology;

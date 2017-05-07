@@ -15,7 +15,7 @@ class SearchOptions extends Component {
     super(props);
 
     this.state = {
-      docType: "Liturgical"
+      docType: this.props.docType
       , domain: "*"
       , selectedBook: "*"
       , selectedChapter: "*"
@@ -92,6 +92,39 @@ class SearchOptions extends Component {
           })
         }
     )
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      docType: nextProps.docType
+      , domain: "*"
+      , selectedBook: "*"
+      , selectedChapter: "*"
+      , property: "nnp"
+      , matcher: "c"
+      , value: ""
+      , dropdowns: {Biblical: [], Liturgical: [], loaded: false}
+      , dropDownDomains: {
+        show: false
+        , msg: nextProps.labels.domainIs
+        , source: []
+        , initialValue: "*"
+      }
+      ,
+      dropDownBooks: {
+        show: true
+        , msg: nextProps.labels.bookIs
+        , source: []
+        , initialValue: "*"
+      }
+      ,
+      dropDownChapters: {
+        show: false
+        , msg: ""
+        , initialValue: "*"
+        , source: []
+      }
+    });
   }
 
   resetDropDownBooksState() {
@@ -517,7 +550,6 @@ class SearchOptions extends Component {
                         onClick={this.handleSubmit}
                         name={"search"}/>
                 </span>
-              </form>
               <ResourceSelector
                   title={this.props.labels.matcherIs}
                   initialValue={this.state.matcher}
@@ -525,6 +557,7 @@ class SearchOptions extends Component {
                   changeHandler={this.handleMatcherChange}
                   multiSelect={false}
               />
+              </form>
             </div>
           </div>
         </div>
@@ -533,7 +566,8 @@ class SearchOptions extends Component {
 }
 
 SearchOptions.propTypes = {
-  docTypes: PropTypes.array.isRequired
+  docType: PropTypes.string.isRequired
+  , docTypes: PropTypes.array.isRequired
   , dropDowns: PropTypes.object.isRequired
   , properties: PropTypes.array.isRequired
   , matchers: PropTypes.array.isRequired

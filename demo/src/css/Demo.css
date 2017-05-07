@@ -103,7 +103,7 @@ a.collapsed {
     color: black;
     background-color: white;
     height: auto;
-    width: 80%;
+    width: 76%;
     resize: vertical;
 }
 .App-search-by-id-parts-icon {
@@ -225,9 +225,11 @@ div.App-logo.navbar-header {
     color: #5bc0de;
 }
 .Select-control {
-    max-width: 90%;
+    max-width: 80%;
 }
 .App-data-tr {
     max-width: 90%;
 }
+
+textarea { resize: both; }
 

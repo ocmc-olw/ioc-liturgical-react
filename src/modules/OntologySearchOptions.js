@@ -2,26 +2,20 @@ import React, { Component , PropTypes} from 'react';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
 
-class LinkSearchOptions extends Component {
+class OntologySearchOptions extends Component {
 
   constructor(props) {
     super(props);
-
-    let initialType = "REFERS_TO_BIBLICAL_TEXT";
+    let initialType = "Human";
     this.state = {
       selectedType: initialType
-      , selectedLibrary: "*"
+      , selectedGenericType: "*"
       , selectedProperty: "*"
       , selectedMatcher: "c"
       , value: ""
       , selectedTagOperator: "any"
-      , selectedTags: []
+      , selectedTags: ""
       , tagData: []
-      , dropDownLibraries: {
-        msg: this.props.labels.domainIs
-        , source: this.props.libraries[initialType]
-        , initialValue: "*"
-      }
       , dropDownProperties: {
         msg: this.props.labels.domainIs
         , source: this.props.properties[initialType]
@@ -29,7 +23,7 @@ class LinkSearchOptions extends Component {
       }
     };
     this.handleDocTypeChange = this.handleDocTypeChange.bind(this);
-    this.handleDomainChange = this.handleDomainChange.bind(this);
+    this.handleGenericTypeChange = this.handleGenericTypeChange.bind(this);
     this.handlePropertyChange = this.handlePropertyChange.bind(this);
     this.handleMatcherChange = this.handleMatcherChange.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -50,11 +44,6 @@ class LinkSearchOptions extends Component {
     let type = selection["value"];
     this.setState({
       selectedType: type
-          , dropDownLibraries: {
-            msg: this.props.labels.domainIs
-            , source: this.props.libraries[type]
-            , initialValue: "*"
-          }
           , dropDownProperties: {
         msg: this.props.labels.domainIs
         , source: this.props.properties[type]
@@ -64,7 +53,16 @@ class LinkSearchOptions extends Component {
   };
 
   handlePropertyChange = (item) => {
-    this.setState({selectedProperty: item.value});
+    let newSelectedValue = this.state.value;
+
+    if (item.value.startsWith("*")) {
+      newSelectedValue = "";
+    }
+    this.setState({
+      selectedProperty: item.value
+      , value: newSelectedValue
+    }
+    );
   }
 
   handleMatcherChange = (item) => {
@@ -76,10 +74,7 @@ class LinkSearchOptions extends Component {
   }
 
   handleTagsSelection = (selection) => {
-    console.log("handleTagsSelection");
-    console.log(selection);
     let tags = selection.map(function(a) {return a.value;});
-    console.log(tags);
 
     this.setState({
           selectedTags: tags
@@ -88,7 +83,6 @@ class LinkSearchOptions extends Component {
   }
 
   handleTagOperatorChange = (selection) => {
-    console.log(selection["value"]);
     this.setState({
           selectedTagOperator: selection["value"]
         }
@@ -98,7 +92,7 @@ class LinkSearchOptions extends Component {
   handleSubmit = (event) => {
     this.props.handleSubmit(
         this.state.selectedType
-        , this.state.selectedLibrary
+        , this.state.selectedGenericType
         , this.state.selectedProperty
         , this.state.selectedMatcher
         , this.state.value
@@ -108,10 +102,10 @@ class LinkSearchOptions extends Component {
     event.preventDefault();
   }
 
-  handleDomainChange = (selection) => {
+  handleGenericTypeChange = (selection) => {
     this.setState(
         {
-          selectedLibrary: selection["value"]}
+          selectedGenericType: selection["value"]}
     );
   };
 
@@ -134,10 +128,10 @@ class LinkSearchOptions extends Component {
             <div className="row">
               <div className="col-sm-12 col-md-12 col-lg-12">
                 <ResourceSelector
-                    title={this.props.labels.domainIs}
-                    initialValue={this.state.selectedLibrary}
-                    resources={this.props.libraries[this.state.selectedType]}
-                    changeHandler={this.handleDomainChange}
+                    title={this.props.labels.findWhereGenericTypeIs}
+                    initialValue={this.state.selectedGenericType}
+                    resources={this.props.types}
+                    changeHandler={this.handleGenericTypeChange}
                     multiSelect={false}
                 />
               </div>
@@ -156,6 +150,7 @@ class LinkSearchOptions extends Component {
                 <div className="control-label">{this.props.labels.propertyTextIs}</div>
                 <input
                     type="text"
+                    value={this.state.value}
                     onChange={this.handleValueChange}
                     className="App-search-text-input"
                     name="search"/>
@@ -184,7 +179,7 @@ class LinkSearchOptions extends Component {
                 />
                 <ResourceSelector
                 title={this.props.labels.tags}
-                initialValue=""
+                initialValue={this.state.selectedTags}
                 resources={this.props.tags[this.state.selectedType]}
                 changeHandler={this.handleTagsSelection}
                 multiSelect={true}
@@ -198,9 +193,8 @@ class LinkSearchOptions extends Component {
   }
 }
 
-LinkSearchOptions.propTypes = {
+OntologySearchOptions.propTypes = {
   types: PropTypes.array.isRequired
-  , libraries: PropTypes.object.isRequired
   , properties: PropTypes.object.isRequired
   , matchers: PropTypes.array.isRequired
   , tags: PropTypes.object.isRequired
@@ -209,4 +203,4 @@ LinkSearchOptions.propTypes = {
   , labels: PropTypes.object.isRequired
 };
 
-export default LinkSearchOptions;
+export default OntologySearchOptions;

@@ -4740,6 +4740,12 @@ react-select@^1.0.0-rc.2:
     classnames "^2.2.4"
     react-input-autosize "^1.1.0"
 
+react-tinymce-input@^1.2.1:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/react-tinymce-input/-/react-tinymce-input-1.2.1.tgz#90c37ce4a680fb60f4129f8f84ef52ec70ead71c"
+  dependencies:
+    uuid "^2.0.1"
+
 react-transform-catch-errors@1.0.2:
   version "1.0.2"
   resolved "https://registry.yarnpkg.com/react-transform-catch-errors/-/react-transform-catch-errors-1.0.2.tgz#1b4d4a76e97271896fc16fe3086c793ec88a9eeb"
@@ -5455,6 +5461,10 @@ timers-browserify@^2.0.2:
   dependencies:
     setimmediate "^1.0.4"
 
+tinymce@4.6.0:
+  version "4.6.0"
+  resolved "https://registry.yarnpkg.com/tinymce/-/tinymce-4.6.0.tgz#35ceef19d34e88b29daf1a0c9fc075d5214f9a02"
+
 tmatch@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/tmatch/-/tmatch-2.0.1.tgz#0c56246f33f30da1b8d3d72895abaf16660f38cf"
@@ -5629,6 +5639,10 @@ utila@~0.4:
 utils-merge@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
+
+uuid@^2.0.1:
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
 uuid@^3.0.0:
   version "3.0.1"

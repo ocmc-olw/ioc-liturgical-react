@@ -16,8 +16,12 @@ const   labels = {
       , headerDomain: "Domain"
       , headerFromId: "From (Topic)"
       , headerType: "Type"
+      , headerTopic: "Topic"
       , headerToId: "To (Key)"
       , headerTags: "Tags"
+      , headerKey: "Key"
+      , headerName: "Name"
+      , headerDesc: "Description"
     }
     , header: {
       about: "About"
@@ -168,18 +172,127 @@ const   labels = {
     }
     , search: {
       advanced: "Advanced Search"
-      , prompt: "enter a word or phrase"
-      , findWhereTypeIs: "Find doc(s) where type is..."
-      , domainIs: "and the domain is..."
       , bookIs: "and the book is..."
-      , monthIs: "and the month is..."
-      , weekIs: "and the week is..."
-      , dayIs: "and the day is..."
       , chapterIs: "and the chapter is..."
-      , sectionIs: "and the section is..."
+      , close: "Close"
+      , creating: "Creating..."
+      , created: "Created"
+      , dayIs: "and the day is..."
+      , domainIs: "and the domain is..."
+      , exists: "already exists..."
+      , findWhereTypeIs: "Find doc(s) where type is..."
+      , IdParts: {
+        title: "Build the Parts of the ID"
+        , msg1: "All items in the database must have an identifier (ID).  An ID has three parts: a library, a topic, and a key. Depending on the type of item, you will need to either select or type in one or more parts of the ID.  Click the title below to build the ID parts."
+        , msg2: "Follow the instructions below to build the parts of the ID for this item..."
+        , topic: "Topic"
+        , key: "Key"
+        , BIBLICAL_CHAPTER_VERSE: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , ID_OF_SELECTED_BIBLICAL_VERSE:{
+          prompt: "Select the Biblical Verse..."
+          , topic: "Topic: ID of the Biblical Verse"
+          , topicValue: "Biblical Verse"
+          , key: "Key: ID of the Biblical Verse"
+          , keyValue: "Biblical Verse"
+        }
+        , ID_OF_SELECTED_LITURGICAL_TEXT: {
+          prompt: "Select the Liturgical text..."
+          , topic: "Topic: ID of the Liturgical Text"
+          , topicValue: "Liturgical Text"
+          , key: "Key: ID of the Liturgical Text"
+          , keyValue: "Liturgical Text"
+        }
+        , ID_OF_SELECTED_ONTOLOGY_INSTANCE: {
+          prompt: "Select the Ontology Item..."
+          , topic: "Topic: ID of Ontology Item"
+          , topicValue: "Ontology Item"
+          , key: "Key: ID of the Ontology Item"
+          , keyValue: "Ontology Item"
+        }
+        , KEY_FROM_ID_OF_SELECTED_BIBLICAL_VERSE: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: "Key: from the ID of the selected Biblical verse"
+          , keyValue: "Value of Selected Text"
+        }
+        , KEY_FROM_ID_OF_SELECTED_LITURGICAL_TEXT: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: "Key: from the ID of the selected Liturgical text"
+          , keyValue: "Value of Selected Text"
+        }
+        , ONTOLOGY_TOPIC: {
+          prompt: ""
+          , library: "Library:"
+          , topic: "Topic: Ontology Type"
+          , topicValue: ""
+          , key: "Key: Name"
+          , keyValue: ""
+        }
+        , TOPIC_FROM_ID_OF_SELECTED_BIBLICAL_VERSE: {
+          prompt: "Select the ID of the Biblical verse..."
+          , topic: "Topic: from the ID of the selected Biblical verse"
+          , topicValue: "Value of Selected Text"
+          , key: "Key: from the ID of the selected Biblical verse"
+          , keyValue: "Value of Selected Text"
+        }
+        , TOPIC_FROM_ID_OF_SELECTED_LITURGICAL_TEXT: {
+          prompt: "Select the ID of the Liturgical text..."
+          , topic: "Topic: from the ID of the selected Liturgical text"
+          , topicValue: "Value of Selected Text"
+          , key: "Key: from the ID of the selected Liturgical text"
+          , keyValue: "Value of Selected Text"
+        }
+        , USER_TEXT: {
+          prompt: "enter text here..."
+          , topic: "Topic: text that you enter"
+          , topicValue: ""
+          , key: "Key: text that you enter"
+          , keyValue: ""
+          , button: "Set "
+        }
+      }
+      , matcherIs: "that matches..."
+      , matchesAnywhere: "anywhere"
+      , matchesAtTheEnd: "at the end"
+      , matchesAtTheStart: "at the beginning"
+      , matchesRegEx: "as a regular expression"
       , modeIs: "and the mode is..."
-      , typeIs: "and the type is..."
+      , monthIs: "and the month is..."
+      , msg1: "Important messages will appear here..."
+      , msg2: "searching..."
+      , msg3: "Found"
+      , msg4: "Docs"
+      , msg5: "You can use the box below to filter the results."
+      , msg6: "To view docs with the same topic and key, click the radio button of the row you are interested in."
+      , pageTitle: "Search the Database"
+      , prompt: "enter a word or phrase"
+      , propertyIs: "and the property is..."
+      , propertyTextIs: "and has this text..."
+      , resultLabel: "Search Result"
+      , sectionIs: "and the section is..."
       , serviceIs: "and the service is..."
+      , selectedId: "ID of Selection"
+      , selectedValue: "Value of Selection"
+      , simple: "Simple Search"
+      , submit: "Submit"
+      , submitting: "Submitting..."
+      , typeIs: "and the type is..."
+      , weekIs: "and the week is..."
+    }
+    , searchOntology: {
+      prompt: "enter a word or phrase"
+      , findWhereTypeIs: "Find where entry type is..."
+      , findWhereGenericTypeIs: "and the generic type is..."
+      , typeAny: "any"
       , propertyIs: "and the property is..."
       , propertyTextIs: "and has this text..."
       , matcherIs: "that matches..."
@@ -190,13 +303,21 @@ const   labels = {
       , msg1: "Important messages will appear here..."
       , msg2: "searching..."
       , msg3: "Found"
-      , msg4: "Docs"
+      , msg4: "Ontology Entries"
       , msg5: "You can use the box below to filter the results."
-      , msg6: "To view docs with the same topic and key, click the radio button of the row you are interested in."
-      , pageTitle: "Search the Database"
+      , msg6: "To edit a link, click the radio button of the row you are interested in."
+      , pageTitle: "Search the Database for Ontology Entries"
       , resultLabel: "Search Result"
-      , simple: "Simple Search"
       , close: "Close"
+      , has: "and has"
+      , tags: "of the these tags"
+      , typeAll: "all"
+      , tagsAny: "any"
+      , creating: "Creating..."
+      , created: "Created"
+      , submit: "Submit"
+      , submitting: "Submitting..."
+      , exists: "already exists..."
     }
     , searchLinks: {
       prompt: "enter a word or phrase"
@@ -223,6 +344,11 @@ const   labels = {
       , tags: "of the these tags"
       , typeAll: "all"
       , tagsAny: "any"
+      , creating: "Creating..."
+      , created: "Created"
+      , submit: "Submit"
+      , submitting: "Submitting..."
+      , exists: "already exists..."
     }
     , ldp: {
       prompt: "Pick the calendar type and date for which you want to view Liturgical Day Properties..."
@@ -230,8 +356,27 @@ const   labels = {
       , julian: "Julian (Old) Calendar"
       , gregorian: "Gregorian (New) Calendar"
     }
+    , httpCodes: {
+      200: "OK"
+      , 201: "Created"
+      , 400: "Bad request"
+      , 401: "Not authorized"
+      , 404: "Not found"
+      , 405: "Not authorized"
+      , 409: "Already exists"
+      , 500: "Server error"
+    }
+    , NewItem: {
+      paraTextPanelTitle: "View Parallel Texts While Translating"
+    }
+    , ParaTextEditor: {
+      paraTextPanelTitle: "View Parallel Texts While Translating"
+      , showingMatchesFor: "Showing matches for "
+      , yourTranslation: "Your Translation"
+      , submit: "Submit"
+    }
   }
-  , el: {
+    , el: {
     resultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
       , headerDomain: "Τομέας"
@@ -427,6 +572,123 @@ const   labels = {
       , resultLabel: "Αποτέλεσμα αναζήτησης"
       , simple: "Απλή αναζήτηση"
       , close: "Κλείστε"
+      , creating: "Δημιουργώντας το..."
+      , created: "Το δημιούργησε"
+      , submit: "Να Στέιλει"
+      , submitting: "Έστειλε..."
+      , exists: "υπάρχει ήδη..."
+      , selectedId: "ID της επιλογής"
+      , selectedValue: "Κείμενο της επιλογής"
+      , IdParts: {
+        title: "ID Parts Builder"
+        , msg1: "All items in the database must have an ID.  An ID has three parts: a library, a topic, and a key. Depending on the type of item, you will need to either select or type in one or more parts of the ID."
+        , msg2: "Follow the instructions below to build the parts of the ID for this item..."
+        , topic: "Topic"
+        , key: "Key"
+        , BIBLICAL_CHAPTER_VERSE: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , ID_OF_SELECTED_BIBLICAL_VERSE:{
+          prompt: "Select the Biblical Verse..."
+          , topic: "Topic: ID of the Biblical Verse"
+          , topicValue: "Biblical Verse"
+          , key: "Key: ID of the Biblical Verse"
+          , keyValue: "Biblical Verse"
+        }
+        , ID_OF_SELECTED_LITURGICAL_TEXT: {
+          prompt: "Select the Liturgical text..."
+          , topic: "Topic: ID of the Liturgical Text"
+          , topicValue: "Liturgical Text"
+          , key: "Key: ID of the Liturgical Text"
+          , keyValue: "Liturgical Text"
+        }
+        , ID_OF_SELECTED_ONTOLOGY_INSTANCE: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , KEY_FROM_ID_OF_SELECTED_BIBLICAL_VERSE: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , KEY_FROM_ID_OF_SELECTED_LITURGICAL_TEXT: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , ONTOLOGY_TOPIC: {
+          prompt: ""
+          , library: "Library:"
+          , topic: "Topic: Ontology Type"
+          , topicValue: ""
+          , key: "Key: Name"
+          , keyValue: ""
+        }
+        , TOPIC_FROM_ID_OF_SELECTED_BIBLICAL_VERSE: {
+          prompt: "Select the ID of the Biblical verse..."
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , TOPIC_FROM_ID_OF_SELECTED_LITURGICAL_TEXT: {
+          prompt: ""
+          , topic: ""
+          , topicValue: ""
+          , key: ""
+          , keyValue: ""
+        }
+        , USER_TEXT: {
+          prompt: "enter text here..."
+          , topic: "Topic: text that you enter"
+          , topicValue: ""
+          , key: "Key: text that you enter"
+          , keyValue: ""
+          , button: "Set "
+        }
+      }
+    }
+    , searchOntology: {
+      prompt: "εισάγετε μία λέξη ή φράση"
+      , findWhereTypeIs: "Βρες σχέσεις όπου το θέμα είναι..."
+      , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
+      , docTypeAny: "οποιαδήποτε"
+      , propertyIs: "και η ιδιότητα είναι:"
+      , propertyTextIs: "και έχει αυτό το κείμενο..."
+      , matcherIs: "που ταιριάζει..."
+      , matchesAtTheStart: "στην αρχή"
+      , matchesAtTheEnd: "στο τέλος"
+      , matchesAnywhere: "παντού"
+      , matchesRegEx: "σαν ένα regular expression"
+      , msg1: "Σημαντικά μηνύματα θα εμφανίζονται εδώ..."
+      , msg2: "αναζήτηση..."
+      , msg3: "Βρέθηκε"
+      , msg4: "σχέσεις"
+      , msg5: "Μπορείτε να χρησιμοποιήσετε το παρακάτω πλαίσιο για να φιλτράρετε τα αποτελέσματα."
+      , msg6: "Για να επεξεργαστείτε μια σχέση, πατήστε το κουμπί της γραμμής που σας ενδιαφέρει."
+      , pageTitle: "Αναζητήστε τη βάση δεδομένων για τα Οντολογικά Θέματα"
+      , resultLabel: "Αποτέλεσμα αναζήτησης"
+      , close: "Κλείστε"
+      , has: "και έχει"
+      , tags: "αυτές τις ετκέτες"
+      , tagsAll: "όλες"
+      , tagsAny: "οποιαδήποτε από"
+      , creating: "Δημιουργώντας το..."
+      , created: "Το δημιούργησε"
+      , submit: "Να Στέιλει"
+      , submitting: "Έστειλε..."
+      , exists: "υπάρχει ήδη..."
     }
     , searchLinks: {
       prompt: "εισάγετε μία λέξη ή φράση"
@@ -452,12 +714,36 @@ const   labels = {
       , tags: "αυτές τις ετκέτες"
       , tagsAll: "όλες"
       , tagsAny: "οποιαδήποτε από"
+      , creating: "Δημιουργώντας το..."
+      , created: "Το δημιούργησε"
+      , submit: "Να Στέιλει"
+      , submitting: "Έστειλε..."
+      , exists: "υπάρχει ήδη..."
     }
     , ldp: {
       prompt: "Επιλέξτε τον τύπο ημερολογίου και ημερομηνιών από τον οποίο θέλετε να δείτε τα Λειτουργικά Θέματα των Ημερών..."
       , calendar: "Ημερολόγιο"
       , julian: "Ιουλιανό ( Παλιό) Ημερολόγιο"
       , gregorian: "Γρηγοριανό (Νέο) Ημερολόγιο"
+    }
+    , httpCodes: {
+      200: "OK"
+      , 201: "Created"
+      , 400: "Bad request"
+      , 401: "Not authorized"
+      , 404: "Not found"
+      , 405: "Not authorized"
+      , 409: "Already exists"
+      , 500: "Server error"
+    }
+    , NewItem: {
+      paraTextPanelTitle: "View Parallel Texts While Translating"
+    }
+    , ParaTextEditor: {
+      paraTextPanelTitle: "View Parallel Texts While Translating"
+      , showingMatchesFor: "Showing matches for "
+      , yourTranslation: "Your Translation"
+      , submit: "Submit"
     }
   }
 }
@@ -469,9 +755,21 @@ module.exports = {
   , getLinkSearchResultsTableLabels: (code) => { return labels[code].linkSearchResultsTable;}
   , getHeaderLabels: (code) => { return labels[code].header;}
   , getHelpLabels: (code) => { return labels[code].help;}
+  , getComponentNewItemLabels: (code) => { return labels[code].NewItem;}
+  , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
   , getSearchLabels: (code) => { return labels[code].search;}
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
+  , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
+  , getHttpCodeLabels: (code) => { return labels[code].httpCodes;}
+  , getHttpMessage: (languageCode, errorCode, errorMessage) => {
+    if (labels[languageCode].httpCodes[errorCode]) {
+      message = labels[languageCode].httpCodes[errorCode];
+    } else {
+      message = errorMessage;
+    }
+    return message;
+  }
 }

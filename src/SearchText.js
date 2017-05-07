@@ -4,7 +4,16 @@ import SearchOptionsAdvanced from "./modules/SearchOptionsAdvanced";
 import SearchOptionsSimple from "./modules/SearchOptionsSimple";
 import ModalCompareDocs from './modules/ModalCompareDocs';
 import FontAwesome from 'react-fontawesome';
-import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
+import {
+  Button
+  , ButtonGroup
+  , ControlLabel
+  , FormControl
+  , FormGroup
+  , Panel
+  , PanelGroup
+  , Well
+} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 
@@ -13,7 +22,7 @@ export class Search extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      docType: "Liturgical",
+      docType: this.props.initialDocType,
       docTypes: [
         {label: "All", value: "all"}
         , {label: "Biblical", value: "Biblical"}
@@ -193,6 +202,19 @@ export class Search extends React.Component {
     }
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      docType: nextProps.initialDocType,
+      matcherTypes: [
+        {label: nextProps.searchLabels.matchesAnywhere, value: "c"}
+        , {label: nextProps.searchLabels.matchesAtTheStart, value: "sw"}
+        , {label: nextProps.searchLabels.matchesAtTheEnd, value: "ew"}
+        , {label: nextProps.searchLabels.matchesRegEx, value: "rx"}
+      ]
+    });
+  }
+
+
   toggleSearchForm = () => {
     let showing = this.state.searchFormType;
     let searchFormToggleIcon;
@@ -281,30 +303,49 @@ export class Search extends React.Component {
     }
   }
 
-  getSearchAccordion() {
-    return (
-        <PanelGroup defaultActiveKey="1" accordion>
-          <Panel  className="App-search-panel" header={this.props.searchLabels.simple} eventKey="1">
-            <SearchOptionsSimple
-                valueTitle=""
-                placeholder={this.props.searchLabels.prompt}
-                handleSubmit={this.handleSimpleSearchSubmit}
-            />
-          </Panel>
-          <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
-            {this.state.dropdowns ?
-                <SearchOptionsAdvanced
-                    docTypes={this.state.docTypes}
-                    dropDowns={this.state.dropdowns}
-                    properties={this.state.propertyTypes}
-                    matchers={this.getMatcherTypes()}
-                    handleSubmit={this.handleAdvancedSearchSubmit}
-                    labels={this.props.searchLabels}
-                />
-                : "Loading dropdowns for advanced search..."}
-          </Panel>
-        </PanelGroup>
-    );
+  getSearchAccordion(type) {
+    if (this.props.callback) {
+      return (
+            <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
+              {this.state.dropdowns ?
+                  <SearchOptionsAdvanced
+                      docType={this.state.docType}
+                      docTypes={this.state.docTypes}
+                      dropDowns={this.state.dropdowns}
+                      properties={this.state.propertyTypes}
+                      matchers={this.getMatcherTypes()}
+                      handleSubmit={this.handleAdvancedSearchSubmit}
+                      labels={this.props.searchLabels}
+                  />
+                  : "Loading dropdowns for advanced search..."}
+            </Panel>
+      );
+    } else {
+      return (
+          <PanelGroup defaultActiveKey="1" accordion>
+            <Panel  className="App-search-panel" header={this.props.searchLabels.simple} eventKey="1">
+              <SearchOptionsSimple
+                  valueTitle=""
+                  placeholder={this.props.searchLabels.prompt}
+                  handleSubmit={this.handleSimpleSearchSubmit}
+              />
+            </Panel>
+            <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
+              {this.state.dropdowns ?
+                  <SearchOptionsAdvanced
+                      docType={this.state.docType}
+                      docTypes={this.state.docTypes}
+                      dropDowns={this.state.dropdowns}
+                      properties={this.state.propertyTypes}
+                      matchers={this.getMatcherTypes()}
+                      handleSubmit={this.handleAdvancedSearchSubmit}
+                      labels={this.props.searchLabels}
+                  />
+                  : "Loading dropdowns for advanced search..."}
+            </Panel>
+          </PanelGroup>
+      );
+    }
   }
 
   getSearchForm(type) {
@@ -359,22 +400,24 @@ export class Search extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.props.searchLabels.selectedId}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedID}
               disabled
             />
-            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
-            <FormControl
-                type="text"
-                value={this.state.selectedValue}
-                disabled
-            />
+            <ControlLabel>{this.props.searchLabels.selectedValue}</ControlLabel>
+            <Well>{this.state.selectedValue}
+            </Well>
             <div>
           <ButtonGroup bsSize="xsmall">
             <Button onClick={this.handleCancelRequest}>Cancel</Button>
-            <Button onClick={this.handleDoneRequest}>Done</Button>
+            <Button
+                onClick={this.handleDoneRequest}
+                disabled={this.state.selectedID.length < 1}
+            >
+              Done
+            </Button>
           </ButtonGroup>
             </div>
           </FormGroup>
@@ -708,6 +751,7 @@ Search.propTypes = {
   , callback: React.PropTypes.func
   , searchLabels: React.PropTypes.object.isRequired
   , resultsTableLabels: React.PropTypes.object.isRequired
+  , initialDocType: React.PropTypes.string.isRequired
 };
 
 export default Search;
