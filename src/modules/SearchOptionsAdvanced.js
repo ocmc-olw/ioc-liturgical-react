@@ -13,7 +13,6 @@ class SearchOptions extends Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       docType: this.props.docType
       , domain: "*"
@@ -24,7 +23,7 @@ class SearchOptions extends Component {
       , value: ""
       , dropdowns: {Biblical: [], Liturgical: [], loaded: false}
       , dropDownDomains: {
-        show: false
+        show: true
         , msg: this.props.labels.domainIs
         , source: []
         , initialValue: "*"
@@ -84,47 +83,45 @@ class SearchOptions extends Component {
               , topics: this.props.dropDowns.Liturgical.topics
             }
             , loaded: true
-          }
-        }
-        , function () {
+        } , function () {
           this.handleDocTypeChange({
-            value: "Liturgical"
+            value: this.props.docType
           })
         }
+        }
+
     )
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({
-      docType: nextProps.docType
-      , domain: "*"
-      , selectedBook: "*"
-      , selectedChapter: "*"
-      , property: "nnp"
-      , matcher: "c"
-      , value: ""
-      , dropdowns: {Biblical: [], Liturgical: [], loaded: false}
-      , dropDownDomains: {
-        show: false
-        , msg: nextProps.labels.domainIs
-        , source: []
-        , initialValue: "*"
-      }
-      ,
-      dropDownBooks: {
-        show: true
-        , msg: nextProps.labels.bookIs
-        , source: []
-        , initialValue: "*"
-      }
-      ,
-      dropDownChapters: {
-        show: false
-        , msg: ""
-        , initialValue: "*"
-        , source: []
-      }
-    });
+
+    this.setState(
+        {
+          dropdowns: {
+            Biblical: {
+              all: {
+                books: nextProps.dropDowns.Biblical.all.books
+                , chapters: nextProps.dropDowns.Biblical.all.chapters
+              }
+              , domains: nextProps.dropDowns.Biblical.domains
+              , topics: nextProps.dropDowns.Biblical.topics
+            }
+            , Liturgical: {
+              all: {
+                books: nextProps.dropDowns.Liturgical.all.books
+              }
+              , domains: nextProps.dropDowns.Liturgical.domains
+              , topics: nextProps.dropDowns.Liturgical.topics
+            }
+            , loaded: true
+          }
+        }
+        , function () {
+          this.handleDocTypeChange({
+            value: nextProps.docType
+          })
+        }
+    )
   }
 
   resetDropDownBooksState() {
@@ -147,8 +144,6 @@ class SearchOptions extends Component {
       , selectedBook: "*"
       , selectedChapter: "*"
     }, this.cascadeDocTypeChange(selection["value"]));
-//      this.setGenericBookDropdown(selection["value"]);
-//      this.setGenericChaptersDropdown(selection["value"]);
   };
 
   cascadeDocTypeChange(selection) {
@@ -480,7 +475,7 @@ class SearchOptions extends Component {
               <div className="col-sm-12 col-md-12 col-lg-12">
                 <ResourceSelector
                     title={this.props.labels.findWhereTypeIs}
-                    initialValue={this.state.docType}
+                    initialValue={this.props.docType}
                     resources={this.props.docTypes}
                     changeHandler={this.handleDocTypeChange}
                     multiSelect={false}
@@ -543,7 +538,9 @@ class SearchOptions extends Component {
                     type="text"
                     onChange={this.handleValueChange}
                     className="App-search-text-input"
-                    name="search"/>
+                    name="search"
+                    value={this.state.value}
+                />
                 <span className="App-text-search-icon" >
                     <FontAwesome
                         type="submit"

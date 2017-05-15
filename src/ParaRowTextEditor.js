@@ -68,6 +68,10 @@ export class ParaRowTextEditor extends React.Component {
       , showModalCompareDocs: false
       , idColumnSize: "80px"
       , editorValue: ""
+      , currentDocType: this.props.docType
+      , currentIdLibrary: this.props.idLibrary
+      , currentIdTopic: this.props.idTopic
+      , currentIdKey: this.props.idKey
     }
 
     this.close = this.close.bind(this);
@@ -77,6 +81,7 @@ export class ParaRowTextEditor extends React.Component {
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePropsChange = this.handlePropsChange.bind(this);
   };
 
   componentWillMount = () => {
@@ -107,9 +112,25 @@ export class ParaRowTextEditor extends React.Component {
           }
         }
         , function () {
-          this.fetchData();
+          this.handlePropsChange();
         }
     );
+  }
+
+  /**
+   * Because we are passing back the value each time it changes,
+   * componentWillReceiveProps keeps getting called.
+   * We don't want that to result in calling fetchData unless
+   * the docType, library, topic, or key changed.
+   */
+  handlePropsChange = () => {
+    if (this.state.currentDocType !== this.props.docType
+      || this.state.currentIdLibrary !== this.props.idLibrary
+        || this.state.currentIdTopic !== this.props.idTopic
+        || this.state.currentIdKey !== this.props.idKey
+    ) {
+      this.fetchData();
+    }
   }
 
   /**
@@ -218,10 +239,15 @@ export class ParaRowTextEditor extends React.Component {
     this.setState({
       editorValue: event.target.value
     });
+    if (this.props.onChange) {
+      this.props.onChange(event.target.value);
+    }
   }
 
   handleSubmit = () => {
-    this.props.callback(this.state.editorValue);
+    if (this.props.onSubmit) {
+      this.props.onSubmit(this.state.editorValue);
+    }
   }
 
   render() {
@@ -259,15 +285,16 @@ export class ParaRowTextEditor extends React.Component {
                   </BootstrapTable>
                   </Well>
                 </div>
+                {this.props.onSubmit &&
                 <div>
                   <Well>
                     <form onSubmit={this.handleSubmit}>
-                        <FormGroup controlId="formControlsTextarea">
-                          <ControlLabel>
-                            {this.state.labels.thisClass.yourTranslation
-                            + " (" + this.props.idLibrary + ")"}
-                            </ControlLabel>
-                          <div>
+                      <FormGroup controlId="formControlsTextarea">
+                        <ControlLabel>
+                          {this.state.labels.thisClass.yourTranslation
+                          + " (" + this.props.idLibrary + ")"}
+                        </ControlLabel>
+                        <div>
                           <textarea
                               rows="4"
                               cols="100"
@@ -276,14 +303,25 @@ export class ParaRowTextEditor extends React.Component {
                               onChange={this.handleEditorChange}
                           >
                           </textarea>
-                          </div>
-                        </FormGroup>
-                        <Button type="submit" bsStyle="primary">
-                          {this.state.labels.thisClass.submit}
-                        </Button>
-                      </form>
+                        </div>
+                      </FormGroup>
+                      <Button
+                          type="submit"
+                          bsStyle="primary"
+                          disabled={this.state.editorValue.length < 1}
+                      >
+                        {this.state.labels.thisClass.submit}
+                      </Button>
+                      {this.props.message && this.props.messageIcon &&
+                        <span className="App-message"><FontAwesome
+                            name={this.props.messageIcon}/>
+                          {this.props.message}
+                        </span>
+                      }
+                    </form>
                   </Well>
                 </div>
+                }
               </div>
               }
         </div>
@@ -301,7 +339,10 @@ ParaRowTextEditor.propTypes = {
   , idTopic: React.PropTypes.string.isRequired
   , idKey: React.PropTypes.string.isRequired
   , value: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func.isRequired
+  , onSubmit: React.PropTypes.func
+  , onChange: React.PropTypes.func
+  , message: React.PropTypes.string
+  , messageIcon: React.PropTypes.string
 };
 export default ParaRowTextEditor;
 

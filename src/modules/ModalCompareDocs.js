@@ -43,6 +43,8 @@ export class ModalCompareDocs extends React.Component {
       ,
       selectedValue: ""
       ,
+      selectedSeq: ""
+      ,
       selectedIdPartsPrompt: "Select one or more ID parts, then click on the search icon:"
       ,
       selectedIdParts: [
@@ -164,7 +166,7 @@ export class ModalCompareDocs extends React.Component {
     this.props.onClose(
         this.state.selectedId
         , this.state.selectedValue
-        , this.state.data
+        , this.state.selectedSeq
     );
   };
 
@@ -182,6 +184,7 @@ export class ModalCompareDocs extends React.Component {
         {key: "key", label: idParts[2]}
       ]
       , selectedValue: row["value"]
+      , selectedSeq: row["seq"]
     });
   }
 
@@ -213,6 +216,10 @@ export class ModalCompareDocs extends React.Component {
                         isKey
                         dataField='id'
                         dataSort={ true }
+                        hidden
+                    >ID</TableHeaderColumn>
+                    <TableHeaderColumn
+                        dataField='seq'
                         hidden
                     >ID</TableHeaderColumn>
                     <TableHeaderColumn

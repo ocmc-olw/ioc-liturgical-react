@@ -18,27 +18,14 @@ class IdBuilder extends Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      searchLabels: Labels.getSearchLabels(this.props.languageCode)
-      , resultsTableLabels: Labels.getResultsTableLabels(this.props.languageCode)
-      , selectedLibrary: this.props.IdLibrary
-      , selectedLibraryLabel: ""
-      , selectedTopic: this.props.IdTopic
-      , tempTopic: ""
-      , selectedTopicValue: this.props.IdTopicValue
-      , selectedKey: this.props.IdKey
-      , tempKey: ""
-      , selectedKeyValue: this.props.IdKeyValue
-      , searchingForTopic: false
-      , searchingForKey: false
-      , panel: {
-        keyOpen: false
-        ,topicOpen: false
-        , idBuilderOpen: true
-      }
-    };
+    this.state = this.setTheState(props, "");
 
     this.handleLibraryChange = this.handleLibraryChange.bind(this);
+    this.handleBiblicalBooksChange = this.handleBiblicalBooksChange.bind(this);
+    this.handleBiblicalChaptersChange = this.handleBiblicalChaptersChange.bind(this);
+    this.handleBiblicalVersesChange = this.handleBiblicalVersesChange.bind(this);
+    this.handleBiblicalSubversesChange = this.handleBiblicalSubversesChange.bind(this);
+    this.handleBiblicalChapterVerseSelection = this.handleBiblicalChapterVerseSelection.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTopicSearchRequest = this.handleTopicSearchRequest.bind(this);
     this.handleTopicSearchCallback = this.handleTopicSearchCallback.bind(this);
@@ -55,28 +42,43 @@ class IdBuilder extends Component {
     this.getSelector = this.getSelector.bind(this);
     this.getIdFormControl = this.getIdFormControl.bind(this);
     this.getIdValueFormControl = this.getIdValueFormControl.bind(this);
+    this.setTheState = this.setTheState.bind(this);
   }
 
   componentWillMount = () => {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({
-      searchLabels: Labels.getSearchLabels(nextProps.languageCode)
-      , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
-      , selectedLibrary: nextProps.IdLibrary
-      , selectedLibraryLabel: ""
-      , selectedTopic: nextProps.IdTopic
-      , selectedTopicValue: nextProps.IdTopicValue
-      , selectedKey: nextProps.IdKey
-      , selectedKeyValue: nextProps.IdKeyValue
-      , searchingForTopic: false
-      , searchingForKey: false
-      , panel: {
-        keyOpen: false
-        ,topicOpen: false
-      }
-    });
+    this.state = this.setTheState(nextProps, this.state.selectedLibrary);
+  }
+
+  setTheState = (props, IdLibrary) => {
+    return (
+        {
+          searchLabels: Labels.getSearchLabels(props.languageCode)
+          , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+          , selectedLibrary: props.IdLibrary
+          , selectedLibraryLabel: ""
+          , selectedTopic: props.IdTopic
+          , tempTopic: ""
+          , selectedTopicValue: props.IdTopicValue
+          , selectedKey: props.IdKey
+          , tempKey: ""
+          , selectedKeyValue: props.IdKeyValue
+          , selectedSeq: ""
+          , selectedBiblicalBook: ""
+          , selectedBiblicalChapter: ""
+          , selectedBiblicalVerse: ""
+          , selectedBiblicalSubverse: "*"
+          , searchingForTopic: false
+          , searchingForKey: false
+          , panel: {
+              keyOpen: false
+              ,topicOpen: false
+              , idBuilderOpen: true
+            }
+        }
+    )
   }
 
   getIdFormControl = (
@@ -88,8 +90,28 @@ class IdBuilder extends Component {
     let searchLabels = this.state.searchLabels.IdParts[type];
     switch(type) {
       case ("BIBLICAL_BOOK_ABBREVIATION"):
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <FormControl
+                  type="text"
+                  value={value}
+                  disabled
+              />
+            </div>
+        );
         break;
       case ("BIBLICAL_CHAPTER_VERSE"):
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <FormControl
+                  type="text"
+                  value={value}
+                  disabled
+              />
+            </div>
+        );
         break;
       case "ID_OF_SELECTED_BIBLICAL_VERSE":
         return (
@@ -190,12 +212,12 @@ class IdBuilder extends Component {
       case "USER_TEXT":
         return (
             <div>
-              <ControlLabel>{searchLabels[labelType]}</ControlLabel>
-              <FormControl
-                  type="text"
-                  value={value}
-                  disabled
-              />
+              <ControlLabel>{label}</ControlLabel>
+                <FormControl
+                    type="text"
+                    value={value}
+                    disabled
+                />
             </div>
         );
         break;
@@ -207,8 +229,20 @@ class IdBuilder extends Component {
   getIdValueFormControl = (type, label, value) => {
     switch(type) {
       case ("BIBLICAL_BOOK_ABBREVIATION"):
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <Well>{value}</Well>
+            </div>
+        );
         break;
       case ("BIBLICAL_CHAPTER_VERSE"):
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <Well>{value}</Well>
+            </div>
+        );
         break;
       case "ID_OF_SELECTED_BIBLICAL_VERSE":
         return (
@@ -259,6 +293,9 @@ class IdBuilder extends Component {
         );
         break;
       default:
+        return (
+            <div></div>
+        );
     }
 
   }
@@ -305,16 +342,68 @@ class IdBuilder extends Component {
   getSelector = (
       type
       , labelType
-      , value
       , callback
+      , textValue
       , textChangeHandler
       , textCallback
   ) => {
     let searchLabel = this.state.searchLabels.IdParts[type];
     switch(type) {
       case ("BIBLICAL_BOOK_ABBREVIATION"):
+        return (
+            <div>
+              <Panel
+                  header={searchLabel.prompt}
+                  eventKey={type+labelType}
+                  expanded={this.state.panel[labelType+"Open"]}
+                  onSelect={this.toogleTopicPanel}
+                  collapsible
+              >
+                <ResourceSelector
+                    title={searchLabel.topic}
+                    initialValue={this.state.selectedTopic}
+                    resources={this.props.biblicalBooksDropdown}
+                    changeHandler={this.handleBiblicalBooksChange}
+                    multiSelect={false}
+                />
+              </Panel>
+            </div>
+        );
         break;
       case ("BIBLICAL_CHAPTER_VERSE"):
+        return (
+            <div>
+              <Panel
+                  header={searchLabel.prompt}
+                  eventKey={type+labelType}
+                  expanded={this.state.panel[labelType+"Open"]}
+                  onSelect={this.toogleKeyPanel}
+                  collapsible
+              >
+                <ResourceSelector
+                    title={searchLabel.chapter}
+                    initialValue={this.state.selectedBiblicalChapter}
+                    resources={this.props.biblicalChaptersDropdown}
+                    changeHandler={this.handleBiblicalChaptersChange}
+                    multiSelect={false}
+                />
+                <ResourceSelector
+                    title={searchLabel.verse}
+                    initialValue={this.state.selectedBiblicalVerse}
+                    resources={this.props.biblicalVersesDropdown}
+                    changeHandler={this.handleBiblicalVersesChange}
+                    multiSelect={false}
+                />
+                <ResourceSelector
+                    title={searchLabel.versePart}
+                    initialValue={this.state.selectedBiblicalSubverse}
+                    resources={this.props.biblicalSubversesDropdown}
+                    changeHandler={this.handleBiblicalSubversesChange}
+                    multiSelect={false}
+                />
+              </Panel>
+            </div>
+        );
         break;
       case "ID_OF_SELECTED_BIBLICAL_VERSE":
         return (
@@ -379,6 +468,8 @@ class IdBuilder extends Component {
                     callback={callback}
                     languageCode={this.props.languageCode}
                     editor={false}
+                    initialType={this.props.initialOntologyType}
+                    fixedType={true}
                 />
               </Panel>
             </div>
@@ -390,7 +481,7 @@ class IdBuilder extends Component {
         break;
       case "ONTOLOGY_TOPIC" :
         return (
-            <ControlLabel>{value}</ControlLabel>
+            <div></div>
         );
         break;
       case "TOPIC_FROM_ID_OF_SELECTED_BIBLICAL_VERSE":
@@ -403,6 +494,7 @@ class IdBuilder extends Component {
                   onSelect={this.toogleTopicPanel}
                   collapsible
               >
+                <ControlLabel>{searchLabel.key}</ControlLabel>
                 <SearchText
                     restServer={this.props.restServer}
                     username={this.props.username}
@@ -444,7 +536,7 @@ class IdBuilder extends Component {
             <div>
               <FormControl
                   type="text"
-                  value={this.state.value}
+                  value={textValue}
                   placeholder={searchLabel.prompt}
                   onChange={textChangeHandler}
               />
@@ -481,6 +573,7 @@ class IdBuilder extends Component {
   }
 
   handleLibraryChange = (selection) => {
+    this.props.handleLibraryChange(selection["value"]);
     this.setState({
       selectedLibrary: selection["value"]
       , selectedLibraryLabel: selection["label"]
@@ -489,6 +582,70 @@ class IdBuilder extends Component {
     );
   };
 
+  handleBiblicalBooksChange = (selection) => {
+      this.props.handleTopicChange(selection["value"], selection["label"]);
+        this.setState({
+              searchingForTopic: false
+              , selectedTopic: selection["value"]
+              , selectedTopicValue: selection["label"]
+              , selectedSeq: ""
+              , panel: {keyOpen: false, topicOpen: false}
+            }
+            , this.handleSubmit
+        );
+  };
+
+  handleBiblicalChaptersChange = (selection) => {
+    this.setState({
+          selectedBiblicalChapter: selection["value"]
+          , selectedBiblicalChapterLabel: selection["label"]
+        }
+        , this.handleBiblicalChapterVerseSelection
+    );
+  };
+
+
+  handleBiblicalVersesChange = (selection) => {
+    this.setState({
+          selectedBiblicalVerse: selection["value"]
+          , selectedBiblicalVerseLabel: selection["label"]
+        }
+        , this.handleBiblicalChapterVerseSelection
+    );
+  };
+
+  handleBiblicalSubversesChange = (selection) => {
+    this.setState({
+          selectedBiblicalSubverse: selection["value"]
+          , selectedBiblicalSubverseLabel: selection["label"]
+        }
+        , this.handleBiblicalChapterVerseSelection
+    );
+  };
+
+  handleBiblicalChapterVerseSelection = () => {
+    if (
+        (this.state.selectedBiblicalChapter.length > 0)
+        && (this.state.selectedBiblicalVerse.length > 0)
+        && (this.state.selectedBiblicalSubverse.length > 0)
+    ) {
+      let theKey = this.state.selectedBiblicalChapter
+          + ":"
+          + this.state.selectedBiblicalVerse;
+      if (this.state.selectedBiblicalSubverse !== "*") {
+        theKey = theKey + this.state.selectedBiblicalSubverse;
+      }
+      this.setState({
+            searchingForKey: false
+            , selectedKey: theKey
+            , selectedKeyValue: theKey
+            , keyPanelOpen: false
+          }
+          , this.handleSubmit
+      );
+    }
+  }
+
 
   handleTopicSearchRequest() {
       this.setState({
@@ -496,8 +653,9 @@ class IdBuilder extends Component {
       });
   };
 
-  handleTopicSearchCallback(id, value) {
+  handleTopicSearchCallback(id, value, seq) {
     if (id && id.length > 0) {
+      this.props.handleTopicChange(id, value);
       if (
            (this.props.IdTopicType === "TOPIC_FROM_ID_OF_SELECTED_BIBLICAL_VERSE")
         || (this.props.IdTopicType === "TOPIC_FROM_ID_OF_SELECTED_LITURGICAL_TEXT")
@@ -509,6 +667,7 @@ class IdBuilder extends Component {
               , searchingForKey: false
               , selectedKey: IdManager.getKey(id)
               , selectedKeyValue: ""
+              , selectedSeq: seq
               , panel: {keyOpen: false, topicOpen: false}
             }
             , this.handleSubmit
@@ -518,6 +677,7 @@ class IdBuilder extends Component {
               searchingForTopic: false
               , selectedTopic: id
               , selectedTopicValue: value
+              , selectedSeq: seq
               , panel: {keyOpen: false, topicOpen: false}
             }
             , this.handleSubmit
@@ -532,6 +692,7 @@ class IdBuilder extends Component {
   };
 
   handleTopicTextChange = (value) => {
+
     if (value && value.target && value.target.value && value.target.value.length > 0) {
       this.setState({
             tempTopic: value.target.value
@@ -555,12 +716,13 @@ class IdBuilder extends Component {
     });
   };
 
-  handleKeySearchCallback(id, value) {
+  handleKeySearchCallback(id, value, seq) {
     if (id && id.length > 0) {
       this.setState({
         searchingForKey: false
         , selectedKey: id
         , selectedKeyValue: value
+        , selectedSeq: seq
         , panel: {keyOpen: false, topicOpen: false}
       }
       , this.handleSubmit
@@ -606,6 +768,7 @@ class IdBuilder extends Component {
           , this.state.selectedTopicValue
           , this.state.selectedKey
           , this.state.selectedKeyValue
+          , this.state.selectedSeq
       );
     }
   }
@@ -622,8 +785,7 @@ class IdBuilder extends Component {
           </Well>
           <Well>
             <FormGroup>
-            {this.state.selectedTopic.length > 0
-              && this.getIdFormControl(
+            {this.getIdFormControl(
                 this.props.IdTopicType
                 , "topic"
                 , this.state.searchLabels.IdParts[this.props.IdTopicType].topic
@@ -641,16 +803,15 @@ class IdBuilder extends Component {
             {this.getSelector(
                     this.props.IdTopicType
                     , "topic"
-                    , this.props.IdTopic
                     , this.handleTopicSearchCallback
+                    , this.state.IdTopicValue
                     , this.handleTopicTextChange
                     , this.handleTopicTextCallback
                 )}
           </Well>
           <Well>
             <FormGroup>
-              {this.state.selectedKey.length > 0
-              && this.getIdFormControl(
+              {this.getIdFormControl(
                   this.props.IdKeyType
                   , "key"
                   , this.state.searchLabels.IdParts[this.props.IdKeyType].key
@@ -668,8 +829,8 @@ class IdBuilder extends Component {
             {this.getSelector(
                   this.props.IdKeyType
                   , "key"
-                  , this.props.IdKey
                   , this.handleKeySearchCallback
+                  , this.state.tempKey
                   , this.handleKeyTextChange
                   , this.handleKeyTextCallback
               )}
@@ -690,14 +851,21 @@ IdBuilder.propTypes = {
   , libraries: PropTypes.array.isRequired
   , IdLibrary: PropTypes.string.isRequired
   , ontologyDropdowns: React.PropTypes.object.isRequired
+  , biblicalBooksDropdown: React.PropTypes.array.isRequired
+  , biblicalChaptersDropdown: React.PropTypes.array.isRequired
+  , biblicalVersesDropdown: React.PropTypes.array.isRequired
+  , biblicalSubversesDropdown: React.PropTypes.array.isRequired
   , IdTopic: React.PropTypes.string.isRequired
   , IdTopicValue: React.PropTypes.string.isRequired
   , IdTopicType: React.PropTypes.string.isRequired
   , IdKey: React.PropTypes.string.isRequired
   , IdKeyValue: React.PropTypes.string.isRequired
   , IdKeyType: React.PropTypes.string.isRequired
+  , handleLibraryChange: React.PropTypes.func.isRequired
+  , handleTopicChange: React.PropTypes.func.isRequired
   , handleSubmit: React.PropTypes.func.isRequired
   , languageCode: React.PropTypes.string.isRequired
+  , initialOntologyType: React.PropTypes.string.isRequired
 };
 
 export default IdBuilder;

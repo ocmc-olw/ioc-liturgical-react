@@ -33,7 +33,7 @@ import {
   , Labels
   , LiturgicalDayProperties
   , Login
-  , NewItem
+  , NewEntry
   , ParaRowTextEditor
   , SearchOntology
   , SearchText
@@ -70,6 +70,10 @@ class Demo extends React.Component {
       , formsDropdown: []
       , formsValueSchemas: {}
       , formsValues: []
+      , biblicalBooksDropdown: []
+      , biblicalChaptersDropdown: []
+      , biblicalVersesDropdown: []
+      , biblicalSubversesDropdown: []
       , language: {
         code: "en"
         , labels: {
@@ -106,7 +110,7 @@ class Demo extends React.Component {
     this.handleSearchOntologyCallback = this.handleSearchOntologyCallback.bind(this);
     this.handleSearchLinksCallback = this.handleSearchLinksCallback.bind(this);
     this.handleLdpCallback = this.handleLdpCallback.bind(this);
-    this.handleNewItemCallback = this.handleNewItemCallback.bind(this);
+    this.handleNewEntryCallback = this.handleNewEntryCallback.bind(this);
     this.handleParallelTextEditorCallback = this.handleParallelTextEditorCallback.bind(this);
     this.doNothingHandler = this.doNothingHandler.bind(this);
     this.handleSearchRequest = this.handleSearchRequest.bind(this);
@@ -179,6 +183,10 @@ class Demo extends React.Component {
         , formsValueSchemas: forms.valueSchemas
         , formsValues: forms.values
         , ontologyDropdowns: forms.ontologyDropdowns
+        , biblicalBooksDropdown: forms.biblicalBooksDropdown
+        , biblicalChaptersDropdown: forms.biblicalChaptersDropdown
+        , biblicalVersesDropdown: forms.biblicalVersesDropdown
+        , biblicalSubversesDropdown: forms.biblicalSubversesDropdown
       });
     } else {
       this.setState({
@@ -216,13 +224,12 @@ class Demo extends React.Component {
     // TODO
   };
 
-  handleNewItemCallback(value) {
+  handleNewEntryCallback(value) {
     // TODO
   };
 
 
   handleParallelTextEditorCallback(value) {
-    console.log(value);
     this.setState({
       translatedText: value
     });
@@ -598,6 +605,8 @@ class Demo extends React.Component {
                       callback={this.handleSearchOntologyCallback}
                       languageCode={this.state.language.code}
                       editor={true}
+                      initialType={"Human"}
+                      fixedType={false}
                   />
                 </Panel> {/* Search Relationships */}
                 <Panel header="Code and Props" eventKey="searchCode">
@@ -700,14 +709,14 @@ class Demo extends React.Component {
             <Panel header="About the Database" eventKey="aboutdb">
               <AboutDatabase labels={this.state.language.labels.pageAbout}/>
             </Panel> {/* About Database */}
-            <Panel header="Add a New Item" eventKey="newitem">
+            <Panel header="Create a New Entry" eventKey="NewEntry">
               { this.state.authenticated ?
-                  <p>Add a New Item.</p>
+                  <p></p>
                   :
-                  <p>Add a New Item.  You must log in first in order to see and use this.</p>
+                  <p>You must log in first in order to see and use this.</p>
               }
               { this.state.authenticated &&
-              <NewItem
+              <NewEntry
                   restServer={this.state.restServer}
                   username={this.state.username}
                   password={this.state.password}
@@ -717,7 +726,11 @@ class Demo extends React.Component {
                   formsDropdown={this.state.formsDropdown}
                   formsSchemas={this.state.formsValueSchemas}
                   forms={this.state.formsValues}
-                  changeHandler={this.handleNewItemCallback}
+                  biblicalBooksDropdown={this.state.biblicalBooksDropdown}
+                  biblicalChaptersDropdown={this.state.biblicalChaptersDropdown}
+                  biblicalVersesDropdown={this.state.biblicalVersesDropdown}
+                  biblicalSubversesDropdown={this.state.biblicalSubversesDropdown}
+                  changeHandler={this.handleNewEntryCallback}
               />
               }
             </Panel> {/* New Item */}
@@ -738,7 +751,7 @@ class Demo extends React.Component {
                   idTopic="hi.s01"
                   idKey="hiVE.Key0108.text"
                   value={this.state.translatedText}
-                  callback={this.handleParallelTextEditorCallback}
+                  onSubmit={this.handleParallelTextEditorCallback}
               />
               }
             </Panel> {/* TDB */}

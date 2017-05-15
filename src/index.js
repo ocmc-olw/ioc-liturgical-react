@@ -6,7 +6,7 @@ import HelpSearch from './HelpSearch';
 import Labels from './Labels';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
 import Login from './Login';
-import NewItem from './NewItem';
+import NewEntry from './NewEntry';
 import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
@@ -21,7 +21,7 @@ export {
   , Labels
   , LiturgicalDayProperties
   , Login
-  , NewItem
+  , NewEntry
   , ParaRowTextEditor
   , SearchOntology
   , SearchText

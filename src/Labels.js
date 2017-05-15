@@ -10,6 +10,9 @@ const   labels = {
       , headerKey: "Key"
       , headerTopic: "Topic"
       , headerValue: "Value"
+      , headerName: "Name"
+      , headerDesc: "Description"
+      , headerTags: "Tags"
     }
     , linkSearchResultsTable: {
       filterPrompt: "type here to filter search results..."
@@ -187,12 +190,22 @@ const   labels = {
         , msg2: "Follow the instructions below to build the parts of the ID for this item..."
         , topic: "Topic"
         , key: "Key"
-        , BIBLICAL_CHAPTER_VERSE: {
-          prompt: ""
-          , topic: ""
-          , topicValue: ""
+        , BIBLICAL_BOOK_ABBREVIATION: {
+          prompt: "Select the name of the book..."
+          , topic: "Topic: Abbreviation for the name of the book"
+          , topicValue: "Book abbreviation"
           , key: ""
           , keyValue: ""
+        }
+        , BIBLICAL_CHAPTER_VERSE: {
+          prompt: "Select the chapter, verse, and (optional) verse subpart"
+          , topic: ""
+          , topicValue: ""
+          , key: "Key: Chapter:Verse"
+          , keyValue: "Chapter:Verse"
+          , chapter: "Chapter"
+          , verse: "Verse"
+          , versePart: "Verse Part"
         }
         , ID_OF_SELECTED_BIBLICAL_VERSE:{
           prompt: "Select the Biblical Verse..."
@@ -366,14 +379,42 @@ const   labels = {
       , 409: "Already exists"
       , 500: "Server error"
     }
-    , NewItem: {
-      paraTextPanelTitle: "View Parallel Texts While Translating"
+    , NewEntry: {
+      panels: {
+        main: "Create a New Entry"
+        , form: "View the Form"
+      }
+      , formSelector: "The Form you want to use..."
+      , paraTextPanelTitle: "View Parallel Texts"
     }
     , ParaTextEditor: {
-      paraTextPanelTitle: "View Parallel Texts While Translating"
+      panelTitle: "View Parallel Texts"
+      , msg1: ""
+      , msg2: ""
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
       , submit: "Submit"
+    }
+    , WorkflowAssignment: {
+      title: "Workflow Assignment"
+      , instructions: "Use this section to set the status and assignedToUser fields of the form..."
+      , status: "Selected status:"
+      , user: {
+        EDITING: "Select a user to do the editing:"
+        , HOLDING: ""
+        , READY_TO_REVIEW: "Select an Admin to assign someone to do the review:"
+        , REVIEWING: "Select a user to do the review:"
+        , READY_TO_EDIT: "Select an Admin to assign someone to do the editing:"
+        , READY_TO_FINALIZE: "Select an Admin to to the finalizing:"
+        , FINALIZED: ""
+      }
+      , submit: "Set status and assigned user"
+    }
+    , messages: {
+      initial: "Important messages will appear here..."
+      , retrieving: "retrieving..."
+      , searching: "searching..."
+      , found: "Found"
     }
   }
     , el: {
@@ -383,6 +424,9 @@ const   labels = {
       , headerKey: "Κλειδί"
       , headerTopic: "Θέμα"
       , headerValue: "Τιμή"
+      , headerName: "Όνομα"
+      , headerDesc: "Περιγραφή"
+      , headerTags: "Ετικέτες"
     }
     , linkSearchResultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
@@ -585,12 +629,22 @@ const   labels = {
         , msg2: "Follow the instructions below to build the parts of the ID for this item..."
         , topic: "Topic"
         , key: "Key"
-        , BIBLICAL_CHAPTER_VERSE: {
-          prompt: ""
-          , topic: ""
-          , topicValue: ""
+        , BIBLICAL_BOOK_ABBREVIATION: {
+          prompt: "Select the name of the book..."
+          , topic: "Topic: Abbreviation for the name of the book"
+          , topicValue: "Book abbreviation"
           , key: ""
           , keyValue: ""
+        }
+        , BIBLICAL_CHAPTER_VERSE: {
+          prompt: "Select the chapter, verse, and (optional) verse subpart"
+          , topic: ""
+          , topicValue: ""
+          , key: "Key: Chapter:Verse"
+          , keyValue: "Chapter:Verse"
+          , chapter: "Chapter"
+          , verse: "Verse"
+          , versePart: "Verse Part"
         }
         , ID_OF_SELECTED_BIBLICAL_VERSE:{
           prompt: "Select the Biblical Verse..."
@@ -736,14 +790,38 @@ const   labels = {
       , 409: "Already exists"
       , 500: "Server error"
     }
-    , NewItem: {
-      paraTextPanelTitle: "View Parallel Texts While Translating"
+    , NewEntry: {
+      panelTitle: "Create a New Entry"
+      , paraTextPanelTitle: "View Parallel Texts"
     }
     , ParaTextEditor: {
-      paraTextPanelTitle: "View Parallel Texts While Translating"
+      panelTitle: "View Parallel"
+      , msg1: ""
+      , msg2: ""
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
       , submit: "Submit"
+    }
+    , WorkflowAssignment: {
+      title: "Workflow Assignment"
+      , instructions: "Use this section to set the status and assignedToUser fields of the form..."
+      , status: "Selected status:"
+      , user: {
+        EDITING: "Select a user to do the editing:"
+        , HOLDING: ""
+        , READY_TO_REVIEW: "Select an Admin to assign someone to do the review:"
+        , REVIEWING: "Select a user to do the review:"
+        , READY_TO_EDIT: "Select an Admin to assign someone to do the editing:"
+        , READY_TO_FINALIZE: "Select an Admin to to the finalizing:"
+        , FINALIZED: ""
+      }
+      , submit: "Submit"
+    }
+    , messages: {
+      initial: "Important messages will appear here..."
+      , retrieving: "retrieving..."
+      , searching: "searching..."
+      , found: "Found"
     }
   }
 }
@@ -751,12 +829,14 @@ const   labels = {
 module.exports = {
   labels : labels
   , getAllLabels: (code) => { return labels[code];}
+  , getMessageLabels: (code) => { return labels[code].messages }
   , getResultsTableLabels: (code) => { return labels[code].resultsTable;}
   , getLinkSearchResultsTableLabels: (code) => { return labels[code].linkSearchResultsTable;}
   , getHeaderLabels: (code) => { return labels[code].header;}
   , getHelpLabels: (code) => { return labels[code].help;}
-  , getComponentNewItemLabels: (code) => { return labels[code].NewItem;}
+  , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
+  , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
   , getSearchLabels: (code) => { return labels[code].search;}

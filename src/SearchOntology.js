@@ -14,76 +14,8 @@ export class SearchOntology extends React.Component {
 
     super(props);
 
-    let theSearchLabels = Labels.getSearchOntologyLabels(this.props.languageCode);
-    this.state = {
-      searchLabels: theSearchLabels
-      , resultsTableLabels: Labels.getResultsTableLabels(this.props.languageCode)
-      , filterMessage: theSearchLabels.msg5
-      , selectMessage: theSearchLabels.msg6
-      , matcherTypes: [
-        {label: theSearchLabels.matchesAnywhere, value: "c"}
-        , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
-        , {label: theSearchLabels.matchesAtTheEnd, value: "ew"}
-        , {label: theSearchLabels.matchesRegEx, value: "rx"}
-      ]
-      , matcher: "c"
-      , genericType: "*"
-      ,
-      query: ""
-      ,
-      suggestedQuery: ""
-      ,
-      propertyTypes: [
-        {label: "ID", value: "id"}
-        , {label: "Value (insensitive)", value: "nnp"}
-        , {label: "Value (sensitive)", value: "value"}
-      ]
-      ,
-      docPropMessage: ""
-      ,
-      docPropMessageById: "Search By ID searches the ID of the docs, with the parts domain~topic~key, e.g. gr_gr_cog~actors~Priest."
-      ,
-      docPropMessageByValue: "Search By Value is insensitive to accents, case, and punctuation."
-      ,
-      docPropMessageByValueSensitive: "Search By Value (sensitive) is sensitive to accents, case, and punctuation."
-      ,
-      searchFormToggle: this.messageIcons.toggleOff
-      ,
-      showSearchForm: true
-      ,
-      searchFormType: "simple"
-      ,
-      showSearchResults: false
-      ,
-      resultCount: 0
-      ,
-      data: {values: [{"id": "", "value:": ""}]}
-      ,
-      options: {
-        sizePerPage: 30
-        , sizePerPageList: [5, 15, 30]
-        , onSizePerPageList: this.onSizePerPageList
-        , hideSizePerPage: true
-        , paginationShowsTotal: true
-      }
-      ,
-      selectRow: {
-        mode: 'radio' // or checkbox
-        , hideSelectColumn: false
-        , clickToSelect: false
-        , onSelect: this.handleRowSelect
-        , className: "App-row-select"
-      }
-      ,
-      showSelectionButtons: false
-      , selectedId: ""
-      , selectedLibrary: ""
-      , selectedTopic: ""
-      , selectedKey: ""
-      , title: ""
-      , showModalCompareDocs: false
-      , idColumnSize: "80px"
-    };
+    this.state = this.setTheState(props, "");
+
     this.fetchData = this.fetchData.bind(this);
     this.onSizePerPageList = this.onSizePerPageList.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
@@ -96,6 +28,7 @@ export class SearchOntology extends React.Component {
     this.getDocComparison = this.getDocComparison.bind(this);
     this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
+    this.setTheState = this.setTheState.bind(this);
   }
 
   componentWillMount = () => {
@@ -156,28 +89,101 @@ export class SearchOntology extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    let theSearchLabels = Labels.getSearchOntologyLabels(nextProps.languageCode);
-
-    this.setState({
-      searchLabels: theSearchLabels
-      , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
-      , filterMessage: theSearchLabels.msg5
-      , selectMessage: theSearchLabels.msg6
-      , matcherTypes: [
-        {label: theSearchLabels.matchesAnywhere, value: "c"}
-        , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
-        , {label: theSearchLabels.matchesAtTheEnd, value: "ew"}
-        , {label: theSearchLabels.matchesRegEx, value: "rx"}
-      ]
-    });
+    this.setTheState(nextProps, this.state.docType);
   }
 
+  // a method called by both the constructor and componentWillReceiveProps
+  setTheState = (props, docType) => {
+
+    let theSearchLabels = Labels.getSearchOntologyLabels(props.languageCode);
+
+    let selectedId = "";
+    if (docType) {
+      if (props.initialType === docType) {
+        selectedId = this.state.selectedId;
+      }
+    }
+
+    return (
+        {
+          searchLabels: theSearchLabels
+          , docType: props.initialType
+          , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+          , filterMessage: theSearchLabels.msg5
+          , selectMessage: theSearchLabels.msg6
+          , matcherTypes: [
+            {label: theSearchLabels.matchesAnywhere, value: "c"}
+            , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
+            , {label: theSearchLabels.matchesAtTheEnd, value: "ew"}
+            , {label: theSearchLabels.matchesRegEx, value: "rx"}
+          ]
+          , matcher: "c"
+          , genericType: "*"
+          ,
+          query: ""
+          ,
+          suggestedQuery: ""
+          ,
+          propertyTypes: [
+            {label: "ID", value: "id"}
+            , {label: "Value (insensitive)", value: "nnp"}
+            , {label: "Value (sensitive)", value: "value"}
+          ]
+          ,
+          docPropMessage: ""
+          ,
+          docPropMessageById: "Search By ID searches the ID of the docs, with the parts domain~topic~key, e.g. gr_gr_cog~actors~Priest."
+          ,
+          docPropMessageByValue: "Search By Value is insensitive to accents, case, and punctuation."
+          ,
+          docPropMessageByValueSensitive: "Search By Value (sensitive) is sensitive to accents, case, and punctuation."
+          ,
+          searchFormToggle: this.messageIcons.toggleOff
+          ,
+          showSearchForm: true
+          ,
+          searchFormType: "simple"
+          ,
+          showSearchResults: false
+          ,
+          resultCount: 0
+          ,
+          data: {values: [{"id": "", "value:": ""}]}
+          ,
+          options: {
+            sizePerPage: 30
+            , sizePerPageList: [5, 15, 30]
+            , onSizePerPageList: this.onSizePerPageList
+            , hideSizePerPage: true
+            , paginationShowsTotal: true
+          }
+          ,
+          selectRow: {
+            mode: 'radio' // or checkbox
+            , hideSelectColumn: false
+            , clickToSelect: false
+            , onSelect: this.handleRowSelect
+            , className: "App-row-select"
+          }
+          ,
+          showSelectionButtons: false
+          , selectedId: selectedId
+          , selectedLibrary: ""
+          , selectedTopic: ""
+          , selectedKey: ""
+          , title: ""
+          , showModalCompareDocs: false
+          , idColumnSize: "80px"
+        }
+    )
+  }
   getSearchForm() {
     return (
             <div>
             {this.state.dropdowns ?
                 <OntologySearchOptions
                     types={this.state.dropdowns.types}
+                    initialType={this.props.fixedType ? this.props.initialType : this.state.docType}
                     properties={this.state.dropdowns.typeProps}
                     matchers={this.getMatcherTypes()}
                     tags={this.state.dropdowns.typeTags}
@@ -258,9 +264,8 @@ export class SearchOntology extends React.Component {
           , tagOperator: tagOperator
           , tags: tags
         }
-        , function () {
-          this.fetchData();
-        }
+        ,
+          this.fetchData
     );
   };
 
@@ -513,6 +518,8 @@ SearchOntology.propTypes = {
   , callback: React.PropTypes.func
   , languageCode: React.PropTypes.string.isRequired
   , editor: React.PropTypes.bool.isRequired
+  , initialType: React.PropTypes.string.isRequired
+  , fixedType: React.PropTypes.bool.isRequired
 };
 
 export default SearchOntology;

@@ -12,6 +12,7 @@ export class ReactSelector extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
+
     this.setState({
       value: nextProps.initialValue
     });

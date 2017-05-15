@@ -6,7 +6,12 @@ class OntologySearchOptions extends Component {
 
   constructor(props) {
     super(props);
+
     let initialType = "Human";
+    if (this.props.initialType) {
+      initialType = this.props.initialType;
+    }
+
     this.state = {
       selectedType: initialType
       , selectedGenericType: "*"
@@ -36,8 +41,27 @@ class OntologySearchOptions extends Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({
-    });
+
+    let initialType = "Human";
+    if (nextProps.initialType) {
+      initialType = nextProps.initialType;
+    }
+
+    this.state = {
+      selectedType: initialType
+      , selectedGenericType: "*"
+      , selectedProperty: "*"
+      , selectedMatcher: "c"
+      , value: ""
+      , selectedTagOperator: "any"
+      , selectedTags: ""
+      , tagData: []
+      , dropDownProperties: {
+        msg: nextProps.labels.domainIs
+        , source: nextProps.properties[initialType]
+        , initialValue: "*"
+      }
+    };
   }
 
   handleDocTypeChange = (selection) => {
@@ -195,6 +219,7 @@ class OntologySearchOptions extends Component {
 
 OntologySearchOptions.propTypes = {
   types: PropTypes.array.isRequired
+  , initialType: PropTypes.string.isRequired
   , properties: PropTypes.object.isRequired
   , matchers: PropTypes.array.isRequired
   , tags: PropTypes.object.isRequired

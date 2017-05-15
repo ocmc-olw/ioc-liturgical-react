@@ -109,6 +109,7 @@ export class Search extends React.Component {
       ]
       , showIdPartSelector: false
       , selectedValue: ""
+      , selectedSeq: ""
       , showModalCompareDocs: false
       , idColumnSize: "80px"
     };
@@ -204,8 +205,11 @@ export class Search extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
-      docType: nextProps.initialDocType,
-      matcherTypes: [
+      docType: nextProps.initialDocType
+      , selectedID: ""
+      , selectedValue: ""
+      , selectedSeq: ""
+      , matcherTypes: [
         {label: nextProps.searchLabels.matchesAnywhere, value: "c"}
         , {label: nextProps.searchLabels.matchesAtTheStart, value: "sw"}
         , {label: nextProps.searchLabels.matchesAtTheEnd, value: "ew"}
@@ -333,7 +337,7 @@ export class Search extends React.Component {
             <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
               {this.state.dropdowns ?
                   <SearchOptionsAdvanced
-                      docType={this.state.docType}
+                      docType={this.props.initialDocType}
                       docTypes={this.state.docTypes}
                       dropDowns={this.state.dropdowns}
                       properties={this.state.propertyTypes}
@@ -353,6 +357,7 @@ export class Search extends React.Component {
       case (this.searchFormTypes.advanced): {
         return (
             <SearchOptionsAdvanced
+                docType={this.props.initialDocType}
                 docTypes={this.getDocTypes()}
                 dropDowns={this.state.dropdowns}
                 properties={this.state.propertyTypes}
@@ -392,7 +397,11 @@ export class Search extends React.Component {
 
   handleDoneRequest() {
     if (this.props.callback) {
-      this.props.callback(this.state.selectedID, this.state.selectedValue);
+      this.props.callback(
+          this.state.selectedID
+          , this.state.selectedValue
+          , this.state.selectedSeq
+      );
     }
   }
 
@@ -434,9 +443,7 @@ export class Search extends React.Component {
           , matcher: "rx"
           , query: value
         }
-        , function () {
-          this.fetchData();
-        }
+        , this.fetchData
     );
   }
 
@@ -448,6 +455,7 @@ export class Search extends React.Component {
       , property
       , matcher
       , value
+      , seq
   ) => {
     this.setState({
           docType: type
@@ -457,10 +465,9 @@ export class Search extends React.Component {
           , docProp: property
           , matcher: matcher
           , query: value
+          , selectedSeq: seq
         }
-        , function () {
-          this.fetchData();
-        }
+        , this.fetchData
     );
   };
 
@@ -474,9 +481,7 @@ export class Search extends React.Component {
           , matcher: "c"
           , query: value
         }
-        , function () {
-          this.fetchData();
-        }
+        , this.fetchData
     );
   };
 
@@ -504,12 +509,13 @@ export class Search extends React.Component {
     })
   }
 
-  handleCloseDocComparison = (id, value) => {
+  handleCloseDocComparison = (id, value, seq) => {
     if (id && id.length > 0) {
       this.setState({
         showModalCompareDocs: false
         , selectedID: id
         , selectedValue: value
+        , selectedSeq: seq
       })
     } else {
       this.setState({
