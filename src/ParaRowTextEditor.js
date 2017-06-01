@@ -13,6 +13,8 @@ import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
 import Server from './helpers/Server';
 import Labels from './Labels';
+import Grammar from './modules/Grammar';
+import IdManager from './helpers/IdManager';
 
 /**
  * Display modal content.
@@ -21,6 +23,8 @@ export class ParaRowTextEditor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    console.log("ParaRowTextEditor::constructor");
 
     this.state = {
       labels: {
@@ -85,6 +89,7 @@ export class ParaRowTextEditor extends React.Component {
   };
 
   componentWillMount = () => {
+    console.log("ParaRowTextEditor::componentWillMount");
     this.setState({
           showModal: this.props.showModal
           , domain: "*"
@@ -105,6 +110,7 @@ export class ParaRowTextEditor extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
+    console.log("ParaRowTextEditor::componentWillReceiveProps");
     this.setState({
           labels: {
             thisClass: Labels.getComponentParaTextEditorLabels(nextProps.languageCode)
@@ -157,7 +163,10 @@ export class ParaRowTextEditor extends React.Component {
   }
 
   fetchData() {
-    this.setState({message: this.state.labels.search.msg2, messageIcon: this.messageIcons.info});
+    this.setState({
+      message: this.state.labels.search.msg2
+      , messageIcon: this.messageIcons.info
+    });
     let config = {
       auth: {
         username: this.props.username
@@ -253,7 +262,7 @@ export class ParaRowTextEditor extends React.Component {
   render() {
     return (
         <div>
-              {this.state.showSearchResults &&
+          {(! this.state.showSearchResults) ? <div>Loading</div>:
               <div className="App-search-results">
                 <ControlLabel>
                   {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
@@ -322,6 +331,18 @@ export class ParaRowTextEditor extends React.Component {
                   </Well>
                 </div>
                 }
+                <div>
+                  <Well>
+                    <Grammar
+                        restServer={this.props.restServer}
+                        username={this.props.username}
+                        password={this.props.password}
+                        languageCode={this.props.languageCode}
+                        idTopic={this.props.idTopic}
+                        idKey={this.props.idKey}
+                    />
+                  </Well>
+                </div>
               </div>
               }
         </div>

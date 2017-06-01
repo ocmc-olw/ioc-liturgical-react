@@ -1,5 +1,9 @@
 /**
  * Created by mac002 on 1/2/17.
+ *
+ * Note: June 1, 2017 -- I am in the process of creating functions
+ * in this class that result in this being the only place that
+ * calls Axios.  Only a few have been taken care of so far.
  */
 import MessageIcons from './MessageIcons';
 import axios from 'axios';
@@ -9,10 +13,13 @@ const dbApi = "/db/api/v1/";
 const ldpApi = "/ldp/api/v1/";
 const resources = "docs/new";
 const version = "info";
-const login = "login";
+const login = "login/form";
+const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
 const ontology = "ontology/ontology";
+const nlp = "nlp/"
+const textAnalysis = nlp + "text/analysis"
 const adminDomains = "misc/domains";
 const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownsUserRolesForDomain = "domains/userdropdown";
@@ -62,8 +69,6 @@ const restGet = (
         result.developerMessage = response.data.status.developerMessage
         result.code = response.data.status.code
         result.data = response.data;
-        console.log("restGet: response.data");
-        console.log(response.data);
         callback(result);
       })
       .catch((error) => {
@@ -170,6 +175,7 @@ export default {
   , getWsServerLdpApi: () => { return ldpApi;}
   , getWsServerDbApi: () => { return dbApi;}
   , getWsServerLoginApi: () => { return adminApi + login;}
+  , getWsServerLoginUserApi: () => { return adminApi + loginUser;}
   , getWsServerVersionApi: () => { return adminApi + version;}
   , getWsServerResourcesApi: () => { return dbApi + resources;}
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
@@ -180,6 +186,47 @@ export default {
   , getDbServerLinksApi: () => {return dbApi + links;}
   , getDbServerOntologyApi: () => {return dbApi + ontology;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
+  , getResources: (
+      restServer,
+      username
+      , password
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + resources
+        + "/"
+        + username
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getTextAnalysis: (
+      restServer,
+      username
+      , password
+      , id
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + textAnalysis
+        + "/"
+        + id
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getDropdownUsersForLibrary: (
       restServer,
       username

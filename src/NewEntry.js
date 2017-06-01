@@ -58,15 +58,20 @@ export class NewEntry extends React.Component {
         , formOpen: false
       }
       , translationValue: ""
-      , userRolesForLibrary: {
-        admins: []
-        , authors: []
-        , readers: []
-        , reviewers: []
+      , workflow: {
+        userRolesForLibrary: {
+          admins: []
+          , authors: []
+          , readers: []
+          , reviewers: []
+        }
+        , statuses: []
+        , isPublic: false
+        , stateEnabled: false
+        , workflowEnabled: false
+        , defaultStatusAfterEdit: "FINALIZED"
+        , defaultStatusAfterFinalization: "FINALIZED"
       }
-      , statuses: []
-      , workflowStatus: ""
-      , workflowUser: ""
     };
     this.onSubmit = this.onSubmit.bind(this);
     this.onFormPropertyChange = this.onFormPropertyChange.bind(this);
@@ -80,7 +85,8 @@ export class NewEntry extends React.Component {
     this.handleParallelTextEditorSubmit = this.handleParallelTextEditorSubmit.bind(this);
     this.handleWorkflowAssignmentCallback = this.handleWorkflowAssignmentCallback.bind(this);
     this.toogleFormPanel = this.toogleFormPanel.bind(this);
-    this.setLibraryUserRoles = this.setLibraryUserRoles.bind(this);
+    this.setLibraryWorkflowInfo = this.setLibraryWorkflowInfo.bind(this);
+    this.handleStatusChange = this.handleStatusChange.bind(this);
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -108,6 +114,39 @@ export class NewEntry extends React.Component {
     , idPatternSearch: "key"
   }
 
+
+  handleStatusChange = (item) => {
+
+    let userIndex = "";
+
+    switch(item.value) {
+      case "EDITING":
+        userIndex = "authors";
+        break;
+      case "READY_TO_EDIT":
+        userIndex = "admins";
+        break;
+      case "READY_TO_FINALIZE":
+        userIndex = "admins";
+        break;
+      case "READY_TO_REVIEW":
+        userIndex = "admins";
+        break;
+      case "READY_TO_RELEASE":
+        userIndex = "admins";
+        break;
+      case "REVIEWING":
+        userIndex = "reviewers";
+        break;
+      default:
+    }
+
+    this.setState({
+      selectedStatus: item.value
+      , selectedUser: ""
+      , userRolesIndex: userIndex
+    });
+  }
 
   handleWorkflowAssignmentCallback = (status, user) => {
     console.log(status);
@@ -168,12 +207,31 @@ export class NewEntry extends React.Component {
 
     let idLibrary = theForm["library"];
 
+    console.log("Form changed.  Library is: " + idLibrary);
+
     if (idLibrary === undefined || idLibrary.length < 1) {
       if (topicTypeChanged) {
         idLibrary = "";
       } else {
-        idLibrary = this.state.IdLibrary;
+        if (idLibrary !== this.state.IdLibrary) {
+          // try to avoid calling the rest server if we did it
+          // last form change
+          idLibrary = this.state.IdLibrary;
+        }
       }
+    } else {
+      if (idLibrary !== this.state.IdLibrary) {
+        // try to avoid calling the rest server if we did it
+        // last form change
+        server.getDropdownUsersForLibrary(
+            this.props.restServer
+            , this.props.username
+            , this.props.password
+            , idLibrary
+            , this.setLibraryWorkflowInfo
+        );
+      }
+
     }
 
     let idTopic = theForm["topic"];
@@ -228,13 +286,25 @@ export class NewEntry extends React.Component {
    * add code to set the form users to those
    * for the role selected in the form.
    */
-  setLibraryUserRoles = (restCallResult) => {
-    console.log("setLibraryUserRoles");
-    console.log(restCallResult);
+  setLibraryWorkflowInfo = (restCallResult) => {
     if (restCallResult) {
+
+      let config = restCallResult.data.values[2].config;
+
+      console.log(restCallResult.data.values[0]);
+      console.log(restCallResult.data.values[1].statuses);
+      console.log(config);
+
       this.setState({
-        userRolesForLibrary: restCallResult.data.values[0]
-        , statuses: restCallResult.data.values[1]
+        workflow: {
+          userRolesForLibrary: restCallResult.data.values[0]
+          , statuses: restCallResult.data.values[1].statuses
+          , isPublic: config.isPublic
+          , stateEnabled: config.stateEnabled
+          , workflowEnabled: config.workflowEnabled
+          , defaultStatusAfterEdit: config.defaultStatusAfterEdit
+          , defaultStatusAfterFinalization: config.defaultStatusAfterFinalization
+        }
       });
     }
   }
@@ -249,7 +319,7 @@ export class NewEntry extends React.Component {
         , this.props.username
         , this.props.password
         , library
-        , this.setLibraryUserRoles
+        , this.setLibraryWorkflowInfo
     );
   }
 
@@ -284,6 +354,7 @@ export class NewEntry extends React.Component {
         }
       }
     }
+
     this.setState({
       IdLibrary: IdLibrary
       , IdTopic: IdTopic
@@ -295,11 +366,21 @@ export class NewEntry extends React.Component {
       , IdTopicParts: idTopicParts
     }
     );
+
     this.state.selected.form.library = IdLibrary;
     this.state.selected.form.topic = IdTopic;
     this.state.selected.form.key = IdKey;
     this.state.selected.form.id = IdLibrary+"~"+IdTopic+"~"+IdKey;
     this.state.selected.form.seq = idSeq;
+    console.log("defaultStatusAfterEdit");
+    console.log(this.state.workflow.defaultStatusAfterEdit);
+    this.state.selected.form.status = this.state.workflow.defaultStatusAfterEdit;
+
+    if (this.state.workflow && this.state.workflow.workflowEnabled) {
+      this.state.selected.form.assignedToUser = this.state.workflow.userRolesForLibrary[this.state.userRolesIndex];
+    } else {
+      this.state.selected.form.assignedToUser = "";
+    }
     this.toogleIdBuilderPanel();
     if (this.state.isTranslationForm) {
       if (! this.state.panel.paraTextOpen) {

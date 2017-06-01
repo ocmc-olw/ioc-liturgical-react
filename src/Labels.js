@@ -363,6 +363,32 @@ const   labels = {
       , submitting: "Submitting..."
       , exists: "already exists..."
     }
+    , DependencyDiagram: {
+      title: "Dependency Diagram for "
+      , instructions: ""
+    }
+    , Grammar: {
+      title: "Grammar Explorer for "
+      , instructions: "Use this section to view grammatical information about Greek words..."
+      , panelAnalyses: "Perseus Analyses"
+      , panelPerseusSite: "Perseus Web Site"
+      , panelLexigramSite: "Lexigram Web Site (in Greek)"
+      , panelLogeionSite: "Logeion Web Site"
+      , panelLaParola: "LaParola Web Site"
+      , panelKriaras: "Kriaras (in Greek)"
+      , panelTriantafyllides: "Triantafyllides (in Greek)"
+      , panelBasicLexicon: "Basic Lexicon of Ancient Greek (in Greek)"
+      , panelTig: "TLG Corpus Search (requires subscription to TLG)"
+      , panelSmyth: "Smyth Greek Grammar"
+      , colLemma: "Lemma"
+      , colParse: "Parse"
+      , colGlosses: "Glosses"
+      , colAnalyses: "ExPex"
+    }
+    , HyperTokenText: {
+      title: "Text For "
+      , instructions: "Click on a word to get information about it..."
+    }
     , ldp: {
       prompt: "Pick the calendar type and date for which you want to view Liturgical Day Properties..."
       , calendar: "Calendar"
@@ -774,6 +800,32 @@ const   labels = {
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
     }
+    , DependencyDiagram: {
+      title: "Dependency Diagram for "
+      , instructions: ""
+    }
+    , Grammar: {
+      title: "Grammar Explorer for "
+      , instructions: "Use this section to view grammatical information about Greek words..."
+      , panelAnalyses: "Perseus Analyses"
+      , panelPerseusSite: "Perseus Web Site"
+      , panelLexigramSite: "Lexigram Web Site (στα Ελληνικά)"
+      , panelLogeion: "Logeion Web Site"
+      , panelLaParola: "LaParola Web Site"
+      , panelKriaras: "Kriaras (στα Ελληνικά)"
+      , panelTriantafyllides: "Triantafyllides (στα Ελληνικά)"
+      , panelBasicLexicon: "Basic Lexicon of Ancient Greek (στα Ελληνικά)"
+      , panelTig: "TLG Corpus Search (requires subscription to TLG)"
+      , panelSmyth: "Smyth Greek Grammar"
+      , colLemma: "Lemma"
+      , colParse: "Parse"
+      , colGlosses: "Glosses"
+      , colAnalyses: "ExPex"
+    }
+    , HyperTokenText: {
+      title: "Text For "
+      , instructions: "Click on a word to get information about it..."
+    }
     , ldp: {
       prompt: "Επιλέξτε τον τύπο ημερολογίου και ημερομηνιών από τον οποίο θέλετε να δείτε τα Λειτουργικά Θέματα των Ημερών..."
       , calendar: "Ημερολόγιο"
@@ -834,6 +886,9 @@ module.exports = {
   , getLinkSearchResultsTableLabels: (code) => { return labels[code].linkSearchResultsTable;}
   , getHeaderLabels: (code) => { return labels[code].header;}
   , getHelpLabels: (code) => { return labels[code].help;}
+  , getDependencyDiagramLabels: (code) => { return labels[code].DependencyDiagram;}
+  , getGrammarLabels: (code) => { return labels[code].Grammar;}
+  , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}

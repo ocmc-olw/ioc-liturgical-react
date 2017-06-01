@@ -86,6 +86,8 @@ export class Search extends React.Component {
         , onSizePerPageList: this.onSizePerPageList
         , hideSizePerPage: true
         , paginationShowsTotal: true
+//        , onRowClick: this.onRowClick
+//        , onRowDoubleClick: this.onRowDoubleClick
       }
       ,
       selectRow: {
@@ -135,6 +137,8 @@ export class Search extends React.Component {
     this.getBars = this.getBars.bind(this);
     this.getDocTypes = this.getDocTypes.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
+    this.onRowClick = this.onRowClick.bind(this);
+    this.onRowDoubleClick = this.onRowDoubleClick.bind(this);
   }
 
   componentWillMount = () => {
@@ -485,6 +489,15 @@ export class Search extends React.Component {
     );
   };
 
+  onRowClick = (row) => {
+    console.log("row clicked");
+    console.log(row);
+  }
+
+  onRowDoubleClick = (row) => {
+    console.log("row double clicked");
+    console.log(row);
+  }
 
   handleRowSelect = (row, isSelected, e) => {
     let idParts = row["id"].split("~");

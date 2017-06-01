@@ -27,6 +27,7 @@ import {render} from 'react-dom';
 import {
   AboutDatabase
   , Configuration
+  , DependencyDiagram
   , DomainSelector
   , Flag
   , HelpSearch
@@ -69,7 +70,7 @@ class Demo extends React.Component {
       , domains: {}
       , formsDropdown: []
       , formsValueSchemas: {}
-      , formsValues: []
+      , formsValues: {}
       , biblicalBooksDropdown: []
       , biblicalChaptersDropdown: []
       , biblicalVersesDropdown: []
@@ -114,6 +115,7 @@ class Demo extends React.Component {
     this.handleParallelTextEditorCallback = this.handleParallelTextEditorCallback.bind(this);
     this.doNothingHandler = this.doNothingHandler.bind(this);
     this.handleSearchRequest = this.handleSearchRequest.bind(this);
+    this.handleDropdownsCallback = this.handleDropdownsCallback.bind(this);
   }
 
   /**
@@ -166,39 +168,65 @@ class Demo extends React.Component {
       , valid
       , username
       , password
-      , forms
   ) {
     // save the username and password regardless of status so it will not be erased when Login re-renders
     this.setState({
       username: username
       , password: password
-      , forms: forms
     });
     if (valid) {
       this.setState({
         authenticated: true
         , loginFormMsg: this.state.language.labels.pageLogin.good
-        , domains: forms.domains
-        , formsDropdown: forms.formsDropdown
-        , formsValueSchemas: forms.valueSchemas
-        , formsValues: forms.values
-        , ontologyDropdowns: forms.ontologyDropdowns
-        , biblicalBooksDropdown: forms.biblicalBooksDropdown
-        , biblicalChaptersDropdown: forms.biblicalChaptersDropdown
-        , biblicalVersesDropdown: forms.biblicalVersesDropdown
-        , biblicalSubversesDropdown: forms.biblicalSubversesDropdown
+        , formsLoaded: false
+        , forms: {}
+        , domains: {}
+        , formsDropdown: []
+        , formsValueSchemas: {}
+        , formsValues: {}
+        , ontologyDropdowns: {}
+        , biblicalBooksDropdown: []
+        , biblicalChaptersDropdown: []
+        , biblicalVersesDropdown: []
+        , biblicalSubversesDropdown: []
       });
     } else {
       this.setState({
         authenticated: false
         , loginFormMsg: this.state.language.labels.pageLogin.bad
+        , formsLoaded: false
+        , forms: {}
         , domains: {}
         , formsDropdown: []
         , formsValueSchemas: {}
-        , formsValues: []
+        , formsValues: {}
+        , ontologyDropdowns: []
+        , biblicalBooksDropdown: []
+        , biblicalChaptersDropdown: []
+        , biblicalVersesDropdown: []
+        , biblicalSubversesDropdown: []
       });
     }
   };
+
+  // called after a successful login
+  handleDropdownsCallback = (response) => {
+    console.log("Server responded to request for dropdowns");
+    let forms = response.data;
+    this.setState({
+      formsLoaded: true
+      , forms: forms.data
+      , domains: forms.domains
+      , formsDropdown: forms.formsDropdown
+      , formsValueSchemas: forms.valueSchemas
+      , formsValues: forms.values
+      , ontologyDropdowns: forms.ontologyDropdowns
+      , biblicalBooksDropdown: forms.biblicalBooksDropdown
+      , biblicalChaptersDropdown: forms.biblicalChaptersDropdown
+      , biblicalVersesDropdown: forms.biblicalVersesDropdown
+      , biblicalSubversesDropdown: forms.biblicalSubversesDropdown
+    });
+  }
 
   handleSearchCallback(id, value) {
     if (id && id.length > 0) {
@@ -358,6 +386,7 @@ class Demo extends React.Component {
                   username={this.state.username} // initially set to ""
                   password={this.state.password} // initially set to ""
                   loginCallback={this.handleLoginCallback}
+                  dropdownsCallback={this.handleDropdownsCallback}
                   formPrompt={this.state.language.labels.pageLogin.prompt}
                   formMsg={this.state.loginFormMsg}
               />
@@ -441,7 +470,7 @@ class Demo extends React.Component {
               <p>The Domain Selector is a dropdown that allows the user to select a domain. A selected domain can be
                 used as a database search parameter since all docs in the database use the domain in the first part of
                 the doc ID.</p>
-              {this.state.authenticated ?
+              {(this.state.authenticated && this.state.formsLoaded) ?
                   <div>
                     <DomainSelector
                         restServer={this.state.restServer}
@@ -710,12 +739,12 @@ class Demo extends React.Component {
               <AboutDatabase labels={this.state.language.labels.pageAbout}/>
             </Panel> {/* About Database */}
             <Panel header="Create a New Entry" eventKey="NewEntry">
-              { this.state.authenticated ?
+              { (this.state.authenticated  && this.state.formsLoaded) ?
                   <p></p>
                   :
                   <p>You must log in first in order to see and use this.</p>
               }
-              { this.state.authenticated &&
+              { (this.state.authenticated && this.state.formsLoaded) &&
               <NewEntry
                   restServer={this.state.restServer}
                   username={this.state.username}
@@ -735,26 +764,35 @@ class Demo extends React.Component {
               }
             </Panel> {/* New Item */}
             <Panel header="Parallel Row Text Editor" eventKey="prte">
-              { this.state.authenticated ?
+              { (this.state.authenticated  && this.state.formsLoaded) ?
                   <p>Parallel Row Text Editor. Shows source text and existing translations as rows in a table.  The user can enter his/her own translation.</p>
                   :
                   <p>Parallel Row Text Editor.  You must log in first in order to see and use this.</p>
               }
-              { this.state.authenticated &&
+              { (this.state.authenticated  && this.state.formsLoaded) &&
               <ParaRowTextEditor
                   restServer={this.state.restServer}
                   username={this.state.username}
                   password={this.state.password}
                   languageCode={this.state.language.code}
                   docType="Liturgical"
-                  idLibrary="en_us_dedes"
-                  idTopic="hi.s01"
-                  idKey="hiVE.Key0108.text"
+                  idLibrary="en_uk_gevsot"
+                  idTopic="me.m01.d06"
+                  idKey="meMA.Ode1C1H.text"
                   value={this.state.translatedText}
                   onSubmit={this.handleParallelTextEditorCallback}
               />
               }
-            </Panel> {/* TDB */}
+            </Panel> {/* ParaRowTextEditor */}
+            <Panel header="Dependency Diagram" eventKey="dependencyDiagram">
+              <DependencyDiagram
+                  languageCode={this.state.language.code}
+                  data={['hi']}
+                  size="medium"
+                  width="100%"
+                  height="500px"
+              />
+            </Panel> {/* Dependency Diagram */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

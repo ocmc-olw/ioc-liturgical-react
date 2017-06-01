@@ -23,9 +23,7 @@ class Login extends React.Component {
     };
     axios.get(
         this.props.restServer
-        + server.getWsServerResourcesApi()
-        + "/"
-        + formData.username
+        + server.getWsServerLoginUserApi()
         , config
     )
         .then(response => {
@@ -39,8 +37,15 @@ class Login extends React.Component {
               , true
               , formData.username
               , formData.password
-              , response.data
           );
+          console.log("Requesting dropdowns");
+          server.getResources(
+              this.props.restServer
+              , formData.username
+              , formData.password
+              , this.props.dropdownsCallback
+          );
+
         })
         .catch( (error) => {
           auth.setCredentials(
@@ -57,7 +62,11 @@ class Login extends React.Component {
         });
   }
 
-  fetchData() {
+  fetchResources() {
+
+  }
+
+  fetchLoginForm() {
     axios.get(this.props.restServer + server.getWsServerLoginApi())
         .then(response => {
           this.setState( { data: response.data , path: this.props.path} );
@@ -75,7 +84,7 @@ class Login extends React.Component {
 
   render() {
     if (this.state.path !== this.props.path) {
-      this.fetchData();
+      this.fetchLoginForm();
     }
     if (this.state.data) {
       if (this.state.data.schema) {
@@ -106,12 +115,12 @@ class Login extends React.Component {
   }
 }
 
-
 Login.propTypes = {
   restServer: React.PropTypes.string.isRequired
   , username: React.PropTypes.string.isRequired
   , password: React.PropTypes.string.isRequired
   , loginCallback: React.PropTypes.func.isRequired
+  , dropdownsCallback: React.PropTypes.func.isRequired
   , formPrompt: React.PropTypes.string.isRequired
   , formMsg: React.PropTypes.string.isRequired
 };
