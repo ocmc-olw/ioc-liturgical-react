@@ -13,6 +13,7 @@ module.exports = {
       , simpleSearch: "minus"
       , advancedSearch: "bars"
       , idPatternSearch: "key"
+      , spinner: "spinner"
     };
   }
 }

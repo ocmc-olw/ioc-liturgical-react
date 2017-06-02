@@ -1,6 +1,8 @@
 import React from 'react';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
+import Spinner from '../helpers/Spinner';
+
 import {ControlLabel, Well} from 'react-bootstrap';
 
 class HyperTokenText extends React.Component {
@@ -36,16 +38,20 @@ class HyperTokenText extends React.Component {
   }
 
   handleClick = (event) => {
-    this.props.onClick(event.currentTarget.textContent);
+    this.props.onClick(event.currentTarget.id, event.currentTarget.textContent.trim());
   }
 
-  renderTokens = (tokens) => {
-    if (tokens.length > 0) {
-      return tokens.map((token, index) => (
-          <span className="App App-HyperToken" key={index} onClick={this.handleClick}>{token} </span>
+  renderTokens = () => {
+
+    if (this.props.tokens && this.props.tokens.length > 0) {
+      return this.props.tokens.map((token, index) => (
+          <ruby className="App App-HyperToken" key={index}>
+            <rb><span className="App-HyperToken-Word" id={index} onClick={this.handleClick}>{token}&nbsp;</span></rb>
+            <rt><span className="App-HyperToken-Index">{index+1}</span></rt>
+          </ruby>
       ));
     } else {
-      return [];
+      return <div><Spinner message={this.state.labels.messages.retrieving}/></div>;
     }
   }
 
@@ -56,7 +62,7 @@ class HyperTokenText extends React.Component {
                 <div>{this.state.labels.thisClass.instructions}</div>
                 <Well>
                   <div className="App App-HyperTokenText-Text">
-                    {this.renderTokens(this.props.tokens)}
+                    {this.renderTokens()}
                   </div>
                 </Well>
             </div>

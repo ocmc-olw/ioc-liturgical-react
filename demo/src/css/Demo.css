@@ -43,11 +43,19 @@ div.container-fluid {
     cursor: pointer;
 }
 .App-HyperToken {
+}
+.App-HyperToken-Index {
+    font-size: larger;
+}
+.App-HyperToken-Word {
     color: blue;
     cursor: pointer;
 }
 .App-iframe-wrapper {
     resize: vertical;
+}
+.App-font-awesome-spinner {
+    color: red;
 }
 .panel-title {
     cursor: pointer;

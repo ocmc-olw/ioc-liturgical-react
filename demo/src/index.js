@@ -39,6 +39,7 @@ import {
   , SearchOntology
   , SearchText
   , SearchRelationships
+  , Spinner
 } from '../../src';
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
@@ -88,6 +89,7 @@ class Demo extends React.Component {
           , searchLinks: Labels.labels.en.searchLinks
           , searchOntology: Labels.labels.en.searchOntology
           , ldp: Labels.labels.en.ldp
+          , messages: Labels.getMessageLabels("en")
         }
       }
       , loginFormMsg: ""
@@ -116,6 +118,7 @@ class Demo extends React.Component {
     this.doNothingHandler = this.doNothingHandler.bind(this);
     this.handleSearchRequest = this.handleSearchRequest.bind(this);
     this.handleDropdownsCallback = this.handleDropdownsCallback.bind(this);
+    this.getParaTextEditor = this.getParaTextEditor.bind(this);
   }
 
   /**
@@ -138,6 +141,7 @@ class Demo extends React.Component {
             , searchLinks: Labels.getSearchLinksLabels(code)
             , searchOntology: Labels.getSearchOntologyLabels(code)
             , ldp: Labels.getLdpLabels(code)
+            , messages: Labels.getMessageLabels(code)
           }
         }
       });
@@ -275,6 +279,38 @@ class Demo extends React.Component {
   }
 
   doNothingHandler = () => {
+  }
+
+  getParaTextEditor = () => {
+    if (this.state.authenticated) {
+      if (this.state.formsLoaded) {
+        return (
+            <div>
+              <p>Parallel Row Text Editor. Shows source text and existing translations as rows in a table.  The user can enter his/her own translation.</p>
+              <ParaRowTextEditor
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  docType="Liturgical"
+                  idLibrary="en_uk_gevsot"
+                  idTopic="me.m01.d06"
+                  idKey="meMA.Ode1C1H.text"
+                  value={this.state.translatedText}
+                  onSubmit={this.handleParallelTextEditorCallback}
+              />
+            </div>
+        );
+      } else {
+        return (
+            <Spinner message={this.state.language.labels.messages.retrieving}/>
+        );
+      }
+    } else {
+      return (
+          <p>Parallel Row Text Editor.  You must log in first in order to see and use this.</p>
+      );
+    }
   }
 
   render() {
@@ -764,25 +800,7 @@ class Demo extends React.Component {
               }
             </Panel> {/* New Item */}
             <Panel header="Parallel Row Text Editor" eventKey="prte">
-              { (this.state.authenticated  && this.state.formsLoaded) ?
-                  <p>Parallel Row Text Editor. Shows source text and existing translations as rows in a table.  The user can enter his/her own translation.</p>
-                  :
-                  <p>Parallel Row Text Editor.  You must log in first in order to see and use this.</p>
-              }
-              { (this.state.authenticated  && this.state.formsLoaded) &&
-              <ParaRowTextEditor
-                  restServer={this.state.restServer}
-                  username={this.state.username}
-                  password={this.state.password}
-                  languageCode={this.state.language.code}
-                  docType="Liturgical"
-                  idLibrary="en_uk_gevsot"
-                  idTopic="me.m01.d06"
-                  idKey="meMA.Ode1C1H.text"
-                  value={this.state.translatedText}
-                  onSubmit={this.handleParallelTextEditorCallback}
-              />
-              }
+              {this.getParaTextEditor()}
             </Panel> {/* ParaRowTextEditor */}
             <Panel header="Dependency Diagram" eventKey="dependencyDiagram">
               <DependencyDiagram

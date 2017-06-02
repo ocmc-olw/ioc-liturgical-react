@@ -11,7 +11,6 @@ import Labels from '../Labels';
 import IdManager from '../helpers/IdManager';
 import MessageIcons from '../helpers/MessageIcons';
 import HyperTokenText from './HyperTokenText';
-import Tree from 'react-tree-graph';
 import DependencyDiagram from './DependencyDiagram';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -36,14 +35,22 @@ class Grammar extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    console.log("Grammar::componentWillReceiveProps");
-    this.state = this.setTheState(nextProps);
-    if (this.state.text && this.state.text.id !== this.props.id) {
+    console.log("Grammar::componentWillReceiveProps: nextProps.topic / key = " + nextProps.idTopic + " / " + nextProps.idKey);
+    let nextId = IdManager.toId("gr_gr_cog", nextProps.idTopic, nextProps.idKey);
+    this.state = this.setTheState(
+        nextProps
+        , this.state.text
+        , this.state.dropdownsLoaded
+        , this.state.data
+        , this.state.tokens
+        , this.state.analyses
+    );
+    if (this.state.text && this.state.text.id !== nextId) {
       this.fetchData();
     }
   }
 
-  setTheState = (props) => {
+  setTheState = (props, text, dropdownsLoaded, data, tokens, analyses) => {
     return (
         {
           labels: {
@@ -69,46 +76,12 @@ class Grammar extends React.Component {
             , className: "App-row-select"
           }
           , id: IdManager.toId("gr_gr_cog", this.props.idTopic, this.props.idKey)
-          , treeDataOriginal: {
-            name: 'Parent',
-            children: [{
-              name: 'Child One',
-              children: []
-            }, {
-              name: 'Child Two',
-              children: []
-            }]
-          }
-          , d3hData: [
-            {"name": "Eve",   "parent": ""},
-            , {"name": "Cain",  "parent": "Eve"},
-            , {"name": "Seth",  "parent": "Eve"},
-            , {"name": "Enos",  "parent": "Seth"},
-            , {"name": "Noam",  "parent": "Seth"},
-            , {"name": "Abel",  "parent": "Eve"},
-            , {"name": "Awan",  "parent": "Eve"},
-            , {"name": "Enoch", "parent": "Awan"},
-            , {"name": "Azura", "parent": "Eve"}
-            ]
-        , googleData: [
-          ['Age', 'Weight'],
-          [8, 12],
-          [4, 5.5],
-          [11, 14],
-          [4, 5],
-          [3, 3.5],
-          [6.5, 7]
-        ]
-        , treeData: {
-          name: 'ἀνεκάλυψε',
-          children: [{
-            name: 'πυθμένα',
-            children: [{
-             name: 'Βυθοῦ',
-              children: []
-            }]
-          }]
-        }
+          , props: props
+          , text: text
+          , dropdownsLoaded: dropdownsLoaded
+          , data: data
+          , tokens: tokens
+          , analyses: analyses
         }
     )
   }
@@ -137,10 +110,12 @@ class Grammar extends React.Component {
   }
 
 
-  handleTokenClick = (token) => {
+  handleTokenClick = (index, token) => {
+    console.log(index, token);
     this.setState({
-      selectedToken: token.trim()
-      , selectedLemma: this.state.analyses[token.trim()][0].lemmaGreek
+      selectedTokenIndex: index
+      , selectedToken: token
+      , selectedLemma: this.state.analyses[token][0].lemmaGreek
     });
   }
 
@@ -158,7 +133,6 @@ class Grammar extends React.Component {
       , showModalCompareDocs: true
     });
   }
-
 
   getPanels = () => {
     if (this.state.selectedToken) {
@@ -336,29 +310,6 @@ class Grammar extends React.Component {
                 />
               </div>
             </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={"Tree Diagram"}
-                eventKey="tree"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Tree
-                  data={this.state.treeData}
-                  height={400}
-                  width={400}
-                />
-              </div>
-            </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={"Dependency Diagram"}
-                eventKey="dd"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-              </div>
-            </Panel>
           </PanelGroup>
       )
     } else {
@@ -367,23 +318,35 @@ class Grammar extends React.Component {
   }
 
   getBody = () => {
-    if (this.state.dropdownsLoaded) {
+    console.log("Grammar::getBody");
       return (
           <div>
-          <HyperTokenText
-              languageCode={this.props.languageCode}
-              tokens={this.state.tokens}
-              id={this.state.id}
-              onClick={this.handleTokenClick}
-          />
-      {this.state.selectedToken && this.getPanels()}
+            <Panel
+                header="Dependency Diagram"
+                eventKey="dependencyDiagram"
+                collapsible
+                defaultExpanded={false}
+            >
+              <DependencyDiagram
+                  languageCode={this.props.languageCode}
+                  data={['hi']}
+                  size="medium"
+                  width="100%"
+                  height="500px"
+              />
+            </Panel> {/* Dependency Diagram */}
+            <HyperTokenText
+                languageCode={this.props.languageCode}
+                tokens={this.state.tokens ? this.state.tokens : []}
+                id={this.state.id}
+                onClick={this.handleTokenClick}
+            />
+            {
+              this.state.selectedToken &&
+              this.getPanels()
+            }
           </div>
       );
-    } else {
-      return (
-        <div>Loading...</div>
-      );
-    }
   }
   render() {
       return (

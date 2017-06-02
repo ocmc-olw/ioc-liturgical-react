@@ -331,20 +331,18 @@ export class ParaRowTextEditor extends React.Component {
                   </Well>
                 </div>
                 }
-                <div>
-                  <Well>
-                    <Grammar
-                        restServer={this.props.restServer}
-                        username={this.props.username}
-                        password={this.props.password}
-                        languageCode={this.props.languageCode}
-                        idTopic={this.props.idTopic}
-                        idKey={this.props.idKey}
-                    />
-                  </Well>
-                </div>
               </div>
               }
+          <Well>
+            <Grammar
+                restServer={this.props.restServer}
+                username={this.props.username}
+                password={this.props.password}
+                languageCode={this.props.languageCode}
+                idTopic={this.props.idTopic}
+                idKey={this.props.idKey}
+            />
+          </Well>
         </div>
     );
   }

@@ -12,6 +12,7 @@ import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
 import SearchRelationships from './SearchRelationships';
+import Spinner from './helpers/Spinner';
 
 export {
   AboutDatabase
@@ -28,4 +29,5 @@ export {
   , SearchOntology
   , SearchText
   , SearchRelationships
+  , Spinner
 }

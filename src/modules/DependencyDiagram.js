@@ -52,6 +52,9 @@ class DependencyDiagram extends React.Component {
       , label
       , grammar
   ) => {
+    let n = 0;
+    n = parseInt(id);
+    n++;
     let result = [
           {
             v: id
@@ -59,6 +62,9 @@ class DependencyDiagram extends React.Component {
                 "<span class='App AppDependencyNodeToken'>"
                   + token
                   + "</span>"
+                  + "<sup>"
+                    + n
+                  + "</sup>"
               + "<div class='App AppDependencyNodeLabel'>"
               + label
               + " / "
