@@ -242,6 +242,27 @@ div.App-logo.navbar-header {
 .Select-control {
     max-width: 80%;
 }
+.App-Label-Selector-POS .Select-control {
+    width: 45ch;
+}
+.App-Label-Selector-Tense .Select-control {
+    width: 45ch;
+}
+.App-Label-Selector-Voice .Select-control {
+    width: 45ch;
+}
+.App-Label-Selector-Mood .Select-control {
+    width: 45ch;
+}
+.App-Label-Selector-Gender .Select-control {
+    width: 45ch;
+}
+.App-Label-Selector-Number .Select-control {
+    width: 45ch;
+}
+.App-Label-Selector-Case .Select-control {
+    width: 45ch;
+}
 .App-data-tr {
     max-width: 90%;
 }

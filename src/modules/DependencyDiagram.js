@@ -33,12 +33,6 @@ class DependencyDiagram extends React.Component {
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
           , message: Labels.getMessageLabels(this.props.languageCode).initial
-          , options: {
-            title: 'Age vs. Weight comparison',
-            hAxis: { title: 'Age', minValue: 0, maxValue: 15 },
-            vAxis: { title: 'Weight', minValue: 0, maxValue: 15 },
-            legend: 'none',
-          }
         }
     )
   }

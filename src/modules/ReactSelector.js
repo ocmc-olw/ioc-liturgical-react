@@ -33,6 +33,7 @@ export class ReactSelector extends React.Component {
               options={this.props.resources}
               onChange={this.handleChange}
               multi={this.props.multiSelect}
+              autosize={true}
           />
         </div>
     )

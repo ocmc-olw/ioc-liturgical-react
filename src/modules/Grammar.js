@@ -12,6 +12,7 @@ import IdManager from '../helpers/IdManager';
 import MessageIcons from '../helpers/MessageIcons';
 import HyperTokenText from './HyperTokenText';
 import DependencyDiagram from './DependencyDiagram';
+import TreeNodeBuilder from '../helpers/TreeNodeBuilder';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -19,7 +20,6 @@ class Grammar extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log("Grammar::constructor");
     this.state = this.setTheState(props, "");
 
     this.setTextInfo = this.setTextInfo.bind(this);
@@ -27,15 +27,14 @@ class Grammar extends React.Component {
     this.getPanels = this.getPanels.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getBody = this.getBody.bind(this);
+    this.handleTreeNodeBuilderCallback = this.handleTreeNodeBuilderCallback.bind(this);
   }
 
   componentWillMount = () => {
-    console.log("Grammar::componentWillMount");
     this.fetchData();
   }
 
   componentWillReceiveProps = (nextProps) => {
-    console.log("Grammar::componentWillReceiveProps: nextProps.topic / key = " + nextProps.idTopic + " / " + nextProps.idKey);
     let nextId = IdManager.toId("gr_gr_cog", nextProps.idTopic, nextProps.idKey);
     this.state = this.setTheState(
         nextProps
@@ -87,7 +86,6 @@ class Grammar extends React.Component {
   }
 
   fetchData = () => {
-    console.log("fetching analyses");
     server.getTextAnalysis(
         this.props.restServer
         , this.props.username
@@ -99,7 +97,6 @@ class Grammar extends React.Component {
 
   setTextInfo = (restCallResult) => {
     if (restCallResult) {
-      console.log("Received analyses");
       this.setState({
         dropdownsLoaded: true
         , data: restCallResult.data.values[0].text
@@ -111,7 +108,6 @@ class Grammar extends React.Component {
 
 
   handleTokenClick = (index, token) => {
-    console.log(index, token);
     this.setState({
       selectedTokenIndex: index
       , selectedToken: token
@@ -134,10 +130,30 @@ class Grammar extends React.Component {
     });
   }
 
+  handleTreeNodeBuilderCallback = () => {
+
+  }
+
   getPanels = () => {
     if (this.state.selectedToken) {
       return (
           <PanelGroup defaultActiveKey="analyses">
+            <Panel
+                header={
+                  "Tree Builder"
+                }
+                eventKey="treebuilder"
+                collapsible
+            >
+              <TreeNodeBuilder
+                  languageCode={this.props.languageCode}
+                  index={this.state.selectedTokenIndex}
+                  tokens={this.state.tokens}
+                  token={this.state.selectedToken}
+                  grammar=""
+                  callBack={this.handleTreeNodeBuilderCallback}
+              />
+            </Panel>
             <Panel
                 className="App-Grammar-Analyses-panel"
                 header={
@@ -318,7 +334,6 @@ class Grammar extends React.Component {
   }
 
   getBody = () => {
-    console.log("Grammar::getBody");
       return (
           <div>
             <Panel

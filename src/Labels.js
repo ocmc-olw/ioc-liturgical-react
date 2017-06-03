@@ -442,6 +442,127 @@ const   labels = {
       , searching: "searching..."
       , found: "Found"
     }
+    , grammarTerms: {
+      case: {
+        title: "Case"
+        , values: {
+          "ACC": "accusative "
+          , "DAT": "dative"
+          , "GEN": "genitive"
+          , "NOM": "nominative"
+          , "VOC": "vocative "
+        }
+      }
+      , categories: {
+        title: "Syntactic Categories"
+        , values: {
+          "ADV": "adverb"
+          , "APOS": "apposing element"
+          , "ATR": "attributive"
+          , "ATV": "complement"
+          , "AuxC": "conjunction"
+          , "AuxG": "bracketing punctuation"
+          , "AuxK": "terminal punctuation"
+          , "AuxP": "preposition"
+          , "AuxV": "auxiliary verb"
+          , "AuxX": "commas"
+          , "AuxY": "sentence adverbials"
+          , "AuxZ": "emphasizing particles"
+          , "COORD": "coordinator"
+          , "ExD": "ellipsis"
+          , "OBJ": "object"
+          , "OCOMP": "object complement"
+          , "PNOM": "predicate nominal"
+          , "PRED": "predicate"
+          , "ROOT" : "root of the dependency tree"
+          , "SBJ": "subject"
+        }
+      }
+      , gender: {
+        title: "Gender"
+        , values: {
+          "F": "feminine"
+          , "M": "masculine"
+          , "N": "neuter"
+        }
+      }
+      , mood: {
+        title: "Mood"
+        , values: {
+          "IMP": "imperative"
+          , "IND": "indicative"
+          , "OPT": "optative"
+          , "SBJV": "subjunctive"
+        }
+      }
+      , number: {
+        title: "Number"
+        , values: {
+          "DU": "dual"
+          , "PL": "plural"
+          , "SG": "singular"
+        }
+      }
+      , person: {
+        title: "Person"
+        , values: {
+          "1": "first person"
+          , "2": "second person"
+          , "3": "third person"
+        }
+      }
+      , pos: {
+        title: "Part of Speech"
+        , values: {
+          "ADJ": "adjective"
+          , "ADJ.COMP": "adjective (comparative)"
+          , "ADJ.SUP.ABS": "adjective (absolute superlative)"
+          , "ADJ.SUP.REL": "adjective (relative superlative)"
+          , "ADV": "adverb(ial)"
+          , "ART": "article"
+          , "ART.DEF": "article (definite)"
+          , "ART.INDF": "article (indefinite)"
+          , "CONJ": "conjunction"
+          , "DEM": "demonstrative"
+          , "DET": "determiner"
+          , "EXCLM": "exclamation"
+          , "INF": "infinitive"
+          , "NEG": "negation, negative"
+          , "NOUN": "noun"
+          , "NUM": "number"
+          , "PART": "particle"
+          , "PM": "punctuation mark"
+          , "PREP": "preposition"
+          , "PRON": "pronoun"
+          , "PRON.POSS": "pronoun (possessive"
+          , "PRON.REL": "pronoun (relative)"
+          , "PTCP": "participle"
+          , "Q": "question particle/marker"
+          , "VERB": "verb"
+        }
+      }
+      , tense: {
+        title: "Tense"
+        , values: {
+          "AOR": "aorist"
+          , "FUT": "future"
+          , "IMPRF": "imperfect"
+          , "PFV": "perfective"
+          , "PLUP": "pluperfect"
+          , "PRF": "perfect"
+          , "PRS": "present"
+        }
+      }
+      , voice: {
+        title: "Voice"
+        , values: {
+          "ACT": "active "
+          , "MID": "middle"
+          , "MP": "middle/passive"
+          , "PASS": "passive"
+        }
+      }
+    }
   }
     , el: {
     resultsTable: {
@@ -875,6 +996,127 @@ const   labels = {
       , searching: "searching..."
       , found: "Found"
     }
+    , grammarTerms: {
+      case: {
+        title: "Case"
+        , values: {
+          "ACC": "accusative "
+          , "DAT": "dative"
+          , "GEN": "genitive"
+          , "NOM": "nominative"
+          , "VOC": "vocative "
+        }
+      }
+      , categories: {
+        title: "Syntactic Categories"
+        , values: {
+          "ADV": "adverb"
+          , "APOS": "apposing element"
+          , "ATR": "attributive"
+          , "ATV": "complement"
+          , "AuxC": "conjunction"
+          , "AuxG": "bracketing punctuation"
+          , "AuxK": "terminal punctuation"
+          , "AuxP": "preposition"
+          , "AuxV": "auxiliary verb"
+          , "AuxX": "commas"
+          , "AuxY": "sentence adverbials"
+          , "AuxZ": "emphasizing particles"
+          , "COORD": "coordinator"
+          , "ExD": "ellipsis"
+          , "OBJ": "object"
+          , "OCOMP": "object complement"
+          , "PNOM": "predicate nominal"
+          , "PRED": "predicate"
+          , "ROOT" : "root of the dependency tree"
+          , "SBJ": "subject"
+        }
+      }
+      , gender: {
+        title: "Gender"
+        , values: {
+          "F": "feminine"
+          , "M": "masculine"
+          , "N": "neuter"
+        }
+      }
+      , mood: {
+        title: "Mood"
+        , values: {
+          "IMP": "imperative"
+          , "IND": "indicative"
+          , "OPT": "optative"
+          , "SBJV": "subjunctive"
+        }
+      }
+      , number: {
+        title: "Number"
+        , values: {
+          "DU": "dual"
+          , "PL": "plural"
+          , "SG": "singular"
+        }
+      }
+      , person: {
+        title: "Person"
+        , values: {
+          "1": "first person"
+          , "2": "second person"
+          , "3": "third person"
+        }
+      }
+      , pos: {
+        title: "Part of Speech"
+        , values: {
+          "ADJ": "adjective"
+          , "ADJ.COMP": "adjective (comparative)"
+          , "ADJ.SUP.ABS": "adjective (absolute superlative)"
+          , "ADJ.SUP.REL": "adjective (relative superlative)"
+          , "ADV": "adverb(ial)"
+          , "ART": "article"
+          , "ART.DEF": "article (definite)"
+          , "ART.INDF": "article (indefinite)"
+          , "CONJ": "conjunction"
+          , "DEM": "demonstrative"
+          , "DET": "determiner"
+          , "EXCLM": "exclamation"
+          , "INF": "infinitive"
+          , "NEG": "negation, negative"
+          , "NOUN": "noun"
+          , "NUM": "number"
+          , "PART": "particle"
+          , "PM": "punctuation mark"
+          , "PREP": "preposition"
+          , "PRON": "pronoun"
+          , "PRON.POSS": "pronoun (possessive"
+          , "PRON.REL": "pronoun (relative)"
+          , "PTCP": "participle"
+          , "Q": "question particle/marker"
+          , "VERB": "verb"
+        }
+      }
+      , tense: {
+        title: "Tense"
+        , values: {
+          "AOR": "aorist"
+          , "FUT": "future"
+          , "IMPRF": "imperfect"
+          , "PFV": "perfective"
+          , "PLUP": "pluperfect"
+          , "PRF": "perfect"
+          , "PRS": "present"
+        }
+      }
+      , voice: {
+        title: "Voice"
+        , values: {
+          "ACT": "active "
+          , "MID": "middle"
+          , "MP": "middle/passive"
+          , "PASS": "passive"
+        }
+      }
+    }
   }
 }
 
@@ -888,6 +1130,22 @@ module.exports = {
   , getHelpLabels: (code) => { return labels[code].help;}
   , getDependencyDiagramLabels: (code) => { return labels[code].DependencyDiagram;}
   , getGrammarLabels: (code) => { return labels[code].Grammar;}
+  , getGrammarTerms: (code, category) => {
+      if (category) {
+        return labels[code].grammarTerms[category];
+      } else {
+        return labels[code].grammarTerms;
+      }
+    }
+  , getGrammarTermsCase: (code) => { return labels[code].grammarTerms.case;}
+  , getGrammarTermsCategories: (code) => { return labels[code].grammarTerms.categories;}
+  , getGrammarTermsGender: (code) => { return labels[code].grammarTerms.gender;}
+  , getGrammarTermsMood: (code) => { return labels[code].grammarTerms.mood;}
+  , getGrammarTermsNumber: (code) => { return labels[code].grammarTerms.number;}
+  , getGrammarTermsPerson: (code) => { return labels[code].grammarTerms.person;}
+  , getGrammarTermsPartsOfSpeech: (code) => {return labels[code].grammarTerms.pos;}
+  , getGrammarTermsTense: (code) => { return labels[code].grammarTerms.tense;}
+  , getGrammarTermsVoice: (code) => { return labels[code].grammarTerms.voice;}
   , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
