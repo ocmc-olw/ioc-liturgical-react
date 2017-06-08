@@ -243,6 +243,7 @@ div.App-logo.navbar-header {
     max-width: 80%;
 }
 .App-Label-Selector-POS .Select-control {
+    float: left;
     width: 45ch;
 }
 .App-Label-Selector-Tense .Select-control {

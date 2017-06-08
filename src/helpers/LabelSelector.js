@@ -30,7 +30,6 @@ class LabelSelector extends React.Component {
   }
 
   toArray = () => {
-    console.log("LabelSelector::toArray");
     let s = this.props.labels.values;
     let result = Object.keys(s)
         .map(function(key){
@@ -51,7 +50,7 @@ class LabelSelector extends React.Component {
             <ResourceSelector
                 title={this.props.labels.title}
                 className="App-label-selector"
-                initialValue={""}
+                initialValue={this.props.initialValue}
                 resources={this.toArray()}
                 changeHandler={this.props.changeHandler}
                 multiSelect={false}
@@ -63,6 +62,7 @@ class LabelSelector extends React.Component {
 LabelSelector.propTypes = {
     languageCode: React.PropTypes.string.isRequired
     , labels: React.PropTypes.object.isRequired
+    , initialValue: React.PropTypes.string.isRequired
     , changeHandler: React.PropTypes.func.isRequired
 };
 

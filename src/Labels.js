@@ -441,6 +441,7 @@ const   labels = {
       , retrieving: "retrieving..."
       , searching: "searching..."
       , found: "Found"
+      , submit: "Submit"
     }
     , grammarTerms: {
       case: {
@@ -995,6 +996,7 @@ const   labels = {
       , retrieving: "retrieving..."
       , searching: "searching..."
       , found: "Found"
+      , submit: "Submit"
     }
     , grammarTerms: {
       case: {
