@@ -12,6 +12,7 @@ import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
 import SearchRelationships from './SearchRelationships';
+import TopicsSelector from './modules/TopicsSelector';
 import Spinner from './helpers/Spinner';
 
 export {
@@ -30,4 +31,5 @@ export {
   , SearchText
   , SearchRelationships
   , Spinner
+  , TopicsSelector
 }

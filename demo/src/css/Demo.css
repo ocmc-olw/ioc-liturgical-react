@@ -264,6 +264,12 @@ div.App-logo.navbar-header {
 .App-Label-Selector-Case .Select-control {
     width: 45ch;
 }
+.App-WordTagger-Lemma {
+ width: 45ch;
+}
+.App-WordTagger-Gloss {
+    width: 45ch;
+}
 .App-data-tr {
     max-width: 90%;
 }

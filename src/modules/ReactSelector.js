@@ -2,10 +2,12 @@ import React, {PropTypes} from 'react';
 import Select from 'react-select';
 import 'react-select/dist/react-select.css';
 
+// TODO: switch to VirtualizedSelect, see TopicsSelector for example.  Much faster
 export class ReactSelector extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       value: this.props.initialValue
     };

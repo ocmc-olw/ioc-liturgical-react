@@ -17,6 +17,8 @@ const login = "login/form";
 const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
+const tables = docs + "/tables";
+const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
 const ontology = "ontology/ontology";
 const nlp = "nlp/"
 const textAnalysis = nlp + "text/analysis"
@@ -26,6 +28,7 @@ const dbDropdownsUserRolesForDomain = "domains/userdropdown";
 const dbDropdownsSearchOntology = "dropdowns/ontology";
 const dbDropdownDomains = "dropdowns/domains";
 const dbDropdownsSearchRelationships = "dropdowns/relationships";
+const dbDropdownsGrLibTopics = "dropdowns/grlibtopics";
 const ldp = "ldp";
 const messageIcons = MessageIcons.getMessageIcons();
 
@@ -49,9 +52,13 @@ const restGet = (
       + serverPath
   ;
 
+  console.log(path);
+
   if (parms && parms.length > 0) {
-    path = path + parms
+    path = path + "/?" + parms
   }
+
+  console.log(path);
 
   let result = {
     data: {}
@@ -60,8 +67,6 @@ const restGet = (
     , messageIcon: messageIcons.info
     , status: 200
   };
-
-  console.log(path);
 
   axios.get(path, config)
       .then(response => {
@@ -171,7 +176,8 @@ const restPut = (
 }
 
 export default {
-  getWsServerAdminApi: () => { return adminApi;}
+  tableLexiconOald
+  , getWsServerAdminApi: () => { return adminApi;}
   , getWsServerLdpApi: () => { return ldpApi;}
   , getWsServerDbApi: () => { return dbApi;}
   , getWsServerLoginApi: () => { return adminApi + login;}
@@ -242,6 +248,43 @@ export default {
         + dbDropdownsUserRolesForDomain
         + "/"
         + library
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getTable: (
+      restServer,
+      username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + tables
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getTopics: (
+      restServer,
+      username
+      , password
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + dbDropdownsGrLibTopics
         , undefined
         , function (result) {
           callback(result);

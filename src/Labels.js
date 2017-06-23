@@ -380,6 +380,7 @@ const   labels = {
       , panelBasicLexicon: "Basic Lexicon of Ancient Greek (in Greek)"
       , panelTig: "TLG Corpus Search (requires subscription to TLG)"
       , panelSmyth: "Smyth Greek Grammar"
+      , panelOald: "Oxford Advanced Learner's Dictionary"
       , colLemma: "Lemma"
       , colParse: "Parse"
       , colGlosses: "Glosses"
@@ -414,12 +415,36 @@ const   labels = {
       , paraTextPanelTitle: "View Parallel Texts"
     }
     , ParaTextEditor: {
-      panelTitle: "View Parallel Texts"
+      panelTitle: "View Parallel Texts in Rows"
       , msg1: ""
       , msg2: ""
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
       , submit: "Submit"
+    }
+    , ParaColTextEditor: {
+      panelTitle: "View Parallel Texts in Columns"
+      , msg1: ""
+      , msg2: ""
+      , key: "Key"
+    }
+    , TopicsSelector : {
+      panelTitle: "Text Topic Selector"
+      , instructions: "Use the Text Topic Selector to select the Topic you want."
+    }
+    , GlossBuilder: {
+      panelTitle: "Gloss Builder"
+      , instructions: "Use the Gloss Builder to add words to the gloss, and indicate their sense."
+      , gloss: "Gloss"
+      , bracket: "[]?"
+      , wnSense: "WN Sense"
+      , oxSense: "Ox Sense"
+    }
+    , WordTagger: {
+      panelTitle: "Word Tagger"
+      , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
+      , lemma: "Lemma"
+      , gloss: "Gloss"
     }
     , WorkflowAssignment: {
       title: "Workflow Assignment"
@@ -455,7 +480,7 @@ const   labels = {
         }
       }
       , categories: {
-        title: "Syntactic Categories"
+        title: "Syntactic Category"
         , values: {
           "ADV": "adverb"
           , "APOS": "apposing element"
@@ -515,7 +540,8 @@ const   labels = {
       , pos: {
         title: "Part of Speech"
         , values: {
-          "ADJ": "adjective"
+          "ABRV": "abbreviation"
+          ,"ADJ": "adjective"
           , "ADJ.COMP": "adjective (comparative)"
           , "ADJ.SUP.ABS": "adjective (absolute superlative)"
           , "ADJ.SUP.REL": "adjective (relative superlative)"
@@ -539,7 +565,12 @@ const   labels = {
           , "PRON.REL": "pronoun (relative)"
           , "PTCP": "participle"
           , "Q": "question particle/marker"
+          , "SUF": "suffix"
+          , "SYMB": "symbol"
           , "VERB": "verb"
+          , "VERB.AUX": "auxiliary verb"
+          , "VERB.MOD": "modal verb"
+          , "VERB.PHRS": "phrasal verb"
         }
       }
       , tense: {
@@ -939,6 +970,7 @@ const   labels = {
       , panelBasicLexicon: "Basic Lexicon of Ancient Greek (στα Ελληνικά)"
       , panelTig: "TLG Corpus Search (requires subscription to TLG)"
       , panelSmyth: "Smyth Greek Grammar"
+      , panelOald: "Oxford Advanced Learner's Dictionary"
       , colLemma: "Lemma"
       , colParse: "Parse"
       , colGlosses: "Glosses"
@@ -969,12 +1001,36 @@ const   labels = {
       , paraTextPanelTitle: "View Parallel Texts"
     }
     , ParaTextEditor: {
-      panelTitle: "View Parallel"
+      panelTitle: "View Parallel Texts in Rows"
       , msg1: ""
       , msg2: ""
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
       , submit: "Submit"
+    }
+    , TopicsSelector : {
+      panelTitle: "Text Topic Selector"
+      , instructions: "Use the Text Topic Selector to select the Topic you want."
+    }
+    , ParaColTextEditor: {
+      panelTitle: "View Parallel Texts in Columns"
+      , msg1: ""
+      , msg2: ""
+      , key: "Key"
+    }
+    , GlossBuilder: {
+      panelTitle: "Gloss Builder"
+      , instructions: "Use the Gloss Builder to add words to the gloss, and indicate their sense."
+      , gloss: "Gloss"
+      , bracket: "[]?"
+      , wnSense: "WN Sense"
+      , oxSense: "Ox Sense"
+    }
+    , WordTagger: {
+      panelTitle: "Word Tagger"
+      , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
+      , lemma: "Lemma"
+      , gloss: "Gloss"
     }
     , WorkflowAssignment: {
       title: "Workflow Assignment"
@@ -1010,7 +1066,7 @@ const   labels = {
         }
       }
       , categories: {
-        title: "Syntactic Categories"
+        title: "Syntactic Category"
         , values: {
           "ADV": "adverb"
           , "APOS": "apposing element"
@@ -1070,7 +1126,8 @@ const   labels = {
       , pos: {
         title: "Part of Speech"
         , values: {
-          "ADJ": "adjective"
+          "ABRV": "abbreviation"
+          , "ADJ": "adjective"
           , "ADJ.COMP": "adjective (comparative)"
           , "ADJ.SUP.ABS": "adjective (absolute superlative)"
           , "ADJ.SUP.REL": "adjective (relative superlative)"
@@ -1078,6 +1135,7 @@ const   labels = {
           , "ART": "article"
           , "ART.DEF": "article (definite)"
           , "ART.INDF": "article (indefinite)"
+          , "AUX": "auxiliary"
           , "CONJ": "conjunction"
           , "DEM": "demonstrative"
           , "DET": "determiner"
@@ -1094,8 +1152,13 @@ const   labels = {
           , "PRON.REL": "pronoun (relative)"
           , "PTCP": "participle"
           , "Q": "question particle/marker"
+          , "SUF": "suffix"
+          , "SYMB": "symbol"
           , "VERB": "verb"
-        }
+          , "VERB.AUX": "auxiliary verb"
+          , "VERB.MOD": "modal verb"
+          , "VERB.PHRS": "phrasal verb"
+         }
       }
       , tense: {
         title: "Tense"
@@ -1151,12 +1214,16 @@ module.exports = {
   , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
+  , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
   , getSearchLabels: (code) => { return labels[code].search;}
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
   , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
+  , getGlossBuilderLabels: (code) => { return labels[code].GlossBuilder;}
+  , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
+  , getWordTaggerLabels: (code) => { return labels[code].WordTagger;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
   , getHttpCodeLabels: (code) => { return labels[code].httpCodes;}
   , getHttpMessage: (languageCode, errorCode, errorMessage) => {

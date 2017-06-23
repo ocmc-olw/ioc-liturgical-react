@@ -9,9 +9,10 @@ import {
 
 import LabelSelector from '../helpers/LabelSelector';
 import Labels from '../Labels';
+import MessageIcons from '../helpers/MessageIcons';
 import TreeNode from '../classes/TreeNode';
 
-class TreeNodeBuilder extends React.Component {
+class WordTagger extends React.Component {
   constructor(props) {
     super(props);
 
@@ -57,7 +58,14 @@ class TreeNodeBuilder extends React.Component {
     if (currentState.index && (currentState.index === index)) {
       return (
           {
-            index: index
+            labels: {
+              thisClass: Labels.getWordTaggerLabels(this.props.languageCode)
+              , messages: Labels.getMessageLabels(this.props.languageCode)
+            }
+            , messageIcons: MessageIcons.getMessageIcons()
+            , messageIcon: MessageIcons.getMessageIcons().info
+            , message: Labels.getMessageLabels(this.props.languageCode).initial
+            , index: index
             , selectedCase: currentState.selectedCase ? currentState.selectedCase : ""
             , selectedGender: currentState.selectedGender ? currentState.selectedGender : ""
             , selectedMood: currentState.selectedMood? currentState.selectedMood : ""
@@ -75,7 +83,14 @@ class TreeNodeBuilder extends React.Component {
     } else {
       return (
           {
-            index: index
+            labels: {
+              thisClass: Labels.getWordTaggerLabels(this.props.languageCode)
+              , messages: Labels.getMessageLabels(this.props.languageCode)
+            }
+            , messageIcons: MessageIcons.getMessageIcons()
+            , messageIcon: MessageIcons.getMessageIcons().info
+            , message: Labels.getMessageLabels(this.props.languageCode).initial
+            , index: index
             , selectedCase: ""
             , selectedGender: ""
             , selectedMood: ""
@@ -103,7 +118,7 @@ class TreeNodeBuilder extends React.Component {
 
   handleLemmaChange =  (event) => {
     this.setState({
-      gloss: event.target.value
+      lemma: event.target.value
     });
   }
 
@@ -336,22 +351,30 @@ class TreeNodeBuilder extends React.Component {
     }
   }
 
-  handleSubmit = () => {
-    let theNode = new TreeNode(
-        this.props.index
-        , this.state.dependsOn
-        , this.props.token
-        , this.state.lemma
-        , this.state.gloss
-        , this.state.selectedLabel
-        , "VERB.3.SG.ACT.IND"
-    );
+  handleSubmit = (event) => {
 
-    this.props.callback(
-        this.state.selectedStatus
-        , this.state.selectedUser
-    );
+      event.preventDefault();
 
+     let theNode = new TreeNode(
+         this.props.index
+         , this.props.token
+         , this.state.lemma
+         , this.state.gloss
+         , this.state.dependsOn
+         , this.state.selectedLabel
+         , this.state.selectedCase
+         , this.state.selectedGender
+         , this.state.selectedMood
+         , this.state.selectedNumber
+         , this.state.selectedPerson
+         , this.state.selectedPos
+         , this.state.selectedTense
+         , this.state.selectedVoice
+     );
+
+    this.props.callBack(
+      theNode
+    );
   }
 
   // ἐρχομενός	part sg pres mp masc nom
@@ -365,9 +388,16 @@ class TreeNodeBuilder extends React.Component {
 
   render() {
         return (
-            <form>
-              <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-POS">
-                {parseInt(this.props.index)+1} {this.props.token}
+            <form onSubmit={this.handleSubmit}>
+              <div className="container">
+                <div>
+                  <div className="row">
+                    <div className="col-sm-12 col-md-12 col-lg-12 resourceSelectorPrompt">{this.state.labels.thisClass.instructions}</div>
+                    <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-POS">
+                      {parseInt(this.props.index)+1} {this.props.token}
+                    </div>
+                  </div>
+                </div>
               </div>
               <FormGroup
                   controlId="AppTreeNodeBuilder"
@@ -403,7 +433,9 @@ class TreeNodeBuilder extends React.Component {
                         {this.getCaseComponent()}
                       </div>
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
+                        <div className="resourceSelectorPrompt">{this.state.labels.thisClass.lemma}</div>
                         <FormControl
+                            className="App App-WordTagger-Lemma"
                             type="text"
                             value={this.props.lemma}
                             placeholder="Enter lemma"
@@ -411,7 +443,9 @@ class TreeNodeBuilder extends React.Component {
                         />
                       </div>
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
+                        <div className="resourceSelectorPrompt">{this.state.labels.thisClass.gloss}</div>
                         <FormControl
+                            className="App App-WordTagger-Gloss"
                             type="text"
                             value={this.props.gloss}
                             placeholder="Enter gloss"
@@ -436,7 +470,7 @@ class TreeNodeBuilder extends React.Component {
   }
 }
 
-TreeNodeBuilder.propTypes = {
+WordTagger.propTypes = {
     languageCode: React.PropTypes.string.isRequired
     , index: React.PropTypes.string.isRequired
     , tokens: React.PropTypes.array.isRequired
@@ -447,7 +481,7 @@ TreeNodeBuilder.propTypes = {
     , callBack: React.PropTypes.func.isRequired
 };
 
-TreeNodeBuilder.defaultProps = {
+WordTagger.defaultProps = {
 };
 
-export default TreeNodeBuilder;
+export default WordTagger;

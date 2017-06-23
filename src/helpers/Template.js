@@ -14,14 +14,21 @@ class Template extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.state = this.setTheState(nextProps);
+    this.state = this.setTheState(nextProps, this.state);
   }
 
-  setTheState = (props) => {
-    return (
-        {
-        }
-    )
+  setTheState = (props, currentState) => {
+      return (
+          {
+            labels: {
+              thisClass: Labels.TemplateLabels(this.props.languageCode)
+              , messages: Labels.getMessageLabels(this.props.languageCode)
+            }
+            , messageIcons: MessageIcons.getMessageIcons()
+            , messageIcon: MessageIcons.getMessageIcons().info
+            , message: Labels.getMessageLabels(this.props.languageCode).initial
+          }
+      )
   }
 
   render() {

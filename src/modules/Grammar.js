@@ -12,7 +12,7 @@ import IdManager from '../helpers/IdManager';
 import MessageIcons from '../helpers/MessageIcons';
 import HyperTokenText from './HyperTokenText';
 import DependencyDiagram from './DependencyDiagram';
-import TreeNodeBuilder from '../helpers/TreeNodeBuilder';
+import WordTagger from '../helpers/WordTagger';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -27,7 +27,8 @@ class Grammar extends React.Component {
     this.getPanels = this.getPanels.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getBody = this.getBody.bind(this);
-    this.handleTreeNodeBuilderCallback = this.handleTreeNodeBuilderCallback.bind(this);
+    this.handleTaggerCallback = this.handleTaggerCallback.bind(this);
+    this.handleEnglishLexiconCallback = this.handleEnglishLexiconCallback.bind(this);
   }
 
   componentWillMount = () => {
@@ -43,13 +44,22 @@ class Grammar extends React.Component {
         , this.state.data
         , this.state.tokens
         , this.state.analyses
+        , this.state.selectedTokenTags
     );
     if (this.state.text && this.state.text.id !== nextId) {
       this.fetchData();
     }
   }
 
-  setTheState = (props, text, dropdownsLoaded, data, tokens, analyses) => {
+  setTheState = (
+      props
+      , text
+      , dropdownsLoaded
+      , data
+      , tokens
+      , analyses
+      , selectedTokenTags
+  ) => {
     return (
         {
           labels: {
@@ -81,6 +91,8 @@ class Grammar extends React.Component {
           , data: data
           , tokens: tokens
           , analyses: analyses
+          , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.languageCode).panelTitle
+          , selectedTokenTags: selectedTokenTags
         }
     )
   }
@@ -93,6 +105,22 @@ class Grammar extends React.Component {
         , this.state.id
         , this.setTextInfo
     );
+    server.getTable(
+        this.props.restServer
+        , this.props.username
+        , this.props.password
+        , server.tableLexiconOald
+        , this.handleEnglishLexiconCallback
+    );
+  }
+
+  handleEnglishLexiconCallback = (restCallResult) => {
+    if (restCallResult) {
+      this.setState({
+        englishLexiconLoaded: true
+        , data: restCallResult.data.values[0]
+      });
+    }
   }
 
   setTextInfo = (restCallResult) => {
@@ -108,11 +136,19 @@ class Grammar extends React.Component {
 
 
   handleTokenClick = (index, token) => {
+    let i = parseInt(index);
+    i = i + 1;
     this.setState({
       selectedTokenIndex: index
       , selectedToken: token
       , selectedLemma: this.state.analyses[token][0].lemmaGreek
-    });
+      , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.languageCode).panelTitle
+        + " "
+        + i
+        + " "
+        + token
+
+  });
   }
 
   handleRowSelect = (row, isSelected, e) => {
@@ -130,8 +166,10 @@ class Grammar extends React.Component {
     });
   }
 
-  handleTreeNodeBuilderCallback = () => {
-
+  handleTaggerCallback = (treeNode) => {
+    this.setState({
+      selectedTokenTags: treeNode
+    });
   }
 
   getPanels = () => {
@@ -140,18 +178,18 @@ class Grammar extends React.Component {
           <PanelGroup defaultActiveKey="analyses">
             <Panel
                 header={
-                  "Tree Builder"
+                  this.state.selectedTokenPanelTitle
                 }
-                eventKey="treebuilder"
+                eventKey="tagger"
                 collapsible
             >
-              <TreeNodeBuilder
+              <WordTagger
                   languageCode={this.props.languageCode}
                   index={this.state.selectedTokenIndex}
                   tokens={this.state.tokens}
                   token={this.state.selectedToken}
                   grammar=""
-                  callBack={this.handleTreeNodeBuilderCallback}
+                  callBack={this.handleTaggerCallback}
               />
             </Panel>
             <Panel
@@ -326,7 +364,26 @@ class Grammar extends React.Component {
                 />
               </div>
             </Panel>
-          </PanelGroup>
+            {this.state.selectedTokenTags &&
+              <Panel
+                  className="App-Oxford-Site-panel "
+                  header={this.state.labels.thisClass.panelOald}
+                  eventKey="oald1"
+                  collapsible
+              >
+                <div className="App-iframe-wrapper">
+                  <Iframe
+                      position="relative"
+                      height="1000px"
+                      url={"http://www.oxfordlearnersdictionaries.com/definition/english/boy_1?isEntryInOtherDict=false"
+//                      + this.state.selectedTokenTags.gloss
+//                      + "_1?isEntryInOtherDict=true"
+                      }
+                  />
+                </div>
+              </Panel>
+            }
+            </PanelGroup>
       )
     } else {
       return (<div></div>);

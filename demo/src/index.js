@@ -40,6 +40,7 @@ import {
   , SearchText
   , SearchRelationships
   , Spinner
+  , TopicsSelector
 } from '../../src';
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
@@ -119,6 +120,7 @@ class Demo extends React.Component {
     this.handleSearchRequest = this.handleSearchRequest.bind(this);
     this.handleDropdownsCallback = this.handleDropdownsCallback.bind(this);
     this.getParaTextEditor = this.getParaTextEditor.bind(this);
+    this.handleTopicsSelection = this.handleTopicsSelection.bind(this);
   }
 
   /**
@@ -311,6 +313,10 @@ class Demo extends React.Component {
           <p>Parallel Row Text Editor.  You must log in first in order to see and use this.</p>
       );
     }
+  }
+
+  handleTopicsSelection(topic) {
+    console.log("Selected topic: " + topic);
   }
 
   render() {
@@ -811,6 +817,23 @@ class Demo extends React.Component {
                   height="500px"
               />
             </Panel> {/* Dependency Diagram */}
+            <Panel header="Greek Liturgical Library Topics Selector" eventKey="grlibtopics">
+              { (this.state.authenticated  && this.state.formsLoaded) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated &&
+                <TopicsSelector
+                    restServer={this.state.restServer}
+                    username={this.state.username}
+                    password={this.state.password}
+                    languageCode={this.state.language.code}
+                    library="gr_gr_cog"
+                    callBack={this.handleTopicsSelection}
+                />
+              }
+            </Panel> {/* Greek Liturgical Library Topics Selector */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}
