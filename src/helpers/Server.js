@@ -17,8 +17,12 @@ const login = "login/form";
 const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
+const agesReactTemplate = docs + "/agesreacttemplate";
 const tables = docs + "/tables";
 const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
+const valuePath = docs + "/value";
+const viewtemplate = docs + "/viewtemplate";
+const viewtopic = docs + "/viewtopic";
 const ontology = "ontology/ontology";
 const nlp = "nlp/"
 const textAnalysis = nlp + "text/analysis"
@@ -51,8 +55,6 @@ const restGet = (
   let path = restServer
       + serverPath
   ;
-
-  console.log(path);
 
   if (parms && parms.length > 0) {
     path = path + "/?" + parms
@@ -105,7 +107,7 @@ const restPost = (
   ;
 
   if (parms && parms.length > 0) {
-    path = path + parms;
+    path = path + "/?" + parms
   }
 
   let result = {
@@ -151,7 +153,7 @@ const restPut = (
   ;
 
   if (parms && parms.length > 0) {
-    path = path + parms;
+    path = path + "/?" + parms
   }
   let result = {
     data: {}
@@ -160,7 +162,7 @@ const restPut = (
     , status: 200
   };
 
-  axios.post(
+  axios.put(
       path
       , data
       , config
@@ -254,6 +256,27 @@ export default {
         }
     );
   }
+  , getDropdownLibrariesForUser: (
+      restServer,
+      username
+      , password
+      , user
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , adminApi
+        + dbDropdownDomains
+        + "/"
+        + user
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getTable: (
       restServer,
       username
@@ -286,6 +309,84 @@ export default {
         , dbApi
         + dbDropdownsGrLibTopics
         , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getViewForTemplate: (
+      restServer,
+      username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + viewtemplate
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getViewForTopic: (
+      restServer
+      , username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + viewtopic
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getAgesTemplate: (
+      restServer
+      , username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + agesReactTemplate
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , putValue: (
+      restServer
+      , username
+      , password
+      , value
+      , parms
+      , callback
+  ) => {
+    restPut(
+        restServer
+        , username
+        , password
+        , dbApi
+        + valuePath
+        , value
+        , parms
         , function (result) {
           callback(result);
         }

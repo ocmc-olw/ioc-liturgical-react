@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {
   Button
   , ControlLabel
@@ -23,8 +22,6 @@ export class ParaRowTextEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    console.log("ParaRowTextEditor::constructor");
 
     this.state = {
       labels: {
@@ -76,6 +73,17 @@ export class ParaRowTextEditor extends React.Component {
       , currentIdLibrary: this.props.idLibrary
       , currentIdTopic: this.props.idTopic
       , currentIdKey: this.props.idKey
+      , tinyMceConfig : {
+        'language'  : 'en',
+        'theme'     : 'modern',
+        'toolbar'   : 'bold italic underline strikethrough hr | bullist numlist | link unlink | undo redo | spellchecker code',
+        'menubar'   : false,
+        'statusbar' : true,
+        'resize'    : true,
+        'plugins'   : 'link,spellchecker,paste',
+        'theme_modern_toolbar_location' : 'top',
+        'theme_modern_toolbar_align': 'left'
+      }
     }
 
     this.close = this.close.bind(this);
@@ -89,7 +97,6 @@ export class ParaRowTextEditor extends React.Component {
   };
 
   componentWillMount = () => {
-    console.log("ParaRowTextEditor::componentWillMount");
     this.setState({
           showModal: this.props.showModal
           , domain: "*"
@@ -110,7 +117,6 @@ export class ParaRowTextEditor extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    console.log("ParaRowTextEditor::componentWillReceiveProps");
     this.setState({
           labels: {
             thisClass: Labels.getComponentParaTextEditorLabels(nextProps.languageCode)

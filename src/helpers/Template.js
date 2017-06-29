@@ -1,4 +1,6 @@
 import React from 'react';
+import Labels from './Labels';
+import MessageIcons from './helpers/MessageIcons';
 
 /**
  * Use this as an example starting point for new React components

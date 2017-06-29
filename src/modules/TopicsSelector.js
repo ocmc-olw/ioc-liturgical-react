@@ -16,7 +16,7 @@ class TopicsSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.setTheState(props, "");
+    this.state = this.setTheState(props, this.state);
     this.handleFetchCallback = this.handleFetchCallback.bind(this);
     this.handleSelection = this.handleSelection.bind(this);
   }
@@ -36,13 +36,18 @@ class TopicsSelector extends React.Component {
   setTheState = (props, currentState) => {
     let dataFetched = false;
     let data = undefined;
-
+    let selectedItem = "";
+    if (currentState) {
       if (currentState.dataFetched) {
         dataFetched = currentState.dataFetched;
       }
       if (currentState.data) {
         data = currentState.data;
       }
+      if (currentState.selectedItem && currentState.selectedItem.length > 0) {
+        selectedItem = currentState.selectedItem;
+      }
+    }
       return (
           {
             labels: {
@@ -52,7 +57,7 @@ class TopicsSelector extends React.Component {
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
             , message: Labels.getMessageLabels(this.props.languageCode).initial
-            , selectedItem: ""
+            , selectedItem: selectedItem
             , dataFetched: dataFetched
             , data: data
           }

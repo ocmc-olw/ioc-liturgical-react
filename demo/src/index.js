@@ -26,6 +26,7 @@ import {render} from 'react-dom';
 
 import {
   AboutDatabase
+  , AgesTemplate
   , Configuration
   , DependencyDiagram
   , DomainSelector
@@ -44,6 +45,7 @@ import {
 } from '../../src';
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
+import ParaColTextEditor from "../../src/ParaColTextEditor";
 
 const initialStateExample = "this.state = {\n    restServer: \"https://ioc-liturgical-ws.org/\"\n    , username: \"\"\n    , password: \"\"\n    , authenticated: false\n    , language: {\n      language: \"en\"\n      , labels: {\n        , resultsTable: Labels.labels.en.resultsTable\n        , header: Labels.labels.en.header\n        , help: Labels.labels.en.help\n        , pageAbout: Labels.labels.en.pageAbout\n        , pageLogin: Labels.labels.en.pageLogin\n        , search: Labels.labels.en.search\n  }\n}\n};";
 const languageChangeHandlerExample = "handleLanguageChange = (code) => {\nif (code.length > 0 && code !== \"undefined\") {\n  this.setState({\n    language: {\n      code: code\n      , labels: {\n        compSimpleSearch: Labels.getCompSimpleSearchLabels(code)\n        , resultsTable: Labels.getResultsTableLabels(code)\n        , header: Labels.getHeaderLabels(code)\n        , help: Labels.getHelpLabels(code)\n        , pageAbout: Labels.getPageAboutLabels(code)\n        , pageLogin: Labels.getPageLoginLabels(code)\n        , search: Labels.getSearchLabels(code)\n      }\n    }\n  });\n}\n};";
@@ -818,7 +820,7 @@ class Demo extends React.Component {
               />
             </Panel> {/* Dependency Diagram */}
             <Panel header="Greek Liturgical Library Topics Selector" eventKey="grlibtopics">
-              { (this.state.authenticated  && this.state.formsLoaded) ?
+              { (this.state.authenticated) ?
                   <p></p>
                   :
                   <p>You must log in first in order to see and use this.</p>
@@ -834,6 +836,39 @@ class Demo extends React.Component {
                 />
               }
             </Panel> {/* Greek Liturgical Library Topics Selector */}
+            <Panel header="Parallel Column Text Editor" eventKey="paraColTextEditor">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated && this.state.formsLoaded &&
+              <ParaColTextEditor
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  domains={this.state.domains}
+                  source={"gr_gr_cog"}
+              />
+              }
+            </Panel> {/* Parallel Column Text Editor */}
+            <Panel header="AGES Template" eventKey="agesTemlate">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated && this.state.formsLoaded &&
+              <AgesTemplate
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  url="http://www.agesinitiatives.com/dcs/public/dcs/h/b/baptism/gr-en/index.html"
+              />
+              }
+            </Panel> {/* AGES Template */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

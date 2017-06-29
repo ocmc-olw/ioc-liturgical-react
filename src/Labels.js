@@ -422,11 +422,22 @@ const   labels = {
       , yourTranslation: "Your Translation"
       , submit: "Submit"
     }
-    , ParaColTextEditor: {
-      panelTitle: "View Parallel Texts in Columns"
+    , AgesTemplate: {
+      panelTitle: "View and Edit a Service or Sacrament"
       , msg1: ""
       , msg2: ""
+    }
+    , ParaColTextEditor: {
+      panelTitle: "View and Edit Parallel Texts in Columns"
+      , msg1: "Select a view, then select one or more libraries.  Then click the button."
+      , msg2: "Double-Click to edit a cell. You can sort the columns using the up and down triangles. You can filter a column by typing in the box below the column name. Clear the filters using the button to the right."
       , key: "Key"
+      , view: "Select a view (a template or a topic)..."
+      , including: "Including"
+      , select: "you may select up to "
+      , libraries: "libraries."
+      , sourceRequired: "You must include the source library "
+      , maxLibraries: "The maximum of number of libraries you may select is"
     }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
@@ -463,10 +474,14 @@ const   labels = {
     }
     , messages: {
       initial: "Important messages will appear here..."
+      , status: "Status"
       , retrieving: "retrieving..."
       , searching: "searching..."
       , found: "Found"
+      , docs: "docs"
       , submit: "Submit"
+      , regEx: "Enter Regex"
+      , clearFilters: "Clear Filters"
     }
     , grammarTerms: {
       case: {
@@ -1012,11 +1027,22 @@ const   labels = {
       panelTitle: "Text Topic Selector"
       , instructions: "Use the Text Topic Selector to select the Topic you want."
     }
-    , ParaColTextEditor: {
-      panelTitle: "View Parallel Texts in Columns"
+    , AgesTemplate: {
+      panelTitle: "View and Edit a Service or Sacrament"
       , msg1: ""
       , msg2: ""
+    }
+    , ParaColTextEditor: {
+      panelTitle: "View and Edit Parallel Texts in Columns"
+      , msg1: "Select a view, then select one or more libraries.  Then click the button."
+      , msg2: "Double-Click to edit a cell. You can sort the columns using the up and down triangles. You can filter a column by typing in the box below the column name. Clear the filters using the button to the right."
       , key: "Key"
+      , view: "Select a view (a template or a topic)..."
+      , including: "Including"
+      , select: "you may select up to "
+      , libraries: "libraries."
+      , sourceRequired: "You must include the source library "
+      , maxLibraries: "The maximum of number of libraries you may select is"
     }
     , GlossBuilder: {
       panelTitle: "Gloss Builder"
@@ -1049,10 +1075,14 @@ const   labels = {
     }
     , messages: {
       initial: "Important messages will appear here..."
+      , status: "Status: "
       , retrieving: "retrieving..."
       , searching: "searching..."
       , found: "Found"
+      , docs: "docs"
       , submit: "Submit"
+      , regEx: "Enter Regex"
+      , clearFilters: "Clear Filters"
     }
     , grammarTerms: {
       case: {
@@ -1214,6 +1244,7 @@ module.exports = {
   , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
+  , getAgesTemplateLabels: (code) => { return labels[code].AgesTemplate;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
