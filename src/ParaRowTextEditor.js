@@ -2,8 +2,7 @@ import React from 'react';
 import {
   Button
   , ControlLabel
-  , FormControl
-  , FormGroup
+  , Panel
   , Well
 } from 'react-bootstrap';
 
@@ -13,10 +12,10 @@ import axios from 'axios';
 import Server from './helpers/Server';
 import Labels from './Labels';
 import Grammar from './modules/Grammar';
-import IdManager from './helpers/IdManager';
+import Spinner from './helpers/Spinner';
 
 /**
- * Display modal content.
+ * Display a text edit, with source and models as rows.
  */
 export class ParaRowTextEditor extends React.Component {
 
@@ -26,6 +25,7 @@ export class ParaRowTextEditor extends React.Component {
     this.state = {
       labels: {
         thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
+        , messages: Labels.getMessageLabels(this.props.languageCode)
         , search: Labels.getSearchLabels(this.props.languageCode)
       }
       , showSearchResults: false
@@ -43,14 +43,6 @@ export class ParaRowTextEditor extends React.Component {
         , paginationShowsTotal: true
       }
       ,
-      selectRow: {
-        mode: 'radio' // or checkbox
-        , hideSelectColumn: false
-        , clickToSelect: false
-        , onSelect: this.handleRowSelect
-        , className: "App-row-select"
-      }
-      ,
       showSelectionButtons: false
       ,
       selectedId: ""
@@ -66,40 +58,25 @@ export class ParaRowTextEditor extends React.Component {
       ]
       ,
       showIdPartSelector: false
-      , showModalCompareDocs: false
       , idColumnSize: "80px"
-      , editorValue: ""
+      , editorValue: this.props.value
       , currentDocType: this.props.docType
       , currentIdLibrary: this.props.idLibrary
       , currentIdTopic: this.props.idTopic
       , currentIdKey: this.props.idKey
-      , tinyMceConfig : {
-        'language'  : 'en',
-        'theme'     : 'modern',
-        'toolbar'   : 'bold italic underline strikethrough hr | bullist numlist | link unlink | undo redo | spellchecker code',
-        'menubar'   : false,
-        'statusbar' : true,
-        'resize'    : true,
-        'plugins'   : 'link,spellchecker,paste',
-        'theme_modern_toolbar_location' : 'top',
-        'theme_modern_toolbar_align': 'left'
-      }
     }
 
-    this.close = this.close.bind(this);
-    this.open = this.open.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePropsChange = this.handlePropsChange.bind(this);
+    this.getTextArea = this.getTextArea.bind(this);
   };
 
   componentWillMount = () => {
     this.setState({
-          showModal: this.props.showModal
-          , domain: "*"
+          domain: "*"
           , selectedBook: "*"
           , selectedChapter: "*"
           , docProp: "id"
@@ -113,14 +90,14 @@ export class ParaRowTextEditor extends React.Component {
           this.fetchData();
         }
     );
-
   }
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
           labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(nextProps.languageCode)
-            , search: Labels.getSearchLabels(nextProps.languageCode)
+            thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
+            , messages: Labels.getMessageLabels(this.props.languageCode)
+            , search: Labels.getSearchLabels(this.props.languageCode)
           }
         }
         , function () {
@@ -223,31 +200,60 @@ export class ParaRowTextEditor extends React.Component {
         });
   }
 
-
-  close() {
-    this.setState({showModal: false});
-    this.props.onClose(
-        this.state.selectedId
-        , this.state.selectedValue
-        , this.state.data
-    );
-  };
-
-  open() {
-    this.setState({showModal: true});
-  };
-
-  handleRowSelect = (row, isSelected, e) => {
-    let idParts = row["id"].split("~");
-    this.setState({
-      selectedId: row["id"]
-      , selectedIdParts: [
-        {key: "domain", label: idParts[0]},
-        {key: "topic", label: idParts[1]},
-        {key: "key", label: idParts[2]}
-      ]
-      , selectedValue: row["value"]
-    });
+  getTextArea = () => {
+    if (this.props.canChange) {
+      return (
+        <div className="row">
+          <div>
+          <ControlLabel>
+            {this.state.labels.thisClass.yourTranslation
+            + " (" + this.props.idLibrary + ")"}
+          </ControlLabel>
+          </div>
+          <textarea
+              className="App-Modal-Editor-TextArea"
+              rows="4"
+              cols="100"
+              spellCheck="true"
+              value={this.state.editorValue}
+              onChange={this.handleEditorChange}
+          >
+          </textarea>
+          <div>
+            <Button
+                type="submit"
+                bsStyle="primary"
+                disabled={this.state.editorValue === this.props.value}
+                onClick={this.handleSubmit}
+            >
+              {this.state.labels.thisClass.submit}
+            </Button>
+            <span className="App-message"><FontAwesome
+                name={this.state.messageIcon}/>
+              {this.state.message}
+            </span>
+          </div>
+        </div>
+      )
+    } else {
+      return (
+        <div>
+          <div>
+          <ControlLabel>
+            {this.state.labels.thisClass.valueFor
+            +" " + this.props.idLibrary }
+          </ControlLabel>
+          </div>
+          <textarea
+              rows="4"
+              cols="100"
+              value={this.state.editorValue}
+              readOnly
+          >
+          </textarea>
+        </div>
+      )
+    }
   }
 
   handleEditorChange = (event) => {
@@ -259,16 +265,19 @@ export class ParaRowTextEditor extends React.Component {
     }
   }
 
-  handleSubmit = () => {
+  handleSubmit = (event) => {
     if (this.props.onSubmit) {
-      this.props.onSubmit(this.state.editorValue);
+      this.props.onSubmit(
+          this.state.editorValue
+      );
     }
   }
 
   render() {
     return (
         <div>
-          {(! this.state.showSearchResults) ? <div>Loading</div>:
+          {(! this.state.showSearchResults) ? <Spinner message={this.state.labels.messages.retrieving}/>
+              :
               <div className="App-search-results">
                 <ControlLabel>
                   {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
@@ -300,46 +309,21 @@ export class ParaRowTextEditor extends React.Component {
                   </BootstrapTable>
                   </Well>
                 </div>
-                {this.props.onSubmit &&
                 <div>
                   <Well>
-                    <form onSubmit={this.handleSubmit}>
-                      <FormGroup controlId="formControlsTextarea">
-                        <ControlLabel>
-                          {this.state.labels.thisClass.yourTranslation
-                          + " (" + this.props.idLibrary + ")"}
-                        </ControlLabel>
-                        <div>
-                          <textarea
-                              rows="4"
-                              cols="100"
-                              spellCheck="true"
-                              value={this.state.editorValue}
-                              onChange={this.handleEditorChange}
-                          >
-                          </textarea>
-                        </div>
-                      </FormGroup>
-                      <Button
-                          type="submit"
-                          bsStyle="primary"
-                          disabled={this.state.editorValue.length < 1}
-                      >
-                        {this.state.labels.thisClass.submit}
-                      </Button>
-                      {this.props.message && this.props.messageIcon &&
-                        <span className="App-message"><FontAwesome
-                            name={this.props.messageIcon}/>
-                          {this.props.message}
-                        </span>
-                      }
-                    </form>
+                    {this.getTextArea()}
                   </Well>
                 </div>
-                }
               </div>
               }
-          <Well>
+          <Panel
+              className="App-Grammar-panel "
+              header={
+                this.state.labels.thisClass.grammarPanelTitle
+              }
+              eventKey="grammarExplorer"
+              collapsible
+          >
             <Grammar
                 restServer={this.props.restServer}
                 username={this.props.username}
@@ -348,7 +332,7 @@ export class ParaRowTextEditor extends React.Component {
                 idTopic={this.props.idTopic}
                 idKey={this.props.idKey}
             />
-          </Well>
+          </Panel>
         </div>
     );
   }
@@ -364,6 +348,8 @@ ParaRowTextEditor.propTypes = {
   , idTopic: React.PropTypes.string.isRequired
   , idKey: React.PropTypes.string.isRequired
   , value: React.PropTypes.string.isRequired
+  , canChange: React.PropTypes.bool.isRequired
+  , canReview: React.PropTypes.bool
   , onSubmit: React.PropTypes.func
   , onChange: React.PropTypes.func
   , message: React.PropTypes.string

@@ -17,6 +17,8 @@ const login = "login/form";
 const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
+const clone = docs + "/clone";
+const agesIndex = docs + "/agesindex";
 const agesReactTemplate = docs + "/agesreacttemplate";
 const tables = docs + "/tables";
 const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
@@ -352,6 +354,24 @@ export default {
         }
     );
   }
+  , getAgesIndex: (
+      restServer
+      , username
+      , password
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + agesIndex
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getAgesTemplate: (
       restServer
       , username
@@ -365,6 +385,27 @@ export default {
         , password
         , dbApi
         + agesReactTemplate
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , postLibraryClone: (
+      restServer
+      , username
+      , password
+      , value
+      , parms
+      , callback
+  ) => {
+    restPost(
+        restServer
+        , username
+        , password
+        , dbApi
+        + clone
+        , value
         , parms
         , function (result) {
           callback(result);

@@ -2,6 +2,7 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 
+import './css/alwb.css';
 import './css/Demo.css'; // important that you load this as the last css
 import RestServer from './helpers/restServer'
 
@@ -72,6 +73,7 @@ class Demo extends React.Component {
       , password: ""
       , authenticated: false
       , domains: {}
+      , agesIndex: {}
       , formsDropdown: []
       , formsValueSchemas: {}
       , formsValues: {}
@@ -110,6 +112,7 @@ class Demo extends React.Component {
     this.handleLanguageToogle = this.handleLanguageToogle.bind(this);
 
     // component callbacks
+    this.handleAgesIndexCallback = this.handleAgesIndexCallback.bind(this);
     this.handleDomainSelectionCallback = this.handleDomainSelectionCallback.bind(this);
     this.handleLoginCallback = this.handleLoginCallback.bind(this);
     this.handleSearchCallback = this.handleSearchCallback.bind(this);
@@ -123,6 +126,7 @@ class Demo extends React.Component {
     this.handleDropdownsCallback = this.handleDropdownsCallback.bind(this);
     this.getParaTextEditor = this.getParaTextEditor.bind(this);
     this.handleTopicsSelection = this.handleTopicsSelection.bind(this);
+    this.editable = this.editable.bind(this);
   }
 
   /**
@@ -189,6 +193,7 @@ class Demo extends React.Component {
         , formsLoaded: false
         , forms: {}
         , domains: {}
+        , agesIndex: {}
         , formsDropdown: []
         , formsValueSchemas: {}
         , formsValues: {}
@@ -205,6 +210,7 @@ class Demo extends React.Component {
         , formsLoaded: false
         , forms: {}
         , domains: {}
+        , agesIndex: {}
         , formsDropdown: []
         , formsValueSchemas: {}
         , formsValues: {}
@@ -234,6 +240,16 @@ class Demo extends React.Component {
       , biblicalVersesDropdown: forms.biblicalVersesDropdown
       , biblicalSubversesDropdown: forms.biblicalSubversesDropdown
     });
+  }
+
+  handleAgesIndexCallback = (response) => {
+    if (response) {
+      let values = response.data.values[0];
+      this.setState({
+        agesIndexLoaded: true
+        , agesIndex: values.tableData
+      });
+    }
   }
 
   handleSearchCallback(id, value) {
@@ -285,6 +301,21 @@ class Demo extends React.Component {
   doNothingHandler = () => {
   }
 
+  /**
+   * Does the user have permission to edit records in this library?
+   * @param library
+   * @returns {boolean}
+   */
+  editable = (library) => {
+    let canEdit = false;
+    for (let entry of this.state.domains.author) {
+      if (entry.value == library) {
+        return true;
+      }
+    }
+  }
+
+
   getParaTextEditor = () => {
     if (this.state.authenticated) {
       if (this.state.formsLoaded) {
@@ -302,6 +333,7 @@ class Demo extends React.Component {
                   idKey="meMA.Ode1C1H.text"
                   value={this.state.translatedText}
                   onSubmit={this.handleParallelTextEditorCallback}
+                  canChange={this.editable("en_uk_gevsot")}
               />
             </div>
         );
@@ -807,13 +839,11 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* New Item */}
-            <Panel header="Parallel Row Text Editor" eventKey="prte">
-              {this.getParaTextEditor()}
-            </Panel> {/* ParaRowTextEditor */}
             <Panel header="Dependency Diagram" eventKey="dependencyDiagram">
               <DependencyDiagram
                   languageCode={this.state.language.code}
                   data={['hi']}
+                  text=""
                   size="medium"
                   width="100%"
                   height="500px"
@@ -853,6 +883,9 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Parallel Column Text Editor */}
+            <Panel header="Parallel Row Text Editor" eventKey="prte">
+              {this.getParaTextEditor()}
+            </Panel> {/* ParaRowTextEditor */}
             <Panel header="AGES Template" eventKey="agesTemlate">
               { (this.state.authenticated) ?
                   <p></p>
@@ -865,7 +898,9 @@ class Demo extends React.Component {
                   username={this.state.username}
                   password={this.state.password}
                   languageCode={this.state.language.code}
-                  url="http://www.agesinitiatives.com/dcs/public/dcs/h/b/baptism/gr-en/index.html"
+                  domains={this.state.domains}
+                  url="http://www.agesinitiatives.com/dcs/public/dcs/h/s/2017/07/02/li/gr-en/index.html"
+//                  url="http://www.agesinitiatives.com/dcs/public/dcs/h/b/baptism/gr-en/index.html"
               />
               }
             </Panel> {/* AGES Template */}

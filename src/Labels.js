@@ -4,7 +4,25 @@
 
 const   labels = {
   en: {
-    resultsTable: {
+    liturgicalAcronyms: {
+      baptism: "Baptism"
+      , funeral: "Funeral"
+      , funeral_brightweek: "Funeral (Brightweek)"
+      , li: "Divine Liturgy"
+      , greatwaterblessing: "Blessing of the Waters (Great)"
+      , hymnbystnektarios: "Hymn by Saint Nektarios"
+      , ma: "Matins"
+      , matinsordinary: "Matins (Ordinary)"
+      , matinsordinary_paschal: "Matins (Ordinary - Paschal)"
+      , matinsordinary_ascension: "Matins (Ordinary - Ascension)"
+      , ma2: "Matins - full options"
+      , memorial: "Memorial"
+      , smallwaterblessing: "Blessing of the Waters (Small)"
+      , unction: "Unction"
+      , ve: "Vespers"
+      , wedding: "Wedding"
+    }
+    , resultsTable: {
       filterPrompt: "type here to filter search results..."
       , headerDomain: "Domain"
       , headerKey: "Key"
@@ -420,12 +438,38 @@ const   labels = {
       , msg2: ""
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
+      , valueFor: "Value for"
       , submit: "Submit"
+      , grammarPanelTitle: "Grammar Explorer for the Greek Text"
+    }
+    , ModalAgesServiceSelector: {
+      panelTitle: "Sacraments and Services Available from the AGES Website"
+      , msg1: "Select a Sacrament or Dated Service by clicking the radio-button in the first column of that row. "
+      , msg2: "Click the up and down triangles to sort a column. "
+      , msg3: "Enter part or all of a word or use a Regular Expression to filter the rows. "
+      , msg4: "Type 'any' into the Date or Day of Week filter to view available Sacraments."
+      , type: "Type"
+      , date: "Date"
+      , dayOfWeek: "Day of Week"
+      , close: "Close"
     }
     , AgesTemplate: {
-      panelTitle: "View and Edit a Service or Sacrament"
-      , msg1: ""
-      , msg2: ""
+      panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
+      , msg1: " Double-click on text to open an editor window."
+      , msg2: "Fetched: "
+      , agesGreek: "Below, the left column is Greek from AGES, "
+      , agesEnglish: "and the right column is English from AGES."
+      , yourTranslationA: "the center column is your translation ("
+      , yourTranslationB: "), "
+      , select: "Select Service or Sacrament"
+      , selectLibrary: "Select the library you are translating..."
+      , fetch: "Fetch the Service or Sacrament"
+    }
+    , ModalParaRowEditor: {
+      panelTitle: "Text Editor"
+      , msg1: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box for you to enter your translation. When you are ready, click the Submit button to update the database with your changes.  The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
+      , msg2: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box with the current value of the translation of the selected library.  However, you do not have authority to edit it. The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
+      , close: "Close"
     }
     , ParaColTextEditor: {
       panelTitle: "View and Edit Parallel Texts in Columns"
@@ -612,7 +656,25 @@ const   labels = {
     }
   }
     , el: {
-    resultsTable: {
+    liturgicalAcronyms: {
+      baptism: "Baptism"
+      , funeral: "Funeral"
+      , funeral_brightweek: "Funeral (Brightweek)"
+      , li: "Divine Liturgy"
+      , greatwaterblessing: "Blessing of the Waters (Great)"
+      , hymnbystnektarios: "Hymn by Saint Nektarios"
+      , ma: "Matins"
+      , matinsordinary: "Matins (Ordinary)"
+      , matinsordinary_paschal: "Matins (Ordinary - Paschal)"
+      , matinsordinary_ascension: "Matins (Ordinary - Ascension)"
+      , ma2: "Matins - full options"
+      , memorial: "Memorial"
+      , smallwaterblessing: "Blessing of the Waters (Small)"
+      , unction: "Unction"
+      , ve: "Vespers"
+      , wedding: "Wedding"
+    }
+    , resultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
       , headerDomain: "Τομέας"
       , headerKey: "Κλειδί"
@@ -1021,16 +1083,42 @@ const   labels = {
       , msg2: ""
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
+      , valueFor: "Value for"
       , submit: "Submit"
-    }
+      , grammarPanelTitle: "Grammar Explorer for the Greek Text"
+}
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
       , instructions: "Use the Text Topic Selector to select the Topic you want."
     }
+    , ModalAgesServiceSelector: {
+      panelTitle: "Sacraments and Services Available from the AGES Website"
+      , msg1: "Select a Sacrament or Dated Service by clicking the radio-button in the first column of that row. "
+      , msg2: "Click the up and down triangles to sort a column. "
+      , msg3: "Enter part or all of a word or use a Regular Expression to filter the rows. "
+      , msg4: "Type 'any' into the Date or Day of Week filter to view available Sacraments."
+      , type: "Type"
+      , date: "Date"
+      , dayOfWeek: "Day of Week"
+      , close: "Close"
+    }
     , AgesTemplate: {
-      panelTitle: "View and Edit a Service or Sacrament"
-      , msg1: ""
-      , msg2: ""
+      panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
+      , msg1: " Double-click on text to open an editor window."
+      , msg2: "Fetched: "
+      , agesGreek: "Below, the left column is Greek from AGES, "
+      , agesEnglish: "and the right column is English from AGES."
+      , yourTranslationA: "the center column is your translation ("
+      , yourTranslationB: "), "
+      , select: "Select Service or Sacrament"
+      , selectLibrary: "Select the library you are translating..."
+      , fetch: "Fetch the Service or Sacrament"
+    }
+    , ModalParaRowEditor: {
+      panelTitle: "Text Editor"
+      , msg1: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box for you to enter your translation. When you are ready, click the Submit button to update the database with your changes.  The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
+      , msg2: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box with the current value of the translation of the selected library.  However, you do not have authority to edit it. The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
+      , close: "Close"
     }
     , ParaColTextEditor: {
       panelTitle: "View and Edit Parallel Texts in Columns"
@@ -1244,8 +1332,11 @@ module.exports = {
   , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
+
+  , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
   , getAgesTemplateLabels: (code) => { return labels[code].AgesTemplate;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
+  , getModalParaRowEditorLabels: (code) => { return labels[code].ModalParaRowEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
@@ -1256,6 +1347,7 @@ module.exports = {
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
   , getWordTaggerLabels: (code) => { return labels[code].WordTagger;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
+  , getLiturgicalAcronymsLabels: (code) => { return labels[code].liturgicalAcronyms;}
   , getHttpCodeLabels: (code) => { return labels[code].httpCodes;}
   , getHttpMessage: (languageCode, errorCode, errorMessage) => {
     if (labels[languageCode].httpCodes[errorCode]) {
