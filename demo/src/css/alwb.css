@@ -295,7 +295,7 @@ p.source0 {
     text-align:left;
     height:0;
     position:relative;
-    top:-3em;
+    top:-2.5em;
 }
 p.source1 {
     margin-top: 0px;
@@ -471,4 +471,43 @@ td.rightCell {
 }
 .kvp {
     cursor: pointer;
+}
+.kvp.readonly {
+    cursor: auto ;
+}
+td.cellOneOfOne {
+    vertical-align: top;
+    width: 100%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+td.cellOneOfTwo {
+    vertical-align: top;
+    width: 50%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+td.cellOneOfThree {
+    vertical-align: top;
+    width: 33%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+td.cellTwoOfTwo {
+    vertical-align: top;
+    width: 50%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+td.cellTwoOfThree {
+    vertical-align: top;
+    width: 33%;
+    padding-left: 8px;
+    padding-right: 8px;
+}
+td.cellThreeOfThree {
+    vertical-align: top;
+    width: 33%;
+    padding-left: 8px;
+    padding-right: 8px;
 }

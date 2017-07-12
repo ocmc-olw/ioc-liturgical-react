@@ -13,6 +13,7 @@ import MessageIcons from '../helpers/MessageIcons';
 import HyperTokenText from './HyperTokenText';
 import DependencyDiagram from './DependencyDiagram';
 import WordTagger from '../helpers/WordTagger';
+import GrammarSitePanel from './GrammarSitePanel';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -27,6 +28,7 @@ class Grammar extends React.Component {
     this.getPanels = this.getPanels.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getBody = this.getBody.bind(this);
+    this.getLemmas = this.getLemmas.bind(this);
     this.handleTaggerCallback = this.handleTaggerCallback.bind(this);
     this.handleEnglishLexiconCallback = this.handleEnglishLexiconCallback.bind(this);
   }
@@ -84,6 +86,11 @@ class Grammar extends React.Component {
             , onSelect: this.handleRowSelect
             , className: "App-row-select"
           }
+          , tableColumnFilter: {
+          defaultValue: ""
+          , type: 'RegexFilter'
+          , placeholder: Labels.getMessageLabels(this.props.languageCode).regEx
+            }
           , id: IdManager.toId("gr_gr_cog", this.props.idTopic, this.props.idKey)
           , props: props
           , text: text
@@ -142,13 +149,27 @@ class Grammar extends React.Component {
       selectedTokenIndex: index
       , selectedToken: token
       , selectedLemma: this.state.analyses[token][0].lemmaGreek
+      , selectedLemmas: this.getLemmas(token)
       , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.languageCode).panelTitle
         + " "
         + i
         + " "
         + token
-
   });
+  }
+
+  // Gets the set of lemmas from analyses for this token
+  getLemmas = (token) => {
+    let s = this.state.analyses[token].length;
+    let lemmas = [];
+    for (let i=0; i < s; i++) {
+      let lemma = this.state.analyses[token][i].lemmaGreek;
+      if (lemmas.indexOf(lemma) == -1) {
+        lemmas.push(lemma);
+      }
+    }
+    console.log(lemmas);
+    return lemmas;
   }
 
   handleRowSelect = (row, isSelected, e) => {
@@ -226,9 +247,13 @@ class Grammar extends React.Component {
                 >{this.state.labels.thisClass.colLemma}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='glosses'
+                    dataSort={ true }
+                    filter={ this.state.tableColumnFilter }
                 >{this.state.labels.thisClass.colGlosses}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='parse'
+                    dataSort={ true }
+                    filter={ this.state.tableColumnFilter }
                 >{this.state.labels.thisClass.colParse}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='concise'
@@ -236,38 +261,18 @@ class Grammar extends React.Component {
                 >{this.state.labels.thisClass.colAnalyses}</TableHeaderColumn>
               </BootstrapTable>
             </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={this.state.labels.thisClass.panelLogeionSite + ": " + this.state.selectedLemma}
-                eventKey="logeion"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Iframe
-                    position="relative"
-                    height="1000px"
-                    url={"http://logeion.uchicago.edu/index.html#"
-                    + this.state.selectedLemma
-                    }
-                />
-              </div>
-            </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={this.state.labels.thisClass.panelLexigramSite + ": " + this.state.selectedToken}
-                eventKey="lexigram"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Iframe
-                    position="relative"
-                    height="1000px"
-                    url={"http://www.lexigram.gr/lex/arch/"
-                    + this.state.selectedToken
-                    }
-                />
-              </div>
-            </Panel>
+            <GrammarSitePanel
+                languageCode={this.props.languageCode}
+                lemmas={this.state.selectedLemmas}
+                url={"http://logeion.uchicago.edu/index.html#"}
+                title={this.state.labels.thisClass.panelLogeionSite}
+            />
+            <GrammarSitePanel
+                languageCode={this.props.languageCode}
+                lemmas={this.state.selectedLemmas}
+                url={"http://www.lexigram.gr/lex/arch/"}
+                title={this.state.labels.thisClass.panelLexigramSite}
+            />
             <Panel
                   className="App-Grammar-Site-panel"
                   header={this.state.labels.thisClass.panelPerseusSite + ": " + this.state.selectedToken}
@@ -285,70 +290,30 @@ class Grammar extends React.Component {
               />
               </div>
             </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={this.state.labels.thisClass.panelLaParola + ": " + this.state.selectedLemma}
-                eventKey="laparola"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Iframe
-                    position="relative"
-                    height="1000px"
-                    url={"http://www.laparola.net/greco/parola.php?p="
-                    + this.state.selectedLemma
-                    }
-                />
-              </div>
-            </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={this.state.labels.thisClass.panelKriaras + ": " + this.state.selectedLemma}
-                eventKey="kriaras"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Iframe
-                    position="relative"
-                    height="1000px"
-                    url={"http://www.greek-language.gr/greekLang/medieval_greek/kriaras/search.html?lq="
-                    + this.state.selectedLemma
-                    }
-                />
-              </div>
-            </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={this.state.labels.thisClass.panelTriantafyllides + ": " + this.state.selectedLemma}
-                eventKey="Triantafyllides"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Iframe
-                    position="relative"
-                    height="1000px"
-                    url={"http://www.greek-language.gr/greekLang/modern_greek/tools/lexica/triantafyllides/search.html?dq=&lq="
-                    + this.state.selectedLemma
-                    }
-                />
-              </div>
-            </Panel>
-            <Panel
-                className="App-Grammar-Site-panel "
-                header={this.state.labels.thisClass.panelBasicLexicon + ": " + this.state.selectedLemma}
-                eventKey="BasicLexicon"
-                collapsible
-            >
-              <div className="App-iframe-wrapper">
-                <Iframe
-                    position="relative"
-                    height="1000px"
-                    url={"http://www.greek-language.gr/greekLang/ancient_greek/tools/lexicon/search.html?lq="
-                    + this.state.selectedLemma
-                    }
-                />
-              </div>
-            </Panel>
+            <GrammarSitePanel
+                languageCode={this.props.languageCode}
+                lemmas={this.state.selectedLemmas}
+                url={"http://www.laparola.net/greco/parola.php?p="}
+                title={this.state.labels.thisClass.panelLaParola}
+            />
+            <GrammarSitePanel
+                languageCode={this.props.languageCode}
+                lemmas={this.state.selectedLemmas}
+                url={"http://www.greek-language.gr/greekLang/medieval_greek/kriaras/search.html?lq="}
+                title={this.state.labels.thisClass.panelKriaras}
+            />
+            <GrammarSitePanel
+                languageCode={this.props.languageCode}
+                lemmas={this.state.selectedLemmas}
+                url={"http://www.greek-language.gr/greekLang/modern_greek/tools/lexica/triantafyllides/search.html?dq=&lq="}
+                title={this.state.labels.thisClass.panelTriantafyllides}
+            />
+            <GrammarSitePanel
+                languageCode={this.props.languageCode}
+                lemmas={this.state.selectedLemmas}
+                url={"http://www.greek-language.gr/greekLang/ancient_greek/tools/lexicon/search.html?lq="}
+                title={this.state.labels.thisClass.panelBasicLexicon}
+            />
             <Panel
                 className="App-Grammar-Site-panel "
                 header={this.state.labels.thisClass.panelSmyth}

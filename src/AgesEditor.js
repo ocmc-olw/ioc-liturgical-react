@@ -14,7 +14,7 @@ import ReactSelector from './modules/ReactSelector'
 /**
  *
  */
-class AgesTemplate extends React.Component {
+class AgesEditor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -84,7 +84,7 @@ class AgesTemplate extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesTemplateLabels(this.props.languageCode)
+            thisClass: Labels.getAgesEditorLabels(this.props.languageCode)
             , messages: Labels.getMessageLabels(this.props.languageCode)
             , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.languageCode)
           }
@@ -151,7 +151,7 @@ class AgesTemplate extends React.Component {
           message: this.state.labels.messages.retrieving
           , fetchingData: true
         },
-        server.getAgesTemplate(
+        server.getAgesEditorTemplate(
             this.props.restServer
             , this.props.username
             , this.props.password
@@ -494,7 +494,7 @@ class AgesTemplate extends React.Component {
               <Col xs={4} md={4}>
                 {this.getServiceSelectorPanel()}
               </Col>
-              <Col xs={6} md={6}>
+              <Col xs={8} md={8}>
                 { this.state.agesIndexFetched &&
                 this.state.selectedService
                 }
@@ -506,7 +506,7 @@ class AgesTemplate extends React.Component {
                   {this.state.labels.thisClass.selectLibrary}
                   </ControlLabel>
               </Col>
-              <Col xs={6} md={6}>
+              <Col xs={8} md={8}>
                 <ReactSelector
                     initialValue={this.state.selectedLibrary}
                     resources={this.props.domains.author}
@@ -516,7 +516,7 @@ class AgesTemplate extends React.Component {
               </Col>
             </Row>
             <Row className="App-Selection-Row">
-              <Col xs={3} md={3}>
+              <Col xs={4} md={4}>
                 <Button
                     bsStyle="primary"
                     onClick={this.fetchData}
@@ -525,7 +525,7 @@ class AgesTemplate extends React.Component {
                   {this.state.labels.thisClass.fetch}
                 </Button>
               </Col>
-              <Col xs={9} md={9}>
+              <Col xs={8} md={8}>
               </Col>
             </Row>
             {this.getAgesTableRow()}
@@ -536,7 +536,7 @@ class AgesTemplate extends React.Component {
   }
 }
 
-AgesTemplate.propTypes = {
+AgesEditor.propTypes = {
   restServer: React.PropTypes.string.isRequired
   , username: React.PropTypes.string.isRequired
   , password: React.PropTypes.string.isRequired
@@ -545,8 +545,8 @@ AgesTemplate.propTypes = {
   , agesIndexValues: React.PropTypes.array
 };
 
-AgesTemplate.defaultProps = {
+AgesEditor.defaultProps = {
 };
 
-export default AgesTemplate;
+export default AgesEditor;
 

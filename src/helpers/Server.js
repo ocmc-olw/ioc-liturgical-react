@@ -20,6 +20,7 @@ const docs = "docs";
 const clone = docs + "/clone";
 const agesIndex = docs + "/agesindex";
 const agesReactTemplate = docs + "/agesreacttemplate";
+const agesReadOnlyTemplate = docs + "/agesreadonlytemplate";
 const tables = docs + "/tables";
 const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
 const valuePath = docs + "/value";
@@ -372,7 +373,7 @@ export default {
         }
     );
   }
-  , getAgesTemplate: (
+  , getAgesEditorTemplate: (
       restServer
       , username
       , password
@@ -385,6 +386,25 @@ export default {
         , password
         , dbApi
         + agesReactTemplate
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getAgesReadOnlyTemplate: (
+      restServer
+      , username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + agesReadOnlyTemplate
         , parms
         , function (result) {
           callback(result);

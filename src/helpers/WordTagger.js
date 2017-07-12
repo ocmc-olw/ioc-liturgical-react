@@ -321,7 +321,7 @@ class WordTagger extends React.Component {
           <LabelSelector
               languageCode={this.props.languageCode}
               labels={Labels.getGrammarTermsVoice(this.props.languageCode)}
-              initialValue={this.state.selectedPos}
+              initialValue={this.state.selectedVoice}
               changeHandler={this.handleVoiceChange}
           />
       );

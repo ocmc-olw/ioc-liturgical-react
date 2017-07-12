@@ -27,7 +27,8 @@ import {render} from 'react-dom';
 
 import {
   AboutDatabase
-  , AgesTemplate
+  , AgesEditor
+  , AgesViewer
   , Configuration
   , DependencyDiagram
   , DomainSelector
@@ -886,24 +887,38 @@ class Demo extends React.Component {
             <Panel header="Parallel Row Text Editor" eventKey="prte">
               {this.getParaTextEditor()}
             </Panel> {/* ParaRowTextEditor */}
-            <Panel header="AGES Template" eventKey="agesTemlate">
+            <Panel header="AGES Editor" eventKey="agesEditor">
               { (this.state.authenticated) ?
                   <p></p>
                   :
                   <p>You must log in first in order to see and use this.</p>
               }
               { this.state.authenticated && this.state.formsLoaded &&
-              <AgesTemplate
+              <AgesEditor
                   restServer={this.state.restServer}
                   username={this.state.username}
                   password={this.state.password}
                   languageCode={this.state.language.code}
                   domains={this.state.domains}
-                  url="http://www.agesinitiatives.com/dcs/public/dcs/h/s/2017/07/02/li/gr-en/index.html"
-//                  url="http://www.agesinitiatives.com/dcs/public/dcs/h/b/baptism/gr-en/index.html"
               />
               }
-            </Panel> {/* AGES Template */}
+            </Panel> {/* AGES Editor */}
+            <Panel header="AGES Viewer" eventKey="agesViewer">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated && this.state.formsLoaded &&
+              <AgesViewer
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  domains={this.state.domains}
+              />
+              }
+            </Panel> {/* AGES Viewer */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

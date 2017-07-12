@@ -36,6 +36,7 @@ export class ReactSelector extends React.Component {
               onChange={this.handleChange}
               multi={this.props.multiSelect}
               autosize={true}
+              clearable
           />
         </div>
     )

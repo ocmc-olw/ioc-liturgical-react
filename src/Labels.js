@@ -453,7 +453,7 @@ const   labels = {
       , dayOfWeek: "Day of Week"
       , close: "Close"
     }
-    , AgesTemplate: {
+    , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Double-click on text to open an editor window."
       , msg2: "Fetched: "
@@ -461,8 +461,23 @@ const   labels = {
       , agesEnglish: "and the right column is English from AGES."
       , yourTranslationA: "the center column is your translation ("
       , yourTranslationB: "), "
-      , select: "Select Service or Sacrament"
-      , selectLibrary: "Select the library you are translating..."
+      , select: "Select the Service or Sacrament"
+      , selectLibrary: "Select your translation library..."
+      , fetch: "Fetch the Service or Sacrament"
+    }
+    , AgesViewer: {
+      panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
+      , msg1: " Select the service or sacrament that you want.  And, select one, two, or three libraries.  If a library does not have a translation for a particular text, it will fallback to Greek or English based on your fallback selection. After you have made your selections, click the Fetch button."
+      , msg2: "Fetched: "
+      , agesGreek: "AGES Greek"
+      , agesEnglish: "AGES English Translations"
+      , select: "Select the Service or Sacrament"
+      , selectFirstLibrary: "Select library for column 1..."
+      , selectFirstLibraryFallback: "Select fallback library for column 1..."
+      , selectSecondLibrary: "Select library for column 2..."
+      , selectSecondLibraryFallback: "Select fallback library for column 2..."
+      , selectThirdLibrary: "Select library for column 3..."
+      , selectThirdLibraryFallback: "Select fallback library for column 3..."
       , fetch: "Fetch the Service or Sacrament"
     }
     , ModalParaRowEditor: {
@@ -473,10 +488,10 @@ const   labels = {
     }
     , ParaColTextEditor: {
       panelTitle: "View and Edit Parallel Texts in Columns"
-      , msg1: "Select a view, then select one or more libraries.  Then click the button."
+      , msg1: "Select a topic, then select one or more libraries.  Then click the button."
       , msg2: "Double-Click to edit a cell. You can sort the columns using the up and down triangles. You can filter a column by typing in the box below the column name. Clear the filters using the button to the right."
       , key: "Key"
-      , view: "Select a view (a template or a topic)..."
+      , view: "Select a topic..."
       , including: "Including"
       , select: "you may select up to "
       , libraries: "libraries."
@@ -559,6 +574,7 @@ const   labels = {
           , "OCOMP": "object complement"
           , "PNOM": "predicate nominal"
           , "PRED": "predicate"
+          , "PRED-CO": "predicate complement"
           , "ROOT" : "root of the dependency tree"
           , "SBJ": "subject"
         }
@@ -1102,7 +1118,7 @@ const   labels = {
       , dayOfWeek: "Day of Week"
       , close: "Close"
     }
-    , AgesTemplate: {
+    , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Double-click on text to open an editor window."
       , msg2: "Fetched: "
@@ -1110,8 +1126,23 @@ const   labels = {
       , agesEnglish: "and the right column is English from AGES."
       , yourTranslationA: "the center column is your translation ("
       , yourTranslationB: "), "
-      , select: "Select Service or Sacrament"
-      , selectLibrary: "Select the library you are translating..."
+      , select: "Select the Service or Sacrament"
+      , selectLibrary: "Select your translation library..."
+      , fetch: "Fetch the Service or Sacrament"
+    }
+    , AgesViewer: {
+      panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
+      , msg1: " Select the service or sacrament that you want.  And, select one, two, or three libraries.  If a library does not have a translation for a particular text, it will fallback to Greek or English based on your fallback selection. After you have made your selections, click the Fetch button."
+      , msg2: "Fetched: "
+      , agesGreek: "AGES Greek"
+      , agesEnglish: "AGES English Translations"
+      , select: "Select the Service or Sacrament"
+      , selectFirstLibrary: "Select library for column 1..."
+      , selectFirstLibraryFallback: "Select fallback library for column 1..."
+      , selectSecondLibrary: "Select library for column 2..."
+      , selectSecondLibraryFallback: "Select fallback library for column 2..."
+      , selectThirdLibrary: "Select library for column 3..."
+      , selectThirdLibraryFallback: "Select fallback library for column 3..."
       , fetch: "Fetch the Service or Sacrament"
     }
     , ModalParaRowEditor: {
@@ -1122,10 +1153,10 @@ const   labels = {
     }
     , ParaColTextEditor: {
       panelTitle: "View and Edit Parallel Texts in Columns"
-      , msg1: "Select a view, then select one or more libraries.  Then click the button."
+      , msg1: "Select a topic, then select one or more libraries.  Then click the button."
       , msg2: "Double-Click to edit a cell. You can sort the columns using the up and down triangles. You can filter a column by typing in the box below the column name. Clear the filters using the button to the right."
       , key: "Key"
-      , view: "Select a view (a template or a topic)..."
+      , view: "Select a topic..."
       , including: "Including"
       , select: "you may select up to "
       , libraries: "libraries."
@@ -1204,6 +1235,7 @@ const   labels = {
           , "OCOMP": "object complement"
           , "PNOM": "predicate nominal"
           , "PRED": "predicate"
+          , "PRED-CO": "predicate complement"
           , "ROOT" : "root of the dependency tree"
           , "SBJ": "subject"
         }
@@ -1332,9 +1364,9 @@ module.exports = {
   , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
-
   , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
-  , getAgesTemplateLabels: (code) => { return labels[code].AgesTemplate;}
+  , getAgesEditorLabels: (code) => { return labels[code].AgesEditor;}
+  , getAgesViewerLabels: (code) => { return labels[code].AgesViewer;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getModalParaRowEditorLabels: (code) => { return labels[code].ModalParaRowEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}

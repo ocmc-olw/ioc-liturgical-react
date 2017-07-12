@@ -306,6 +306,7 @@ path.link {
 }
 
 .AppDependencyNode {
+    cursor: pointer;
 }
 
 .AppDependencyNodeToken {

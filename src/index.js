@@ -1,4 +1,5 @@
-import AgesTemplate from './AgesTemplate';
+import AgesEditor from './AgesEditor';
+import AgesViewer from './AgesViewer';
 import AboutDatabase from './AboutDatabase';
 import Configuration from './Configuration';
 import DependencyDiagram from './modules/DependencyDiagram';
@@ -18,7 +19,8 @@ import TopicsSelector from './modules/TopicsSelector';
 import Spinner from './helpers/Spinner';
 
 export {
-  AgesTemplate
+  AgesEditor
+  , AgesViewer
   , AboutDatabase
   , Configuration
   , DependencyDiagram
