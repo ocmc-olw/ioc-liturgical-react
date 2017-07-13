@@ -43,7 +43,7 @@
     "react-file-download": "^0.3.2",
     "react-fontawesome": "^1.5.0 ",
     "react-google-charts": "^1.5.5",
-    "react-iframe": "^1.0.5",
+    "react-iframe": "^1.0.7",
     "react-jsonschema-form": "^0.43.0",
     "react-select": "^1.0.0-rc.2",
     "react-tree-graph": "1.5.0",

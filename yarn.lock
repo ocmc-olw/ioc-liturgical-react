@@ -4532,7 +4532,7 @@ promise@7.1.1, promise@^7.0.3, promise@^7.1.1:
   dependencies:
     asap "~2.0.3"
 
-prop-types@^15.5.4, prop-types@^15.5.6, prop-types@^15.5.7, prop-types@^15.5.8:
+prop-types@^15.5.4, prop-types@^15.5.7, prop-types@^15.5.8, prop-types@^15.5.x:
   version "15.5.10"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.5.10.tgz#2797dfc3126182e3a95e3dfbb2e893ddd7456154"
   dependencies:
@@ -4716,11 +4716,11 @@ react-google-charts@^1.5.5:
     react "^15.3.2"
     react-dom "^15.3.2"
 
-react-iframe@^1.0.5:
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/react-iframe/-/react-iframe-1.0.5.tgz#3b7aa11ca582f7f6536b141ba6af0c2b3b247f5a"
+react-iframe@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-iframe/-/react-iframe-1.0.7.tgz#c20fef7ca30e44e1f54922b9f6357c1c49f1d8e9"
   dependencies:
-    prop-types "^15.5.6"
+    prop-types "^15.5.x"
 
 react-input-autosize@^1.1.0:
   version "1.1.0"
@@ -4778,12 +4778,6 @@ react-select@^1.0.0-rc.2:
   dependencies:
     classnames "^2.2.4"
     react-input-autosize "^1.1.0"
-
-react-tinymce-input@^1.2.1:
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/react-tinymce-input/-/react-tinymce-input-1.2.1.tgz#90c37ce4a680fb60f4129f8f84ef52ec70ead71c"
-  dependencies:
-    uuid "^2.0.1"
 
 react-transform-catch-errors@1.0.2:
   version "1.0.2"
@@ -5701,10 +5695,6 @@ utila@~0.4:
 utils-merge@1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.0.tgz#0294fb922bb9375153541c4f7096231f287c8af8"
-
-uuid@^2.0.1:
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-2.0.3.tgz#67e2e863797215530dff318e5bf9dcebfd47b21a"
 
 uuid@^3.0.0:
   version "3.0.1"

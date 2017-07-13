@@ -6,7 +6,7 @@ var getWsServer = () => {
   if (document.location.hostname === "localhost") {
     return document.location.protocol +  "//" + document.location.hostname + ":4567";
   } else {
-    return "https://ioc-liturgical-ws.org";
+    return "https://ioc-liturgical-ws.net";
   }
 }
 
