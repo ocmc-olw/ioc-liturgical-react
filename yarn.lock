@@ -4654,9 +4654,9 @@ react-bootstrap-date-picker@4.0.0:
   version "4.0.0"
   resolved "https://registry.yarnpkg.com/react-bootstrap-date-picker/-/react-bootstrap-date-picker-4.0.0.tgz#63b243a571e295e83a11eee56b081f21d1ec4612"
 
-react-bootstrap-table@3.1.7:
-  version "3.1.7"
-  resolved "https://registry.yarnpkg.com/react-bootstrap-table/-/react-bootstrap-table-3.1.7.tgz#99339e9299d5771b675173a33050bfb32592fca7"
+react-bootstrap-table@3.4.6:
+  version "3.4.6"
+  resolved "https://registry.yarnpkg.com/react-bootstrap-table/-/react-bootstrap-table-3.4.6.tgz#0e1e5c7d9bf0f4b854a91fbc640770e7f757d27b"
   dependencies:
     "@allenfang/react-toastr" "2.8.2"
     classnames "^2.1.2"

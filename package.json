@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,7 +37,7 @@
     "react-dom": "^15.4.2",
     "react-bootstrap": "0.30.7",
     "react-bootstrap-date-picker": "4.0.0",
-    "react-bootstrap-table": "3.1.7",
+    "react-bootstrap-table": "3.4.6",
     "react-checkbox-list": "0.0.2",
     "react-dom": "^15.4.2",
     "react-file-download": "^0.3.2",

@@ -208,6 +208,7 @@ class AgesViewer extends React.Component {
       let values = data.values;
       let topicKeys = data.topicKeys;
       let topElement = data.topElement;
+      console.log(topElement);
       this.setState({
         dataFetched: true
         , fetchingData: false
