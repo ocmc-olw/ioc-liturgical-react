@@ -626,6 +626,7 @@ export class Search extends React.Component {
     let path = this.props.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)
         .then(response => {
+          console.log(response.data);
           this.setState({
                 data: response.data
               }
