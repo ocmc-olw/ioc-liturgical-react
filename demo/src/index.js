@@ -226,7 +226,6 @@ class Demo extends React.Component {
 
   // called after a successful login
   handleDropdownsCallback = (response) => {
-    console.log("Server responded to request for dropdowns");
     let forms = response.data;
     this.setState({
       formsLoaded: true
