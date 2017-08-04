@@ -1,4 +1,6 @@
-import React, { Component , PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
+
 import { Accordion
   , Button
   , ControlLabel
@@ -13,7 +15,7 @@ import Labels from '../Labels';
 import SearchOntology from '../SearchOntology';
 import IdManager from '../helpers/IdManager';
 
-class IdBuilder extends Component {
+class IdBuilder extends React.Component {
 
   constructor(props) {
     super(props);
@@ -845,27 +847,27 @@ class IdBuilder extends Component {
 }
 
 IdBuilder.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
   , libraries: PropTypes.array.isRequired
   , IdLibrary: PropTypes.string.isRequired
-  , ontologyDropdowns: React.PropTypes.object.isRequired
-  , biblicalBooksDropdown: React.PropTypes.array.isRequired
-  , biblicalChaptersDropdown: React.PropTypes.array.isRequired
-  , biblicalVersesDropdown: React.PropTypes.array.isRequired
-  , biblicalSubversesDropdown: React.PropTypes.array.isRequired
-  , IdTopic: React.PropTypes.string.isRequired
-  , IdTopicValue: React.PropTypes.string.isRequired
-  , IdTopicType: React.PropTypes.string.isRequired
-  , IdKey: React.PropTypes.string.isRequired
-  , IdKeyValue: React.PropTypes.string.isRequired
-  , IdKeyType: React.PropTypes.string.isRequired
-  , handleLibraryChange: React.PropTypes.func.isRequired
-  , handleTopicChange: React.PropTypes.func.isRequired
-  , handleSubmit: React.PropTypes.func.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , initialOntologyType: React.PropTypes.string.isRequired
+  , ontologyDropdowns: PropTypes.object.isRequired
+  , biblicalBooksDropdown: PropTypes.array.isRequired
+  , biblicalChaptersDropdown: PropTypes.array.isRequired
+  , biblicalVersesDropdown: PropTypes.array.isRequired
+  , biblicalSubversesDropdown: PropTypes.array.isRequired
+  , IdTopic: PropTypes.string.isRequired
+  , IdTopicValue: PropTypes.string.isRequired
+  , IdTopicType: PropTypes.string.isRequired
+  , IdKey: PropTypes.string.isRequired
+  , IdKeyValue: PropTypes.string.isRequired
+  , IdKeyType: PropTypes.string.isRequired
+  , handleLibraryChange: PropTypes.func.isRequired
+  , handleTopicChange: PropTypes.func.isRequired
+  , handleSubmit: PropTypes.func.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , initialOntologyType: PropTypes.string.isRequired
 };
 
 export default IdBuilder;

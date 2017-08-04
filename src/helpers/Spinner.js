@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MessageIcons from '../helpers/MessageIcons';
 import FontAwesome from 'react-fontawesome';
 
@@ -38,7 +39,7 @@ class Spinner extends React.Component {
 }
 
 Spinner.propTypes = {
-  message: React.PropTypes.string.isRequired
+  message: PropTypes.string.isRequired
 };
 
 Spinner.defaultProps = {

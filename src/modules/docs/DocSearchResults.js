@@ -2,7 +2,7 @@ import React from 'react'
 import SsSearchResultYourKingdomOf from '../../images/SsSearchResultYourKingdomOf';
 import SsShowingRows from '../../images/SsSearchShowingRows';
 
-export default React.createClass({
+class DocSearchResults extends React.Component {
   render() {
     return (
     <div className="App-help-doc-search-results">
@@ -48,4 +48,6 @@ export default React.createClass({
     </div>
     )
   }
-})
+}
+
+export default DocSearchResults;

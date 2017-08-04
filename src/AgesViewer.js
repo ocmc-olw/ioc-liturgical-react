@@ -1,13 +1,13 @@
 import React from 'react';
+import PropTypes from 'prop-types';
+
 import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Well} from 'react-bootstrap';
 
 import Labels from './Labels';
-import ModalParaRowEditor from './ModalParaRowEditor';
 
 import Spinner from './helpers/Spinner';
 import server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
-import IdManager from './helpers/IdManager';
 import ModalAgesServiceSelector from './modules/ModalAgesServiceSelector';
 import ReactSelector from './modules/ReactSelector'
 
@@ -656,12 +656,12 @@ class AgesViewer extends React.Component {
 }
 
 AgesViewer.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , domains: React.PropTypes.object.isRequired
-  , agesIndexValues: React.PropTypes.array
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
+  , agesIndexValues: PropTypes.array
 };
 
 AgesViewer.defaultProps = {

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Button, Modal} from 'react-bootstrap';
 import axios from 'axios';
 import Labels from '../Labels';
@@ -218,18 +219,18 @@ export class ModalSchemaBasedEditor extends React.Component {
   }
 }
 ModalSchemaBasedEditor.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , restPath: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , onClose: React.PropTypes.func.isRequired
-  , showModal: React.PropTypes.bool.isRequired
-  , title: React.PropTypes.string.isRequired
-  , idLibrary: React.PropTypes.string.isRequired
-  , idTopic: React.PropTypes.string.isRequired
-  , idKey: React.PropTypes.string.isRequired
-  , searchLabels: React.PropTypes.object.isRequired
-  , languageCode: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , restPath: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , onClose: PropTypes.func.isRequired
+  , showModal: PropTypes.bool.isRequired
+  , title: PropTypes.string.isRequired
+  , idLibrary: PropTypes.string.isRequired
+  , idTopic: PropTypes.string.isRequired
+  , idKey: PropTypes.string.isRequired
+  , searchLabels: PropTypes.object.isRequired
+  , languageCode: PropTypes.string.isRequired
 };
 export default ModalSchemaBasedEditor;
 

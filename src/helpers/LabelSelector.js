@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import ResourceSelector from '../modules/ReactSelector';
 import Labels from '../Labels';
 
@@ -60,10 +61,10 @@ class LabelSelector extends React.Component {
 }
 
 LabelSelector.propTypes = {
-    languageCode: React.PropTypes.string.isRequired
-    , labels: React.PropTypes.object.isRequired
-    , initialValue: React.PropTypes.string.isRequired
-    , changeHandler: React.PropTypes.func.isRequired
+    languageCode: PropTypes.string.isRequired
+    , labels: PropTypes.object.isRequired
+    , initialValue: PropTypes.string.isRequired
+    , changeHandler: PropTypes.func.isRequired
 };
 
 LabelSelector.defaultProps = {

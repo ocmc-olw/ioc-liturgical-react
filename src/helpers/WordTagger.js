@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Button
   , ControlLabel
@@ -471,14 +472,14 @@ class WordTagger extends React.Component {
 }
 
 WordTagger.propTypes = {
-    languageCode: React.PropTypes.string.isRequired
-    , index: React.PropTypes.string.isRequired
-    , tokens: React.PropTypes.array.isRequired
-    , token: React.PropTypes.string.isRequired
-    , lemma: React.PropTypes.string
-    , gloss: React.PropTypes.string
-    , grammar: React.PropTypes.string.isRequired
-    , callBack: React.PropTypes.func.isRequired
+    languageCode: PropTypes.string.isRequired
+    , index: PropTypes.string.isRequired
+    , tokens: PropTypes.array.isRequired
+    , token: PropTypes.string.isRequired
+    , lemma: PropTypes.string
+    , gloss: PropTypes.string
+    , grammar: PropTypes.string.isRequired
+    , callBack: PropTypes.func.isRequired
 };
 
 WordTagger.defaultProps = {

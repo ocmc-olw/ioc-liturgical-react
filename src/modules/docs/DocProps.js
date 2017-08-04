@@ -1,5 +1,5 @@
 import React from 'react'
-export default React.createClass({
+class DocProps extends React.Component {
   render() {
     return (
     <div className="App-help-doc-props">
@@ -22,4 +22,5 @@ export default React.createClass({
     </div>
     )
   }
-})
+}
+export default DocProps;

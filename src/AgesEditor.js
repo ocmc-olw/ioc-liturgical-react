@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Well} from 'react-bootstrap';
 
 import Labels from './Labels';
@@ -537,16 +538,14 @@ class AgesEditor extends React.Component {
 }
 
 AgesEditor.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , domains: React.PropTypes.object.isRequired
-  , agesIndexValues: React.PropTypes.array
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
+  , agesIndexValues: PropTypes.array
 };
 
-AgesEditor.defaultProps = {
-};
 
 export default AgesEditor;
 

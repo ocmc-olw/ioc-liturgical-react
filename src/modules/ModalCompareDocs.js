@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Button, Modal} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
@@ -244,15 +245,15 @@ export class ModalCompareDocs extends React.Component {
   }
 }
 ModalCompareDocs.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , onClose: React.PropTypes.func.isRequired
-  , showModal: React.PropTypes.bool.isRequired
-  , title: React.PropTypes.string.isRequired
-  , docType: React.PropTypes.string.isRequired
-  , selectedIdParts: React.PropTypes.array.isRequired
-  , labels: React.PropTypes.object.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , onClose: PropTypes.func.isRequired
+  , showModal: PropTypes.bool.isRequired
+  , title: PropTypes.string.isRequired
+  , docType: PropTypes.string.isRequired
+  , selectedIdParts: PropTypes.array.isRequired
+  , labels: PropTypes.object.isRequired
 };
 export default ModalCompareDocs;
 

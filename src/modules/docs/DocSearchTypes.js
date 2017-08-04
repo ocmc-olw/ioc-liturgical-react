@@ -1,6 +1,7 @@
 import React from 'react'
 import SsSearchTypes from '../../images/SsSearchTypes';
-export default React.createClass({
+
+class DocSearchTypes extends React.Component {
   render() {
     return (
     <div className="App-help-doc-search-types">
@@ -16,4 +17,6 @@ export default React.createClass({
     </div>
     )
   }
-})
+}
+
+export default DocSearchTypes;

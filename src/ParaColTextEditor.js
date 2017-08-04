@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Labels from './Labels';
 import server from './helpers/Server';
 import ResourceSelector from './modules/ReactSelector';
@@ -538,12 +539,12 @@ class ParaColTextEditor extends React.Component {
 }
 
 ParaColTextEditor.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , domains: React.PropTypes.object.isRequired
-  , source: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
+  , source: PropTypes.string.isRequired
 };
 
 ParaColTextEditor.defaultProps = {

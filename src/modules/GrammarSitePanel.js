@@ -1,9 +1,7 @@
 import React from 'react';
-import Labels from '../Labels';
-import MessageIcons from '../helpers/MessageIcons';
+import PropTypes from 'prop-types';
 import {
   Panel
-  , PanelGroup
 } from 'react-bootstrap';
 import Iframe from 'react-iframe';
 
@@ -63,10 +61,10 @@ class GrammarSitePanel extends React.Component {
 }
 
 GrammarSitePanel.propTypes = {
-    languageCode: React.PropTypes.string.isRequired
-    , lemmas: React.PropTypes.array.isRequired
-    , url: React.PropTypes.string.isRequired
-    , title: React.PropTypes.string.isRequired
+    languageCode: PropTypes.string.isRequired
+    , lemmas: PropTypes.array.isRequired
+    , url: PropTypes.string.isRequired
+    , title: PropTypes.string.isRequired
 };
 
 GrammarSitePanel.defaultProps = {

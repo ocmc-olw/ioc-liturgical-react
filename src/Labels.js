@@ -77,7 +77,7 @@ const   labels = {
     }
     , pageLogin: {
       password: "password"
-      , prompt: "Please login..."
+      , prompt: "Please enter this information to login..."
       , username: "username"
       , good: "Logged in OK."
       , bad: "Incorrect username or password."
@@ -741,7 +741,7 @@ const   labels = {
     }
     , pageLogin: {
       password: "κωδικός"
-      , prompt: "Παρακαλώ συνδεθείτε..."
+      , prompt: "Παρακαλώ εισάγετε τις παρακάτω πληροφορίες για να συνδεθείτε..."
       , username: "όνομα χρήστη"
       , good: "Εντάξει..."
       , bad: "Το όνομα χρήστη ή ο κωδικός δεν είναι σωστό."

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
@@ -41,7 +42,7 @@ class Template extends React.Component {
 }
 
 Template.propTypes = {
-    languageCode: React.PropTypes.string.isRequired
+    languageCode: PropTypes.string.isRequired
 };
 
 Template.defaultProps = {

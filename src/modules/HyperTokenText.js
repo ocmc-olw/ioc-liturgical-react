@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import Spinner from '../helpers/Spinner';
@@ -71,10 +72,10 @@ class HyperTokenText extends React.Component {
 }
 
 HyperTokenText.propTypes = {
-  languageCode: React.PropTypes.string.isRequired
-  , tokens: React.PropTypes.array.isRequired
-  , id: React.PropTypes.string.isRequired
-  , onClick: React.PropTypes.func.isRequired
+  languageCode: PropTypes.string.isRequired
+  , tokens: PropTypes.array.isRequired
+  , id: PropTypes.string.isRequired
+  , onClick: PropTypes.func.isRequired
 };
 
 HyperTokenText.defaultProps = {

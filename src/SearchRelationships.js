@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import LinkSearchOptions from "./modules/LinkSearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
@@ -488,12 +489,12 @@ export class SearchRelationships extends React.Component {
 }
 
 SearchRelationships.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func
-  , searchLabels: React.PropTypes.object.isRequired
-  , resultsTableLabels: React.PropTypes.object.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , callback: PropTypes.func
+  , searchLabels: PropTypes.object.isRequired
+  , resultsTableLabels: PropTypes.object.isRequired
 };
 
 export default SearchRelationships;

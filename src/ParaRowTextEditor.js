@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {
   Button
   , ControlLabel
@@ -339,21 +340,21 @@ export class ParaRowTextEditor extends React.Component {
 }
 
 ParaRowTextEditor.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , docType: React.PropTypes.string.isRequired
-  , idLibrary: React.PropTypes.string.isRequired
-  , idTopic: React.PropTypes.string.isRequired
-  , idKey: React.PropTypes.string.isRequired
-  , value: React.PropTypes.string.isRequired
-  , canChange: React.PropTypes.bool.isRequired
-  , canReview: React.PropTypes.bool
-  , onSubmit: React.PropTypes.func
-  , onChange: React.PropTypes.func
-  , message: React.PropTypes.string
-  , messageIcon: React.PropTypes.string
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , docType: PropTypes.string.isRequired
+  , idLibrary: PropTypes.string.isRequired
+  , idTopic: PropTypes.string.isRequired
+  , idKey: PropTypes.string.isRequired
+  , value: PropTypes.string.isRequired
+  , canChange: PropTypes.bool.isRequired
+  , canReview: PropTypes.bool
+  , onSubmit: PropTypes.func
+  , onChange: PropTypes.func
+  , message: PropTypes.string
+  , messageIcon: PropTypes.string
 };
 export default ParaRowTextEditor;
 

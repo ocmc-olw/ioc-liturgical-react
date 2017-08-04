@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import auth from './helpers/Auth'
 import Form from "react-jsonschema-form";
@@ -116,13 +117,13 @@ class Login extends React.Component {
 }
 
 Login.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , loginCallback: React.PropTypes.func.isRequired
-  , dropdownsCallback: React.PropTypes.func.isRequired
-  , formPrompt: React.PropTypes.string.isRequired
-  , formMsg: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , loginCallback: PropTypes.func.isRequired
+  , dropdownsCallback: PropTypes.func.isRequired
+  , formPrompt: PropTypes.string.isRequired
+  , formMsg: PropTypes.string.isRequired
 };
 Login.defaultProps = {
 

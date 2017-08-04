@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 
@@ -138,12 +139,12 @@ class DependencyDiagram extends React.Component {
 }
 
 DependencyDiagram.propTypes = {
-  languageCode: React.PropTypes.string.isRequired
-  , data: React.PropTypes.array.isRequired
-  , size: React.PropTypes.string.isRequired
-  , width: React.PropTypes.string.isRequired
-  , height: React.PropTypes.string.isRequired
-  , onSelect: React.PropTypes.func
+  languageCode: PropTypes.string.isRequired
+  , data: PropTypes.array.isRequired
+  , size: PropTypes.string.isRequired
+  , width: PropTypes.string.isRequired
+  , height: PropTypes.string.isRequired
+  , onSelect: PropTypes.func
 };
 
 DependencyDiagram.defaultProps = {

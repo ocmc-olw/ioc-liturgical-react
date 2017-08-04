@@ -1,8 +1,9 @@
-import React, { Component , PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
 
-class OntologySearchOptions extends Component {
+class OntologySearchOptions extends React.Component {
 
   constructor(props) {
     super(props);

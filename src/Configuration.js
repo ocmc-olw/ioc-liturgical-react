@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import server from './helpers/Server';
 import {Alert} from 'react-bootstrap';
@@ -58,12 +59,12 @@ class Configuration extends React.Component {
 }
 
 Configuration.propTypes = {
-  appVersion: React.PropTypes.string.isRequired
-  , appVersionLabel: React.PropTypes.string.isRequired
-  , restServer: React.PropTypes.string.isRequired
-  , restServerLabel: React.PropTypes.string.isRequired
-  , wsVersionLabel: React.PropTypes.string.isRequired
-  , dbServerLabel: React.PropTypes.string.isRequired
+  appVersion: PropTypes.string.isRequired
+  , appVersionLabel: PropTypes.string.isRequired
+  , restServer: PropTypes.string.isRequired
+  , restServerLabel: PropTypes.string.isRequired
+  , wsVersionLabel: PropTypes.string.isRequired
+  , dbServerLabel: PropTypes.string.isRequired
 };
 
 Configuration.defaultProps = {

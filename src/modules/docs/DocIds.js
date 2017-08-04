@@ -1,7 +1,7 @@
 import React from 'react'
 import MeM1D1A1 from '../../images/MeM1D1A1';
 
-export class DocIds extends React.Component {
+class DocIds extends React.Component {
   render() {
     return (
         <div className="App-help-doc-ids">

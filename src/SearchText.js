@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import SearchOptionsAdvanced from "./modules/SearchOptionsAdvanced";
 import SearchOptionsSimple from "./modules/SearchOptionsSimple";
@@ -765,13 +766,13 @@ export class Search extends React.Component {
 }
 
 Search.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func
-  , searchLabels: React.PropTypes.object.isRequired
-  , resultsTableLabels: React.PropTypes.object.isRequired
-  , initialDocType: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , callback: PropTypes.func
+  , searchLabels: PropTypes.object.isRequired
+  , resultsTableLabels: PropTypes.object.isRequired
+  , initialDocType: PropTypes.string.isRequired
 };
 
 export default Search;

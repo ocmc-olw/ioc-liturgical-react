@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import server from '../helpers/Server';
 import {
   ControlLabel
@@ -398,12 +399,12 @@ class Grammar extends React.Component {
 }
 
 Grammar.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , idTopic: React.PropTypes.string.isRequired
-  , idKey: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , idTopic: PropTypes.string.isRequired
+  , idKey: PropTypes.string.isRequired
 };
 
 Grammar.defaultProps = {

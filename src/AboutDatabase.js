@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 class AboutDatabase extends React.Component {
   render() {
@@ -46,7 +47,7 @@ class AboutDatabase extends React.Component {
 }
 
 AboutDatabase.propTypes = {
-  labels: React.PropTypes.object.isRequired
+  labels: PropTypes.object.isRequired
 };
 
 AboutDatabase.defaultProps = {

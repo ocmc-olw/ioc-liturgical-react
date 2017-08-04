@@ -1,4 +1,5 @@
-import React, { Component , PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
 
@@ -9,7 +10,7 @@ import FontAwesome from 'react-fontawesome';
  * examined carefully if you are skilled in React JS.
  * Michael Colburn, March 1, 2017
  */
-class SearchOptions extends Component {
+class SearchOptions extends React.Component {
 
   constructor(props) {
     super(props);

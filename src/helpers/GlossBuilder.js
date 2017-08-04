@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -108,9 +109,9 @@ class GlossBuilder extends React.Component {
 }
 
 GlossBuilder.propTypes = {
-  languageCode: React.PropTypes.string.isRequired
-  , values: React.PropTypes.array.isRequired
-  , callBack: React.PropTypes.func.isRequired
+  languageCode: PropTypes.string.isRequired
+  , values: PropTypes.array.isRequired
+  , callBack: PropTypes.func.isRequired
 };
 
 GlossBuilder.defaultProps = {

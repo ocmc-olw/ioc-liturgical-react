@@ -3,7 +3,8 @@ import FontAwesome from 'react-fontawesome';
 import SsInitial from '../../images/SsSearchAvancedInitial';
 import SsBiblicalInitial from '../../images/SsSearchAvancedBiblicalInitial';
 import SsLiturgicalInitial from '../../images/SsSearchAvancedLiturgicalInitial';
-export default React.createClass({
+
+class DocSearchAdvanced extends React.Component {
   render() {
     return (
     <div className="App-help-doc-advanced-search">
@@ -85,4 +86,6 @@ export default React.createClass({
     </div>
     )
   }
-})
+}
+
+export default DocSearchAdvanced;

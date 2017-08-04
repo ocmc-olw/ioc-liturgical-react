@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import server from './helpers/Server';
 import {ControlLabel, DropdownButton, FormGroup, HelpBlock, MenuItem} from 'react-bootstrap';
@@ -110,11 +111,11 @@ class LiturgicalDayProperties extends React.Component {
 }
 
 LiturgicalDayProperties.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func.isRequired
-  , labels: React.PropTypes.object.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , callback: PropTypes.func.isRequired
+  , labels: PropTypes.object.isRequired
 };
 
 LiturgicalDayProperties.defaultProps = {

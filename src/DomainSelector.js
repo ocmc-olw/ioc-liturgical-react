@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import server from './helpers/Server';
 import {DropdownButton, MenuItem} from 'react-bootstrap';
@@ -104,16 +105,16 @@ class DomainSelector extends React.Component {
 }
 
 DomainSelector.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func.isRequired
-  , id: React.PropTypes.string.isRequired
-  , title: React.PropTypes.string.isRequired
-  , size: React.PropTypes.string
-  , style: React.PropTypes.string
-  , filterLanguage: React.PropTypes.string
-  , publicOnly: React.PropTypes.bool
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , callback: PropTypes.func.isRequired
+  , id: PropTypes.string.isRequired
+  , title: PropTypes.string.isRequired
+  , size: PropTypes.string
+  , style: PropTypes.string
+  , filterLanguage: PropTypes.string
+  , publicOnly: PropTypes.bool
 };
 
 DomainSelector.defaultProps = {

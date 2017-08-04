@@ -2,7 +2,7 @@ import React from 'react';
 import SsRegEx from '../../images/SsRegEx';
 import SsRegExResult from '../../images/SsRegExResult';
 
-export default React.createClass({
+class DocSearchRegularExpressions extends React.Component {
   render() {
     return (
     <div className="App-help-doc-regex-search">
@@ -56,4 +56,5 @@ export default React.createClass({
     </div>
     )
   }
-})
+}
+export default DocSearchRegularExpressions;

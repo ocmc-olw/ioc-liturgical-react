@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import server from '../helpers/Server';
 import {Button, ControlLabel, Well} from 'react-bootstrap';
@@ -170,12 +171,12 @@ class WorkflowAssignment extends React.Component {
 }
 
 WorkflowAssignment.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , library: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , callback: PropTypes.func.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , library: PropTypes.string.isRequired
 };
 
 WorkflowAssignment.defaultProps = {

@@ -1,10 +1,10 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
-import {Alert, Col, Button, Glyphicon, Grid, Row, Modal} from 'react-bootstrap';
+import {Alert, Button, Glyphicon, Modal} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
-import Spinner from '../helpers/Spinner';
 
 /**
  * Display modal window to allow user to select an AGES service or sacrament.
@@ -54,7 +54,7 @@ export class ModalAgesServiceSelector extends React.Component {
     this.handleRowSelect = this.handleRowSelect.bind(this);
   };
 
-  componentWillMount = () => {
+  PropTypesWillMount = () => {
   }
 
   close = () => {
@@ -148,12 +148,12 @@ export class ModalAgesServiceSelector extends React.Component {
   }
 }
 ModalAgesServiceSelector.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , callBack: React.PropTypes.func.isRequired
-  , values: React.PropTypes.array.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , callBack: PropTypes.func.isRequired
+  , values: PropTypes.array.isRequired
 };
 export default ModalAgesServiceSelector;
 

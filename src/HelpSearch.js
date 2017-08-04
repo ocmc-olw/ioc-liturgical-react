@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Accordion, Panel} from 'react-bootstrap'
 
 import DocIds from './modules/docs/DocIds';
@@ -62,7 +63,7 @@ class HelpSearch extends React.Component {
 }
 
 HelpSearch.propTypes = {
-  labels: React.PropTypes.object.isRequired
+  labels: PropTypes.object.isRequired
 };
 
 HelpSearch.defaultProps = {

@@ -1,8 +1,9 @@
-import React, { Component , PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
 
-class LinkSearchOptions extends Component {
+class LinkSearchOptions extends React.Component {
 
   constructor(props) {
     super(props);
@@ -38,10 +39,10 @@ class LinkSearchOptions extends Component {
     this.handleTagOperatorChange = this.handleTagOperatorChange.bind(this);
   }
 
-  componentWillMount = () => {
+  PropTypesWillMount = () => {
   }
 
-  componentWillReceiveProps = (nextProps) => {
+  PropTypesWillReceiveProps = (nextProps) => {
     this.setState({
     });
   }

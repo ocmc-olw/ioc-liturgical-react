@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import {Alert, Button, Glyphicon, Modal} from 'react-bootstrap';
 
 import Labels from './Labels';
@@ -114,16 +115,16 @@ export class ModalParaRowEditor extends React.Component {
   }
 }
 ModalParaRowEditor.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , languageCode: React.PropTypes.string.isRequired
-  , onClose: React.PropTypes.func.isRequired
-  , onSubmit: React.PropTypes.func.isRequired
-  , showModal: React.PropTypes.bool.isRequired
-  , editId: React.PropTypes.string.isRequired
-  , value: React.PropTypes.string.isRequired
-  , canChange: React.PropTypes.bool.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
+  , onClose: PropTypes.func.isRequired
+  , onSubmit: PropTypes.func.isRequired
+  , showModal: PropTypes.bool.isRequired
+  , editId: PropTypes.string.isRequired
+  , value: PropTypes.string.isRequired
+  , canChange: PropTypes.bool.isRequired
 };
 export default ModalParaRowEditor;
 

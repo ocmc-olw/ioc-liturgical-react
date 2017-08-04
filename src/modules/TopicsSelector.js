@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import server from '../helpers/Server';
@@ -6,7 +7,6 @@ import 'react-select/dist/react-select.css'
 import 'react-virtualized/styles.css'
 import 'react-virtualized-select/styles.css'
 import VirtualizedSelect from 'react-virtualized-select'
-import ReactSelector from './ReactSelector';
 
 /**
  * Gets a list of topics from the web service and displays
@@ -107,12 +107,12 @@ class TopicsSelector extends React.Component {
 }
 
 TopicsSelector.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  ,  languageCode: React.PropTypes.string.isRequired
-  , library: React.PropTypes.string.isRequired
-  , callBack: React.PropTypes.func.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  ,  languageCode: PropTypes.string.isRequired
+  , library: PropTypes.string.isRequired
+  , callBack: PropTypes.func.isRequired
 };
 
 TopicsSelector.defaultProps = {

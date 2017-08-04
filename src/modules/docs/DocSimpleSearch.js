@@ -1,7 +1,7 @@
 import React from 'react';
 import FontAwesome from 'react-fontawesome';
 
-export default React.createClass({
+class DocSimpleSearch extends React.Component {
   render() {
     return (
     <div className="App-help-doc-simple-search">
@@ -26,4 +26,6 @@ export default React.createClass({
     </div>
     )
   }
-})
+}
+
+export default DocSimpleSearch;

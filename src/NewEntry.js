@@ -1,4 +1,5 @@
-import React, {PropTypes} from 'react';
+import React from 'react';
+import PropTypes from 'prop-types';
 import 'react-select/dist/react-select.css';
 import ResourceSelector from './modules/ReactSelector'
 import axios from 'axios';
@@ -603,20 +604,20 @@ export class NewEntry extends React.Component {
 }
 
 NewEntry.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , domains: React.PropTypes.object.isRequired
-  , ontologyDropdowns: React.PropTypes.object.isRequired
-  , formsDropdown: React.PropTypes.array.isRequired
-  , formsSchemas: React.PropTypes.object.isRequired
-  , forms: React.PropTypes.object.isRequired
-  , biblicalBooksDropdown: React.PropTypes.array.isRequired
-  , biblicalChaptersDropdown: React.PropTypes.array.isRequired
-  , biblicalVersesDropdown: React.PropTypes.array.isRequired
-  , biblicalSubversesDropdown: React.PropTypes.array.isRequired
-  , changeHandler: React.PropTypes.func.isRequired
-  , languageCode: React.PropTypes.string.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
+  , ontologyDropdowns: PropTypes.object.isRequired
+  , formsDropdown: PropTypes.array.isRequired
+  , formsSchemas: PropTypes.object.isRequired
+  , forms: PropTypes.object.isRequired
+  , biblicalBooksDropdown: PropTypes.array.isRequired
+  , biblicalChaptersDropdown: PropTypes.array.isRequired
+  , biblicalVersesDropdown: PropTypes.array.isRequired
+  , biblicalSubversesDropdown: PropTypes.array.isRequired
+  , changeHandler: PropTypes.func.isRequired
+  , languageCode: PropTypes.string.isRequired
 };
 
 export default NewEntry;

@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import axios from 'axios';
 import OntologySearchOptions from "./modules/OntologySearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
@@ -512,14 +513,14 @@ export class SearchOntology extends React.Component {
 }
 
 SearchOntology.propTypes = {
-  restServer: React.PropTypes.string.isRequired
-  , username: React.PropTypes.string.isRequired
-  , password: React.PropTypes.string.isRequired
-  , callback: React.PropTypes.func
-  , languageCode: React.PropTypes.string.isRequired
-  , editor: React.PropTypes.bool.isRequired
-  , initialType: React.PropTypes.string.isRequired
-  , fixedType: React.PropTypes.bool.isRequired
+  restServer: PropTypes.string.isRequired
+  , username: PropTypes.string.isRequired
+  , password: PropTypes.string.isRequired
+  , callback: PropTypes.func
+  , languageCode: PropTypes.string.isRequired
+  , editor: PropTypes.bool.isRequired
+  , initialType: PropTypes.string.isRequired
+  , fixedType: PropTypes.bool.isRequired
 };
 
 export default SearchOntology;
