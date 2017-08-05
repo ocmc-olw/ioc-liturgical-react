@@ -50,6 +50,7 @@ ReactSelector.propTypes = {
   , resources: PropTypes.array.isRequired
   , changeHandler: PropTypes.func.isRequired
   , multiSelect: PropTypes.bool.isRequired
+  , title: PropTypes.string
 };
 
 export default ReactSelector;

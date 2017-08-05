@@ -26,7 +26,8 @@ import CodeExample from './helpers/CodeExample'
 import {render} from 'react-dom';
 
 import {
-  AboutDatabase
+  Administrator
+  , AboutDatabase
   , AgesEditor
   , AgesViewer
   , Configuration
@@ -918,6 +919,22 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* AGES Viewer */}
+            <Panel header="Administrator" eventKey="admin">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  && this.state.formsLoaded &&
+              <Administrator
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+                  domains={this.state.domains}
+              />
+              }
+            </Panel> {/* Administrator */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

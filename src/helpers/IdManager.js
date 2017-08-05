@@ -59,4 +59,19 @@ module.exports = {
       return undefined;
     }
   }
+  , idToPaddedPath: function (id) {
+    if (id) {
+      return id.replace(/\|/g," / ");
+    }
+  }
+  ,idToPath: function (id) {
+    if (id.includes("~")) {
+      return id.replace(/~/g,"/");
+    } else {
+      return id.replace(/\|/g,"/");
+    }
+  }
+  , padPath: function (path) {
+     return path.replace(/\//g, " / ");
+  }
 }

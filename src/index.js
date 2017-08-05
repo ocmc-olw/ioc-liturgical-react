@@ -1,3 +1,4 @@
+import Administrator from './Administrator';
 import AgesEditor from './AgesEditor';
 import AgesViewer from './AgesViewer';
 import AboutDatabase from './AboutDatabase';
@@ -19,7 +20,8 @@ import TopicsSelector from './modules/TopicsSelector';
 import Spinner from './helpers/Spinner';
 
 export {
-  AgesEditor
+  Administrator
+  , AgesEditor
   , AgesViewer
   , AboutDatabase
   , Configuration

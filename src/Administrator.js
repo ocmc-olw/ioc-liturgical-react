@@ -1,127 +1,348 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import IdManager from './helpers/IdManager';
 import server from './helpers/Server';
-import {DropdownButton, MenuItem} from 'react-bootstrap';
+import Button from './helpers/Button';
+import Labels from './Labels';
+import Spinner from './helpers/Spinner';
+import MessageIcons from './helpers/MessageIcons';
+import FontAwesome from 'react-fontawesome';
+import {Col, Grid, Row, Well} from 'react-bootstrap';
+import ResourceSelector from './modules/ReactSelector';
+import Form from "react-jsonschema-form";
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
-class DomainSelector extends React.Component {
-  constructor(props) {
-    super(props);
+class Administrator extends React.Component {
+  constructor() {
+    super();
+
     this.state = {
-      serverNotCalled: true
+      action: 'GET'
+      , path: 'users/statistics'
+      , item: { id: "", uiSchema: {}, schema: {}, value:{}}
+      , itemSelected: false
+      , resources: []
+      , submitButtonHidden: false
+      , message: "important messages will appear here..."
+      , messageIcons: MessageIcons.getMessageIcons()
+      , messageIcon: MessageIcons.getMessageIcons().info
+      , centerDivVisible: false
+      , submitIsAPost: false
+      , options: {
+        sizePerPage: 10
+        , sizePerPageList: [5, 15, 30]
+        , onSizePerPageList: this.onSizePerPageList
+        , hideSizePerPage: true
+        , paginationShowsTotal: true
+      }
+      , selectRow: {
+        mode: 'radio'
+        , clickToSelect: true
+        , onSelect: this.handleRowSelect
+        , hideSelectColumn: true
+      }
     };
-    this.getMenuItems = this.getMenuItems.bind(this);
-    this.onSelect = this.onSelect.bind(this);
+
+    this.setPath = this.setPath.bind(this);
+    this.setItemDetails = this.setItemDetails.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.setMessage = this.setMessage.bind(this);
+    this.getAdminGrid = this.getAdminGrid.bind(this);
+    this.getResources = this.getResources.bind(this);
+    this.getResourceItems = this.getResourceItems.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
   }
 
   componentWillMount = () => {
-    this.fetchData();
+    this.getResources();
   }
 
-  onSelect = (index) => {
-    let item = this.state.items[index];
-    let idParts = item.value.split("|");
-    let domain = item.value;
-    if (idParts.length === 3) {
-      domain = idParts[2];
+  setMessage(message) {
+    this.setState({
+      message: message
+    });
+  }
+
+  setPath(newPath, updateMessage) {
+    var path = (newPath.value ? newPath.value : newPath);
+    this.setState({
+      path: path
+      , centerDivVisible: false
+      , submitIsAPost: path.includes("new/forms")
+    });
+    this.fetchData(path, updateMessage);
+  }
+
+  setItemDetails(id, uiSchema, schema, value) {
+    var hidden = false;
+    if (uiSchema["ui:readonly"]) {
+      hidden = true;
     }
-    this.props.callback(domain, item.label);
+    this.setState({
+      item: { id: id, uiSchema: uiSchema, schema: schema, value: value}
+      , itemSelected: true
+      , submitButtonHidden: hidden
+      , centerDivVisible: true
+    });
   }
 
-  domainObjectsToStringArray(domains) {
-    let values = domains.values;
+  handleRowSelect = (row, isSelected, e) => {
+    this.setItemDetails(
+        row._id, this.state.data.valueSchemas[row._valueSchemaId].uiSchema
+        , this.state.data.valueSchemas[row._valueSchemaId].schema
+        , row.value
+    );
   }
 
-  fetchData() {
+  fetchData(path, updateMessage) {
     var config = {
       auth: {
         username: this.props.username
         , password: this.props.password
       }
     };
-    this.setState({serverNotCalled: false});
-    axios.get(this.props.restServer + server.getDbServerDropdownsSearchTextApi(), config)
+    axios.get(
+        this.props.restServer
+        + server.getWsServerAdminApi()
+        + path
+        , config
+    )
         .then(response => {
-          this.setState( { items: response.data.values[0].domains} );
+          this.setState( {
+                data: response.data
+              }
+          );
+          if (updateMessage) {
+            this.setState( {
+                  message: "found " + (response.data.valueCount ? response.data.valueCount : "") + " docs for " + IdManager.padPath(path)
+                  , messageIcon: this.state.messageIcons.info
+                }
+            );
+          }
         })
         .catch( (error) => {
-          this.setState( { data: error.message });
-          this.props.callback(error.message, "");
+          var message = error.message;
+          var messageIcon = this.state.messageIcons.error;
+          if (error && error.response && error.response.status === 404) {
+            message = "no docs found";
+            messageIcon = this.state.messageIcons.warning;
+          }
+          this.setState( { data: message, message: message, messageIcon: messageIcon });
         });
-
-    // axios.get(this.props.restServer + server.getWsServerDomainsApi(), config)
-    //     .then(response => {
-    //       this.setState( { items: response.data.values} );
-    //     })
-    //     .catch( (error) => {
-    //       this.setState( { data: error.message });
-    //       this.props.callback(error.message, "");
-    //     });
   }
 
-  getMenuItems = (items) => {
-    let itemsList = items.map(function(item, index){
-      let domain = item.value;
-      let idParts = item.value.split("_");
-      if (idParts.length === 3) {
-        domain = idParts[2];
-      }
-      return <MenuItem key={domain} eventKey={ index }>{item.value + ": " + item.label}</MenuItem>;
-    });
-    return  itemsList ;
-  };
 
-  // getMenuItems = (items) => {
-  //   let itemsList = items.map(function(item, index){
-  //     let idParts = item._id.split("|");
-  //     let domain = item._id;
-  //     if (idParts.length === 3) {
-  //       domain = idParts[2];
-  //     }
-  //     return <MenuItem key={domain} eventKey={ index }>{domain + ": " + item.value.description}</MenuItem>;
-  //   });
-  //   return  itemsList ;
-  // };
-  render() {
-    if (this.state.items) {
-        return (
-            <div className="App-DomainSelector">
-              <h3 className="App-DomainSelector-prompt">{this.props.formPrompt}</h3>
-              <DropdownButton
-                  bsStyle={this.props.style}
-                  bsSize={this.props.size}
-                  title={this.props.title}
-                  id={this.props.id}
-                  onSelect={this.onSelect}
-              >
-                {this.getMenuItems(this.state.items)}
-              </DropdownButton>
-            </div>
-        );
+  handlePost(formData) {
+    var config = {
+      auth: {
+        username: this.props.username
+        , password: this.props.password
+      }
+    };
+    axios.post(
+        this.props.restServer
+        + IdManager.idToPath(this.state.item.id)
+        , formData.formData
+        , config
+    )
+        .then(response => {
+          this.setState({
+            message: "updated " + IdManager.idToPaddedPath(this.state.item.id),
+            item: { id: this.state.item.id, uiSchema: this.state.item.uiSchema, schema: this.state.item.schema, value: formData.formData}
+          });
+          this.setPath(this.state.path);
+          this.setState({centerDivVisible: true});
+        })
+        .catch( (error) => {
+          var message = error.response.data.userMessage;
+          var messageIcon = this.state.messageIcons.error;
+          this.setState( { data: message, message: message, messageIcon: messageIcon });
+        });
+  }
+
+  handlePut(formData) {
+    var config = {
+      auth: {
+        username: this.props.username
+        , password: this.props.password
+      }
+    };
+    let path = IdManager.idToPath(this.state.item.id);
+    let message = "";
+    if (path.startsWith("misc/utilities")) {
+      this.setState({
+        message: "This will take a few minutes"
+      });
+    }
+    axios.put(
+        this.props.restServer
+        + path
+        , formData.formData
+        , config
+    )
+        .then(response => {
+          message = "updated " + path;
+          if (path.startsWith("misc/utilities")) {
+            message = path + ": " + response.data.userMessage;
+          }
+          this.setState({
+            message: message
+            , item: {
+              id: this.state.item.id
+              , uiSchema: this.state.item.uiSchema
+              , schema: this.state.item.schema
+              , value: formData.formData
+            }
+          });
+          this.setPath(this.state.path);
+          this.setState({centerDivVisible: true});
+        })
+        .catch( (error) => {
+          var message = error.message;
+          var messageIcon = this.state.messageIcons.error;
+          this.setState( { data: message, message: message, messageIcon: messageIcon });
+        });
+  }
+
+  onSubmit(formData) {
+    if (this.state.submitIsAPost) {
+      this.handlePost(formData);
     } else {
-      return (<div className="Resource"><p>Loading domains!</p></div>);
+      this.handlePut(formData);
     }
   }
+
+  getResources = () => {
+    var config = {
+      auth: {
+        username: this.props.username
+        , password: this.props.password
+      }
+    };
+
+    axios.get(
+        this.props.restServer
+        + server.getWsServerAdminApi()
+        + "resources"
+        , config
+    )
+        .then(response => {
+          this.setState({
+            resources: response.data.resources
+          }, this.fetchData("users/statistics", true)
+        );
+        })
+        .catch( (error) => {
+          this.setState({
+            resources: []
+          });
+        });
+  }
+
+  getResourceItems = () => {
+    if (this.state.data) {
+      if (this.state.data === 'no docs found') {
+        return ("")
+      } else {
+        return (
+            <div>
+              <Well>
+                <div className="control-label">Select an item...</div>
+                <BootstrapTable
+                    data={this.state.data.values}
+                    trClassName={"App-data-tr"}
+                    striped
+                    hover
+                    pagination
+                    options={ this.state.options }
+                    selectRow={this.state.selectRow}
+                    search
+                >
+                  <TableHeaderColumn
+                      isKey
+                      dataField='_id'
+                      dataSort={ true }
+                  >ID</TableHeaderColumn>
+                </BootstrapTable>
+              </Well>
+            </div>
+        )
+      }
+    } else {
+      return (
+          ""
+      )
+    }
+  }
+  getAdminGrid = () => {
+      return (
+          <Grid>
+            <Row className="show-grid">
+              <Col sm={5} md={5}>
+                <Well>
+                  <ResourceSelector
+                      initialValue={this.state.path}
+                      resources={this.state.resources}
+                      changeHandler={this.setPath}
+                      multiSelect={false}
+                      title="Select a resource:"
+                  />
+                </Well>
+                {this.getResourceItems()}
+              </Col>
+              <Col sm={7} md={7}>
+                {this.state.itemSelected && this.state.centerDivVisible &&
+                <div className="App-form-container">
+                  <Well>
+                    <h3>ID: {IdManager.idToPaddedPath(this.state.item.id)}</h3>
+                    <Form
+                        schema={this.state.item.schema}
+                        uiSchema={this.state.item.uiSchema}
+                        formData={this.state.item.value}
+                        onSubmit={this.onSubmit}>
+                      <div><Button label="Submit" hidden={this.state.submitButtonHidden}/></div>
+                    </Form>
+                  </Well>
+                </div>
+                }
+              </Col>
+              <Col sm={0} md={0}></Col>
+            </Row>
+          </Grid>
+      )
+  }
+  render() {
+
+    return (
+        <div className="App-administrator">
+          <Grid>
+            <Row className="show-grid">
+              <Col sm={3} md={3}>
+              </Col>
+              <Col sm={6} md={6}>
+                <div className="App-message"><FontAwesome name={this.state.messageIcon} />{this.state.message}</div>
+              </Col>
+              <Col sm={3} md={3}></Col>
+            </Row>
+          </Grid>
+          {this.getAdminGrid()}
+        </div>
+    );
+
+  }
+
 }
 
-DomainSelector.propTypes = {
+Administrator.propTypes = {
   restServer: PropTypes.string.isRequired
   , username: PropTypes.string.isRequired
   , password: PropTypes.string.isRequired
-  , callback: PropTypes.func.isRequired
-  , id: PropTypes.string.isRequired
-  , title: PropTypes.string.isRequired
-  , size: PropTypes.string
-  , style: PropTypes.string
-  , filterLanguage: PropTypes.string
-  , publicOnly: PropTypes.bool
+  , languageCode: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
 };
 
-DomainSelector.defaultProps = {
-  size: "small"
-  , style: "primary"
-  , filterLanguage: ""
-  , publicOnly: true
+Administrator.defaultProps = {
 };
 
-export default DomainSelector;
+export default Administrator;
