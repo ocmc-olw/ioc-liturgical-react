@@ -17,12 +17,19 @@ import {
 } from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
+import Spinner from './helpers/Spinner';
+import Labels from './Labels';
 
 export class Search extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
+      labels: {
+        thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
+        , messages: Labels.getMessageLabels(this.props.languageCode)
+        , search: Labels.getSearchLabels(this.props.languageCode)
+      },
       docType: this.props.initialDocType,
       docTypes: [
         {label: "All", value: "all"}
@@ -76,6 +83,8 @@ export class Search extends React.Component {
       searchFormType: "simple"
       ,
       showSearchResults: false
+      ,
+      fetchingData: false
       ,
       resultCount: 0
       ,
@@ -140,6 +149,7 @@ export class Search extends React.Component {
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
     this.onRowDoubleClick = this.onRowDoubleClick.bind(this);
+    this.showResultsStatus = this.showResultsStatus.bind(this);
   }
 
   componentWillMount = () => {
@@ -607,7 +617,11 @@ export class Search extends React.Component {
   }
 
   fetchData(event) {
-    this.setState({message: this.props.searchLabels.msg2, messageIcon: this.messageIcons.info});
+    this.setState({
+      message: this.props.searchLabels.msg2
+      , messageIcon: this.messageIcons.info
+      , fetchingData: true
+    });
     let config = {
       auth: {
         username: this.props.username
@@ -653,6 +667,7 @@ export class Search extends React.Component {
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
+                , fetchingData: false
               }
           );
         })
@@ -662,7 +677,12 @@ export class Search extends React.Component {
           if (error && error.response && error.response.status === 404) {
             message = "no docs found";
             messageIcon = this.messageIcons.warning;
-            this.setState({data: message, message: message, messageIcon: messageIcon});
+            this.setState({
+              data: message
+              , message: message
+              , messageIcon: messageIcon
+              , fetchingData: false
+            });
           }
         });
   }
@@ -691,6 +711,20 @@ export class Search extends React.Component {
     )
   };
 
+  showResultsStatus = () => {
+    if (this.state.fetchingData) {
+      return (
+          <Spinner message={this.state.labels.messages.retrieving}/>      );
+    } else {
+      if (this.state.showSearchResults) {
+        return (
+            <div>
+              {this.props.searchLabels.msg5} {this.props.searchLabels.msg6}
+            </div>
+        );
+      }
+    }
+  }
 
   render() {
     return (
@@ -708,11 +742,7 @@ export class Search extends React.Component {
           <div>{this.props.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.props.searchLabels.msg3} {this.state.resultCount} {this.props.searchLabels.msg4} </span>
           </div>
-          {this.state.showSearchResults &&
-          <div>
-            {this.props.searchLabels.msg5} {this.props.searchLabels.msg6}
-          </div>
-          }
+          {this.showResultsStatus()}
           {this.state.showModalCompareDocs && this.getDocComparison()}
           {this.state.showSearchResults &&
           <div className="App-search-results">
@@ -769,6 +799,7 @@ Search.propTypes = {
   restServer: PropTypes.string.isRequired
   , username: PropTypes.string.isRequired
   , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
   , callback: PropTypes.func
   , searchLabels: PropTypes.object.isRequired
   , resultsTableLabels: PropTypes.object.isRequired

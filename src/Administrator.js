@@ -14,35 +14,11 @@ import Form from "react-jsonschema-form";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
 class Administrator extends React.Component {
-  constructor() {
-    super();
 
-    this.state = {
-      action: 'GET'
-      , path: 'users/statistics'
-      , item: { id: "", uiSchema: {}, schema: {}, value:{}}
-      , itemSelected: false
-      , resources: []
-      , submitButtonHidden: false
-      , message: "important messages will appear here..."
-      , messageIcons: MessageIcons.getMessageIcons()
-      , messageIcon: MessageIcons.getMessageIcons().info
-      , centerDivVisible: false
-      , submitIsAPost: false
-      , options: {
-        sizePerPage: 10
-        , sizePerPageList: [5, 15, 30]
-        , onSizePerPageList: this.onSizePerPageList
-        , hideSizePerPage: true
-        , paginationShowsTotal: true
-      }
-      , selectRow: {
-        mode: 'radio'
-        , clickToSelect: true
-        , onSelect: this.handleRowSelect
-        , hideSelectColumn: true
-      }
-    };
+  constructor(props) {
+    super(props);
+
+    this.state = this.setTheState(props, this.state);
 
     this.setPath = this.setPath.bind(this);
     this.setItemDetails = this.setItemDetails.bind(this);
@@ -52,11 +28,88 @@ class Administrator extends React.Component {
     this.getResources = this.getResources.bind(this);
     this.getResourceItems = this.getResourceItems.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.getAdminContent = this.getAdminContent.bind(this);
   }
 
   componentWillMount = () => {
     this.getResources();
   }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.state = this.setTheState(nextProps, this.state);
+  }
+
+  setTheState = (props, currentState) => {
+    let action = 'GET';
+    let path = 'users/statistics';
+    let item = {id: "", uiSchema: {}, schema: {}, value: {}};
+    let itemSelected = false;
+    let resources = [];
+    let submitButtonHidden = false;
+    let centerDivVisible = false;
+    let submitIsAPost = false;
+    if (currentState) {
+      if (currentState.action &&  currentState.action !== action) {
+        action = currentState.action;
+      }
+      if (currentState.path && currentState.path !== path) {
+        path = currentState.path;
+      }
+      if (currentState.item && currentState.item.id.length >0) {
+        currentState.item = item;
+      }
+      if (currentState.itemSelected) {
+        itemSelected = currentState.itemSelected;
+      }
+      if (currentState.resources && currentState.resources.length > 0) {
+        resources = currentState.resources;
+      }
+      if (currentState.submitButtonHidden) {
+        submitButtonHidden = currentState.submitButtonHidden;
+      }
+      if (currentState.centerDivVisible) {
+        centerDivVisible = currentState.centerDivVisible;
+      }
+      if (currentState.submitIsAPost) {
+        submitIsAPost = currentState.submitIsAPost;
+      }
+    }
+
+    return (
+        {
+          labels: {
+            thisClass: Labels.getAgesEditorLabels(this.props.languageCode)
+            , messages: Labels.getMessageLabels(this.props.languageCode)
+            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.languageCode)
+          }
+          , messageIcons: MessageIcons.getMessageIcons()
+          , messageIcon: MessageIcons.getMessageIcons().info
+          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , action: action
+          , path: path
+          , item: item
+          , itemSelected: itemSelected
+          , resources: resources
+          , submitButtonHidden: submitButtonHidden
+          , centerDivVisible: centerDivVisible
+          , submitIsAPost: submitIsAPost
+          , options: {
+            sizePerPage: 10
+            , sizePerPageList: [5, 15, 30]
+            , onSizePerPageList: this.onSizePerPageList
+            , hideSizePerPage: true
+            , paginationShowsTotal: true
+          }
+          , selectRow: {
+            mode: 'radio'
+            , clickToSelect: true
+            , onSelect: this.handleRowSelect
+            , hideSelectColumn: true
+        }
+      }
+    )
+  }
+
 
   setMessage(message) {
     this.setState({
@@ -142,6 +195,7 @@ class Administrator extends React.Component {
     };
     axios.post(
         this.props.restServer
+        + server.getWsServerAdminApi()
         + IdManager.idToPath(this.state.item.id)
         , formData.formData
         , config
@@ -177,6 +231,7 @@ class Administrator extends React.Component {
     }
     axios.put(
         this.props.restServer
+        + server.getWsServerAdminApi()
         + path
         , formData.formData
         , config
@@ -228,6 +283,8 @@ class Administrator extends React.Component {
         , config
     )
         .then(response => {
+          console.log('Administrator.getResources received response...');
+          console.log(response.data.resources);
           this.setState({
             resources: response.data.resources
           }, this.fetchData("users/statistics", true)
@@ -312,24 +369,38 @@ class Administrator extends React.Component {
           </Grid>
       )
   }
+  getAdminContent = () => {
+    if (this.state.resources) {
+      return (
+          <div className="App-administrator">
+            <Grid>
+              <Row className="show-grid">
+                <Col sm={3} md={3}>
+                </Col>
+                <Col sm={6} md={6}>
+                  <div className="App-message"><FontAwesome name={this.state.messageIcon} />{this.state.message}</div>
+                </Col>
+                <Col sm={3} md={3}></Col>
+              </Row>
+            </Grid>
+            {this.getAdminGrid()}
+          </div>
+      );
+    } else {
+      return (
+          <div className="App-administrator">
+            <Spinner message={this.state.labels.messages.retrieving}/>
+          </div>
+      );
+    }
+  }
+
   render() {
-
     return (
-        <div className="App-administrator">
-          <Grid>
-            <Row className="show-grid">
-              <Col sm={3} md={3}>
-              </Col>
-              <Col sm={6} md={6}>
-                <div className="App-message"><FontAwesome name={this.state.messageIcon} />{this.state.message}</div>
-              </Col>
-              <Col sm={3} md={3}></Col>
-            </Row>
-          </Grid>
-          {this.getAdminGrid()}
+        <div>
+        {this.getAdminContent()}
         </div>
-    );
-
+    )
   }
 
 }

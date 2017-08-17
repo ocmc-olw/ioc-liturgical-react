@@ -228,6 +228,7 @@ class Demo extends React.Component {
   // called after a successful login
   handleDropdownsCallback = (response) => {
     let forms = response.data;
+    console.log(forms);
     this.setState({
       formsLoaded: true
       , forms: forms.data
@@ -309,9 +310,11 @@ class Demo extends React.Component {
    */
   editable = (library) => {
     let canEdit = false;
-    for (let entry of this.state.domains.author) {
-      if (entry.value == library) {
-        return true;
+    if (this.state.domains && this.state.domains.author) {
+      for (let entry of this.state.domains.author) {
+        if (entry.value == library) {
+          return true;
+        }
       }
     }
   }
@@ -654,6 +657,7 @@ class Demo extends React.Component {
                       restServer={this.state.restServer}
                       username={this.state.username}
                       password={this.state.password}
+                      languageCode={this.state.language.code}
                       searchLabels={this.state.language.labels.search}
                       resultsTableLabels={this.state.language.labels.resultsTable}
                       initialDocType="Liturgical"
@@ -667,6 +671,7 @@ class Demo extends React.Component {
                           restServer={this.state.restServer}
                           username={this.state.username}
                           password={this.state.password}
+                          languageCode={this.state.language.code}
                           callback={this.handleSearchCallback}
                           searchLabels={this.state.language.labels.search}
                           resultsTableLabels={this.state.language.labels.resultsTable}
