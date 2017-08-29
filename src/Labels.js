@@ -4,7 +4,11 @@
 
 const   labels = {
   en: {
-    liturgicalAcronyms: {
+    button: {
+      close: "Close"
+      , submit: "Submit"
+    }
+    , liturgicalAcronyms: {
       baptism: "Baptism"
       , funeral: "Funeral"
       , funeral_brightweek: "Funeral (Brightweek)"
@@ -24,13 +28,17 @@ const   labels = {
     }
     , resultsTable: {
       filterPrompt: "type here to filter search results..."
+      , headerComments: "Comments"
+      , headerDesc: "Description"
       , headerDomain: "Domain"
       , headerKey: "Key"
+      , headerLink: "Link"
+      , headerName: "Name"
+      , headerOntologyTopic: "Ontology Topic"
+      , headerTags: "Tags"
+      , headerTo: "Refers To"
       , headerTopic: "Topic"
       , headerValue: "Value"
-      , headerName: "Name"
-      , headerDesc: "Description"
-      , headerTags: "Tags"
     }
     , linkSearchResultsTable: {
       filterPrompt: "type here to filter search results..."
@@ -429,7 +437,7 @@ const   labels = {
         main: "Create a New Entry"
         , form: "View the Form"
       }
-      , formSelector: "The Form you want to use..."
+      , formSelector: "Select the Form for the new entry you want to create..."
       , paraTextPanelTitle: "View Parallel Texts"
     }
     , ParaTextEditor: {
@@ -441,6 +449,7 @@ const   labels = {
       , valueFor: "Value for"
       , submit: "Submit"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
+      , LinksPanelTitle: "Links to the Greek Text"
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -502,6 +511,14 @@ const   labels = {
       panelTitle: "Text Topic Selector"
       , instructions: "Use the Text Topic Selector to select the Topic you want."
     }
+    , ViewRelationships: {
+      panelTitle: "Links for "
+      , msg1: ""
+    }
+    , ViewReferences: {
+      panelTitle: "Links for "
+      , msg1: ""
+    }
     , GlossBuilder: {
       panelTitle: "Gloss Builder"
       , instructions: "Use the Gloss Builder to add words to the gloss, and indicate their sense."
@@ -536,11 +553,14 @@ const   labels = {
       , status: "Status"
       , retrieving: "retrieving..."
       , searching: "searching..."
+      , resultLabel: "Search Result"
       , found: "Found"
       , docs: "docs"
       , submit: "Submit"
       , regEx: "Enter Regex"
       , clearFilters: "Clear Filters"
+      , filter: "You can use the box below to filter the results."
+      , click: "Click the radio button of the row you are interested in."
     }
     , grammarTerms: {
       case: {
@@ -670,9 +690,17 @@ const   labels = {
         }
       }
     }
+    , template: {} // place holder
+    , templateForTable: {
+      pageTitle: "Example Table"
+    } // place holder
   }
     , el: {
-    liturgicalAcronyms: {
+    button: {
+    close: "Κλείστε"
+    , submit: "Να Στέιλει"
+    }
+    , liturgicalAcronyms: {
       baptism: "Baptism"
       , funeral: "Funeral"
       , funeral_brightweek: "Funeral (Brightweek)"
@@ -692,13 +720,17 @@ const   labels = {
     }
     , resultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
+      , headerComments: "Σχόλια"
+      , headerDesc: "Περιγραφή"
       , headerDomain: "Τομέας"
       , headerKey: "Κλειδί"
+      , headerLink: "Σύνδεσμος"
+      , headerName: "Όνομα"
+      , headerOntologyTopic: "Οντολογικό Θέμα"
+      , headerTags: "Ετικέτες"
+      , headerTo: "Αναφέρεται Σε"
       , headerTopic: "Θέμα"
       , headerValue: "Τιμή"
-      , headerName: "Όνομα"
-      , headerDesc: "Περιγραφή"
-      , headerTags: "Ετικέτες"
     }
     , linkSearchResultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
@@ -1102,6 +1134,7 @@ const   labels = {
       , valueFor: "Value for"
       , submit: "Submit"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
+      , LinksPanelTitle: "Links to the Greek Text"
 }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
@@ -1171,6 +1204,14 @@ const   labels = {
       , wnSense: "WN Sense"
       , oxSense: "Ox Sense"
     }
+    , ViewRelationships: {
+      panelTitle: "Links for "
+      , msg1: ""
+    }
+    , ViewReferences: {
+      panelTitle: "Links for "
+      , msg1: ""
+    }
     , WordTagger: {
       panelTitle: "Word Tagger"
       , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
@@ -1197,11 +1238,14 @@ const   labels = {
       , status: "Status: "
       , retrieving: "retrieving..."
       , searching: "searching..."
+      , resultLabel: "Search Result"
       , found: "Found"
       , docs: "docs"
       , submit: "Submit"
       , regEx: "Enter Regex"
       , clearFilters: "Clear Filters"
+      , filter: "You can use the box below to filter the results."
+      , click: "Click the radio button of the row you are interested in."
     }
     , grammarTerms: {
       case: {
@@ -1332,13 +1376,23 @@ const   labels = {
         }
       }
     }
+    , template: {} // place holder
+    , templateForTable: {
+      pageTitle: "Example Table"
+    } // place holder
   }
 }
 
 module.exports = {
   labels : labels
-  , getAllLabels: (code) => { return labels[code];}
+  , getAllLabels: (code) => {
+    return labels[code];
+    }
+  , getAllLabelsAppended: (code, localEng, local) => {
+    return labels[code];
+  }
   , getMessageLabels: (code) => { return labels[code].messages }
+  , getButtonLabels: (code) => { return labels[code].button }
   , getResultsTableLabels: (code) => { return labels[code].resultsTable;}
   , getLinkSearchResultsTableLabels: (code) => { return labels[code].linkSearchResultsTable;}
   , getHeaderLabels: (code) => { return labels[code].header;}
@@ -1377,6 +1431,8 @@ module.exports = {
   , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
   , getGlossBuilderLabels: (code) => { return labels[code].GlossBuilder;}
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
+  , getViewReferencesLabels: (code) => { return labels[code].ViewReferences;}
+  , getViewRelationshipsLabels: (code) => { return labels[code].ViewRelationships;}
   , getWordTaggerLabels: (code) => { return labels[code].WordTagger;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
   , getLiturgicalAcronymsLabels: (code) => { return labels[code].liturgicalAcronyms;}
@@ -1389,4 +1445,6 @@ module.exports = {
     }
     return message;
   }
+  , getTemplateLabels: (code) => { return labels[code].template }
+  , getTemplateForTableLabels: (code) => { return labels[code].templateForTable }
 }

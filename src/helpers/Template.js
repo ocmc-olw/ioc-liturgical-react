@@ -13,6 +13,10 @@ class Template extends React.Component {
     this.state = this.setTheState(props, "");
   }
 
+  componentDidMount = () => {
+    // this is where you put the initial call to the rest server
+  }
+
   componentWillMount = () => {
   }
 
@@ -24,7 +28,7 @@ class Template extends React.Component {
       return (
           {
             labels: {
-              thisClass: Labels.TemplateLabels(this.props.languageCode)
+              thisClass: Labels.getTemplateLabels(this.props.languageCode)
               , messages: Labels.getMessageLabels(this.props.languageCode)
             }
             , messageIcons: MessageIcons.getMessageIcons()

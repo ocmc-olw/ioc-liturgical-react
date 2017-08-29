@@ -39,6 +39,56 @@ const dbDropdownsGrLibTopics = "dropdowns/grlibtopics";
 const ldp = "ldp";
 const messageIcons = MessageIcons.getMessageIcons();
 
+const restGetPromise = (
+    restServer
+    , serverPath
+    , username
+    , password
+    , parms
+) => {
+  return new Promise((resolve, reject) => {
+    let config = {
+      auth: {
+        username: username
+        , password: password
+      }
+    };
+
+    let path = restServer
+        + serverPath
+    ;
+
+    if (parms && parms.length > 0) {
+      path = path + "?" + parms
+    }
+
+    console.log(`Server.restGetPromise path = ${path}`);
+
+    let result = {
+      data: {}
+      , userMessage: "OK"
+      , developerMessage: "OK"
+      , messageIcon: messageIcons.info
+      , status: 200
+    };
+
+    axios.get(path, config)
+        .then(response => {
+          result.userMessage = response.data.status.userMessage
+          result.developerMessage = response.data.status.developerMessage
+          result.code = response.data.status.code
+          result.data = response.data;
+          resolve(result);
+        })
+        .catch((error) => {
+          result.message = error.message;
+          result.messageIcon = messageIcons.error;
+          result.status = error.status;
+          reject(result);
+        });
+  })
+}
+
 const restGet = (
     restServer
     , username
@@ -232,6 +282,24 @@ export default {
         + textAnalysis
         + "/"
         + id
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getRelationshipsSearchDropdowns: (
+      restServer,
+      username
+      , password
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + dbDropdownsSearchRelationships
         , undefined
         , function (result) {
           callback(result);
@@ -453,5 +521,19 @@ export default {
         }
     );
   }
-
+  , restGetPromise: (
+      restServer
+      , serverPath
+      , username
+      , password
+      , parms
+  ) => {
+    return restGetPromise(
+        restServer
+        , serverPath
+        , username
+        , password
+        , parms
+    );
+  }
 }

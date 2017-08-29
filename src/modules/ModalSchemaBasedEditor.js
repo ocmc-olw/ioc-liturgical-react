@@ -1,10 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Modal} from 'react-bootstrap';
 import axios from 'axios';
-import Labels from '../Labels';
+import {Button, Modal} from 'react-bootstrap';
 import Form from "react-jsonschema-form";
-import FontAwesome from 'react-fontawesome';
+
+import Labels from '../Labels';
+
+import MessageIcons from '../helpers/MessageIcons';
 
 /**
  * Display modal content.
@@ -15,12 +17,18 @@ export class ModalSchemaBasedEditor extends React.Component {
     super(props);
 
     this.state = {
-      showSearchResults: false
+      labels: {
+        button: Labels.getButtonLabels(props.languageCode)
+        , messages: Labels.getMessageLabels(props.languageCode)
+      }
+      , messageIcons: MessageIcons.getMessageIcons()
+      , messageIcon: MessageIcons.getMessageIcons().info
+      , message: Labels.getMessageLabels(props.languageCode).initial
+      , resultCount: 0
+      , showSearchResults: false
       , schema: {}
       , uiSchema: {}
       , formData: {}
-      , message: this.props.searchLabels.msg1
-      , messageIcon: this.messageIcons.info
       , data: {values: [{"id": "", "value:": ""}]}
       , showForm: false
       , topicText: ""
@@ -53,23 +61,6 @@ export class ModalSchemaBasedEditor extends React.Component {
     });
   }
 
-  /**
-   * font-awesome icons for messages
-   * @type {{info: string, warning: string, error: string}}
-   */
-  messageIcons = {
-    info: "info-circle"
-    , warning: "lightbulb-o"
-    , error: "exclamation-triangle"
-    // , toggleOn: "eye"
-    // , toggleOff: "eye-slash"
-    , toggleOn: "toggle-on"
-    , toggleOff: "toggle-off"
-    , simpleSearch: "minus"
-    , advancedSearch: "bars"
-    , idPatternSearch: "key"
-  }
-
   setMessage(message) {
     this.setState({
       message: message
@@ -78,8 +69,8 @@ export class ModalSchemaBasedEditor extends React.Component {
 
   fetchData() {
     this.setState({
-      message: this.props.searchLabels.msg2
-      , messageIcon: this.messageIcons.info
+      message: this.state.labels.messages.searching
+      , messageIcon: MessageIcons.getMessageIcons().info
     });
     let config = {
       auth: {
@@ -109,18 +100,18 @@ export class ModalSchemaBasedEditor extends React.Component {
                   , uiSchema:dataUiSchema
                   , formData: data
                   , showForm: true
-                  , message: this.props.searchLabels.msg3
-                  , messageIcon: this.messageIcons.info
+                  , message: this.state.labels.messages.found
+                  , messageIcon: MessageIcons.getMessageIcons().info
                 }
             );
           }
         })
         .catch((error) => {
           let message = error.message;
-          let messageIcon = this.messageIcons.error;
+          let messageIcon = MessageIcons.getMessageIcons().error;
           if (error && error.response && error.response.status === 404) {
             message = "not found";
-            messageIcon = this.messageIcons.warning;
+            messageIcon = MessageIcons.getMessageIcons().warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
         });
@@ -177,7 +168,7 @@ export class ModalSchemaBasedEditor extends React.Component {
         })
         .catch( (error) => {
           var message = error.message;
-          var messageIcon = this.messageIcons.error;
+          var messageIcon = MessageIcons.getMessageIcons().error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });
   }
@@ -200,18 +191,12 @@ export class ModalSchemaBasedEditor extends React.Component {
                     onSubmit={this.onSubmit}
               >
                 <div>
-                  <Button bsStyle="primary" type="submit">{this.props.searchLabels.submit}</Button>
+                  <Button bsStyle="primary" type="submit">{this.state.labels.button.submit}</Button>
                 </div>
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <div>
-                <span className="App-message"><FontAwesome
-                  name={this.state.messageIcon}/>
-                  {this.state.message}
-                  </span>
-              </div>
-              <Button onClick={this.close}>{this.props.searchLabels.close}</Button>
+              <Button onClick={this.close}>{this.state.labels.button.close}</Button>
             </Modal.Footer>
           </Modal>
         </div>
@@ -229,7 +214,6 @@ ModalSchemaBasedEditor.propTypes = {
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
-  , searchLabels: PropTypes.object.isRequired
   , languageCode: PropTypes.string.isRequired
 };
 export default ModalSchemaBasedEditor;

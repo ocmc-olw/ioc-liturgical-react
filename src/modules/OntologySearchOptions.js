@@ -42,27 +42,6 @@ class OntologySearchOptions extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-
-    let initialType = "Human";
-    if (nextProps.initialType) {
-      initialType = nextProps.initialType;
-    }
-
-    this.state = {
-      selectedType: initialType
-      , selectedGenericType: "*"
-      , selectedProperty: "*"
-      , selectedMatcher: "c"
-      , value: ""
-      , selectedTagOperator: "any"
-      , selectedTags: ""
-      , tagData: []
-      , dropDownProperties: {
-        msg: nextProps.labels.domainIs
-        , source: nextProps.properties[initialType]
-        , initialValue: "*"
-      }
-    };
   }
 
   handleDocTypeChange = (selection) => {

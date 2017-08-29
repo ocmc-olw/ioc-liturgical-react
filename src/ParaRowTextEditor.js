@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Button
+  Accordion
+  , Button
   , ControlLabel
   , Panel
   , Well
@@ -14,6 +15,7 @@ import Server from './helpers/Server';
 import Labels from './Labels';
 import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
+import ViewReferences from './ViewReferences';
 
 /**
  * Display a text edit, with source and models as rows.
@@ -23,49 +25,7 @@ export class ParaRowTextEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = {
-      labels: {
-        thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
-        , messages: Labels.getMessageLabels(this.props.languageCode)
-        , search: Labels.getSearchLabels(this.props.languageCode)
-      }
-      , showSearchResults: false
-      , message: Labels.getSearchLabels(this.props.languageCode).msg1
-      ,
-      messageIcon: this.messageIcons.info
-      ,
-      data: {values: [{"id": "", "value:": ""}]}
-      ,
-      options: {
-        sizePerPage: 30
-        , sizePerPageList: [5, 15, 30]
-        , onSizePerPageList: this.onSizePerPageList
-        , hideSizePerPage: true
-        , paginationShowsTotal: true
-      }
-      ,
-      showSelectionButtons: false
-      ,
-      selectedId: ""
-      ,
-      selectedValue: ""
-      ,
-      selectedIdPartsPrompt: "Select one or more ID parts, then click on the search icon:"
-      ,
-      selectedIdParts: [
-        {key: "domain", label: ""},
-        {key: "topic", label: ""},
-        {key: "key", label: ""}
-      ]
-      ,
-      showIdPartSelector: false
-      , idColumnSize: "80px"
-      , editorValue: this.props.value
-      , currentDocType: this.props.docType
-      , currentIdLibrary: this.props.idLibrary
-      , currentIdTopic: this.props.idTopic
-      , currentIdKey: this.props.idKey
-    }
+    this.state = this.setTheState(props, "");
 
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
@@ -76,36 +36,69 @@ export class ParaRowTextEditor extends React.Component {
   };
 
   componentWillMount = () => {
-    this.setState({
-          domain: "*"
+    this.fetchData();
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.state = this.setTheState(nextProps, this.state);
+  }
+
+  setTheState = (props, currentState) => {
+    return (
+        {
+          labels: {
+            thisClass: Labels.getComponentParaTextEditorLabels(props.languageCode)
+            , messages: Labels.getMessageLabels(props.languageCode)
+            , search: Labels.getSearchLabels(props.languageCode)
+          }
+          , showSearchResults: false
+          , message: Labels.getSearchLabels(props.languageCode).msg1
+          ,
+          messageIcon: this.messageIcons.info
+          ,
+          data: {values: [{"id": "", "value:": ""}]}
+          ,
+          options: {
+            sizePerPage: 30
+            , sizePerPageList: [5, 15, 30]
+            , onSizePerPageList: this.onSizePerPageList
+            , hideSizePerPage: true
+            , paginationShowsTotal: true
+          }
+          ,
+          showSelectionButtons: false
+          ,
+          selectedId: ""
+          ,
+          selectedValue: ""
+          ,
+          selectedIdPartsPrompt: "Select one or more ID parts, then click on the search icon:"
+          ,
+          selectedIdParts: [
+            {key: "domain", label: ""},
+            {key: "topic", label: ""},
+            {key: "key", label: ""}
+          ]
+          , showIdPartSelector: false
+          , idColumnSize: "80px"
+          , editorValue: props.value
+          , currentDocType: props.docType
+          , currentIdLibrary: props.idLibrary
+          , currentIdTopic: props.idTopic
+          , currentIdKey: props.idKey
+          , domain: "*"
           , selectedBook: "*"
           , selectedChapter: "*"
           , docProp: "id"
           , matcher: "rx"
           , query: ".*"
-          + this.props.idTopic
-          + "~.*"
-          + this.props.idKey
+            + props.idTopic
+            + "~.*"
+            + props.idKey
         }
-        , function () {
-          this.fetchData();
-        }
-    );
+    )
   }
 
-  componentWillReceiveProps = (nextProps) => {
-    this.setState({
-          labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
-            , search: Labels.getSearchLabels(this.props.languageCode)
-          }
-        }
-        , function () {
-          this.handlePropsChange();
-        }
-    );
-  }
 
   /**
    * Because we are passing back the value each time it changes,
@@ -317,23 +310,47 @@ export class ParaRowTextEditor extends React.Component {
                 </div>
               </div>
               }
-          <Panel
-              className="App-Grammar-panel "
-              header={
-                this.state.labels.thisClass.grammarPanelTitle
-              }
-              eventKey="grammarExplorer"
-              collapsible
-          >
-            <Grammar
-                restServer={this.props.restServer}
-                username={this.props.username}
-                password={this.props.password}
-                languageCode={this.props.languageCode}
-                idTopic={this.props.idTopic}
-                idKey={this.props.idKey}
-            />
-          </Panel>
+          <Accordion>
+            <Panel
+                className="App-Grammar-panel "
+                header={
+                  this.state.labels.thisClass.grammarPanelTitle
+                }
+                eventKey="grammarExplorer"
+                collapsible
+            >
+              <Grammar
+                  restServer={this.props.restServer}
+                  username={this.props.username}
+                  password={this.props.password}
+                  languageCode={this.props.languageCode}
+                  idTopic={this.props.idTopic}
+                  idKey={this.props.idKey}
+              />
+            </Panel>
+            <Panel
+                className="App-Links-panel "
+                header={
+                  this.state.labels.thisClass.LinksPanelTitle
+                }
+                eventKey="linksExplorer"
+                collapsible
+            >
+              <ViewReferences
+                  restServer={this.props.restServer}
+                  username={this.props.username}
+                  password={this.props.password}
+                  languageCode={this.props.languageCode}
+                  id={
+                    "gr_gr_cog~"
+                    + this.props.idTopic
+                    + "~"
+                    + this.props.idKey
+                  }
+                  domains={this.props.domains}
+              />
+            </Panel>
+          </Accordion>
         </div>
     );
   }
@@ -344,6 +361,7 @@ ParaRowTextEditor.propTypes = {
   , username: PropTypes.string.isRequired
   , password: PropTypes.string.isRequired
   , languageCode: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
   , docType: PropTypes.string.isRequired
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired

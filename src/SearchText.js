@@ -19,6 +19,9 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
 import Labels from './Labels';
+import ModalParaRowEditor from './ModalParaRowEditor';
+import IdManager from './helpers/IdManager';
+
 
 export class Search extends React.Component {
 
@@ -122,7 +125,7 @@ export class Search extends React.Component {
       , showIdPartSelector: false
       , selectedValue: ""
       , selectedSeq: ""
-      , showModalCompareDocs: false
+      , showModalWindow: false
       , idColumnSize: "80px"
     };
     this.handleIdQuerySelection = this.handleIdQuerySelection.bind(this);
@@ -143,13 +146,18 @@ export class Search extends React.Component {
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
     this.getDocComparison = this.getDocComparison.bind(this);
-    this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
+    this.handleEditorClose = this.handleEditorClose.bind(this);
     this.getBars = this.getBars.bind(this);
     this.getDocTypes = this.getDocTypes.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
     this.onRowDoubleClick = this.onRowDoubleClick.bind(this);
     this.showResultsStatus = this.showResultsStatus.bind(this);
+    this.handleParaTextEditorSubmit = this.handleParaTextEditorSubmit.bind(this);
+    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
+    this.editable = this.editable.bind(this);
+    this.getTableIndex = this.getTableIndex.bind(this);
+    this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
   }
 
   componentWillMount = () => {
@@ -231,6 +239,80 @@ export class Search extends React.Component {
         , {label: nextProps.searchLabels.matchesRegEx, value: "rx"}
       ]
     });
+  }
+
+
+  getTableIndex = (id) => {
+    let result = undefined;
+    this.state.data.values.forEach(function(element, index) {
+      if (element["id"] === id ) {
+        result = index;
+        return true;
+      }
+    });
+    return result;
+  }
+
+  handleParaTextEditorSubmit = (value) => {
+    // only update if the value changed
+    let data = this.state.data;
+    let index = this.getTableIndex(this.state.selectedId);
+    let currentValue = data.values[index].value;
+    if (value !== currentValue) {
+     // update the value held client-side in memory
+      data.values[index].value = value;
+      this.setState({
+        data: data
+        , showModalWindow: false
+      });
+     // now update the database via a rest call
+      let parms =
+          "i=" + encodeURIComponent(this.state.selectedId)
+          + "&t=" + encodeURIComponent("Liturgical")
+      ;
+      Server.putValue(
+          this.props.restServer
+          , this.props.username
+          , this.props.password
+          , {value: value, seq: undefined}
+          , parms
+          , this.handleValueUpdateCallback
+      )
+    } else {
+     this.setState(
+         {
+           showModalWindow: false
+         }
+     );
+    }
+  }
+
+  handleValueUpdateCallback = (restCallResult) => {
+    if (restCallResult) {
+      this.setState({
+        message: restCallResult.message
+        , messageIcon: restCallResult.messageIcon
+      }, this.setTableData);
+    }
+  }
+
+  /**
+   * Does the user have permission to edit records in this library?
+   * @param library
+   * @returns {boolean}
+   */
+  editable = (id) => {
+    let canEdit = false;
+    if (id) {
+      let library = IdManager.getLibrary(id);
+      for (let entry of this.props.domains.author) {
+        if (entry.value == library) {
+          canEdit = true;
+          break;
+        }
+      };
+    }
+    return canEdit;
   }
 
 
@@ -501,13 +583,9 @@ export class Search extends React.Component {
   };
 
   onRowClick = (row) => {
-    console.log("row clicked");
-    console.log(row);
   }
 
   onRowDoubleClick = (row) => {
-    console.log("row double clicked");
-    console.log(row);
   }
 
   handleRowSelect = (row, isSelected, e) => {
@@ -521,13 +599,13 @@ export class Search extends React.Component {
       ]
       , selectedValue: row["value"]
       , showIdPartSelector: true
-      , showModalCompareDocs: true
+      , showModalWindow: true
     }, this.showRowComparison(row["id"], row["value"]));
   }
 
   showRowComparison = (id, value) => {
     this.setState({
-      showModalCompareDocs: true
+      showModalWindow: true
       , selectedID: id
       , selectedValue: value
     })
@@ -536,14 +614,30 @@ export class Search extends React.Component {
   handleCloseDocComparison = (id, value, seq) => {
     if (id && id.length > 0) {
       this.setState({
-        showModalCompareDocs: false
+        showModalWindow: false
         , selectedID: id
         , selectedValue: value
         , selectedSeq: seq
       })
     } else {
       this.setState({
-        showModalCompareDocs: false
+        showModalWindow: false
+      })
+    }
+  }
+
+
+  handleEditorClose = (id, value, seq) => {
+    if (id && id.length > 0) {
+      this.setState({
+        showModalWindow: false
+        , selectedID: id
+        , selectedValue: value
+        , selectedSeq: seq
+      })
+    } else {
+      this.setState({
+        showModalWindow: false
       })
     }
   }
@@ -559,19 +653,37 @@ export class Search extends React.Component {
   }
 
   getDocComparison = () => {
-    return (
-        <ModalCompareDocs
-            restServer={this.props.restServer}
-            username={this.props.username}
-            password={this.props.password}
-            showModal={this.state.showModalCompareDocs}
-            title={this.state.selectedID}
-            docType={this.state.docType}
-            selectedIdParts={this.state.selectedIdParts}
-            onClose={this.handleCloseDocComparison}
-            labels={this.props.searchLabels}
-        />
-    )
+    if (this.state.docType === "Liturgical") {
+      return (
+          <ModalParaRowEditor
+              restServer={this.props.restServer}
+              username={this.props.username}
+              password={this.props.password}
+              languageCode={this.props.languageCode}
+              domains={this.props.domains}
+              editId={this.state.selectedId}
+              value={this.state.selectedValue}
+              showModal={this.state.showModalWindow}
+              onClose={this.handleEditorClose}
+              onSubmit={this.handleParaTextEditorSubmit}
+              canChange={this.editable(this.state.selectedId)}
+          />
+      )
+    } else {
+      return (
+          <ModalCompareDocs
+              restServer={this.props.restServer}
+              username={this.props.username}
+              password={this.props.password}
+              showModal={this.state.showModalWindow}
+              title={this.state.selectedID}
+              docType={this.state.docType}
+              selectedIdParts={this.state.selectedIdParts}
+              onClose={this.handleCloseDocComparison}
+              labels={this.props.searchLabels}
+          />
+      )
+    }
   }
 
   showSelectionButtons = (id) => {
@@ -641,7 +753,6 @@ export class Search extends React.Component {
     let path = this.props.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)
         .then(response => {
-          console.log(response.data);
           this.setState({
                 data: response.data
               }
@@ -743,7 +854,7 @@ export class Search extends React.Component {
               name={this.state.messageIcon}/>{this.props.searchLabels.msg3} {this.state.resultCount} {this.props.searchLabels.msg4} </span>
           </div>
           {this.showResultsStatus()}
-          {this.state.showModalCompareDocs && this.getDocComparison()}
+          {this.state.showModalWindow && this.getDocComparison()}
           {this.state.showSearchResults &&
           <div className="App-search-results">
             <div className="row">
@@ -804,6 +915,8 @@ Search.propTypes = {
   , searchLabels: PropTypes.object.isRequired
   , resultsTableLabels: PropTypes.object.isRequired
   , initialDocType: PropTypes.string.isRequired
+  , dropdowns: PropTypes.object
+  , domains: PropTypes.object.isRequired
 };
 
 export default Search;

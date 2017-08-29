@@ -163,32 +163,32 @@ export class SearchRelationships extends React.Component {
 
   getSearchForm() {
     return (
-            <div>
-            {this.state.dropdowns ?
-                <LinkSearchOptions
-                    types={this.state.dropdowns.linkTypes}
-                    libraries={this.state.dropdowns.linkTypeLibraries}
-                    properties={this.state.dropdowns.linkTypeProps}
-                    matchers={this.getMatcherTypes()}
-                    tags={this.state.dropdowns.linkTypeTags}
-                    tagOperators={this.state.dropdowns.linkTagOperators}
-                    handleSubmit={this.handleAdvancedSearchSubmit}
-                    labels={this.props.searchLabels}
-                />
-                : "Loading dropdowns for search..."
-            }
-            </div>
+        <div>
+          {this.state.dropdowns ?
+              <LinkSearchOptions
+                  types={this.state.dropdowns.linkTypes}
+                  libraries={this.state.dropdowns.linkTypeLibraries}
+                  properties={this.state.dropdowns.linkTypeProps}
+                  matchers={this.getMatcherTypes()}
+                  tags={this.state.dropdowns.linkTypeTags}
+                  tagOperators={this.state.dropdowns.linkTagOperators}
+                  handleSubmit={this.handleAdvancedSearchSubmit}
+                  labels={this.props.searchLabels}
+              />
+              : "Loading dropdowns for search..."
+          }
+        </div>
     );
   }
 
   getMatcherTypes () {
     return (
         [
-            {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
-            ]
+          {label: this.props.searchLabels.matchesAnywhere, value: "c"}
+          , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
+          , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
+          , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+        ]
     )
   }
   handleCancelRequest() {
@@ -209,9 +209,9 @@ export class SearchRelationships extends React.Component {
           <FormGroup>
             <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
-              type="text"
-              value={this.state.selectedId}
-              disabled
+                type="text"
+                value={this.state.selectedId}
+                disabled
             />
             <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
@@ -220,10 +220,10 @@ export class SearchRelationships extends React.Component {
                 disabled
             />
             <div>
-          <ButtonGroup bsSize="xsmall">
-            <Button onClick={this.handleCancelRequest}>Cancel</Button>
-            <Button onClick={this.handleDoneRequest}>Done</Button>
-          </ButtonGroup>
+              <ButtonGroup bsSize="xsmall">
+                <Button onClick={this.handleCancelRequest}>Cancel</Button>
+                <Button onClick={this.handleDoneRequest}>Done</Button>
+              </ButtonGroup>
             </div>
           </FormGroup>
         </Panel>
@@ -294,13 +294,14 @@ export class SearchRelationships extends React.Component {
             restPath={Server.getDbServerLinksApi()}
             username={this.props.username}
             password={this.props.password}
+            languageCode={this.props.languageCode}
             showModal={this.state.showModalCompareDocs}
             title={this.state.title}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
             onClose={this.handleCloseDocComparison}
-            labels={this.props.searchLabels}
+            searchLabels={this.props.searchLabels}
         />
     )
   }
@@ -353,14 +354,14 @@ export class SearchRelationships extends React.Component {
     };
 
     let parms =
-            "?t=" + encodeURIComponent(this.state.docType)
-            + "&d=" + encodeURIComponent(this.state.domain)
-            + "&q=" + encodeURIComponent(this.state.query)
-            + "&p=" + encodeURIComponent(this.state.docProp)
-            + "&m=" + encodeURIComponent(this.state.matcher)
-            + "&l=" + encodeURIComponent(this.state.tags)
-            + "&o=" + encodeURIComponent(this.state.tagOperator)
-        ;
+        "?t=" + encodeURIComponent(this.state.docType)
+        + "&d=" + encodeURIComponent(this.state.domain)
+        + "&q=" + encodeURIComponent(this.state.query)
+        + "&p=" + encodeURIComponent(this.state.docProp)
+        + "&m=" + encodeURIComponent(this.state.matcher)
+        + "&l=" + encodeURIComponent(this.state.tags)
+        + "&o=" + encodeURIComponent(this.state.tagOperator)
+    ;
     let path = this.props.restServer + Server.getDbServerLinksApi() + parms;
     axios.get(path, config)
         .then(response => {
@@ -492,6 +493,7 @@ SearchRelationships.propTypes = {
   restServer: PropTypes.string.isRequired
   , username: PropTypes.string.isRequired
   , password: PropTypes.string.isRequired
+  , languageCode: PropTypes.string.isRequired
   , callback: PropTypes.func
   , searchLabels: PropTypes.object.isRequired
   , resultsTableLabels: PropTypes.object.isRequired

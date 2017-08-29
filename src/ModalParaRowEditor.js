@@ -95,6 +95,7 @@ export class ModalParaRowEditor extends React.Component {
                   username={this.props.username}
                   password={this.props.password}
                   languageCode={this.props.languageCode}
+                  domains={this.props.domains}
                   docType="Liturgical"
                   idLibrary={IdManager.getLibrary(this.props.editId)}
                   idTopic={IdManager.getTopic(this.props.editId)}
@@ -119,6 +120,7 @@ ModalParaRowEditor.propTypes = {
   , username: PropTypes.string.isRequired
   , password: PropTypes.string.isRequired
   , languageCode: PropTypes.string.isRequired
+  , domains: PropTypes.object.isRequired
   , onClose: PropTypes.func.isRequired
   , onSubmit: PropTypes.func.isRequired
   , showModal: PropTypes.bool.isRequired

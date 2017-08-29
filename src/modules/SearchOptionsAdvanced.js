@@ -95,10 +95,49 @@ class SearchOptions extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
+    let docType = nextProps.docType;
+    let domain = "*";
+    let selectedBook = "*";
+    let selectedChapter = "*";
+    let property = "nnp";
+    let matcher = "c"
+    let value = "";
+
+    if (this.state) {
+      if (this.state.docType) {
+        docType = this.state.docType;
+      }
+      if (this.state.domain) {
+        domain = this.state.domain;
+      }
+      if (this.state.selectedBook) {
+        selectedBook = this.state.selectedBook;
+      }
+      if (this.state.selectedChapter) {
+        selectedChapter = this.state.selectedChapter;
+      }
+      if (this.state.property) {
+        property = this.state.property;
+      }
+      if (this.state.matcher) {
+        matcher = this.state.matcher;
+      }
+      if (this.state.value) {
+        value = this.state.value;
+      }
+    }
+
 
     this.setState(
         {
-          dropdowns: {
+        docType: docType
+        , domain: domain
+        , selectedBook: selectedBook
+        , selectedChapter: selectedChapter
+        , property: property
+        , matcher: matcher
+        , value: value
+        ,  dropdowns: {
             Biblical: {
               all: {
                 books: nextProps.dropDowns.Biblical.all.books
@@ -117,12 +156,7 @@ class SearchOptions extends React.Component {
             , loaded: true
           }
         }
-        , function () {
-          this.handleDocTypeChange({
-            value: nextProps.docType
-          })
-        }
-    )
+  )
   }
 
   resetDropDownBooksState() {
@@ -476,7 +510,7 @@ class SearchOptions extends React.Component {
               <div className="col-sm-12 col-md-12 col-lg-12">
                 <ResourceSelector
                     title={this.props.labels.findWhereTypeIs}
-                    initialValue={this.props.docType}
+                    initialValue={this.state.docType}
                     resources={this.props.docTypes}
                     changeHandler={this.handleDocTypeChange}
                     multiSelect={false}

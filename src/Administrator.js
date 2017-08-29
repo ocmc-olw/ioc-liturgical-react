@@ -283,8 +283,6 @@ class Administrator extends React.Component {
         , config
     )
         .then(response => {
-          console.log('Administrator.getResources received response...');
-          console.log(response.data.resources);
           this.setState({
             resources: response.data.resources
           }, this.fetchData("users/statistics", true)

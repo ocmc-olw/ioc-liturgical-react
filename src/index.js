@@ -16,8 +16,14 @@ import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
 import SearchRelationships from './SearchRelationships';
-import TopicsSelector from './modules/TopicsSelector';
+import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
+import TopicsSelector from './modules/TopicsSelector';
+import ViewRelationships from './ViewRelationships';
+import ViewReferences from './ViewReferences';
+
+import LifeCycleDemo from './helpers/LifeCycleDemo';
+import TemplateForTable from './helpers/TemplateForTable';
 
 export {
   Administrator
@@ -30,6 +36,7 @@ export {
   , Flag
   , HelpSearch
   , Labels
+  , LifeCycleDemo
   , LiturgicalDayProperties
   , Login
   , NewEntry
@@ -38,6 +45,10 @@ export {
   , SearchOntology
   , SearchText
   , SearchRelationships
+  , Server
   , Spinner
   , TopicsSelector
+  , ViewReferences
+  , ViewRelationships
+  , TemplateForTable
 }

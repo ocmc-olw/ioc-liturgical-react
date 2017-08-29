@@ -14,7 +14,7 @@ class DomainSelector extends React.Component {
     this.onSelect = this.onSelect.bind(this);
   }
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     this.fetchData();
   }
 

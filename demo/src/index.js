@@ -45,10 +45,13 @@ import {
   , SearchRelationships
   , Spinner
   , TopicsSelector
+  , ViewReferences
+  , TemplateForTable
 } from '../../src';
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
 import ParaColTextEditor from "../../src/ParaColTextEditor";
+import LifeCycleDemo from "../../src/helpers/LifeCycleDemo";
 
 const initialStateExample = "this.state = {\n    restServer: \"https://ioc-liturgical-ws.org/\"\n    , username: \"\"\n    , password: \"\"\n    , authenticated: false\n    , language: {\n      language: \"en\"\n      , labels: {\n        , resultsTable: Labels.labels.en.resultsTable\n        , header: Labels.labels.en.header\n        , help: Labels.labels.en.help\n        , pageAbout: Labels.labels.en.pageAbout\n        , pageLogin: Labels.labels.en.pageLogin\n        , search: Labels.labels.en.search\n  }\n}\n};";
 const languageChangeHandlerExample = "handleLanguageChange = (code) => {\nif (code.length > 0 && code !== \"undefined\") {\n  this.setState({\n    language: {\n      code: code\n      , labels: {\n        compSimpleSearch: Labels.getCompSimpleSearchLabels(code)\n        , resultsTable: Labels.getResultsTableLabels(code)\n        , header: Labels.getHeaderLabels(code)\n        , help: Labels.getHelpLabels(code)\n        , pageAbout: Labels.getPageAboutLabels(code)\n        , pageLogin: Labels.getPageLoginLabels(code)\n        , search: Labels.getSearchLabels(code)\n      }\n    }\n  });\n}\n};";
@@ -107,6 +110,7 @@ class Demo extends React.Component {
       , searching: false
       , selectedDomain: "Your selection will appear here:"
       , translatedText: ""
+      , linkSearchDropdowns: {}
     };
 
     // language change functions
@@ -130,6 +134,10 @@ class Demo extends React.Component {
     this.handleTopicsSelection = this.handleTopicsSelection.bind(this);
     this.editable = this.editable.bind(this);
   }
+
+  componentWillMount = () => {
+  }
+
 
   /**
    *
@@ -228,7 +236,6 @@ class Demo extends React.Component {
   // called after a successful login
   handleDropdownsCallback = (response) => {
     let forms = response.data;
-    console.log(forms);
     this.setState({
       formsLoaded: true
       , forms: forms.data
@@ -331,10 +338,11 @@ class Demo extends React.Component {
                   username={this.state.username}
                   password={this.state.password}
                   languageCode={this.state.language.code}
+                  domains={this.state.domains}
                   docType="Liturgical"
-                  idLibrary="en_uk_gevsot"
-                  idTopic="me.m01.d06"
-                  idKey="meMA.Ode1C1H.text"
+                  idLibrary="gr_gr_cog"
+                  idTopic="me.m01.d10"
+                  idKey="meMA.Kathisma11.text"
                   value={this.state.translatedText}
                   onSubmit={this.handleParallelTextEditorCallback}
                   canChange={this.editable("en_uk_gevsot")}
@@ -661,6 +669,7 @@ class Demo extends React.Component {
                       searchLabels={this.state.language.labels.search}
                       resultsTableLabels={this.state.language.labels.resultsTable}
                       initialDocType="Liturgical"
+                      domains={this.state.domains}
                   />
                 </Panel> {/* Search Text without Callback*/}
                 <Panel header="Search Text with a Callback" eventKey="searchWithCallback">
@@ -676,6 +685,7 @@ class Demo extends React.Component {
                           searchLabels={this.state.language.labels.search}
                           resultsTableLabels={this.state.language.labels.resultsTable}
                           initialDocType="Liturgical"
+                          domains={this.state.domains}
                       />
                       :
                       <FormGroup>
@@ -702,6 +712,7 @@ class Demo extends React.Component {
                       restServer={this.state.restServer}
                       username={this.state.username}
                       password={this.state.password}
+                      languageCode={this.state.language.code}
 //                      callback={this.handleSearchLinksCallback}
                       searchLabels={this.state.language.labels.searchLinks}
                       resultsTableLabels={this.state.language.labels.linkSearchResultsTable}
@@ -924,6 +935,22 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* AGES Viewer */}
+            <Panel header="View References (aka REFERS_TO links)" eventKey="viewlinks">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  &&
+                  <ViewReferences
+                      restServer={this.state.restServer}
+                      username={this.state.username}
+                      password={this.state.password}
+                      languageCode={this.state.language.code}
+                      domains={this.state.domains}
+                      id="gr_gr_cog~me.m01.d10~meMA.Kathisma11.text"/>
+              }
+            </Panel> {/* View References */}
             <Panel header="Administrator" eventKey="admin">
               { (this.state.authenticated) ?
                   <p></p>
@@ -940,6 +967,24 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Administrator */}
+            <Panel header="Template for Table Example" eventKey="tfort">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  && this.state.formsLoaded &&
+              <TemplateForTable
+                  restServer={this.state.restServer}
+                  username={this.state.username}
+                  password={this.state.password}
+                  languageCode={this.state.language.code}
+              />
+              }
+            </Panel> {/* Template for Table */}
+            <Panel header="Life Cycle Demo" eventKey="lcd">
+              <LifeCycleDemo languageCode={this.state.language.code}/>
+            </Panel> {/* Life Cycle Demo */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

@@ -26,8 +26,8 @@ export class SearchOntology extends React.Component {
     this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
-    this.getDocComparison = this.getDocComparison.bind(this);
-    this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
+    this.getModalEditor = this.getModalEditor.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
     this.setTheState = this.setTheState.bind(this);
   }
@@ -173,7 +173,7 @@ export class SearchOntology extends React.Component {
           , selectedTopic: ""
           , selectedKey: ""
           , title: ""
-          , showModalCompareDocs: false
+          , showModalEditor: false
           , idColumnSize: "80px"
         }
     )
@@ -278,14 +278,14 @@ export class SearchOntology extends React.Component {
       , selectedKey: row["key"]
       , title: row["name"]
       , showIdPartSelector: true
-      , showModalCompareDocs: this.props.editor
+      , showModalEditor: this.props.editor
     });
   }
 
   showRowComparison = (id) => {
     if (this.props.editor) {
       this.setState({
-        showModalCompareDocs: true
+        showModalEditor: true
         , selectedId: id
       })
     } else {
@@ -295,34 +295,33 @@ export class SearchOntology extends React.Component {
     }
   }
 
-  handleCloseDocComparison = (id, value) => {
+  handleCloseModal = (id, value) => {
     if (id && id.length > 0) {
       this.setState({
-        showModalCompareDocs: false
+        showModalEditor: false
         , selectedId: id
         , selectedValue: value
       })
     } else {
       this.setState({
-        showModalCompareDocs: false
+        showModalEditor: false
       })
     }
   }
 
-  getDocComparison = () => {
+  getModalEditor = () => {
     return (
         <ModalSchemaBasedEditor
             restServer={this.props.restServer}
             restPath={Server.getDbServerDocsApi()}
             username={this.props.username}
             password={this.props.password}
-            showModal={this.state.showModalCompareDocs}
+            showModal={this.state.showModalEditor}
             title={this.state.title}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
-            onClose={this.handleCloseDocComparison}
-            searchLabels={this.state.searchLabels}
+            onClose={this.handleCloseModal}
             languageCode={this.props.languageCode}
         />
     )
@@ -448,7 +447,7 @@ export class SearchOntology extends React.Component {
             {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
           </div>
           }
-          {this.state.showModalCompareDocs && this.getDocComparison()}
+          {this.state.showModalEditor && this.getModalEditor()}
           {this.state.showSearchResults &&
           <div className="App-search-results">
             <div className="row">
