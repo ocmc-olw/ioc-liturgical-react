@@ -19,10 +19,9 @@ import SearchRelationships from './SearchRelationships';
 import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
 import TopicsSelector from './modules/TopicsSelector';
-import ViewRelationships from './ViewRelationships';
 import ViewReferences from './ViewReferences';
 
-import LifeCycleDemo from './helpers/LifeCycleDemo';
+//import LifeCycleDemo from './helpers/LifeCycleDemo';
 import TemplateForTable from './helpers/TemplateForTable';
 
 export {
@@ -36,7 +35,7 @@ export {
   , Flag
   , HelpSearch
   , Labels
-  , LifeCycleDemo
+//  , LifeCycleDemo
   , LiturgicalDayProperties
   , Login
   , NewEntry
@@ -49,6 +48,5 @@ export {
   , Spinner
   , TopicsSelector
   , ViewReferences
-  , ViewRelationships
   , TemplateForTable
 }

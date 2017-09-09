@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import {Button, Modal} from 'react-bootstrap';
+import {ControlLabel, Button, Modal} from 'react-bootstrap';
 import Form from "react-jsonschema-form";
 
 import Labels from '../Labels';
@@ -183,6 +183,7 @@ export class ModalSchemaBasedEditor extends React.Component {
           >
             <Modal.Header closeButton>
               <Modal.Title>{this.props.title}</Modal.Title>
+              { this.props.canUpdate ? <div></div>: <ControlLabel>{this.state.labels.messages.readOnly}</ControlLabel>}
             </Modal.Header>
             <Modal.Body>
               <Form schema={this.state.schema}
@@ -191,7 +192,13 @@ export class ModalSchemaBasedEditor extends React.Component {
                     onSubmit={this.onSubmit}
               >
                 <div>
-                  <Button bsStyle="primary" type="submit">{this.state.labels.button.submit}</Button>
+                    <Button
+                        bsStyle="primary"
+                        type="submit"
+                        disabled={! this.props.canUpdate}
+                    >
+                      {this.state.labels.button.submit}
+                    </Button>
                 </div>
               </Form>
             </Modal.Body>
@@ -215,6 +222,11 @@ ModalSchemaBasedEditor.propTypes = {
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
   , languageCode: PropTypes.string.isRequired
+  , canUpdate: PropTypes.bool
 };
+ModalSchemaBasedEditor.defaultProps = {
+  canUpdate: true
+};
+
 export default ModalSchemaBasedEditor;
 

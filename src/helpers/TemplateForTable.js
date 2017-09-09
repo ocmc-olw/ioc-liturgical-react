@@ -11,20 +11,76 @@ import Spinner from './Spinner';
 
 /**
  * Use this as an example starting point for new React components using a table
+ * The order in which life-cycle methods are called is:
+ * this class's constructor
+ * this class's componentWillMount
+ * child component's constructor
+ * child component's componentWillMount
+ * this class's componentDidMount
+ * child component's componentDidMount
+ *
+ * When the panel containing this component is expanded the following are called:
+ * this class's componentWillReceiveProps
+ * child component's componentWillReceiveProps
  */
 class TemplateForTable extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.setTheState(props, "");
+    this.state = {
+      labels: {
+        thisClass: Labels.getTemplateForTableLabels(this.props.languageCode)
+        , messages: Labels.getMessageLabels(this.props.languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+      }
+      , messageIcons: MessageIcons.getMessageIcons()
+      , messageIcon: MessageIcons.getMessageIcons().info
+      , message: Labels.getMessageLabels(this.props.languageCode).initial
+      , selectedId: ""
+      , selectedLibrary: ""
+      , selectedTopic: ""
+      , selectedKey: ""
+      , selectedValue: ""
+      , showModalWindow: false
+      , title: ""
+      , data: {}
+      , resultCount: 0
+      , fetching: false
+      , selectedDocType: "Liturgical"
+      , selectedDomain: "en_us_dedes"
+      , selectedBook: "me"
+      , selectedChapter: "m01"
+      , selectedProperty: "nnp"
+      , query: "joy"
+      , selectedMatcher: "c"
+      , showSearchResults: false
+      , options: {
+        sizePerPage: 30
+        , sizePerPageList: [5, 15, 30]
+        , onSizePerPageList: this.onSizePerPageList
+        , hideSizePerPage: true
+        , paginationShowsTotal: true
+      }
+      , selectRow: {
+        mode: 'radio' // or checkbox
+        , hideSelectColumn: false
+        , clickToSelect: false
+        , onSelect: this.handleRowSelect
+        , className: "App-row-select"
+      }
+  };
 
     this.fetchDocData = this.fetchDocData.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getTable = this.getTable.bind(this);
+
+    // the following are examples, remove them as needed
+    this.handleStateChange = this.handleStateChange.bind(this);
     this.greetings = this.greetings.bind(this);
   }
 
   componentWillMount = () => {
+    // don't use this for anything
   }
 
   componentDidMount = () => {
@@ -34,106 +90,30 @@ class TemplateForTable extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.state = this.setTheState(this.props, this.state);
-    this.promiseDemo("a ", "b ", this.callback);
-  }
-
-  callback = (result) => {
-    console.log(result);
-  }
-
-  promiseDemo = (a, b, c) => {
-    new Promise(function(fulfill, reject){
-      let result = a + b + "c ";
-      fulfill(result);
-    }).then(function(result){
-      return new Promise(function(fulfill, reject){
-        let result2 = result + "d ";
-        fulfill(result2);
-      });
-    }).then(function(result){
-      return new Promise(function(fulfill, reject){
-        let result3 = result + "e ";
-        fulfill(result3);
-      });
-    }).then(function(result){
-      c(result);
-    });
-  }
-
-  setTheState = (props, currentState) => {
-    let showSearchResults = false;
-    let data = {
-      values:
-        [
-          {
-            "id": ""
-            , "library": ""
-            , "topic": ""
-            , "key": ""
-            , "value:": ""
-          }
-        ]
-    };
-    let resultCount = 0;
-
-    if (currentState) {
-      if (currentState.showSearchResults) {
-        showSearchResults = currentState.showSearchResults;
-      }
-      if (currentState.data) {
-        data = currentState.data;
-      }
-      if (currentState.resultCount) {
-        resultCount = currentState.resultCount;
-      }
-    }
-    return (
-        {
+    // use this to preserve any previous state if necessary
+    // and to call a function that depends on the new state being set.
+    if (this.props.languageCode !== nextProps.languageCode) {
+      this.setState((prevState, props) => {
+        return {
           labels: {
-            thisClass: Labels.getTemplateForTableLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+            thisClass: Labels.getTemplateForTableLabels(nextProps.languageCode)
+            , messages: Labels.getMessageLabels(nextProps.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
           }
-          , messageIcons: MessageIcons.getMessageIcons()
-          , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
-          , selectedId: ""
-          , selectedLibrary: ""
-          , selectedTopic: ""
-          , selectedKey: ""
-          , selectedValue: ""
-          , showModalWindow: false
-          , title: ""
-          , data: data
-          , resultCount: resultCount
-          , selectedDocType: "Liturgical"
-          , selectedDomain: "en_us_dedes"
-          , selectedBook: "me"
-          , selectedChapter: "m01"
-          , selectedProperty: "nnp"
-          , query: "joy"
-          , selectedMatcher: "c"
-          , showSearchResults: showSearchResults
-          , options: {
-            sizePerPage: 30
-            , sizePerPageList: [5, 15, 30]
-            , onSizePerPageList: this.onSizePerPageList
-            , hideSizePerPage: true
-            , paginationShowsTotal: true
-          }
-          , selectRow: {
-            mode: 'radio' // or checkbox
-            , hideSelectColumn: false
-            , clickToSelect: false
-            , onSelect: this.handleRowSelect
-            , className: "App-row-select"
-          }
+          , message: Labels.getMessageLabels(props.languageCode).initial
         }
-    )
+      }, function () { return this.handleStateChange("parm")});
+    }
+  }
+
+  // this is called after setState has finished.
+  handleStateChange = (parm) => {
+    // put here a call to whatever method is needed.
   }
 
   fetchDocData = () => {
+
+    this.setState({fetching: true});
 
     // This example has hard coded the selection state.
     // In real-life, add a set of dropdowns for the user
@@ -163,8 +143,9 @@ class TemplateForTable extends React.Component {
                 , developerMessage: response.developerMessage
                 , messageIcon: response.messageIcon
                 , status: response.status
-                , showSearchResults: true
+                , showSearchResults: response.data.values.length > 0
                 , resultCount: response.data.values.length
+                , fetching: false
               }
           );
         })
@@ -188,6 +169,7 @@ class TemplateForTable extends React.Component {
               , status: error.status
               , showSearchResults: false
               , resultCount: 0
+              , fetching: false
             }
           })
         })
@@ -197,6 +179,7 @@ class TemplateForTable extends React.Component {
   greetings = () => {
     alert(this.state.selectedId);
   }
+
   handleRowSelect = (row, isSelected, e) => {
     console.log(row);
     this.setState((prevState, props) => {
@@ -298,10 +281,12 @@ class TemplateForTable extends React.Component {
             </div>
           </div>
       );
-    }  else {
+    }  else if (this.state.fetching) {
       return (
-        <Spinner message={this.state.labels.messages.retrieving}/>
+          <Spinner message={this.state.labels.messages.retrieving}/>
       );
+    } else {
+      return (<div></div>)
     }
   }
 

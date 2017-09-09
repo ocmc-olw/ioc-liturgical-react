@@ -190,15 +190,13 @@ class Demo extends React.Component {
       , valid
       , username
       , password
+      , userinfo
   ) {
-    // save the username and password regardless of status so it will not be erased when Login re-renders
-    this.setState({
-      username: username
-      , password: password
-    });
     if (valid) {
       this.setState({
-        authenticated: true
+        username: username
+        , password: password
+        , authenticated: true
         , loginFormMsg: this.state.language.labels.pageLogin.good
         , formsLoaded: false
         , forms: {}
@@ -212,10 +210,17 @@ class Demo extends React.Component {
         , biblicalChaptersDropdown: []
         , biblicalVersesDropdown: []
         , biblicalSubversesDropdown: []
+        , userFirstName: userinfo.firstname
+        , userLastName: userinfo.lastname
+        , userTitle: userinfo.title
+        , userDomain: userinfo.domain
+        , userEmail: userinfo.email
       });
     } else {
       this.setState({
-        authenticated: false
+        username: username
+        , password: password
+        , authenticated: false
         , loginFormMsg: this.state.language.labels.pageLogin.bad
         , formsLoaded: false
         , forms: {}
@@ -229,6 +234,11 @@ class Demo extends React.Component {
         , biblicalChaptersDropdown: []
         , biblicalVersesDropdown: []
         , biblicalSubversesDropdown: []
+        , userFirstName: ""
+        , userLastName: ""
+        , userTitle: ""
+        , userDomain: ""
+        , userEmail: ""
       });
     }
   };
@@ -340,7 +350,7 @@ class Demo extends React.Component {
                   languageCode={this.state.language.code}
                   domains={this.state.domains}
                   docType="Liturgical"
-                  idLibrary="gr_gr_cog"
+                  idLibrary="en_uk_gevsot"
                   idTopic="me.m01.d10"
                   idKey="meMA.Kathisma11.text"
                   value={this.state.translatedText}
@@ -982,9 +992,9 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Template for Table */}
-            <Panel header="Life Cycle Demo" eventKey="lcd">
-              <LifeCycleDemo languageCode={this.state.language.code}/>
-            </Panel> {/* Life Cycle Demo */}
+            {/*<Panel header="Life Cycle Demo" eventKey="lcd">*/}
+              {/*<LifeCycleDemo languageCode={this.state.language.code}/>*/}
+            {/*</Panel> /!* Life Cycle Demo *!/*/}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

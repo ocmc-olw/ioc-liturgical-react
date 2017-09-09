@@ -247,9 +247,11 @@ class AgesEditor extends React.Component {
     let canEdit = false;
     for (let entry of this.props.domains.author) {
       if (entry.value == library) {
-        return true;
+        canEdit = true;
+        break;
       }
     }
+    return canEdit;
   }
 
   getModalEditor = () => {

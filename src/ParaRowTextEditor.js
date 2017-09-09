@@ -25,26 +25,7 @@ export class ParaRowTextEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.setTheState(props, "");
-
-    this.fetchData = this.fetchData.bind(this);
-    this.setMessage = this.setMessage.bind(this);
-    this.handleEditorChange = this.handleEditorChange.bind(this);
-    this.handleSubmit = this.handleSubmit.bind(this);
-    this.handlePropsChange = this.handlePropsChange.bind(this);
-    this.getTextArea = this.getTextArea.bind(this);
-  };
-
-  componentWillMount = () => {
-    this.fetchData();
-  }
-
-  componentWillReceiveProps = (nextProps) => {
-    this.state = this.setTheState(nextProps, this.state);
-  }
-
-  setTheState = (props, currentState) => {
-    return (
+    this.state =
         {
           labels: {
             thisClass: Labels.getComponentParaTextEditorLabels(props.languageCode)
@@ -92,13 +73,44 @@ export class ParaRowTextEditor extends React.Component {
           , docProp: "id"
           , matcher: "rx"
           , query: ".*"
-            + props.idTopic
-            + "~.*"
-            + props.idKey
-        }
-    )
+        + props.idTopic
+        + "~.*"
+        + props.idKey
+    };
+
+
+    this.fetchData = this.fetchData.bind(this);
+    this.setMessage = this.setMessage.bind(this);
+    this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+    this.handlePropsChange = this.handlePropsChange.bind(this);
+    this.getTextArea = this.getTextArea.bind(this);
+  };
+
+  componentWillMount = () => {
+    this.fetchData();
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.languageCode !== nextProps.languageCode) {
+      this.setState((prevState, props) => {
+        return {
+          labels: {
+            thisClass: Labels.getComponentParaTextEditorLabels(props.languageCode)
+            , messages: Labels.getMessageLabels(props.languageCode)
+            , search: Labels.getSearchLabels(props.languageCode)
+          }
+          , message: Labels.getSearchLabels(props.languageCode).msg1
+        }
+      }, function () { return this.handleStateChange("place holder")});
+    }
+  }
+
+  // if we need to do something after setState, do it here...
+  handleStateChange = (parm) => {
+    this.handlePropsChange();
+  }
 
   /**
    * Because we are passing back the value each time it changes,
@@ -329,9 +341,32 @@ export class ParaRowTextEditor extends React.Component {
               />
             </Panel>
             <Panel
-                className="App-Links-panel "
+                className="App-biblial-links-panel "
                 header={
-                  this.state.labels.thisClass.LinksPanelTitle
+                  this.state.labels.thisClass.biblicalLinksPanelTitle
+                }
+                eventKey="biblicalLinksExplorer"
+                collapsible
+            >
+              <ViewReferences
+                  restServer={this.props.restServer}
+                  username={this.props.username}
+                  password={this.props.password}
+                  languageCode={this.props.languageCode}
+                  id={
+                    "gr_gr_cog~"
+                    + this.props.idTopic
+                    + "~"
+                    + this.props.idKey
+                  }
+                  domains={this.props.domains}
+                  type="REFERS_TO_BIBLICAL_TEXT"
+              />
+            </Panel>
+            <Panel
+                className="App-ontology-links-panel "
+                header={
+                  this.state.labels.thisClass.ontologyLinksPanelTitle
                 }
                 eventKey="linksExplorer"
                 collapsible

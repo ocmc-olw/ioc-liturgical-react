@@ -14,33 +14,48 @@ export class ModalParaRowEditor extends React.Component {
 
   constructor(props) {
     super(props);
-    this.state = this.setTheState(props, this.state);
+    this.state = {
+      labels: {
+        thisClass: Labels.getModalParaRowEditorLabels(this.props.languageCode)
+            , messages: Labels.getMessageLabels(this.props.languageCode)
+      }
+      , messageIcons: MessageIcons.getMessageIcons()
+        , messageIcon: MessageIcons.getMessageIcons().info
+        , message: Labels.getMessageLabels(this.props.languageCode).initial
+        , showModal: this.props.showModal
+        , topic: IdManager.getTopic(this.props.editId)
+        , key: IdManager.getKey(this.props.editId)
+        , valuesSame: true
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.getModalInfo = this.getModalInfo.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
   };
 
   componentWillMount = () => {
   }
 
-  setTheState = (props, currentState) => {
-    return (
-        {
+  componentWillReceiveProps = (nextProps) => {
+    if (this.props.languageCode !== nextProps.languageCode) {
+      this.setState((prevState, props) => {
+        return {
           labels: {
-            thisClass: Labels.getModalParaRowEditorLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+            thisClass: Labels.getModalParaRowEditorLabels(nextProps.languageCode)
+            , messages: Labels.getMessageLabels(nextProps.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
           }
-          , messageIcons: MessageIcons.getMessageIcons()
-          , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
-          , showModal: this.props.showModal
-          , topic: IdManager.getTopic(this.props.editId)
-          , key: IdManager.getKey(this.props.editId)
-          , valuesSame: true
+          , message: Labels.getMessageLabels(props.languageCode).initial
         }
-    )
+      }, function () { return this.handleStateChange("place holder")});
+    }
+  }
+
+  // if we need to do something after setState, do it here...
+  handleStateChange = (parm) => {
+    // call a function is needed, e.g. if you need to call the rest server again
   }
 
   close() {

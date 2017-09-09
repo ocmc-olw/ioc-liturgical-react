@@ -38,8 +38,8 @@ class Login extends React.Component {
               , true
               , formData.username
               , formData.password
+              , response.data // domain, email, firstname, lastname, title
           );
-          console.log("Requesting dropdowns");
           server.getResources(
               this.props.restServer
               , formData.username
@@ -59,6 +59,7 @@ class Login extends React.Component {
               , false
               , formData.username
               , formData.password
+              , undefined
           );
         });
   }

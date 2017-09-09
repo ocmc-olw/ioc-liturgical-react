@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Well} from 'react-bootstrap';
+import fileDownload from 'react-file-download';
 
 import Labels from './Labels';
 
@@ -38,6 +39,8 @@ class AgesViewer extends React.Component {
     this.getAgesTableRow = this.getAgesTableRow.bind(this);
     this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
     this.getFetchingAgesTableRow = this.getFetchingAgesTableRow.bind(this);
+    this.fetchPdf = this.fetchPdf.bind(this);
+    this.downloadPdf = this.downloadPdf.bind(this);
   }
 
   componentWillMount = () => {
@@ -172,6 +175,68 @@ class AgesViewer extends React.Component {
         , agesIndexValues: values.tableData
       });
     }
+  }
+
+  downloadPdf = () => {
+//    fileDownload(this.state.data, 'priestsservicebook.pdf');
+  }
+
+  fetchPdf = () => {
+
+    this.setState({fetchingPdf: true});
+
+    let parms =
+        "u=" + encodeURIComponent(this.state.url)
+        + "&l=" + encodeURIComponent(this.state.selectedFirstLibrary)
+        + "&c=" + encodeURIComponent(this.state.selectedSecondLibrary)
+        + "&r=" + encodeURIComponent(this.state.selectedThirdLibrary)
+        + "&lf=" + encodeURIComponent(this.state.selectedFirstLibraryFallback)
+        + "&cf=" + encodeURIComponent(this.state.selectedSecondLibraryFallback)
+        + "&rf=" + encodeURIComponent(this.state.selectedThirdLibraryFallback)
+    ;
+
+    server.restGetPromise(
+        this.props.restServer
+        , server.getDbServerAgesPdfApi()
+        , this.props.username
+        , this.props.password
+        , parms
+    )
+        .then( response => {
+          console.log('pdf call back received')
+          console.log(response);
+          this.setState(
+              {
+                data: response
+                , fetchingPdf: false
+              }, this.downloadPdf
+          );
+        })
+        .catch( error => {
+          this.setState(
+              {
+                data: {
+                  values:
+                      [
+                        {
+                          "id": ""
+                          , "library": ""
+                          , "topic": ""
+                          , "key": ""
+                          , "value:": ""
+                        }
+                      ]
+                  , userMessage: error.userMessage
+                  , developerMessage: error.developerMessage
+                  , messageIcon: error.messageIcon
+                  , status: error.status
+                  , showSearchResults: false
+                  , resultCount: 0
+                  , fetching: false
+                }
+              })
+        })
+    ;
   }
 
   fetchData = () => {
@@ -644,6 +709,7 @@ class AgesViewer extends React.Component {
                 </Button>
               </Col>
               <Col xs={8} md={8}>
+                {this.state.dataFetched && <Button bsStyle="primary" onClick={this.fetchPdf}>Download as PDF</Button>}
               </Col>
             </Row>
             {this.state.dataFetched && this.getAgesTableRow()}

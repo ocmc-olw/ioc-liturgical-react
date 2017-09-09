@@ -34,7 +34,8 @@ const   labels = {
       , headerKey: "Key"
       , headerLink: "Link"
       , headerName: "Name"
-      , headerOntologyTopic: "Ontology Topic"
+      , headerOntologyInstance: "Ontology Instance"
+      , headerOntologyType: "Ontology Category"
       , headerTags: "Tags"
       , headerTo: "Refers To"
       , headerTopic: "Topic"
@@ -448,8 +449,9 @@ const   labels = {
       , yourTranslation: "Your Translation"
       , valueFor: "Value for"
       , submit: "Submit"
+      , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
-      , LinksPanelTitle: "Links to the Greek Text"
+      , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -516,8 +518,11 @@ const   labels = {
       , msg1: ""
     }
     , ViewReferences: {
-      panelTitle: "Links for "
-      , msg1: ""
+      panelTitle: "made by"
+      , biblicalRef: "Biblical References"
+      , library: "to library"
+      , ontologyRef: "Ontology References"
+      , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
     , GlossBuilder: {
       panelTitle: "Gloss Builder"
@@ -561,6 +566,7 @@ const   labels = {
       , clearFilters: "Clear Filters"
       , filter: "You can use the box below to filter the results."
       , click: "Click the radio button of the row you are interested in."
+      , readOnly: "You do can view this, but not edit it."
     }
     , grammarTerms: {
       case: {
@@ -726,7 +732,8 @@ const   labels = {
       , headerKey: "Κλειδί"
       , headerLink: "Σύνδεσμος"
       , headerName: "Όνομα"
-      , headerOntologyTopic: "Οντολογικό Θέμα"
+      , headerOntologyInstance: "Οντολογική περίπτωση"
+      , headerOntologyType: "Οντολογική Κατηγορία"
       , headerTags: "Ετικέτες"
       , headerTo: "Αναφέρεται Σε"
       , headerTopic: "Θέμα"
@@ -1133,8 +1140,9 @@ const   labels = {
       , yourTranslation: "Your Translation"
       , valueFor: "Value for"
       , submit: "Submit"
+      , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
-      , LinksPanelTitle: "Links to the Greek Text"
+      , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
 }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
@@ -1209,8 +1217,11 @@ const   labels = {
       , msg1: ""
     }
     , ViewReferences: {
-      panelTitle: "Links for "
-      , msg1: ""
+      panelTitle: "made by"
+      , biblicalRef: "Biblical References"
+      , library: "to library"
+      , ontologyRef: "Ontology References"
+      , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
     , WordTagger: {
       panelTitle: "Word Tagger"
@@ -1246,6 +1257,7 @@ const   labels = {
       , clearFilters: "Clear Filters"
       , filter: "You can use the box below to filter the results."
       , click: "Click the radio button of the row you are interested in."
+      , readOnly: "Μπορείτε να το δείτε αλλά να μην το επεξεργαστείτε"
     }
     , grammarTerms: {
       case: {

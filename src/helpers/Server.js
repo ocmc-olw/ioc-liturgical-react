@@ -7,6 +7,7 @@
  */
 import MessageIcons from './MessageIcons';
 import axios from 'axios';
+import fileDownload from 'react-file-download';
 
 const adminApi = "/admin/api/v1/";
 const dbApi = "/db/api/v1/";
@@ -17,6 +18,7 @@ const login = "login/form";
 const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
+const agesPdf = docs + "/agespdf";
 const clone = docs + "/clone";
 const agesIndex = docs + "/agesindex";
 const agesReactTemplate = docs + "/agesreacttemplate";
@@ -47,11 +49,16 @@ const restGetPromise = (
     , parms
 ) => {
   return new Promise((resolve, reject) => {
+    let responseType = "application/json";
+    if (serverPath.includes('pdf')) {
+      responseType = "blob";
+    }
     let config = {
       auth: {
         username: username
         , password: password
       }
+      , responseType: responseType
     };
 
     let path = restServer
@@ -61,8 +68,6 @@ const restGetPromise = (
     if (parms && parms.length > 0) {
       path = path + "?" + parms
     }
-
-    console.log(`Server.restGetPromise path = ${path}`);
 
     let result = {
       data: {}
@@ -74,13 +79,23 @@ const restGetPromise = (
 
     axios.get(path, config)
         .then(response => {
-          result.userMessage = response.data.status.userMessage
-          result.developerMessage = response.data.status.developerMessage
-          result.code = response.data.status.code
-          result.data = response.data;
+          console.log('promise resolve');
+          if (path.includes('pdf')) {
+            fileDownload(response.data, 'priestsservicebook.pdf');
+            result.userMessage = "ok"
+            result.developerMessage = "ok"
+            result.code = "200"
+            result.data = response.data;
+          } else {
+            result.userMessage = response.data.status.userMessage
+            result.developerMessage = response.data.status.developerMessage
+            result.code = response.data.status.code
+            result.data = response.data;
+          }
           resolve(result);
         })
         .catch((error) => {
+          console.log('promise error');
           result.message = error.message;
           result.messageIcon = messageIcons.error;
           result.status = error.status;
@@ -240,6 +255,7 @@ export default {
   , getWsServerVersionApi: () => { return adminApi + version;}
   , getWsServerResourcesApi: () => { return dbApi + resources;}
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
+  , getDbServerAgesPdfApi: () => {return dbApi + agesPdf;}
   , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
   , getDbServerDropdownsSearchOntologyApi: () => {return dbApi + dbDropdownsSearchOntology;}
   , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}

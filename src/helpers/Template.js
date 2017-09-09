@@ -10,32 +10,41 @@ class Template extends React.Component {
   constructor(props) {
     super(props);
 
-    this.state = this.setTheState(props, "");
+    this.state = {
+      labels: {
+        thisClass: Labels.getTemplateLabels(this.props.languageCode)
+        , messages: Labels.getMessageLabels(this.props.languageCode)
+      }
+      , messageIcons: MessageIcons.getMessageIcons()
+      , messageIcon: MessageIcons.getMessageIcons().info
+      , message: Labels.getMessageLabels(this.props.languageCode).initial
+    }
+    this.handleStateChange = this.handleStateChange.bind(this);
   }
 
   componentDidMount = () => {
     // this is where you put the initial call to the rest server
-  }
-
-  componentWillMount = () => {
+    // if you need it
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.state = this.setTheState(nextProps, this.state);
+    if (this.props.languageCode !== nextProps.languageCode) {
+      this.setState((prevState, props) => {
+        return {
+          labels: {
+            thisClass: Labels.getViewReferencesLabels(nextProps.languageCode)
+            , messages: Labels.getMessageLabels(nextProps.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
+          }
+          , message: Labels.getMessageLabels(props.languageCode).initial
+        }
+      }, function () { return this.handleStateChange("place holder")});
+    }
   }
 
-  setTheState = (props, currentState) => {
-      return (
-          {
-            labels: {
-              thisClass: Labels.getTemplateLabels(this.props.languageCode)
-              , messages: Labels.getMessageLabels(this.props.languageCode)
-            }
-            , messageIcons: MessageIcons.getMessageIcons()
-            , messageIcon: MessageIcons.getMessageIcons().info
-            , message: Labels.getMessageLabels(this.props.languageCode).initial
-          }
-      )
+  // if we need to do something after setState, do it here...
+  handleStateChange = (parm) => {
+    // call a function is needed, e.g. if you need to call the rest server again
   }
 
   render() {
