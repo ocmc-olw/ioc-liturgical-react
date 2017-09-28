@@ -56,6 +56,14 @@ class AgesViewer extends React.Component {
     if (currentState && currentState.url) {
       url = currentState.url;
     }
+    let pdfId = undefined;
+    if (currentState && currentState.pdfId) {
+      pdfId = currentState.pdfId;
+    }
+    let pdfFilename = undefined;
+    if (currentState && currentState.pdfFilename) {
+      pdfFilename = currentState.pdfFilename;
+    }
     let serviceType = undefined;
     if (currentState && currentState.serviceType) {
       serviceType = currentState.serviceType;
@@ -125,6 +133,8 @@ class AgesViewer extends React.Component {
           , renderedTable: undefined
           , showModalServiceSelector: false
           , url: url
+          , pdfId: pdfId
+          , pdfFilename: pdfFilename
           , serviceDate: serviceDate
           , serviceDow: serviceDow
           , serviceType: serviceType
@@ -178,7 +188,6 @@ class AgesViewer extends React.Component {
   }
 
   downloadPdf = () => {
-//    fileDownload(this.state.data, 'priestsservicebook.pdf');
   }
 
   fetchPdf = () => {
@@ -186,25 +195,18 @@ class AgesViewer extends React.Component {
     this.setState({fetchingPdf: true});
 
     let parms =
-        "u=" + encodeURIComponent(this.state.url)
-        + "&l=" + encodeURIComponent(this.state.selectedFirstLibrary)
-        + "&c=" + encodeURIComponent(this.state.selectedSecondLibrary)
-        + "&r=" + encodeURIComponent(this.state.selectedThirdLibrary)
-        + "&lf=" + encodeURIComponent(this.state.selectedFirstLibraryFallback)
-        + "&cf=" + encodeURIComponent(this.state.selectedSecondLibraryFallback)
-        + "&rf=" + encodeURIComponent(this.state.selectedThirdLibraryFallback)
+        "id=" + encodeURIComponent(this.state.pdfId)
     ;
 
-    server.restGetPromise(
+    server.restGetPdf(
         this.props.restServer
         , server.getDbServerAgesPdfApi()
         , this.props.username
         , this.props.password
         , parms
+        , this.state.pdfFilename
     )
         .then( response => {
-          console.log('pdf call back received')
-          console.log(response);
           this.setState(
               {
                 data: response
@@ -273,6 +275,8 @@ class AgesViewer extends React.Component {
       let values = data.values;
       let topicKeys = data.topicKeys;
       let topElement = data.topElement;
+      let pdfId = data.pdfId;
+      let pdfFilename = data.pdfFilename;
       console.log(topElement);
       this.setState({
         dataFetched: true
@@ -280,6 +284,8 @@ class AgesViewer extends React.Component {
         , values: values
         , topicKeys: topicKeys
         , topElement: topElement
+        , pdfId: pdfId
+        , pdfFilename: pdfFilename
       }, this.setTable);
     }
   }

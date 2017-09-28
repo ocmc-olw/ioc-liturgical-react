@@ -469,6 +469,12 @@ td.rightCell {
     padding-left: 8px;
     padding-right: 8px;
 }
+.key {
+    cursor: pointer;
+}
+.kvp.readonly {
+    cursor: auto ;
+}
 .kvp {
     cursor: pointer;
 }

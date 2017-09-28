@@ -79,9 +79,8 @@ const restGetPromise = (
 
     axios.get(path, config)
         .then(response => {
-          console.log('promise resolve');
           if (path.includes('pdf')) {
-            fileDownload(response.data, 'priestsservicebook.pdf');
+            fileDownload(response.data, parms.substring(3,parms.length) + '.pdf');
             result.userMessage = "ok"
             result.developerMessage = "ok"
             result.code = "200"
@@ -92,6 +91,61 @@ const restGetPromise = (
             result.code = response.data.status.code
             result.data = response.data;
           }
+          resolve(result);
+        })
+        .catch((error) => {
+          console.log('promise error');
+          result.message = error.message;
+          result.messageIcon = messageIcons.error;
+          result.status = error.status;
+          reject(result);
+        });
+  })
+}
+
+const restGetPdf = (
+    restServer
+    , serverPath
+    , username
+    , password
+    , parms
+    , filename
+) => {
+  return new Promise((resolve, reject) => {
+    let responseType = "blob";
+    console.log(filename);
+    let config = {
+      auth: {
+        username: username
+        , password: password
+      }
+      , responseType: responseType
+    };
+
+    let path = restServer
+        + serverPath
+    ;
+
+    if (parms && parms.length > 0) {
+      path = path + "?" + parms
+    }
+
+    let result = {
+      data: {}
+      , userMessage: "OK"
+      , developerMessage: "OK"
+      , messageIcon: messageIcons.info
+      , status: 200
+    };
+
+    axios.get(path, config)
+        .then(response => {
+          console.log(filename);
+            fileDownload(response.data, filename);
+            result.userMessage = "ok"
+            result.developerMessage = "ok"
+            result.code = "200"
+            result.data = response.data;
           resolve(result);
         })
         .catch((error) => {
@@ -550,6 +604,23 @@ export default {
         , username
         , password
         , parms
+    );
+  }
+  , restGetPdf: (
+      restServer
+      , serverPath
+      , username
+      , password
+      , parms
+      , filename
+  ) => {
+    return restGetPdf(
+        restServer
+        , serverPath
+        , username
+        , password
+        , parms
+        , filename
     );
   }
 }

@@ -261,6 +261,7 @@ class AgesEditor extends React.Component {
             username={this.props.username}
             password={this.props.password}
             languageCode={this.props.languageCode}
+            domains={this.props.domains}
             editId={this.state.selectedId}
             value={this.state.selectedValue}
             showModal={this.state.showModalEditor}
