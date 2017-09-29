@@ -7,7 +7,7 @@
  */
 import MessageIcons from './MessageIcons';
 import axios from 'axios';
-import fileDownload from 'react-file-download';
+import FileSaver from 'file-saver';
 
 const adminApi = "/admin/api/v1/";
 const dbApi = "/db/api/v1/";
@@ -79,18 +79,10 @@ const restGetPromise = (
 
     axios.get(path, config)
         .then(response => {
-          if (path.includes('pdf')) {
-            fileDownload(response.data, parms.substring(3,parms.length) + '.pdf');
-            result.userMessage = "ok"
-            result.developerMessage = "ok"
-            result.code = "200"
-            result.data = response.data;
-          } else {
-            result.userMessage = response.data.status.userMessage
-            result.developerMessage = response.data.status.developerMessage
-            result.code = response.data.status.code
-            result.data = response.data;
-          }
+          result.userMessage = response.data.status.userMessage
+          result.developerMessage = response.data.status.developerMessage
+          result.code = response.data.status.code
+          result.data = response.data;
           resolve(result);
         })
         .catch((error) => {
@@ -113,7 +105,6 @@ const restGetPdf = (
 ) => {
   return new Promise((resolve, reject) => {
     let responseType = "blob";
-    console.log(filename);
     let config = {
       auth: {
         username: username
@@ -141,7 +132,8 @@ const restGetPdf = (
     axios.get(path, config)
         .then(response => {
           console.log(filename);
-            fileDownload(response.data, filename);
+            var blob = new Blob([response.data], {type: 'application/octet-stream'});
+            FileSaver.saveAs(blob, filename);
             result.userMessage = "ok"
             result.developerMessage = "ok"
             result.code = "200"
@@ -150,6 +142,7 @@ const restGetPdf = (
         })
         .catch((error) => {
           console.log('promise error');
+          console.log(error.message);
           result.message = error.message;
           result.messageIcon = messageIcons.error;
           result.status = error.status;
