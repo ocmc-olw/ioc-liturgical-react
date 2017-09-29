@@ -716,6 +716,7 @@ class AgesViewer extends React.Component {
               </Col>
               <Col xs={8} md={8}>
                 {this.state.dataFetched && <Button bsStyle="primary" onClick={this.fetchPdf}>Download as PDF</Button>}
+                {this.state.fetchingPdf && <Spinner message={this.state.labels.messages.retrieving}/>}
               </Col>
             </Row>
             {this.state.dataFetched && this.getAgesTableRow()}
