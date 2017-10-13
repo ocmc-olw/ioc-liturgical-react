@@ -27,11 +27,12 @@ export class Search extends React.Component {
 
   constructor(props) {
     super(props);
+
     this.state = {
       labels: {
-        thisClass: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
-        , messages: Labels.getMessageLabels(this.props.languageCode)
-        , search: Labels.getSearchLabels(this.props.languageCode)
+        thisClass: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
+        , messages: Labels.getMessageLabels(this.props.session.languageCode)
+        , search: Labels.getSearchLabels(this.props.session.languageCode)
       },
       docType: this.props.initialDocType,
       docTypes: [
@@ -158,6 +159,7 @@ export class Search extends React.Component {
     this.editable = this.editable.bind(this);
     this.getTableIndex = this.getTableIndex.bind(this);
     this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
+    this.deselectAllRows = this.deselectAllRows.bind(this);
   }
 
   componentWillMount = () => {
@@ -174,11 +176,11 @@ export class Search extends React.Component {
     );
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
-    let path = this.props.restServer + Server.getDbServerDropdownsSearchTextApi();
+    let path = this.props.session.restServer + Server.getDbServerDropdownsSearchTextApi();
     axios.get(path, config)
         .then(response => {
           this.setState({
@@ -271,9 +273,9 @@ export class Search extends React.Component {
           + "&t=" + encodeURIComponent("Liturgical")
       ;
       Server.putValue(
-          this.props.restServer
-          , this.props.username
-          , this.props.password
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
           , {value: value, seq: undefined}
           , parms
           , this.handleValueUpdateCallback
@@ -305,7 +307,7 @@ export class Search extends React.Component {
     let canEdit = false;
     if (id) {
       let library = IdManager.getLibrary(id);
-      for (let entry of this.props.domains.author) {
+      for (let entry of this.props.session.userInfo.domains.author) {
         if (entry.value == library) {
           canEdit = true;
           break;
@@ -611,6 +613,12 @@ export class Search extends React.Component {
     })
   }
 
+  deselectAllRows = () => {
+    this.refs.theTable.setState({
+      selectedRowKeys: []
+    });
+  }
+
   handleCloseDocComparison = (id, value, seq) => {
     if (id && id.length > 0) {
       this.setState({
@@ -624,6 +632,7 @@ export class Search extends React.Component {
         showModalWindow: false
       })
     }
+    this.deselectAllRows();
   }
 
 
@@ -640,6 +649,7 @@ export class Search extends React.Component {
         showModalWindow: false
       })
     }
+    this.deselectAllRows();
   }
 
   getDocTypes = () => {
@@ -653,14 +663,10 @@ export class Search extends React.Component {
   }
 
   getDocComparison = () => {
-    if (this.state.docType === "Liturgical") {
+    if (this.state.docType === "Liturgical" && ! this.props.callback) {
       return (
           <ModalParaRowEditor
-              restServer={this.props.restServer}
-              username={this.props.username}
-              password={this.props.password}
-              languageCode={this.props.languageCode}
-              domains={this.props.domains}
+              session={this.props.session}
               editId={this.state.selectedId}
               value={this.state.selectedValue}
               showModal={this.state.showModalWindow}
@@ -672,9 +678,7 @@ export class Search extends React.Component {
     } else {
       return (
           <ModalCompareDocs
-              restServer={this.props.restServer}
-              username={this.props.username}
-              password={this.props.password}
+              session={this.props.session}
               showModal={this.state.showModalWindow}
               title={this.state.selectedID}
               docType={this.state.docType}
@@ -736,8 +740,8 @@ export class Search extends React.Component {
     });
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
 
@@ -750,7 +754,7 @@ export class Search extends React.Component {
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)
         ;
-    let path = this.props.restServer + Server.getWsServerDbApi() + 'docs' + parms;
+    let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)
         .then(response => {
           this.setState({
@@ -859,6 +863,7 @@ export class Search extends React.Component {
           <div className="App-search-results">
             <div className="row">
               <BootstrapTable
+                  ref="theTable"
                   data={this.state.data.values}
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
@@ -907,16 +912,12 @@ export class Search extends React.Component {
 }
 
 Search.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , callback: PropTypes.func
   , searchLabels: PropTypes.object.isRequired
   , resultsTableLabels: PropTypes.object.isRequired
   , initialDocType: PropTypes.string.isRequired
   , dropdowns: PropTypes.object
-  , domains: PropTypes.object.isRequired
 };
 
 export default Search;

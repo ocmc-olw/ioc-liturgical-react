@@ -43,8 +43,8 @@ class LiturgicalDayProperties extends React.Component {
   fetchData(date) {
     var config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
     let parms =
@@ -52,7 +52,7 @@ class LiturgicalDayProperties extends React.Component {
             + "&d=" + encodeURIComponent(date)
         ;
     axios.get(
-        this.props.restServer
+        this.props.session.restServer
         + server.getWsServerLiturgicalDayPropertiesApi()
         + parms
         , config
@@ -111,9 +111,7 @@ class LiturgicalDayProperties extends React.Component {
 }
 
 LiturgicalDayProperties.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , callback: PropTypes.func.isRequired
   , labels: PropTypes.object.isRequired
 };

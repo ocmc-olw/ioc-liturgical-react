@@ -36,6 +36,7 @@ export class ModalCompareDocs extends React.Component {
         , clickToSelect: false
         , onSelect: this.handleRowSelect
         , className: "App-row-select"
+        , selected: []
       }
       ,
       showSelectionButtons: false
@@ -113,8 +114,8 @@ export class ModalCompareDocs extends React.Component {
     this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
 
@@ -127,11 +128,26 @@ export class ModalCompareDocs extends React.Component {
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)
         ;
-    let path = this.props.restServer + Server.getWsServerDbApi() + 'docs' + parms;
+    let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)
         .then(response => {
+          // if one of the values is greek, then make it the selected row
+          let selectedId = "";
+          let selectedValue = "";
+          let selectRow = this.state.selectRow;
+          if (response.data.values) {
+            let theItem = response.data.values.find(o => o.id.startsWith("gr_"));
+            if (theItem) {
+              selectedId = theItem.id;
+              selectedValue = theItem.value;
+              selectRow.selected = [selectedId];
+            }
+          }
           this.setState({
-                data: response.data
+                selectRow: selectRow
+                , selectedId: selectedId
+                , selectedValue: selectedValue
+                , data: response.data
               }
           );
           let message = "No docs found...";
@@ -176,9 +192,12 @@ export class ModalCompareDocs extends React.Component {
   };
 
   handleRowSelect = (row, isSelected, e) => {
+    let selectRow = this.state.selectRow;
+    selectRow.selected = [row["id"]];
     let idParts = row["id"].split("~");
     this.setState({
-      selectedId: row["id"]
+      selectRow: selectRow
+      , selectedId: row["id"]
       , selectedIdParts: [
         {key: "domain", label: idParts[0]},
         {key: "topic", label: idParts[1]},
@@ -197,6 +216,7 @@ export class ModalCompareDocs extends React.Component {
               <Modal.Title>{this.props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
+              <div className="control-label">{this.props.labels.selectVersion}</div>
               <div>{this.props.labels.resultLabel}: <span className="App-message"><FontAwesome
                   name={this.state.messageIcon}/>{this.state.message}</span>
               </div>
@@ -245,9 +265,7 @@ export class ModalCompareDocs extends React.Component {
   }
 }
 ModalCompareDocs.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , onClose: PropTypes.func.isRequired
   , showModal: PropTypes.bool.isRequired
   , title: PropTypes.string.isRequired

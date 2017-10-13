@@ -33,12 +33,12 @@ class WorkflowAssignment extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getWorkflowAssignmentLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+            thisClass: Labels.getWorkflowAssignmentLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
           , userRolesForDomain: {
             admins: []
             , authors: []
@@ -98,12 +98,12 @@ class WorkflowAssignment extends React.Component {
   fetchData = () => {
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
 
-    let path = this.props.restServer
+    let path = this.props.session.restServer
         + server.getWsServerDropdownsForUserRolesForDomainApi()
         + "/"
         + this.props.library
@@ -171,11 +171,8 @@ class WorkflowAssignment extends React.Component {
 }
 
 WorkflowAssignment.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , callback: PropTypes.func.isRequired
-  , languageCode: PropTypes.string.isRequired
   , library: PropTypes.string.isRequired
 };
 

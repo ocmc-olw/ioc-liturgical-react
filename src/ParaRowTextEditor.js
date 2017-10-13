@@ -13,6 +13,7 @@ import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
 import Server from './helpers/Server';
 import Labels from './Labels';
+import NotesLister from './NotesLister';
 import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
 import ViewReferences from './ViewReferences';
@@ -28,12 +29,12 @@ export class ParaRowTextEditor extends React.Component {
     this.state =
         {
           labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(props.languageCode)
-            , messages: Labels.getMessageLabels(props.languageCode)
-            , search: Labels.getSearchLabels(props.languageCode)
+            thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
+            , messages: Labels.getMessageLabels(props.session.languageCode)
+            , search: Labels.getSearchLabels(props.session.languageCode)
           }
           , showSearchResults: false
-          , message: Labels.getSearchLabels(props.languageCode).msg1
+          , message: Labels.getSearchLabels(props.session.languageCode).msg1
           ,
           messageIcon: this.messageIcons.info
           ,
@@ -64,6 +65,7 @@ export class ParaRowTextEditor extends React.Component {
           , idColumnSize: "80px"
           , editorValue: props.value
           , currentDocType: props.docType
+          , currentId: props.idLibrary + "~" + props.idTopic + "~" + props.idKey
           , currentIdLibrary: props.idLibrary
           , currentIdTopic: props.idTopic
           , currentIdKey: props.idKey
@@ -93,15 +95,15 @@ export class ParaRowTextEditor extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.languageCode !== nextProps.languageCode) {
+    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(props.languageCode)
-            , messages: Labels.getMessageLabels(props.languageCode)
-            , search: Labels.getSearchLabels(props.languageCode)
+            thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
+            , messages: Labels.getMessageLabels(props.session.languageCode)
+            , search: Labels.getSearchLabels(props.session.languageCode)
           }
-          , message: Labels.getSearchLabels(props.languageCode).msg1
+          , message: Labels.getSearchLabels(props.session.languageCode).msg1
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -158,8 +160,8 @@ export class ParaRowTextEditor extends React.Component {
     });
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
 
@@ -172,7 +174,7 @@ export class ParaRowTextEditor extends React.Component {
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)
         ;
-    let path = this.props.restServer + Server.getWsServerDbApi() + 'docs' + parms;
+    let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)
         .then(response => {
           this.setState({
@@ -251,6 +253,7 @@ export class ParaRowTextEditor extends React.Component {
           </ControlLabel>
           </div>
           <textarea
+              className="App-Modal-Editor-TextArea"
               rows="4"
               cols="100"
               value={this.state.editorValue}
@@ -284,7 +287,7 @@ export class ParaRowTextEditor extends React.Component {
         <div>
           {(! this.state.showSearchResults) ? <Spinner message={this.state.labels.messages.retrieving}/>
               :
-              <div className="App-search-results">
+              <div className="App-ParaRow-Text-Editor">
                 <ControlLabel>
                   {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
                 </ControlLabel>
@@ -332,10 +335,7 @@ export class ParaRowTextEditor extends React.Component {
                 collapsible
             >
               <Grammar
-                  restServer={this.props.restServer}
-                  username={this.props.username}
-                  password={this.props.password}
-                  languageCode={this.props.languageCode}
+                  session={this.props.session}
                   idTopic={this.props.idTopic}
                   idKey={this.props.idKey}
               />
@@ -349,17 +349,13 @@ export class ParaRowTextEditor extends React.Component {
                 collapsible
             >
               <ViewReferences
-                  restServer={this.props.restServer}
-                  username={this.props.username}
-                  password={this.props.password}
-                  languageCode={this.props.languageCode}
+                  session={this.props.session}
                   id={
                     "gr_gr_cog~"
                     + this.props.idTopic
                     + "~"
                     + this.props.idKey
                   }
-                  domains={this.props.domains}
                   type="REFERS_TO_BIBLICAL_TEXT"
               />
             </Panel>
@@ -372,17 +368,27 @@ export class ParaRowTextEditor extends React.Component {
                 collapsible
             >
               <ViewReferences
-                  restServer={this.props.restServer}
-                  username={this.props.username}
-                  password={this.props.password}
-                  languageCode={this.props.languageCode}
+                  session={this.props.session}
                   id={
                     "gr_gr_cog~"
                     + this.props.idTopic
                     + "~"
                     + this.props.idKey
                   }
-                  domains={this.props.domains}
+              />
+            </Panel>
+            <Panel
+                className="App-user-notes-panel "
+                header={
+                  this.state.labels.thisClass.userNotesPanelTitle
+                }
+                eventKey="usernotesExplorer"
+                collapsible
+            >
+              <NotesLister
+                  session={this.props.session}
+                  type={"NoteUser"}
+                  topicId={this.state.currentId}
               />
             </Panel>
           </Accordion>
@@ -392,11 +398,7 @@ export class ParaRowTextEditor extends React.Component {
 }
 
 ParaRowTextEditor.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
   , docType: PropTypes.string.isRequired
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired

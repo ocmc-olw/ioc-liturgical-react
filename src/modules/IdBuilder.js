@@ -19,7 +19,6 @@ class IdBuilder extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = this.setTheState(props, "");
 
     this.handleLibraryChange = this.handleLibraryChange.bind(this);
@@ -57,8 +56,8 @@ class IdBuilder extends React.Component {
   setTheState = (props, IdLibrary) => {
     return (
         {
-          searchLabels: Labels.getSearchLabels(props.languageCode)
-          , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+          searchLabels: Labels.getSearchLabels(props.session.languageCode)
+          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , selectedLibrary: props.IdLibrary
           , selectedLibraryLabel: ""
           , selectedTopic: props.IdTopic
@@ -127,6 +126,18 @@ class IdBuilder extends React.Component {
             </div>
         );
         break;
+      case "NOTE_USING_ID_OF_SELECTED_TEXT":
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <FormControl
+                  type="text"
+                  value={value}
+                  disabled
+              />
+            </div>
+        );
+        break;
       case "ID_OF_SELECTED_LITURGICAL_TEXT":
         return (
             <div>
@@ -176,6 +187,18 @@ class IdBuilder extends React.Component {
         );
         break;
       case "ONTOLOGY_TOPIC" :
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <FormControl
+                  type="text"
+                  value={value}
+                  disabled
+              />
+            </div>
+        );
+        break;
+      case "TIMESTAMP" :
         return (
             <div>
               <ControlLabel>{label}</ControlLabel>
@@ -254,6 +277,14 @@ class IdBuilder extends React.Component {
             </div>
         );
         break;
+      case "NOTE_USING_ID_OF_SELECTED_TEXT":
+        return (
+            <div>
+              <ControlLabel>{label}</ControlLabel>
+              <Well>{value}</Well>
+            </div>
+        );
+        break;
       case "ID_OF_SELECTED_LITURGICAL_TEXT":
         return (
             <div>
@@ -307,6 +338,18 @@ class IdBuilder extends React.Component {
   ) => {
     let searchLabels = this.state.searchLabels.IdParts[type];
     switch(type) {
+      case "NOTE_USING_ID_OF_SELECTED_TEXT" :
+        return (
+            <div>
+              <ControlLabel>{searchLabels.library}</ControlLabel>
+              <FormControl
+                  type="text"
+                  value={this.props.IdLibrary}
+                  disabled
+              />
+            </div>
+        );
+        break;
       case "ONTOLOGY_TOPIC" :
         return (
         <div>
@@ -324,7 +367,7 @@ class IdBuilder extends React.Component {
             <ResourceSelector
                 title={"Library..."}
                 initialValue={this.state.selectedLibrary}
-                resources={this.props.libraries}
+                resources={this.props.session.userInfo.domains["author"]}
                 changeHandler={this.handleLibraryChange}
                 multiSelect={false}
             />
@@ -418,13 +461,32 @@ class IdBuilder extends React.Component {
                   collapsible
               >
                 <SearchText
-                    restServer={this.props.restServer}
-                    username={this.props.username}
-                    password={this.props.password}
+                    session={this.props.session}
                     callback={callback}
                     searchLabels={this.state.searchLabels}
                     resultsTableLabels={this.state.resultsTableLabels}
                     initialDocType="Biblical"
+                />
+              </Panel>
+            </div>
+        );
+        break;
+      case "NOTE_USING_ID_OF_SELECTED_TEXT":
+        return (
+            <div>
+              <Panel
+                  header={searchLabel.prompt}
+                  eventKey={type+labelType}
+                  expanded={true}
+                  onSelect={this.toogleTopicPanel}
+                  collapsible
+              >
+                <SearchText
+                    session={this.props.session}
+                    callback={callback}
+                    searchLabels={this.state.searchLabels}
+                    resultsTableLabels={this.state.resultsTableLabels}
+                    initialDocType="Liturgical"
                 />
               </Panel>
             </div>
@@ -441,9 +503,7 @@ class IdBuilder extends React.Component {
                   collapsible
               >
             <SearchText
-                restServer={this.props.restServer}
-                username={this.props.username}
-                password={this.props.password}
+                session={this.props.session}
                 callback={callback}
                 searchLabels={this.state.searchLabels}
                 resultsTableLabels={this.state.resultsTableLabels}
@@ -464,11 +524,8 @@ class IdBuilder extends React.Component {
                   collapsible
               >
                 <SearchOntology
-                    restServer={this.props.restServer}
-                    username={this.props.username}
-                    password={this.props.password}
+                    session={this.props.session}
                     callback={callback}
-                    languageCode={this.props.languageCode}
                     editor={false}
                     initialType={this.props.initialOntologyType}
                     fixedType={true}
@@ -498,9 +555,7 @@ class IdBuilder extends React.Component {
               >
                 <ControlLabel>{searchLabel.key}</ControlLabel>
                 <SearchText
-                    restServer={this.props.restServer}
-                    username={this.props.username}
-                    password={this.props.password}
+                    session={this.props.session}
                     callback={callback}
                     searchLabels={this.state.searchLabels}
                     resultsTableLabels={this.state.resultsTableLabels}
@@ -521,9 +576,7 @@ class IdBuilder extends React.Component {
                   collapsible
               >
                 <SearchText
-                    restServer={this.props.restServer}
-                    username={this.props.username}
-                    password={this.props.password}
+                    session={this.props.session}
                     callback={callback}
                     searchLabels={this.state.searchLabels}
                     resultsTableLabels={this.state.resultsTableLabels}
@@ -704,7 +757,12 @@ class IdBuilder extends React.Component {
   }
 
   handleKeyTextChange = (value) => {
-    if (value && value.target && value.target.value && value.target.value.length > 0) {
+    if (
+        value
+        && value.target
+        && value.target.value
+        && value.target.value.length > 0
+    ) {
       this.setState({
             tempKey: value.target.value
           }
@@ -720,10 +778,14 @@ class IdBuilder extends React.Component {
 
   handleKeySearchCallback(id, value, seq) {
     if (id && id.length > 0) {
+      let theValue = value;
+      if (theValue === undefined) {
+        theValue = id;
+      }
       this.setState({
         searchingForKey: false
         , selectedKey: id
-        , selectedKeyValue: value
+        , selectedKeyValue: theValue
         , selectedSeq: seq
         , panel: {keyOpen: false, topicOpen: false}
       }
@@ -847,12 +909,8 @@ class IdBuilder extends React.Component {
 }
 
 IdBuilder.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , libraries: PropTypes.array.isRequired
+  session: PropTypes.object.isRequired
   , IdLibrary: PropTypes.string.isRequired
-  , ontologyDropdowns: PropTypes.object.isRequired
   , biblicalBooksDropdown: PropTypes.array.isRequired
   , biblicalChaptersDropdown: PropTypes.array.isRequired
   , biblicalVersesDropdown: PropTypes.array.isRequired
@@ -866,7 +924,6 @@ IdBuilder.propTypes = {
   , handleLibraryChange: PropTypes.func.isRequired
   , handleTopicChange: PropTypes.func.isRequired
   , handleSubmit: PropTypes.func.isRequired
-  , languageCode: PropTypes.string.isRequired
   , initialOntologyType: PropTypes.string.isRequired
 };
 

@@ -1,11 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import {ControlLabel, Button, Modal} from 'react-bootstrap';
+import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
 import Form from "react-jsonschema-form";
-
+import FontAwesome from 'react-fontawesome';
 import Labels from '../Labels';
-
 import MessageIcons from '../helpers/MessageIcons';
 
 /**
@@ -18,12 +17,12 @@ export class ModalSchemaBasedEditor extends React.Component {
 
     this.state = {
       labels: {
-        button: Labels.getButtonLabels(props.languageCode)
-        , messages: Labels.getMessageLabels(props.languageCode)
+        button: Labels.getButtonLabels(props.session.languageCode)
+        , messages: Labels.getMessageLabels(props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.languageCode).initial
+      , message: Labels.getMessageLabels(props.session.languageCode).initial
       , resultCount: 0
       , showSearchResults: false
       , schema: {}
@@ -33,7 +32,7 @@ export class ModalSchemaBasedEditor extends React.Component {
       , showForm: false
       , topicText: ""
       , keyText: ""
-      , httpCodeLabels: Labels.getHttpCodeLabels(this.props.languageCode)
+      , httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
     }
 
     this.close = this.close.bind(this);
@@ -57,7 +56,7 @@ export class ModalSchemaBasedEditor extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
-     httpCodeLabels: Labels.getHttpCodeLabels(this.props.languageCode)
+     httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
     });
   }
 
@@ -74,12 +73,12 @@ export class ModalSchemaBasedEditor extends React.Component {
     });
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
 
-    let path = this.props.restServer
+    let path = this.props.session.restServer
         + this.props.restPath
         + "/"
         + this.props.idLibrary
@@ -143,11 +142,11 @@ export class ModalSchemaBasedEditor extends React.Component {
   onSubmit = ({formData}) => {
     let config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
-    let path = this.props.restServer
+    let path = this.props.session.restServer
         + this.props.restPath
         + "/"
         + this.props.idLibrary
@@ -162,6 +161,7 @@ export class ModalSchemaBasedEditor extends React.Component {
         , config
     )
         .then(response => {
+          console.log(`ModalSchemaBasedEditor.axios.put.then returned`);
           this.setState({
             message: "updated ",
           });
@@ -177,12 +177,16 @@ export class ModalSchemaBasedEditor extends React.Component {
     return (
         <div>
           <Modal
+              dialogClassName="App-Modal-Para-Row-Editor"
               show={this.state.showModal}
               onHide={this.close}
               keyboard={true}
           >
             <Modal.Header closeButton>
               <Modal.Title>{this.props.title}</Modal.Title>
+              {this.props.text && this.props.textId &&
+                <Well><div className={"App-Modal-Text"}>{this.props.text}<span className={"control-label"}> ({this.props.textId})</span></div></Well>
+              }
               { this.props.canUpdate ? <div></div>: <ControlLabel>{this.state.labels.messages.readOnly}</ControlLabel>}
             </Modal.Header>
             <Modal.Body>
@@ -199,6 +203,10 @@ export class ModalSchemaBasedEditor extends React.Component {
                     >
                       {this.state.labels.button.submit}
                     </Button>
+                    <span className="App-message"><FontAwesome
+                      name={this.state.messageIcon}/>
+                    {this.state.message}
+                    </span>
                 </div>
               </Form>
             </Modal.Body>
@@ -211,17 +219,16 @@ export class ModalSchemaBasedEditor extends React.Component {
   }
 }
 ModalSchemaBasedEditor.propTypes = {
-  restServer: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , restPath: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
   , onClose: PropTypes.func.isRequired
   , showModal: PropTypes.bool.isRequired
   , title: PropTypes.string.isRequired
+  , textId: PropTypes.string
+  , text: PropTypes.string
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
   , canUpdate: PropTypes.bool
 };
 ModalSchemaBasedEditor.defaultProps = {

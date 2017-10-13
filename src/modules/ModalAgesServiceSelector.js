@@ -148,10 +148,7 @@ export class ModalAgesServiceSelector extends React.Component {
   }
 }
 ModalAgesServiceSelector.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
+  languageCode: PropTypes.string.isRequired
   , callBack: PropTypes.func.isRequired
   , values: PropTypes.array.isRequired
 };

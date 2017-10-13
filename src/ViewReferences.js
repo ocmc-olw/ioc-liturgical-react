@@ -8,6 +8,7 @@ import Labels from './Labels';
 
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import ReactSelector from './modules/ReactSelector';
+import SchemaBasedAddButton from './modules/SchemaBasedAddButton';
 
 import IdManager from './helpers/IdManager';
 import MessageIcons from './helpers/MessageIcons';
@@ -22,15 +23,18 @@ class ViewReferences extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log(`ViewReferences this.props.id = ${this.props.id}`);
+    console.log(`ViewReferences this.props.type = ${this.props.type}`);
+    console.log(this.props.session);
     this.state = {
       labels: {
-        thisClass: Labels.getViewReferencesLabels(this.props.languageCode)
-        , messages: Labels.getMessageLabels(this.props.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+        thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        , messages: Labels.getMessageLabels(this.props.session.languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.languageCode).initial
+      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
       , data: {}
       , resultCount: 0
       , fetching: false
@@ -63,6 +67,8 @@ class ViewReferences extends React.Component {
     this.handleDomainChange = this.handleDomainChange.bind(this);
     this.getSelector = this.getSelector.bind(this);
     this.editable = this.editable.bind(this);
+    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.handleAddClose = this.handleAddClose.bind(this);
   }
 
   componentWillMount = () => {
@@ -73,15 +79,15 @@ class ViewReferences extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.languageCode !== nextProps.languageCode) {
+    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getViewReferencesLabels(nextProps.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
+            thisClass: Labels.getViewReferencesLabels(nextProps.session.languageCode)
+            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
           }
-          , message: Labels.getMessageLabels(props.languageCode).initial
+          , message: Labels.getMessageLabels(props.session.languageCode).initial
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -89,7 +95,7 @@ class ViewReferences extends React.Component {
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
-    // call a function is needed
+    // call a function if needed
   }
 
   fetchDocData = () => {
@@ -113,10 +119,10 @@ class ViewReferences extends React.Component {
     ;
 
     Server.restGetPromise(
-        this.props.restServer
+        this.props.session.restServer
         , Server.getDbServerLinksApi()
-        , this.props.username
-        , this.props.password
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
         , parms
     )
         .then( response => {
@@ -177,7 +183,7 @@ class ViewReferences extends React.Component {
   editable = (library) => {
     let canEdit = false;
     if (library) {
-      for (let entry of this.props.domains.author) {
+      for (let entry of this.props.session.userInfo.domains.author) {
         if (entry.value == library) {
           canEdit = true;
           break;
@@ -190,17 +196,14 @@ class ViewReferences extends React.Component {
   getModalEditor = () => {
     return (
         <ModalSchemaBasedEditor
-            restServer={this.props.restServer}
+            session={this.props.session}
             restPath={Server.getDbServerLinksApi()}
-            username={this.props.username}
-            password={this.props.password}
             showModal={this.state.showModalWindow}
             title={this.state.title}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
-            languageCode={this.props.languageCode}
             canUpdate={this.editable(this.state.selectedLibrary)}
         />
     )
@@ -318,7 +321,7 @@ class ViewReferences extends React.Component {
   }
 
   getSelector = () => {
-    if (this.props.domains && this.props.domains.reader) {
+    if (this.props.session.userInfo.domains && this.props.session.userInfo.domains.reader) {
       return (
           <Well>
             <ControlLabel>
@@ -326,7 +329,7 @@ class ViewReferences extends React.Component {
             </ControlLabel>
           <ReactSelector
               initialValue={this.state.selectedDomain}
-              resources={this.props.domains.reader}
+              resources={this.props.session.userInfo.domains.reader}
               changeHandler={this.handleDomainChange}
               multiSelect={false}
           />
@@ -337,6 +340,56 @@ class ViewReferences extends React.Component {
     }
   }
 
+  handleAddClose = () => {
+    this.fetchDocData();
+  }
+
+  handleAddButtonClick = () => {
+    /**
+     * TODO: write a function in UiSchemas to find the id of a schema
+     * based on the first part of the name
+     */
+    let id = "UserNoteCreateForm:1.1";
+    if (this.props.type === "REFERS_TO_BIBLICAL_TEXT") {
+      id = "LinkRefersToBiblicalTextCreateForm:1.1";
+    }
+    let library = this.state.selectedDomain;
+    let date = new Date();
+    let month = (date.getMonth()+1).toString().padStart(2,"0");
+    let day = date.getDate().toString().padStart(2,"0");
+    let hour = date.getHours().toString().padStart(2,"0");
+    let minute = date.getMinutes().toString().padStart(2,"0");
+    let second = date.getSeconds().toString().padStart(2,"0");
+    let key = date.getFullYear()
+        + "."
+        + month
+        + "."
+        + day
+        + ".T"
+        + hour
+        + "."
+        + minute
+        + "."
+        + second
+    ;
+
+    return (
+        <SchemaBasedAddButton
+            session={this.props.session}
+            restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
+            uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
+            schema={this.props.session.uiSchemas.getSchema(id)}
+            formData={this.props.session.uiSchemas.getForm(id)}
+            idLibrary={library}
+            idTopic={this.props.id}
+            idKey={key}
+            seq={IdManager.toId(library, this.props.id, key)
+            }
+            onClose={this.handleAddClose}
+        />
+    )
+  }
+
   render() {
     return (
         <div className="App-search">
@@ -344,7 +397,7 @@ class ViewReferences extends React.Component {
           {this.getSelector()}
           <ControlLabel>{this.props.type === "*" ? this.state.labels.thisClass.ontologyRef : this.state.labels.thisClass.biblicalRef} {this.state.labels.thisClass.panelTitle} {this.props.id} {this.state.labels.thisClass.library} {this.state.selectedDomain}</ControlLabel>
           <div>{this.state.labels.messages.resultLabel}: <span className="App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.messages.docs} </span>
+              name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.messages.docs}  {this.handleAddButtonClick()}</span>
           </div>
           {this.state.showSearchResults &&
           <ControlLabel>
@@ -359,11 +412,7 @@ class ViewReferences extends React.Component {
 }
 
 ViewReferences.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
   , id: PropTypes.string.isRequired
   , type: PropTypes.string
 };

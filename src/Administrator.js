@@ -78,13 +78,13 @@ class Administrator extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesEditorLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
-            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.languageCode)
+            thisClass: Labels.getAgesEditorLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
           , action: action
           , path: path
           , item: item
@@ -151,12 +151,12 @@ class Administrator extends React.Component {
   fetchData(path, updateMessage) {
     var config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
     axios.get(
-        this.props.restServer
+        this.props.session.restServer
         + server.getWsServerAdminApi()
         + path
         , config
@@ -189,12 +189,12 @@ class Administrator extends React.Component {
   handlePost(formData) {
     var config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
     axios.post(
-        this.props.restServer
+        this.props.session.restServer
         + server.getWsServerAdminApi()
         + IdManager.idToPath(this.state.item.id)
         , formData.formData
@@ -218,8 +218,8 @@ class Administrator extends React.Component {
   handlePut(formData) {
     var config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
     let path = IdManager.idToPath(this.state.item.id);
@@ -230,7 +230,7 @@ class Administrator extends React.Component {
       });
     }
     axios.put(
-        this.props.restServer
+        this.props.session.restServer
         + server.getWsServerAdminApi()
         + path
         , formData.formData
@@ -271,13 +271,13 @@ class Administrator extends React.Component {
   getResources = () => {
     var config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
 
     axios.get(
-        this.props.restServer
+        this.props.session.restServer
         + server.getWsServerAdminApi()
         + "resources"
         , config
@@ -404,11 +404,7 @@ class Administrator extends React.Component {
 }
 
 Administrator.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
 };
 
 Administrator.defaultProps = {

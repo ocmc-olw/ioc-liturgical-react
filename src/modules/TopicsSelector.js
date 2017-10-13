@@ -51,12 +51,12 @@ class TopicsSelector extends React.Component {
       return (
           {
             labels: {
-              thisClass: Labels.getTopicsSelectorLabels(this.props.languageCode)
-              , messages: Labels.getMessageLabels(this.props.languageCode)
+              thisClass: Labels.getTopicsSelectorLabels(this.props.session.languageCode)
+              , messages: Labels.getMessageLabels(this.props.session.languageCode)
             }
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
-            , message: Labels.getMessageLabels(this.props.languageCode).initial
+            , message: Labels.getMessageLabels(this.props.session.languageCode).initial
             , selectedItem: selectedItem
             , dataFetched: dataFetched
             , data: data
@@ -66,9 +66,9 @@ class TopicsSelector extends React.Component {
 
   fetchData = (library) => {
       server.getTopics(
-          this.props.restServer
-          , this.props.username
-          , this.props.password
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
           , this.handleFetchCallback
       );
   }
@@ -107,10 +107,7 @@ class TopicsSelector extends React.Component {
 }
 
 TopicsSelector.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  ,  languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , library: PropTypes.string.isRequired
   , callBack: PropTypes.func.isRequired
 };

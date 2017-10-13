@@ -2,34 +2,31 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import 'react-select/dist/react-select.css';
 import ResourceSelector from './modules/ReactSelector'
-import axios from 'axios';
 import Labels from './Labels'
-import Form from "react-jsonschema-form";
 import IdManager from './helpers/IdManager';
 import server from './helpers/Server';
 import IdBuilder from './modules/IdBuilder';
+import NewEntryForm from './modules/NewEntryForm';
 import ParaRowTextEditor from './ParaRowTextEditor';
-import WorkflowAssignment from './modules/WorkflowAssignment';
-import { Button, Panel, Well } from 'react-bootstrap'
-import FontAwesome from 'react-fontawesome';
+import { Panel, Well } from 'react-bootstrap'
 
 export class NewEntry extends React.Component {
 
   constructor(props) {
     super(props);
-
     this.state = {
       labels: {
-        thisClass: Labels.getComponentNewEntryLabels(this.props.languageCode)
-        , search: Labels.getSearchLabels(this.props.languageCode)
-        , paraRowEditor: Labels.getComponentParaTextEditorLabels(this.props.languageCode)
+        thisClass: Labels.getComponentNewEntryLabels(this.props.session.languageCode)
+        , search: Labels.getSearchLabels(this.props.session.languageCode)
+        , paraRowEditor: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
       }
       , idBuilt: false
-      , message: Labels.getSearchLabels(this.props.languageCode).msg1
+      , message: Labels.getSearchLabels(this.props.session.languageCode).msg1
       , messageIcon: this.messageIcons.info
       , formSelected: false
       , selectedForm: ""
       , initialOntologyType: "Human"
+      , isUserNoteForm: false
       , isReferenceForm: false
       , isTranslationForm: false
       , translationDocType: "Liturgical"
@@ -74,8 +71,6 @@ export class NewEntry extends React.Component {
         , defaultStatusAfterFinalization: "FINALIZED"
       }
     };
-    this.onSubmit = this.onSubmit.bind(this);
-    this.onFormPropertyChange = this.onFormPropertyChange.bind(this);
     this.handleFormSelection = this.handleFormSelection.bind(this);
     this.handleIdSelection = this.handleIdSelection.bind(this);
     this.handleIdLibrarySelection = this.handleIdLibrarySelection.bind(this);
@@ -93,9 +88,9 @@ export class NewEntry extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     this.setState({
       labels: {
-        thisClass: Labels.getComponentNewEntryLabels(nextProps.languageCode)
-        , search: Labels.getSearchLabels(nextProps.languageCode)
-        , paraRowEditor: Labels.getComponentParaTextEditorLabels(nextProps.languageCode)
+        thisClass: Labels.getComponentNewEntryLabels(nextProps.session.languageCode)
+        , search: Labels.getSearchLabels(nextProps.session.languageCode)
+        , paraRowEditor: Labels.getComponentParaTextEditorLabels(nextProps.session.languageCode)
       }
     });
   }
@@ -150,8 +145,6 @@ export class NewEntry extends React.Component {
   }
 
   handleWorkflowAssignmentCallback = (status, user) => {
-    console.log(status);
-    console.log(user);
     this.state.selected.form.assignedToUser = user;
     this.state.selected.form.status = status;
     this.setState({
@@ -161,9 +154,9 @@ export class NewEntry extends React.Component {
   }
 
   handleFormSelection = (selection) => {
-    let theForm = this.props.forms[selection.value];
+    let theForm = this.props.session.uiSchemas.getForm(selection.value);
 
-    theForm.assignedToUser = this.props.username;
+    theForm.assignedToUser = this.props.session.userInfo.username;
 
     // If the form is for making a translation, we
     // we want to display a panel for a Parallel Row Text Editor.
@@ -181,12 +174,11 @@ export class NewEntry extends React.Component {
     }
     let thisIsAReferenceForm = false;
 
-    let thePath = server.getDbServerDocsApi(); // default to docs
     if (selection.value.startsWith("Link")) { // switch to links if need be
-      thePath = server.getDbServerLinksApi();
       thisIsAReferenceForm = true;
     }
 
+    let isUserNoteForm = theForm["partTypeOfKey"].includes("TIMESTAMP");
 
     let thisIsAnOntologyForm = theForm["partTypeOfKey"].includes("ONTOLOGY");
     let initialOntologyType = "Human";
@@ -207,32 +199,30 @@ export class NewEntry extends React.Component {
     let keyTypeChanged = (this.state.IdKeyType !==  theForm["partTypeOfKey"]);
 
     let idLibrary = theForm["library"];
-
-    console.log("Form changed.  Library is: " + idLibrary);
-
-    if (idLibrary === undefined || idLibrary.length < 1) {
-      if (topicTypeChanged) {
-        idLibrary = "";
-      } else {
-        if (idLibrary !== this.state.IdLibrary) {
-          // try to avoid calling the rest server if we did it
-          // last form change
-          idLibrary = this.state.IdLibrary;
-        }
-      }
+    if (isUserNoteForm) {
+      idLibrary = this.props.session.userInfo.domain;
     } else {
-      if (idLibrary !== this.state.IdLibrary) {
+      if (idLibrary === undefined || idLibrary.length < 6) {
+        if (topicTypeChanged) {
+          idLibrary = "";
+        } else {
+          if (idLibrary !== this.state.IdLibrary) {
+            // try to avoid calling the rest server if we did it
+            // last form change
+            idLibrary = this.state.IdLibrary;
+          }
+        }
+      } else {
         // try to avoid calling the rest server if we did it
         // last form change
         server.getDropdownUsersForLibrary(
-            this.props.restServer
-            , this.props.username
-            , this.props.password
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
             , idLibrary
             , this.setLibraryWorkflowInfo
         );
       }
-
     }
 
     let idTopic = theForm["topic"];
@@ -248,22 +238,47 @@ export class NewEntry extends React.Component {
     }
     let idKey = theForm["key"];
     let idKeyValue = "";
-
-    if (idKey === undefined || idKey.length < 1) {
-      if (thisIsAnOntologyForm) {
-        idKey = "";
-        idKeyValue = "";
+    if (isUserNoteForm) {
+      let date = new Date();
+      let month = (date.getMonth()+1).toString().padStart(2,"0");
+      let day = date.getDate().toString().padStart(2,"0");
+      let hour = date.getHours().toString().padStart(2,"0");
+      let minute = date.getMinutes().toString().padStart(2,"0");
+      let second = date.getSeconds().toString().padStart(2,"0");
+      idKey = date.getFullYear()
+          + "."
+          + month
+          + "."
+          + day
+          + ".T"
+          + hour
+          + "."
+          + minute
+          + "."
+          + second
+      ;
+      idKeyValue = idKey;
+    } else {
+      if (idKey === undefined || idKey.length < 1) {
+        if (keyTypeChanged) {
+          idKey = "";
+          idKeyValue = "";
+        } else {
+          idKey = this.state.IdKey;
+          idKeyValue = this.state.IdKeyValue;
+        }
       }
     }
     this.setState({
       selected: {
-        schema: this.props.formsSchemas[selection.value].schema
-        , uiSchema: this.props.formsSchemas[selection.value].uiSchema
+        schema: this.props.session.uiSchemas.getSchema(selection.value)
+        , uiSchema: this.props.session.uiSchemas.getUiSchema(selection.value)
         , form: theForm
-        , path: thePath
+        , path: this.props.session.uiSchemas.getHttpPostPathForSchema(selection.value)
       }
       , selectedForm: selection.value
       , initialOntologyType: initialOntologyType
+      , isUserNoteForm: isUserNoteForm
       , isTranslationForm: thisIsATranslationForm
       , isReferenceForm: thisIsAReferenceForm
       , translationDocType: theTranslationDocType
@@ -272,7 +287,7 @@ export class NewEntry extends React.Component {
       , IdTopic: idTopic
       , IdTopicType: theForm["partTypeOfTopic"]
       , IdTopicValue: idTopicValue
-      , IdKey: theForm["key"]
+      , IdKey: idKey
       , IdKeyValue: idKeyValue
       , IdKeyType: theForm["partTypeOfKey"]
       , idBuilt: false
@@ -288,13 +303,11 @@ export class NewEntry extends React.Component {
    * for the role selected in the form.
    */
   setLibraryWorkflowInfo = (restCallResult) => {
-    if (restCallResult) {
-
+    if (restCallResult
+        && restCallResult.data.values
+        && restCallResult.data.values.length > 0
+    ) {
       let config = restCallResult.data.values[2].config;
-
-      console.log(restCallResult.data.values[0]);
-      console.log(restCallResult.data.values[1].statuses);
-      console.log(config);
 
       this.setState({
         workflow: {
@@ -311,17 +324,20 @@ export class NewEntry extends React.Component {
   }
 
   handleIdLibrarySelection = (library) => {
-    this.setState({
-      IdLibrary: library
-    });
-    // get the authorized admins, authors, readers, and reviewers for this library
-    server.getDropdownUsersForLibrary(
-        this.props.restServer
-        , this.props.username
-        , this.props.password
-        , library
-        , this.setLibraryWorkflowInfo
-    );
+    if (library) {
+      this.setState({
+        IdLibrary: library
+      });
+
+      // get the authorized admins, authors, readers, and reviewers for this library
+      server.getDropdownUsersForLibrary(
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
+          , library
+          , this.setLibraryWorkflowInfo
+      );
+    }
   }
 
   handleIdTopicSelection = (topic, value) => {
@@ -343,6 +359,8 @@ export class NewEntry extends React.Component {
     let idSeq = "";
     if (seq) {
       idSeq = IdManager.replaceLibrary(seq, IdLibrary);
+    } else if (this.state.isUserNoteForm) {
+      idSeq = IdManager.toId(IdLibrary, IdTopic, IdKey);
     }
     let idTopicParts = {};
     if (this.state.isReferenceForm) {
@@ -373,8 +391,6 @@ export class NewEntry extends React.Component {
     this.state.selected.form.key = IdKey;
     this.state.selected.form.id = IdLibrary+"~"+IdTopic+"~"+IdKey;
     this.state.selected.form.seq = idSeq;
-    console.log("defaultStatusAfterEdit");
-    console.log(this.state.workflow.defaultStatusAfterEdit);
     this.state.selected.form.status = this.state.workflow.defaultStatusAfterEdit;
 
     if (this.state.workflow && this.state.workflow.workflowEnabled) {
@@ -401,46 +417,12 @@ export class NewEntry extends React.Component {
     }
   };
 
-  onFormPropertyChange = ({formData}) => {
-    console.log(formData);
-  }
-
+  // placeholder in case want to do something with the formData
   onSubmit = ({formData}) => {
     this.setState({
-      message: this.state.labels.search.creating
-      , messageIcon: this.messageIcons.info
+      formData: formData
     });
-
-    let config = {
-      auth: {
-        username: this.props.username
-        , password: this.props.password
-      }
-    };
-    let path = this.props.restServer
-        + this.state.selected.path
-    ;
-    axios.post(
-        path
-        , formData
-        , config
-    )
-        .then(response => {
-          this.setState({
-            message: this.state.labels.search.created,
-          });
-        })
-        .catch( (error) => {
-          var message = Labels.getHttpMessage(
-              this.props.languageCode
-              , error.response.status
-              , error.response.statusText
-          );
-          var messageIcon = this.messageIcons.error;
-          this.setState( { data: message, message: message, messageIcon: messageIcon });
-        });
   }
-
 
   toogleIdBuilderPanel = () => {
     this.setState({
@@ -490,7 +472,7 @@ export class NewEntry extends React.Component {
           <ResourceSelector
               title={this.state.labels.thisClass.formSelector}
               initialValue={this.state.selectedForm}
-              resources={this.props.formsDropdown}
+              resources={this.props.session.uiSchemas.formsDropdown}
               changeHandler={this.handleFormSelection}
               multiSelect={false}
           />
@@ -503,18 +485,15 @@ export class NewEntry extends React.Component {
                     expanded={this.state.panel.idBuilderOpen}
                     onSelect={this.toogleIdBuilderPanel}
                     collapsible
-                >
+                >00\
+
                 <IdBuilder
-                    restServer={this.props.restServer}
-                    username={this.props.username}
-                    password={this.props.password}
-                    libraries={this.props.domains["author"]}
+                    session={this.props.session}
                     IdLibrary={this.state.IdLibrary}
-                    ontologyDropdowns={this.props.ontologyDropdowns}
-                    biblicalBooksDropdown={this.props.biblicalBooksDropdown}
-                    biblicalChaptersDropdown={this.props.biblicalChaptersDropdown}
-                    biblicalVersesDropdown={this.props.biblicalVersesDropdown}
-                    biblicalSubversesDropdown={this.props.biblicalSubversesDropdown}
+                    biblicalBooksDropdown={this.props.session.dropdowns.biblicalBooksDropdown}
+                    biblicalChaptersDropdown={this.props.session.dropdowns.biblicalChaptersDropdown}
+                    biblicalVersesDropdown={this.props.session.dropdowns.biblicalVersesDropdown}
+                    biblicalSubversesDropdown={this.props.session.dropdowns.biblicalSubversesDropdown}
                     IdTopic={this.state.IdTopic}
                     IdTopicValue={this.state.IdTopicValue}
                     IdTopicType={this.state.IdTopicType}
@@ -524,7 +503,6 @@ export class NewEntry extends React.Component {
                     handleLibraryChange={this.handleIdLibrarySelection}
                     handleTopicChange={this.handleIdTopicSelection}
                     handleSubmit={this.handleIdSelection}
-                    languageCode={this.props.languageCode}
                     initialOntologyType={this.state.initialOntologyType}
                 />
                 </Panel>
@@ -545,10 +523,8 @@ export class NewEntry extends React.Component {
                     collapsible
                 >
                   <ParaRowTextEditor
-                      restServer={this.props.restServer}
-                      username={this.props.username}
-                      password={this.props.password}
-                      languageCode={this.props.languageCode}
+                      session={this.props.session}
+                      canChange={false}
                       docType={this.state.translationDocType}
                       idLibrary={this.state.IdLibrary}
                       idTopic={this.state.isReferenceForm ? this.state.IdTopicParts.topic : this.state.IdTopic}
@@ -575,23 +551,26 @@ export class NewEntry extends React.Component {
                     onSelect={this.toogleFormPanel}
                     collapsible
                 >
-                <Form schema={this.state.selected.schema}
-                      uiSchema={this.state.selected.uiSchema}
-                      formData={this.state.selected.form}
-                      onSubmit={this.onSubmit}
-                      onChange={this.onFormPropertyChange}
-                >
-                  <div>
-                    <Button
-                        bsStyle="primary"
-                        type="submit"
-                    >{this.state.labels.search.submit}</Button>
-                    <span className="App-message"><FontAwesome
-                        name={this.state.messageIcon}/>
-                      {this.state.message}
-                    </span>
-                  </div>
-                </Form>
+                  {
+                    this.state.IdTopicValue &&
+                    <Well>
+                      <div>{this.state.IdTopicValue}<span className={"control-label"}> ({this.state.IdTopic})</span></div>
+                    </Well>
+                  }
+                  {
+                    this.state.IdKeyValue &&
+                    <Well>
+                      <div>{this.state.IdKeyValue}<span className={"control-label"}> ({this.state.IdKey})</span></div>
+                    </Well>
+                  }
+                  <NewEntryForm
+                      session={this.props.session}
+                    path={this.state.selected.path}
+                    schema={this.state.selected.schema}
+                    uiSchema={this.state.selected.uiSchema}
+                    formData={this.state.selected.form}
+                    onSubmit={this.onSubmit}
+                  />
                 </Panel>
                 }
               </Well>
@@ -603,21 +582,14 @@ export class NewEntry extends React.Component {
   }
 }
 
+/**
+ , forms: PropTypes.object.isRequired
+
+ * @type {{restServer: *, userInfo: *, uiSchemas: *, biblicalBooksDropdown: *, biblicalChaptersDropdown: *, biblicalVersesDropdown: *, biblicalSubversesDropdown: *, changeHandler: *, languageCode: *}}
+ */
 NewEntry.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
-  , ontologyDropdowns: PropTypes.object.isRequired
-  , formsDropdown: PropTypes.array.isRequired
-  , formsSchemas: PropTypes.object.isRequired
-  , forms: PropTypes.object.isRequired
-  , biblicalBooksDropdown: PropTypes.array.isRequired
-  , biblicalChaptersDropdown: PropTypes.array.isRequired
-  , biblicalVersesDropdown: PropTypes.array.isRequired
-  , biblicalSubversesDropdown: PropTypes.array.isRequired
+  session: PropTypes.object.isRequired
   , changeHandler: PropTypes.func.isRequired
-  , languageCode: PropTypes.string.isRequired
 };
 
 export default NewEntry;

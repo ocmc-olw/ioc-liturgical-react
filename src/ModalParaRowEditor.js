@@ -16,12 +16,12 @@ export class ModalParaRowEditor extends React.Component {
     super(props);
     this.state = {
       labels: {
-        thisClass: Labels.getModalParaRowEditorLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+        thisClass: Labels.getModalParaRowEditorLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
         , messageIcon: MessageIcons.getMessageIcons().info
-        , message: Labels.getMessageLabels(this.props.languageCode).initial
+        , message: Labels.getMessageLabels(this.props.session.languageCode).initial
         , showModal: this.props.showModal
         , topic: IdManager.getTopic(this.props.editId)
         , key: IdManager.getKey(this.props.editId)
@@ -39,15 +39,15 @@ export class ModalParaRowEditor extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.languageCode !== nextProps.languageCode) {
+    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getModalParaRowEditorLabels(nextProps.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
+            thisClass: Labels.getModalParaRowEditorLabels(nextProps.session.languageCode)
+            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
           }
-          , message: Labels.getMessageLabels(props.languageCode).initial
+          , message: Labels.getMessageLabels(props.session.languageCode).initial
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -106,11 +106,7 @@ export class ModalParaRowEditor extends React.Component {
             <Modal.Body>
               {this.getModalInfo()}
               <ParaRowTextEditor
-                  restServer={this.props.restServer}
-                  username={this.props.username}
-                  password={this.props.password}
-                  languageCode={this.props.languageCode}
-                  domains={this.props.domains}
+                  session={this.props.session}
                   docType="Liturgical"
                   idLibrary={IdManager.getLibrary(this.props.editId)}
                   idTopic={IdManager.getTopic(this.props.editId)}
@@ -131,11 +127,7 @@ export class ModalParaRowEditor extends React.Component {
   }
 }
 ModalParaRowEditor.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
   , onClose: PropTypes.func.isRequired
   , onSubmit: PropTypes.func.isRequired
   , showModal: PropTypes.bool.isRequired

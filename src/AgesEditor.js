@@ -85,13 +85,13 @@ class AgesEditor extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesEditorLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
-            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.languageCode)
+            thisClass: Labels.getAgesEditorLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
           , selectedLibrary: selectedLibrary
           , showModalEditor: false
           , selectedId: ""
@@ -123,9 +123,9 @@ class AgesEditor extends React.Component {
             message: this.state.labels.messages.retrieving
           },
           server.getAgesIndex(
-              this.props.restServer
-              , this.props.username
-              , this.props.password
+              this.props.session.restServer
+              , this.props.session.userInfo.username
+              , this.props.session.userInfo.password
               , this.handleFetchAgesIndexCallback
           )
       );
@@ -153,9 +153,9 @@ class AgesEditor extends React.Component {
           , fetchingData: true
         },
         server.getAgesEditorTemplate(
-            this.props.restServer
-            , this.props.username
-            , this.props.password
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
             , parms
             , this.handleFetchCallback
         )
@@ -166,7 +166,6 @@ class AgesEditor extends React.Component {
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
       let data = restCallResult.data.values[0];
-      console.log(data);
       let values = data.values;
       let topicKeys = data.topicKeys;
       let topElement = data.topElement;
@@ -212,9 +211,9 @@ class AgesEditor extends React.Component {
       ;
 
       server.putValue(
-          this.props.restServer
-          , this.props.username
-          , this.props.password
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
           , {value: value, seq: undefined}
           , parms
           , this.handleValueUpdateCallback
@@ -245,7 +244,7 @@ class AgesEditor extends React.Component {
   editable = (id) => {
     let library = IdManager.getLibrary(id);
     let canEdit = false;
-    for (let entry of this.props.domains.author) {
+    for (let entry of this.props.session.userInfo.domains.author) {
       if (entry.value == library) {
         canEdit = true;
         break;
@@ -257,11 +256,7 @@ class AgesEditor extends React.Component {
   getModalEditor = () => {
     return (
         <ModalParaRowEditor
-            restServer={this.props.restServer}
-            username={this.props.username}
-            password={this.props.password}
-            languageCode={this.props.languageCode}
-            domains={this.props.domains}
+            session={this.props.session}
             editId={this.state.selectedId}
             value={this.state.selectedValue}
             showModal={this.state.showModalEditor}
@@ -289,10 +284,7 @@ class AgesEditor extends React.Component {
   updateTemplateValues = () => {
     if (this.state.changedText) {
       let values = this.state.values;
-      console.log(values[this.state.selectedId]);
-      console.log(this.state.changedText);
       values[this.state.selectedId] = this.state.changedText;
-      console.log(values[this.state.selectedId]);
       this.setState({
             values: values
           }
@@ -372,10 +364,7 @@ class AgesEditor extends React.Component {
     if (this.state.showModalServiceSelector) {
       return (
         <ModalAgesServiceSelector
-            restServer={this.props.restServer}
-            username={this.props.username}
-            password={this.props.password}
-            languageCode={this.props.languageCode}
+            languageCode={this.props.session.languageCode}
             callBack={this.handleServiceSelection}
             values={this.state.agesIndexValues}
         />
@@ -513,7 +502,7 @@ class AgesEditor extends React.Component {
               <Col xs={8} md={8}>
                 <ReactSelector
                     initialValue={this.state.selectedLibrary}
-                    resources={this.props.domains.author}
+                    resources={this.props.session.userInfo.domains.author}
                     changeHandler={this.handleLibrarySelection}
                     multiSelect={false}
                 />
@@ -541,11 +530,7 @@ class AgesEditor extends React.Component {
 }
 
 AgesEditor.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
   , agesIndexValues: PropTypes.array
 };
 

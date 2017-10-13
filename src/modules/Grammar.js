@@ -66,12 +66,12 @@ class Grammar extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getGrammarLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+            thisClass: Labels.getGrammarLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
           , options: {
             sizePerPage: 30
             , sizePerPageList: [5, 15, 30]
@@ -90,7 +90,7 @@ class Grammar extends React.Component {
           , tableColumnFilter: {
           defaultValue: ""
           , type: 'RegexFilter'
-          , placeholder: Labels.getMessageLabels(this.props.languageCode).regEx
+          , placeholder: Labels.getMessageLabels(this.props.session.languageCode).regEx
             }
           , id: IdManager.toId("gr_gr_cog", this.props.idTopic, this.props.idKey)
           , props: props
@@ -99,7 +99,7 @@ class Grammar extends React.Component {
           , data: data
           , tokens: tokens
           , analyses: analyses
-          , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.languageCode).panelTitle
+          , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.session.languageCode).panelTitle
           , selectedTokenTags: selectedTokenTags
         }
     )
@@ -107,16 +107,16 @@ class Grammar extends React.Component {
 
   fetchData = () => {
     server.getTextAnalysis(
-        this.props.restServer
-        , this.props.username
-        , this.props.password
+        this.props.session.restServer
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
         , this.state.id
         , this.setTextInfo
     );
     server.getTable(
-        this.props.restServer
-        , this.props.username
-        , this.props.password
+        this.props.session.restServer
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
         , server.tableLexiconOald
         , this.handleEnglishLexiconCallback
     );
@@ -151,7 +151,7 @@ class Grammar extends React.Component {
       , selectedToken: token
       , selectedLemma: this.state.analyses[token][0].lemmaGreek
       , selectedLemmas: this.getLemmas(token)
-      , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.languageCode).panelTitle
+      , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.session.languageCode).panelTitle
         + " "
         + i
         + " "
@@ -206,7 +206,7 @@ class Grammar extends React.Component {
                 collapsible
             >
               <WordTagger
-                  languageCode={this.props.languageCode}
+                  languageCode={this.props.session.languageCode}
                   index={this.state.selectedTokenIndex}
                   tokens={this.state.tokens}
                   token={this.state.selectedToken}
@@ -263,13 +263,13 @@ class Grammar extends React.Component {
               </BootstrapTable>
             </Panel>
             <GrammarSitePanel
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 lemmas={this.state.selectedLemmas}
                 url={"http://logeion.uchicago.edu/index.html#"}
                 title={this.state.labels.thisClass.panelLogeionSite}
             />
             <GrammarSitePanel
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 lemmas={this.state.selectedLemmas}
                 url={"http://www.lexigram.gr/lex/arch/"}
                 title={this.state.labels.thisClass.panelLexigramSite}
@@ -292,25 +292,25 @@ class Grammar extends React.Component {
               </div>
             </Panel>
             <GrammarSitePanel
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 lemmas={this.state.selectedLemmas}
                 url={"http://www.laparola.net/greco/parola.php?p="}
                 title={this.state.labels.thisClass.panelLaParola}
             />
             <GrammarSitePanel
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 lemmas={this.state.selectedLemmas}
                 url={"http://www.greek-language.gr/greekLang/medieval_greek/kriaras/search.html?lq="}
                 title={this.state.labels.thisClass.panelKriaras}
             />
             <GrammarSitePanel
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 lemmas={this.state.selectedLemmas}
                 url={"http://www.greek-language.gr/greekLang/modern_greek/tools/lexica/triantafyllides/search.html?dq=&lq="}
                 title={this.state.labels.thisClass.panelTriantafyllides}
             />
             <GrammarSitePanel
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 lemmas={this.state.selectedLemmas}
                 url={"http://www.greek-language.gr/greekLang/ancient_greek/tools/lexicon/search.html?lq="}
                 title={this.state.labels.thisClass.panelBasicLexicon}
@@ -366,7 +366,7 @@ class Grammar extends React.Component {
                 defaultExpanded={false}
             >
               <DependencyDiagram
-                  languageCode={this.props.languageCode}
+                  languageCode={this.props.session.languageCode}
                   data={['hi']}
                   size="medium"
                   width="100%"
@@ -374,7 +374,7 @@ class Grammar extends React.Component {
               />
             </Panel> {/* Dependency Diagram */}
             <HyperTokenText
-                languageCode={this.props.languageCode}
+                languageCode={this.props.session.languageCode}
                 tokens={this.state.tokens ? this.state.tokens : []}
                 id={this.state.id}
                 onClick={this.handleTokenClick}
@@ -399,10 +399,7 @@ class Grammar extends React.Component {
 }
 
 Grammar.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
 };

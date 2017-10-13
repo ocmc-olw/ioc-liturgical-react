@@ -35,12 +35,12 @@ class DomainSelector extends React.Component {
   fetchData() {
     var config = {
       auth: {
-        username: this.props.username
-        , password: this.props.password
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
       }
     };
     this.setState({serverNotCalled: false});
-    axios.get(this.props.restServer + server.getDbServerDropdownsSearchTextApi(), config)
+    axios.get(this.props.session.restServer + server.getDbServerDropdownsSearchTextApi(), config)
         .then(response => {
           this.setState( { items: response.data.values[0].domains} );
         })
@@ -105,9 +105,7 @@ class DomainSelector extends React.Component {
 }
 
 DomainSelector.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , callback: PropTypes.func.isRequired
   , id: PropTypes.string.isRequired
   , title: PropTypes.string.isRequired

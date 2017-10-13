@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import OntologySearchOptions from "./modules/OntologySearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Labels from './Labels';
+import SchemaBasedAddButton from "./modules/SchemaBasedAddButton";
+import IdManager from './helpers/IdManager';
 
-export class SearchOntology extends React.Component {
+export class NotesLister extends React.Component {
 
   constructor(props) {
 
@@ -20,74 +21,20 @@ export class SearchOntology extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.onSizePerPageList = this.onSizePerPageList.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
-    this.getSearchForm = this.getSearchForm.bind(this);
     this.handleCancelRequest = this.handleCancelRequest.bind(this);
     this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
     this.getModalEditor = this.getModalEditor.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.getMatcherTypes = this.getMatcherTypes.bind(this);
     this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
+    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.handleAddClose = this.handleAddClose.bind(this);
   }
 
   componentWillMount = () => {
-    let showSelectionButtons = false;
-    if (this.props.callback) {
-      showSelectionButtons = true;
-    }
-    this.setState({
-          message: this.state.searchLabels.msg1
-          , messageIcon: this.messageIcons.info
-          , docPropMessage: this.state.docPropMessageByValue
-          , showSelectionButtons: showSelectionButtons
-        }
-    );
-    let config = {
-      auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
-      }
-    };
-    let path = this.props.session.restServer + Server.getDbServerDropdownsSearchOntologyApi();
-    axios.get(path, config)
-        .then(response => {
-          // literals used as keys to get data from the response
-          let valueKey = "dropdown";
-          let listKey = "typeList";
-          let propsKey = "typeProps";
-          let tagsKey = "typeTags";
-          let tagOperatorsKey = "tagOperators";
-
-          let values = response.data.values[0][valueKey];
-          this.setState({
-                dropdowns: {
-                  types: values[listKey]
-                  , typeProps: values[propsKey]
-                  , typeTags: values[tagsKey]
-                  , tagOperators: values[tagOperatorsKey]
-                  , loaded: true
-                }
-              }
-          );
-        })
-        .catch((error) => {
-          let message = error.message;
-          let messageIcon = this.messageIcons.error;
-          if (error && error.response && error.response.status === 401) {
-            message = Server.getWsServerDbApi() + " is a protected database.  Please login and try again.";
-            messageIcon = this.messageIcons.error;
-          } else if (error && error.response && error.response.status === 404) {
-            message = "error retrieving values for dropdowns";
-            messageIcon = this.messageIcons.error;
-          } else if (error && error.message && error.message.toLowerCase() === "network error") {
-            message = "The database server " + Server.getWsServerDbApi() + " is not available.";
-            messageIcon = this.messageIcons.error;
-          }
-          this.setState({data: message, message: message, messageIcon: messageIcon});
-        });
+    this.fetchData();
   };
 
   componentWillReceiveProps = (nextProps) => {
@@ -97,7 +44,7 @@ export class SearchOntology extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchOntologyLabels(props.session.languageCode);
+    let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
 
     let selectedId = "";
     if (docType) {
@@ -120,7 +67,6 @@ export class SearchOntology extends React.Component {
             , {label: theSearchLabels.matchesRegEx, value: "rx"}
           ]
           , matcher: "c"
-          , genericType: "*"
           ,
           query: ""
           ,
@@ -174,41 +120,13 @@ export class SearchOntology extends React.Component {
           , selectedTopic: ""
           , selectedKey: ""
           , title: ""
+          , selectedText: ""
           , showModalEditor: false
           , idColumnSize: "80px"
         }
     )
   }
-  getSearchForm() {
-    return (
-            <div>
-            {this.state.dropdowns ?
-                <OntologySearchOptions
-                    types={this.state.dropdowns.types}
-                    initialType={this.props.fixedType ? this.props.initialType : this.state.docType}
-                    properties={this.state.dropdowns.typeProps}
-                    matchers={this.getMatcherTypes()}
-                    tags={this.state.dropdowns.typeTags}
-                    tagOperators={this.state.dropdowns.tagOperators}
-                    handleSubmit={this.handleAdvancedSearchSubmit}
-                    labels={this.state.searchLabels}
-                />
-                : "Loading dropdowns for search..."
-            }
-            </div>
-    );
-  }
 
-  getMatcherTypes () {
-    return (
-        [
-            {label: this.state.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.state.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.state.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.state.searchLabels.matchesRegEx, value: "rx"}
-            ]
-    )
-  }
   handleCancelRequest() {
     if (this.props.callback) {
       this.props.callback("","");
@@ -219,12 +137,6 @@ export class SearchOntology extends React.Component {
     if (this.props.callback) {
       this.props.callback(this.state.selectedId, this.state.selectedValue);
     }
-  }
-
-  deselectAllRows = () => {
-    this.refs.theTable.setState({
-      selectedRowKeys: []
-    });
   }
 
   getSelectedDocOptions() {
@@ -254,28 +166,11 @@ export class SearchOntology extends React.Component {
     )
   }
 
-  handleAdvancedSearchSubmit = (
-      type
-      , genericType
-      , property
-      , matcher
-      , value
-      , tagOperator
-      , tags
-  ) => {
-    this.setState({
-          docType: type
-          , genericType: genericType
-          , docProp: property
-          , matcher: matcher
-          , query: value
-          , tagOperator: tagOperator
-          , tags: tags
-        }
-        ,
-          this.fetchData
-    );
-  };
+  deselectAllRows = () => {
+    this.refs.theTable.setState({
+      selectedRowKeys: []
+    });
+  }
 
   handleRowSelect = (row, isSelected, e) => {
     this.setState({
@@ -283,23 +178,18 @@ export class SearchOntology extends React.Component {
       , selectedLibrary: row["library"]
       , selectedTopic: row["topic"]
       , selectedKey: row["key"]
-      , title: row["name"]
+      , title: row["id"]
+      , selectedText: row["text"]
       , showIdPartSelector: true
-      , showModalEditor: this.props.editor
+      , showModalEditor: true
     });
   }
 
   showRowComparison = (id) => {
-    if (this.props.editor) {
       this.setState({
         showModalEditor: true
         , selectedId: id
       })
-    } else {
-      this.setState({
-        selectedId: id
-      })
-    }
   }
 
   handleCloseModal = (id, value) => {
@@ -315,6 +205,7 @@ export class SearchOntology extends React.Component {
       })
     }
     this.deselectAllRows();
+    this.fetchData();
   }
 
   getModalEditor = () => {
@@ -324,6 +215,8 @@ export class SearchOntology extends React.Component {
             restPath={Server.getDbServerDocsApi()}
             showModal={this.state.showModalEditor}
             title={this.state.title}
+            textId={this.state.selectedTopic}
+            text={this.state.selectedText}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
@@ -355,12 +248,6 @@ export class SearchOntology extends React.Component {
     , idPatternSearch: "key"
   }
 
-  searchFormTypes = {
-    simple: "simple"
-    , advanced: "advanced"
-    , idPattern: "id"
-  }
-
   setMessage(message) {
     this.setState({
       message: message
@@ -380,18 +267,17 @@ export class SearchOntology extends React.Component {
     };
 
     let parms =
-            "?t=" + encodeURIComponent(this.state.docType)
-            + "&g=" + encodeURIComponent(this.state.genericType)
-            + "&q=" + encodeURIComponent(this.state.query)
-            + "&p=" + encodeURIComponent(this.state.docProp)
-            + "&m=" + encodeURIComponent(this.state.matcher)
-            + "&l=" + encodeURIComponent(this.state.tags)
-            + "&o=" + encodeURIComponent(this.state.tagOperator)
+            "?t=" + encodeURIComponent(this.props.type)
+            + "&q=" + encodeURIComponent(this.props.session.userInfo.domain + "~" + this.props.topicId)
+            + "&p=id"
+            + "&m=sw"
+            + "&l="
+            + "&o=any"
         ;
-    let path = this.props.session.restServer + Server.getDbServerOntologyApi() + parms;
+    let path = this.props.session.restServer + Server.getDbServerNotesApi() + parms;
     axios.get(path, config)
         .then(response => {
-          // response.data will contain: "id, library, topic, key, name, description, tags"
+          // response.data will contain: "id, library, topic, key, value, tags, text"
           this.setState({
                 data: response.data
               }
@@ -431,21 +317,59 @@ export class SearchOntology extends React.Component {
         });
   }
 
+  handleAddClose = () => {
+    this.fetchData();
+  }
+
+  handleAddButtonClick = () => {
+    /**
+     * TODO: write a function in UiSchemas to find the id of a schema
+     * based on the first part of the name
+     */
+    let id = "UserNoteCreateForm:1.1";
+    let library = this.props.session.userInfo.domain;
+    let date = new Date();
+    let month = (date.getMonth()+1).toString().padStart(2,"0");
+    let day = date.getDate().toString().padStart(2,"0");
+    let hour = date.getHours().toString().padStart(2,"0");
+    let minute = date.getMinutes().toString().padStart(2,"0");
+    let second = date.getSeconds().toString().padStart(2,"0");
+    let key = date.getFullYear()
+        + "."
+        + month
+        + "."
+        + day
+        + ".T"
+        + hour
+        + "."
+        + minute
+        + "."
+        + second
+    ;
+
+    return (
+        <SchemaBasedAddButton
+            session={this.props.session}
+            restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
+            uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
+            schema={this.props.session.uiSchemas.getSchema(id)}
+            formData={this.props.session.uiSchemas.getForm(id)}
+            idLibrary={library}
+            idTopic={this.props.topicId}
+            idKey={key}
+            seq={IdManager.toId(library, this.props.topicId, key)
+            }
+            onClose={this.handleAddClose}
+        />
+    )
+  }
+
   render() {
     return (
-        <div className="App-page App-search">
-          <h3>{this.state.searchLabels.pageTitle}</h3>
-          {this.state.showSelectionButtons && this.getSelectedDocOptions()}
-          <div className="App-search-form">
-            <div className="row">
-              <div className="col-sm-12 col-md-12 col-lg-12">
-                {this.getSearchForm()}
-              </div>
-            </div>
-          </div>
-
-          <div>{this.state.searchLabels.resultLabel}: <span className="App-message">
-            <FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} </span>
+        <div className="App-page App-Notes-Lister">
+          {this.props.title && <h3>{this.props.title}</h3>}
+          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
+              name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.handleAddButtonClick()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>
@@ -483,30 +407,26 @@ export class SearchOntology extends React.Component {
                     export={ false }
                     tdClassname="tdTopic"
                     width={"10%"}
-                >{this.state.resultsTableLabels.headerTopic}
+                >{this.state.resultsTableLabels.headerText}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='key'
                     dataSort={ true }
                     tdClassname="tdKey"
-                >{this.state.resultsTableLabels.headerKey}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='name'
-                    dataSort={ true }
-                >{this.state.resultsTableLabels.headerName}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='description'
-                    export={ false }
-                    dataSort={ true }
-                >{this.state.resultsTableLabels.headerDesc}
+                    width={"10%"}
+                >{this.state.resultsTableLabels.headerDate}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
                     export={ false }
                     dataSort={ true }
+                    width={"10%"}
                 >{this.state.resultsTableLabels.headerTags}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='value'
+                    dataSort={ true }
+                >{this.state.resultsTableLabels.headerNote}
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>
@@ -517,12 +437,11 @@ export class SearchOntology extends React.Component {
   }
 }
 
-SearchOntology.propTypes = {
+NotesLister.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func
-  , editor: PropTypes.bool.isRequired
-  , initialType: PropTypes.string.isRequired
-  , fixedType: PropTypes.bool.isRequired
+  , type: PropTypes.string.isRequired
+  , topicId: PropTypes.string.isRequired
 };
 
-export default SearchOntology;
+export default NotesLister;

@@ -60,7 +60,7 @@ class ParaColTextEditor extends React.Component {
         , ""
     ];
     let topic = "";
-    let message = Labels.getMessageLabels(this.props.languageCode).initial;
+    let message = Labels.getMessageLabels(this.props.session.languageCode).initial;
     let messageIcon = MessageIcons.getMessageIcons().info;
 
     if (currentState) {
@@ -91,8 +91,8 @@ class ParaColTextEditor extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getParaColTextEditorLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+            thisClass: Labels.getParaColTextEditorLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
@@ -133,7 +133,7 @@ class ParaColTextEditor extends React.Component {
           , tableColumnFilter: {
             defaultValue: ""
             , type: 'RegexFilter'
-            , placeholder: Labels.getMessageLabels(this.props.languageCode).regEx
+            , placeholder: Labels.getMessageLabels(this.props.session.languageCode).regEx
           }
         }
     )
@@ -155,9 +155,9 @@ class ParaColTextEditor extends React.Component {
       message: this.state.labels.messages.retrieving
     },
       server.getViewForTopic(
-          this.props.restServer
-          , this.props.username
-          , this.props.password
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
           , parms
           , this.handleFetchCallback
       )
@@ -278,9 +278,9 @@ class ParaColTextEditor extends React.Component {
     ;
 
     server.putValue(
-        this.props.restServer
-        , this.props.username
-        , this.props.password
+        this.props.session.restServer
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
         , {value: value, seq: seq}
         , parms
         , this.handleValueUpdateCallback
@@ -330,7 +330,7 @@ class ParaColTextEditor extends React.Component {
    */
   editable = (library) => {
     let canEdit = false;
-    for (let entry of this.props.domains.author) {
+    for (let entry of this.props.session.userInfo.domains.author) {
       if (entry.value == library) {
         canEdit = true;
         break;
@@ -392,10 +392,7 @@ class ParaColTextEditor extends React.Component {
                             <Row>
                               <Col xs={12} md={12}>
                                 <TopicsSelector
-                                    restServer={this.props.restServer}
-                                    username={this.props.username}
-                                    password={this.props.password}
-                                    languageCode={this.props.languageCode}
+                                    session={this.props.session}
                                     library={"gr_gr_cog"}
                                     callBack={this.handleTopicSelect}
                                 />
@@ -422,7 +419,7 @@ class ParaColTextEditor extends React.Component {
                               <Col xs={12} md={12}>
                                 <ResourceSelector
                                     initialValue={this.state.libraries.join()}
-                                    resources={this.props.domains.reader}
+                                    resources={this.props.session.userInfo.domains.reader}
                                     changeHandler={this.handleLibrarySelection}
                                     multiSelect={true}
                                 />
@@ -539,11 +536,7 @@ class ParaColTextEditor extends React.Component {
 }
 
 ParaColTextEditor.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
   , source: PropTypes.string.isRequired
 };
 

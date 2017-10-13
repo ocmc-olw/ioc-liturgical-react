@@ -27,7 +27,14 @@ div.container-fluid {
     height: 1em;
     width: 1.3em;
 }
-
+.App-Modal-Para-Row-Editor {
+    width: 90vw;
+}
+.modal-title {
+    font-size: small;
+    padding-bottom: 10px;
+    color: #5bc0de;
+}
 #basic-nav-dropdown {
     padding-top: 21px;
     padding-left: 22px;
@@ -92,7 +99,18 @@ a.collapsed {
 .control-label,  .resourceSelectorPrompt {
     color: #5bc0de;
 }
-
+.App-Notes-Lister {
+    margin-top: 0px !important;
+}
+.Schema-Based-Add-Button {
+    margin-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0;
+}
+.App-Add-ico {
+    padding: 5px !important;
+}
 .App-login {
     margin: 20%;
 }
@@ -140,6 +158,9 @@ a.collapsed {
     background-color: #eaeced;
 }
 
+.App-ParaRow-Text-Editor {
+    background-color: #eaeced;
+}
 .row {
     margin: 0px;
 }
@@ -362,5 +383,10 @@ path.link {
     width: 100%;
 }
 .App-Modal-Editor-TextArea {
-    width: 100%;
+    width: 80vw;
+}
+.boxsizingBorder {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }

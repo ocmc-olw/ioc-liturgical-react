@@ -29,14 +29,17 @@ const   labels = {
     , resultsTable: {
       filterPrompt: "type here to filter search results..."
       , headerComments: "Comments"
+      , headerDate: "Date"
       , headerDesc: "Description"
       , headerDomain: "Domain"
       , headerKey: "Key"
       , headerLink: "Link"
       , headerName: "Name"
+      , headerNote: "Note"
       , headerOntologyInstance: "Ontology Instance"
       , headerOntologyType: "Ontology Category"
       , headerTags: "Tags"
+      , headerText: "Text"
       , headerTo: "Refers To"
       , headerTopic: "Topic"
       , headerValue: "Value"
@@ -277,6 +280,21 @@ const   labels = {
           , key: "Key: Name"
           , keyValue: ""
         }
+        , NOTE_USING_ID_OF_SELECTED_TEXT: {
+          prompt: "Select the Liturgical text..."
+          , library: "Library: your personal library"
+          , topic: "Topic: ID of the selected Liturgical Text"
+          , topicValue: "Liturgical Text"
+          , key: "Key: system generated timestamp"
+          , keyValue: "Timestamp"
+        }
+        , TIMESTAMP: {
+          prompt: "System generated timestamp..."
+          , topic: ""
+          , topicValue: ""
+          , key: "Key: system generated timestamp"
+          , keyValue: "Timestamp"
+        }
         , TOPIC_FROM_ID_OF_SELECTED_BIBLICAL_VERSE: {
           prompt: "Select the ID of the Biblical verse..."
           , topic: "Topic: from the ID of the selected Biblical verse"
@@ -320,6 +338,7 @@ const   labels = {
       , resultLabel: "Search Result"
       , sectionIs: "and the section is..."
       , serviceIs: "and the service is..."
+      , selectVersion: "Select the version you want.  Normally it should be Greek."
       , selectedId: "ID of Selection"
       , selectedValue: "Value of Selection"
       , simple: "Simple Search"
@@ -327,6 +346,37 @@ const   labels = {
       , submitting: "Submitting..."
       , typeIs: "and the type is..."
       , weekIs: "and the week is..."
+    }
+    , searchNotes: {
+      prompt: "enter a word or phrase"
+      , findWhereTypeIs: "Find where the note type is..."
+      , findWhereGenericTypeIs: "and the generic type is..."
+      , typeAny: "any"
+      , propertyIs: "and the property is..."
+      , propertyTextIs: "and has this text..."
+      , matcherIs: "that matches..."
+      , matchesAtTheStart: "at the beginning"
+      , matchesAtTheEnd: "at the end"
+      , matchesAnywhere: "anywhere"
+      , matchesRegEx: "as a regular expression"
+      , msg1: "Important messages will appear here..."
+      , msg2: "searching..."
+      , msg3: "Found"
+      , msg4: "Notes"
+      , msg5: "You can use the box below to filter the results."
+      , msg6: "To edit a link, click the radio button of the row you are interested in."
+      , pageTitle: "Search the Database for Notes"
+      , resultLabel: "Search Result"
+      , close: "Close"
+      , has: "and has"
+      , tags: "of the these tags"
+      , typeAll: "all"
+      , tagsAny: "any"
+      , creating: "Creating..."
+      , created: "Created"
+      , submit: "Submit"
+      , submitting: "Submitting..."
+      , exists: "already exists..."
     }
     , searchOntology: {
       prompt: "enter a word or phrase"
@@ -452,6 +502,7 @@ const   labels = {
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
+      , userNotesPanelTitle: "Your Notes on this Text"
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -517,10 +568,13 @@ const   labels = {
       panelTitle: "Links for "
       , msg1: ""
     }
+    , NewEntryForm: {
+      title: "New Entry Form"
+    }
     , ViewReferences: {
       panelTitle: "made by"
       , biblicalRef: "Biblical References"
-      , library: "to library"
+      , library: "recorded in the library"
       , ontologyRef: "Ontology References"
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
@@ -727,14 +781,17 @@ const   labels = {
     , resultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
       , headerComments: "Σχόλια"
+      , headerDate: "Ημερομηνία"
       , headerDesc: "Περιγραφή"
       , headerDomain: "Τομέας"
       , headerKey: "Κλειδί"
       , headerLink: "Σύνδεσμος"
       , headerName: "Όνομα"
+      , headerNote: "Σημείωση"
       , headerOntologyInstance: "Οντολογική περίπτωση"
       , headerOntologyType: "Οντολογική Κατηγορία"
       , headerTags: "Ετικέτες"
+      , headerText: "Κείμενο"
       , headerTo: "Αναφέρεται Σε"
       , headerTopic: "Θέμα"
       , headerValue: "Τιμή"
@@ -932,6 +989,7 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , selectVersion: "Επιλέξτε την έκδοση που θέλετε.  Συνήθως θα πρέπει να είναι η ελληνική."
       , selectedId: "ID της επιλογής"
       , selectedValue: "Κείμενο της επιλογής"
       , IdParts: {
@@ -1000,6 +1058,21 @@ const   labels = {
           , key: "Key: Name"
           , keyValue: ""
         }
+        , NOTE_USING_ID_OF_SELECTED_TEXT: {
+          prompt: "Select the Liturgical text..."
+          , library: "Library: your personal library"
+          , topic: "Topic: ID of the selected Liturgical Text"
+          , topicValue: "Liturgical Text"
+          , key: "Key: system generated timestamp"
+          , keyValue: "Timestamp"
+        }
+        , TIMESTAMP: {
+          prompt: "System generated timestamp..."
+          , topic: ""
+          , topicValue: ""
+          , key: "Key: system generated timestamp"
+          , keyValue: "Timestamp"
+        }
         , TOPIC_FROM_ID_OF_SELECTED_BIBLICAL_VERSE: {
           prompt: "Select the ID of the Biblical verse..."
           , topic: ""
@@ -1023,6 +1096,37 @@ const   labels = {
           , button: "Set "
         }
       }
+    }
+    , searchNotes: {
+      prompt: "Βρείτε σημειώσεις"
+      , findWhereTypeIs: "Βρες σχέσεις όπου το θέμα είναι..."
+      , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
+      , docTypeAny: "οποιαδήποτε"
+      , propertyIs: "και η ιδιότητα είναι:"
+      , propertyTextIs: "και έχετε αυτό το κείμενο..."
+      , matcherIs: "που ταιριάζει..."
+      , matchesAtTheStart: "στην αρχή"
+      , matchesAtTheEnd: "στο τέλος"
+      , matchesAnywhere: "παντού"
+      , matchesRegEx: "σαν ένα regular expression"
+      , msg1: "Σημαντικά μηνύματα θα εμφανίζονται εδώ..."
+      , msg2: "αναζήτηση..."
+      , msg3: "Βρέθηκε"
+      , msg4: "σχέσεις"
+      , msg5: "Μπορείτε να χρησιμοποιήσετε το παρακάτω πλαίσιο για να φιλτράρετε τα αποτελέσματα."
+      , msg6: "Για να επεξεργαστείτε μια σχέση, πατήστε το κουμπί της γραμμής που σας ενδιαφέρει."
+      , pageTitle: "Αναζητήστε τη βάση δεδομένων για στις σημειώσεις σας"
+      , resultLabel: "Αποτέλεσμα αναζήτησης"
+      , close: "Κλείστε"
+      , has: "και έχει"
+      , tags: "αυτές τις ετκέτες"
+      , tagsAll: "όλες"
+      , tagsAny: "οποιαδήποτε από"
+      , creating: "Δημιουργώντας το..."
+      , created: "Το δημιούργησε"
+      , submit: "Να Στέιλει"
+      , submitting: "Έστειλε..."
+      , exists: "υπάρχει ήδη..."
     }
     , searchOntology: {
       prompt: "εισάγετε μία λέξη ή φράση"
@@ -1129,8 +1233,7 @@ const   labels = {
       , 500: "Server error"
     }
     , NewEntry: {
-      panelTitle: "Create a New Entry"
-      , paraTextPanelTitle: "View Parallel Texts"
+      submit: "Submit"
     }
     , ParaTextEditor: {
       panelTitle: "View Parallel Texts in Rows"
@@ -1143,6 +1246,7 @@ const   labels = {
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
+      , userNotesPanelTitle: "Your Notes on this Text"
 }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
@@ -1192,6 +1296,9 @@ const   labels = {
       , msg2: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box with the current value of the translation of the selected library.  However, you do not have authority to edit it. The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
       , close: "Close"
     }
+    , NewEntryForm: {
+      title: "New Entry Form"
+    }
     , ParaColTextEditor: {
       panelTitle: "View and Edit Parallel Texts in Columns"
       , msg1: "Select a topic, then select one or more libraries.  Then click the button."
@@ -1219,7 +1326,7 @@ const   labels = {
     , ViewReferences: {
       panelTitle: "made by"
       , biblicalRef: "Biblical References"
-      , library: "to library"
+      , library: "recorded in the library library"
       , ontologyRef: "Ontology References"
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
@@ -1433,6 +1540,7 @@ module.exports = {
   , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
   , getAgesEditorLabels: (code) => { return labels[code].AgesEditor;}
   , getAgesViewerLabels: (code) => { return labels[code].AgesViewer;}
+  , getNewEntryFormLabels: (code) => { return labels[code].NewEntryForm;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getModalParaRowEditorLabels: (code) => { return labels[code].ModalParaRowEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
@@ -1440,6 +1548,7 @@ module.exports = {
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
   , getSearchLabels: (code) => { return labels[code].search;}
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
+  , getSearchNotesLabels: (code) => { return labels[code].searchNotes;}
   , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
   , getGlossBuilderLabels: (code) => { return labels[code].GlossBuilder;}
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}

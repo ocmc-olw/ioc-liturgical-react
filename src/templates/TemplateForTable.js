@@ -6,8 +6,9 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
 
 import Labels from '../Labels';
-import Server from './Server';
-import Spinner from './Spinner';
+import Server from '../helpers/Server';
+import Spinner from '../helpers/Spinner';
+import ModalSchemaBasedEditor from '../modules/ModalSchemaBasedEditor';
 
 /**
  * Use this as an example starting point for new React components using a table
@@ -29,13 +30,13 @@ class TemplateForTable extends React.Component {
 
     this.state = {
       labels: {
-        thisClass: Labels.getTemplateForTableLabels(this.props.languageCode)
-        , messages: Labels.getMessageLabels(this.props.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.languageCode)
+        thisClass: Labels.getTemplateForTableLabels(this.props.session.languageCode)
+        , messages: Labels.getMessageLabels(this.props.session.languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.languageCode).initial
+      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
       , selectedId: ""
       , selectedLibrary: ""
       , selectedTopic: ""
@@ -92,15 +93,15 @@ class TemplateForTable extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     // use this to preserve any previous state if necessary
     // and to call a function that depends on the new state being set.
-    if (this.props.languageCode !== nextProps.languageCode) {
+    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getTemplateForTableLabels(nextProps.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.languageCode)
+            thisClass: Labels.getTemplateForTableLabels(nextProps.session.languageCode)
+            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
           }
-          , message: Labels.getMessageLabels(props.languageCode).initial
+          , message: Labels.getMessageLabels(props.session.languageCode).initial
         }
       }, function () { return this.handleStateChange("parm")});
     }
@@ -129,10 +130,10 @@ class TemplateForTable extends React.Component {
     ;
 
     Server.restGetPromise(
-        this.props.restServer
+        this.props.session.restServer
         , Server.getDbServerDocsApi()
-        , this.props.username
-        , this.props.password
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
         , parms
     )
         .then( response => {
@@ -199,17 +200,14 @@ class TemplateForTable extends React.Component {
   getModalEditor = () => {
     return (
         <ModalSchemaBasedEditor
-            restServer={this.props.restServer}
+            session={this.props.session}
             restPath={Server.getDbServerLinksApi()}
-            username={this.props.username}
-            password={this.props.password}
             showModal={this.state.showModalWindow}
             title={this.state.title}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
-            languageCode={this.props.languageCode}
         />
     )
   }
@@ -310,10 +308,7 @@ class TemplateForTable extends React.Component {
 }
 
 TemplateForTable.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
 };
 
 TemplateForTable.defaultProps = {

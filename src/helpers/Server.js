@@ -18,6 +18,7 @@ const login = "login/form";
 const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
+const notes = docs + "/notes";
 const agesPdf = docs + "/agespdf";
 const clone = docs + "/clone";
 const agesIndex = docs + "/agesindex";
@@ -33,6 +34,7 @@ const nlp = "nlp/"
 const textAnalysis = nlp + "text/analysis"
 const adminDomains = "misc/domains";
 const dbDropdownsSearchText = "dropdowns/texts";
+const dbDropdownsSearchNotes = "dropdowns/notes";
 const dbDropdownsUserRolesForDomain = "domains/userdropdown";
 const dbDropdownsSearchOntology = "dropdowns/ontology";
 const dbDropdownDomains = "dropdowns/domains";
@@ -86,7 +88,6 @@ const restGetPromise = (
           resolve(result);
         })
         .catch((error) => {
-          console.log('promise error');
           result.message = error.message;
           result.messageIcon = messageIcons.error;
           result.status = error.status;
@@ -130,9 +131,7 @@ const restGetPdf = (
     };
 
     axios.get(path, config)
-        .then(response => {
-          console.log(filename);
-            var blob = new Blob([response.data], {type: 'application/octet-stream'});
+        .then(response => {          console.log(filename);            var blob = new Blob([response.data], {type: 'application/octet-stream'});
             FileSaver.saveAs(blob, filename);
             result.userMessage = "ok"
             result.developerMessage = "ok"
@@ -141,8 +140,6 @@ const restGetPdf = (
           resolve(result);
         })
         .catch((error) => {
-          console.log('promise error');
-          console.log(error.message);
           result.message = error.message;
           result.messageIcon = messageIcons.error;
           result.status = error.status;
@@ -304,9 +301,11 @@ export default {
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
   , getDbServerAgesPdfApi: () => {return dbApi + agesPdf;}
   , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
+  , getDbServerDropdownsSearchNotesApi: () => {return dbApi + dbDropdownsSearchNotes;}
   , getDbServerDropdownsSearchOntologyApi: () => {return dbApi + dbDropdownsSearchOntology;}
   , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}
   , getDbServerDocsApi: () => {return dbApi + docs;}
+  , getDbServerNotesApi: () => {return dbApi + notes;}
   , getDbServerLinksApi: () => {return dbApi + links;}
   , getDbServerOntologyApi: () => {return dbApi + ontology;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}

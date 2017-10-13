@@ -114,13 +114,13 @@ class AgesViewer extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesViewerLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
-            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.languageCode)
+            thisClass: Labels.getAgesViewerLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
           , selectedFirstLibrary: selectedFirstLibrary
           , selectedFirstLibraryFallback: selectedFirstLibraryFallback
           , selectedSecondLibrary: selectedSecondLibrary
@@ -168,9 +168,9 @@ class AgesViewer extends React.Component {
             message: this.state.labels.messages.retrieving
           },
           server.getAgesIndex(
-              this.props.restServer
-              , this.props.username
-              , this.props.password
+              this.props.session.restServer
+              , this.props.session.userInfo.username
+              , this.props.session.userInfo.password
               , this.handleFetchAgesIndexCallback
           )
       );
@@ -199,10 +199,10 @@ class AgesViewer extends React.Component {
     ;
 
     server.restGetPdf(
-        this.props.restServer
+        this.props.session.restServer
         , server.getDbServerAgesPdfApi()
-        , this.props.username
-        , this.props.password
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
         , parms
         , this.state.pdfFilename
     )
@@ -258,9 +258,9 @@ class AgesViewer extends React.Component {
           , dataFetched: false
         },
         server.getAgesReadOnlyTemplate(
-            this.props.restServer
-            , this.props.username
-            , this.props.password
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
             , parms
             , this.handleFetchCallback
         )
@@ -487,10 +487,7 @@ class AgesViewer extends React.Component {
     if (this.state.showModalServiceSelector) {
       return (
         <ModalAgesServiceSelector
-            restServer={this.props.restServer}
-            username={this.props.username}
-            password={this.props.password}
-            languageCode={this.props.languageCode}
+            languageCode={this.props.session.languageCode}
             callBack={this.handleServiceSelection}
             values={this.state.agesIndexValues}
         />
@@ -615,7 +612,7 @@ class AgesViewer extends React.Component {
               <Col xs={8} md={8}>
                 <ReactSelector
                     initialValue={this.state.selectedFirstLibrary}
-                    resources={this.props.domains.author}
+                    resources={this.props.session.userInfo.domains.author}
                     changeHandler={this.handleFirstLibrarySelection}
                     multiSelect={false}
                 />
@@ -647,7 +644,7 @@ class AgesViewer extends React.Component {
                     <Col xs={8} md={8}>
                       <ReactSelector
                           initialValue={this.state.selectedSecondLibrary}
-                          resources={this.props.domains.author}
+                          resources={this.props.session.userInfo.domains.author}
                           changeHandler={this.handleSecondLibrarySelection}
                           multiSelect={false}
                       />
@@ -681,7 +678,7 @@ class AgesViewer extends React.Component {
                     <Col xs={8} md={8}>
                       <ReactSelector
                           initialValue={this.state.selectedThirdLibrary}
-                          resources={this.props.domains.author}
+                          resources={this.props.session.userInfo.domains.author}
                           changeHandler={this.handleThirdLibrarySelection}
                           multiSelect={false}
                       />
@@ -729,11 +726,7 @@ class AgesViewer extends React.Component {
 }
 
 AgesViewer.propTypes = {
-  restServer: PropTypes.string.isRequired
-  , username: PropTypes.string.isRequired
-  , password: PropTypes.string.isRequired
-  , languageCode: PropTypes.string.isRequired
-  , domains: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
   , agesIndexValues: PropTypes.array
 };
 
