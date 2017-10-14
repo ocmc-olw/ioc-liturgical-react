@@ -13,7 +13,14 @@ import ModalAgesServiceSelector from './modules/ModalAgesServiceSelector';
 import ReactSelector from './modules/ReactSelector'
 
 /**
- *
+ * This class renders a liturgical service or book using a json
+ * metadata file created from the HTML in a user selected service
+ * or book from the AGES Initiatives website.
+ * This class provides a UI for the user to
+ * 1. Select a service or book from the AGES website.  It reads the json index and the index for sacraments.
+ * 2. Indicate one, two, or three languages (versions) and fallbacks.
+ * 3. Calls the web service to get the json metadata file.
+ * 4. Uses the json metadata file to render an HTML table.
  */
 class AgesViewer extends React.Component {
   constructor(props) {
