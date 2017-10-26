@@ -407,7 +407,7 @@ class IdBuilder extends React.Component {
                 <ResourceSelector
                     title={searchLabel.topic}
                     initialValue={this.state.selectedTopic}
-                    resources={this.props.biblicalBooksDropdown}
+                    resources={this.props.session.dropdowns.biblicalBooksDropdown}
                     changeHandler={this.handleBiblicalBooksChange}
                     multiSelect={false}
                 />
@@ -428,21 +428,21 @@ class IdBuilder extends React.Component {
                 <ResourceSelector
                     title={searchLabel.chapter}
                     initialValue={this.state.selectedBiblicalChapter}
-                    resources={this.props.biblicalChaptersDropdown}
+                    resources={this.props.session.dropdowns.biblicalChaptersDropdown}
                     changeHandler={this.handleBiblicalChaptersChange}
                     multiSelect={false}
                 />
                 <ResourceSelector
                     title={searchLabel.verse}
                     initialValue={this.state.selectedBiblicalVerse}
-                    resources={this.props.biblicalVersesDropdown}
+                    resources={this.props.session.dropdowns.biblicalVersesDropdown}
                     changeHandler={this.handleBiblicalVersesChange}
                     multiSelect={false}
                 />
                 <ResourceSelector
                     title={searchLabel.versePart}
                     initialValue={this.state.selectedBiblicalSubverse}
-                    resources={this.props.biblicalSubversesDropdown}
+                    resources={this.props.session.dropdowns.biblicalSubversesDropdown}
                     changeHandler={this.handleBiblicalSubversesChange}
                     multiSelect={false}
                 />
@@ -911,10 +911,6 @@ class IdBuilder extends React.Component {
 IdBuilder.propTypes = {
   session: PropTypes.object.isRequired
   , IdLibrary: PropTypes.string.isRequired
-  , biblicalBooksDropdown: PropTypes.array.isRequired
-  , biblicalChaptersDropdown: PropTypes.array.isRequired
-  , biblicalVersesDropdown: PropTypes.array.isRequired
-  , biblicalSubversesDropdown: PropTypes.array.isRequired
   , IdTopic: PropTypes.string.isRequired
   , IdTopicValue: PropTypes.string.isRequired
   , IdTopicType: PropTypes.string.isRequired

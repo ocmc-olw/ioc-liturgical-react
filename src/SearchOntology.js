@@ -7,6 +7,7 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
+import Spinner from './helpers/Spinner';
 import Labels from './Labels';
 
 export class SearchOntology extends React.Component {
@@ -39,10 +40,11 @@ export class SearchOntology extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.state.searchLabels.msg1
+          message: this.state.labels.search.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
+          , selectedId: ""
         }
     );
     let config = {
@@ -108,7 +110,12 @@ export class SearchOntology extends React.Component {
 
     return (
         {
-          searchLabels: theSearchLabels
+          labels: {
+            thisClass: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
+            , buttons: Labels.getButtonLabels(this.props.session.languageCode)
+            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            , search: theSearchLabels
+          }
           , docType: props.initialType
           , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
@@ -191,9 +198,9 @@ export class SearchOntology extends React.Component {
                     tags={this.state.dropdowns.typeTags}
                     tagOperators={this.state.dropdowns.tagOperators}
                     handleSubmit={this.handleAdvancedSearchSubmit}
-                    labels={this.state.searchLabels}
+                    labels={this.state.labels.search}
                 />
-                : "Loading dropdowns for search..."
+                : <Spinner message={this.state.labels.messages.retrieving}/>
             }
             </div>
     );
@@ -202,10 +209,10 @@ export class SearchOntology extends React.Component {
   getMatcherTypes () {
     return (
         [
-            {label: this.state.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.state.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.state.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.state.searchLabels.matchesRegEx, value: "rx"}
+            {label: this.state.labels.search.matchesAnywhere, value: "c"}
+            , {label: this.state.labels.search.matchesAtTheStart, value: "sw"}
+            , {label: this.state.labels.search.matchesAtTheEnd, value: "ew"}
+            , {label: this.state.labels.search.matchesRegEx, value: "rx"}
             ]
     )
   }
@@ -217,7 +224,12 @@ export class SearchOntology extends React.Component {
 
   handleDoneRequest() {
     if (this.props.callback) {
-      this.props.callback(this.state.selectedId, this.state.selectedValue);
+      this.props.callback(
+          this.state.selectedId
+          , this.state.selectedValue
+          , this.state.selectedSeq
+          , this.state.selectedSchema
+      );
     }
   }
 
@@ -231,23 +243,34 @@ export class SearchOntology extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedId}
               disabled
             />
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedValue}
                 disabled
             />
             <div>
-          <ButtonGroup bsSize="xsmall">
-            <Button onClick={this.handleCancelRequest}>Cancel</Button>
-            <Button onClick={this.handleDoneRequest}>Done</Button>
-          </ButtonGroup>
+              <Button
+                  bsSize="small"
+                  className={"Button-Cancel"}
+                  onClick={this.handleCancelRequest}>
+                {this.state.labels.buttons.cancel}
+              </Button>
+              <Button
+                  bsSize="small"
+                  className={"Button-Select"}
+                  bsStyle="primary"
+                  onClick={this.handleDoneRequest}
+                  disabled={this.state.selectedId.length < 1}
+              >
+                {this.state.labels.buttons.select}
+              </Button>
             </div>
           </FormGroup>
         </Panel>
@@ -280,9 +303,12 @@ export class SearchOntology extends React.Component {
   handleRowSelect = (row, isSelected, e) => {
     this.setState({
       selectedId: row["id"]
+      , selectedValue: row["description"]
+      , selectedSeq: row["seq"]
       , selectedLibrary: row["library"]
       , selectedTopic: row["topic"]
       , selectedKey: row["key"]
+      , selectedSchema: row["_valueSchemaId"]
       , title: row["name"]
       , showIdPartSelector: true
       , showModalEditor: this.props.editor
@@ -302,17 +328,18 @@ export class SearchOntology extends React.Component {
     }
   }
 
-  handleCloseModal = (id, value) => {
+  handleCloseModal = (id, value, schema) => {
     if (id && id.length > 0) {
       this.setState({
         showModalEditor: false
         , selectedId: id
         , selectedValue: value
+        , selectedSchema: schema
       })
     } else {
       this.setState({
         showModalEditor: false
-      })
+      }, this.fetchData)
     }
     this.deselectAllRows();
   }
@@ -367,9 +394,9 @@ export class SearchOntology extends React.Component {
     });
   }
 
-  fetchData(event) {
+  fetchData() {
     this.setState({
-      message: this.state.searchLabels.msg2
+      message: this.state.labels.search.msg2
       , messageIcon: this.messageIcons.info
     });
     let config = {
@@ -391,7 +418,7 @@ export class SearchOntology extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerOntologyApi() + parms;
     axios.get(path, config)
         .then(response => {
-          // response.data will contain: "id, library, topic, key, name, description, tags"
+          // response.data will contain: "id, library, topic, key, name, description, tags, _valueSchemaId"
           this.setState({
                 data: response.data
               }
@@ -400,16 +427,16 @@ export class SearchOntology extends React.Component {
           let message = "No docs found...";
           if (response.data.valueCount && response.data.valueCount > 0) {
             resultCount = response.data.valueCount;
-            message = this.state.searchLabels.msg3
+            message = this.state.labels.search.msg3
                 + " "
                 + response.data.valueCount
                 + " "
-                + this.state.searchLabels.msg4
+                + this.state.labels.search.msg4
                 + "."
           } else {
-            message = this.state.searchLabels.msg3
+            message = this.state.labels.search.msg3
                 + " 0 "
-                + this.state.searchLabels.msg4
+                + this.state.labels.search.msg4
                 + "."
           }
           this.setState({
@@ -434,7 +461,7 @@ export class SearchOntology extends React.Component {
   render() {
     return (
         <div className="App-page App-search">
-          <h3>{this.state.searchLabels.pageTitle}</h3>
+          <h3>{this.state.labels.search.pageTitle}</h3>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
@@ -444,12 +471,12 @@ export class SearchOntology extends React.Component {
             </div>
           </div>
 
-          <div>{this.state.searchLabels.resultLabel}: <span className="App-message">
-            <FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} </span>
+          <div>{this.state.labels.search.resultLabel}: <span className="App-message">
+            <FontAwesome name={this.state.messageIcon}/>{this.state.labels.search.msg3} {this.state.resultCount} {this.state.labels.search.msg4} </span>
           </div>
           {this.state.showSearchResults &&
           <div>
-            {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
+            {this.state.labels.search.msg5} {this.state.labels.search.msg6}
           </div>
           }
           {this.state.showModalEditor && this.getModalEditor()}
@@ -507,6 +534,12 @@ export class SearchOntology extends React.Component {
                     export={ false }
                     dataSort={ true }
                 >{this.state.resultsTableLabels.headerTags}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='_valueSchemaId'
+                    export={ false }
+                    hidden
+                >
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>

@@ -1,12 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Alert, Button, Glyphicon, Modal} from 'react-bootstrap';
+import {Alert, Button, Glyphicon, Modal, Panel} from 'react-bootstrap';
 
 import Labels from './Labels';
 import IdManager from './helpers/IdManager';
 import MessageIcons from './helpers/MessageIcons';
 import ParaRowTextEditor from './ParaRowTextEditor';
-
 /**
  * Display the ParaRowEditor as a modal window.
  */
@@ -70,6 +69,7 @@ export class ModalParaRowEditor extends React.Component {
   open() {
     this.setState({showModal: true});
   };
+
 
   onSubmit = (value) => {
     this.props.onSubmit(value);

@@ -60,7 +60,7 @@ class HyperTokenText extends React.Component {
   render() {
         return (
             <div className="App App-HyperTokenText-Container">
-                <div>{this.state.labels.thisClass.instructions}</div>
+              <div><ControlLabel>{this.state.labels.thisClass.instructions}</ControlLabel></div>
                 <Well>
                   <div className="App App-HyperTokenText-Text">
                     {this.renderTokens()}

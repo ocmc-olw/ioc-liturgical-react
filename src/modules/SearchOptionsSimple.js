@@ -26,9 +26,10 @@ class SearchOptions extends React.Component {
     return (
         <div className="container">
           <div className="row">
-            <div className="col-sm-12">
-              <form onSubmit={this.handleSubmit}>
+            <div className="col-12">
+              <form className={"App-Search-Options-Text-Form"} onSubmit={this.handleSubmit}>
                 <div className="control-label">{this.props.valueTitle}</div>
+                <div className={"App-Search-Options-Text-Div"}>
                 <input
                     type="text"
                     placeholder={this.props.placeholder}
@@ -41,6 +42,7 @@ class SearchOptions extends React.Component {
                         onClick={this.handleSubmit}
                         name={"search"}/>
                 </span>
+                </div>
               </form>
             </div>
           </div>

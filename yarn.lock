@@ -2315,6 +2315,12 @@ debug@2.6.8, debug@^2.1.1, debug@^2.2.0, debug@^2.6.0, debug@^2.6.3, debug@^2.6.
   dependencies:
     ms "2.0.0"
 
+debug@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/debug/-/debug-3.1.0.tgz#5bb5a0672628b64149566ba16819e61518c67261"
+  dependencies:
+    ms "2.0.0"
+
 decamelize@^1.0.0, decamelize@^1.1.1, decamelize@^1.1.2:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/decamelize/-/decamelize-1.2.0.tgz#f6534d15148269b20352e7bee26f501f9a191290"
@@ -3285,7 +3291,7 @@ follow-redirects@1.0.0:
   dependencies:
     debug "^2.2.0"
 
-font-awesome@^4.7.0:
+font-awesome@^4.6.3, font-awesome@^4.7.0:
   version "4.7.0"
   resolved "https://registry.yarnpkg.com/font-awesome/-/font-awesome-4.7.0.tgz#8fa8cf0411a1a31afd07b06d2902bb9fc815a133"
 
@@ -3757,6 +3763,10 @@ html-webpack-plugin@2.29.0:
     lodash "^4.17.3"
     pretty-error "^2.0.2"
     toposort "^1.0.0"
+
+html2canvas@^0.5.0-beta4:
+  version "0.5.0-beta4"
+  resolved "https://registry.yarnpkg.com/html2canvas/-/html2canvas-0.5.0-beta4.tgz#8282c62ac5fd78168f5702b5e4877157ca93f39e"
 
 htmlparser2@~3.3.0:
   version "3.3.0"
@@ -4549,7 +4559,13 @@ jest@20.0.4:
   dependencies:
     jest-cli "^20.0.4"
 
-jquery@^3.2.1:
+jquery-mockjax@^2.2.0:
+  version "2.2.2"
+  resolved "https://registry.yarnpkg.com/jquery-mockjax/-/jquery-mockjax-2.2.2.tgz#9c7d2b103a44cf61c99cc78a9ee7878504b60907"
+  dependencies:
+    jquery ">=1.5.2"
+
+jquery@>=1.5.2, jquery@^3.2.1, jquery@~3.2.1:
   version "3.2.1"
   resolved "https://registry.yarnpkg.com/jquery/-/jquery-3.2.1.tgz#5c4d9de652af6cd0a770154a631bba12b015c787"
 
@@ -5634,6 +5650,15 @@ ora@1.1.0:
     cli-cursor "^2.1.0"
     cli-spinners "^1.0.0"
     log-symbols "^1.0.2"
+
+orgchart@2.0.4:
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/orgchart/-/orgchart-2.0.4.tgz#6aa7a2a8bff7272e6628ac1e81bde9305a3efcb2"
+  dependencies:
+    font-awesome "^4.6.3"
+    html2canvas "^0.5.0-beta4"
+    jquery "~3.2.1"
+    jquery-mockjax "^2.2.0"
 
 original@>=0.0.5:
   version "1.0.0"

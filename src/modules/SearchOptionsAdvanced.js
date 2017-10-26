@@ -86,14 +86,20 @@ class SearchOptions extends React.Component {
             , loaded: true
         } , function () {
           this.handleDocTypeChange({
-            value: this.props.docType
+            label: this.props.docType
+            , value: this.props.docType
           })
         }
         }
-
     )
   }
 
+  componentDidMount = () => {
+    this.handleDocTypeChange({
+      label: this.props.docType
+      , value: this.props.docType
+    });
+  }
   componentWillReceiveProps = (nextProps) => {
     let docType = nextProps.docType;
     let domain = "*";
@@ -184,7 +190,7 @@ class SearchOptions extends React.Component {
   cascadeDocTypeChange(selection) {
     this.setDomainDropdown(selection);
     this.setGenericBookDropdown(selection);
-//    this.setGenericChaptersDropdown(selection);
+    this.setGenericChaptersDropdown(selection);
   }
 
   handlePropertyChange = (item) => {
@@ -567,8 +573,9 @@ class SearchOptions extends React.Component {
                   changeHandler={this.handlePropertyChange}
                   multiSelect={false}
               />
-              <form onSubmit={this.handleSubmit}>
+              <form className={"App-Search-Options-Text-Form"} onSubmit={this.handleSubmit}>
                 <div className="control-label">{this.props.labels.propertyTextIs}</div>
+                <div className={"App-Search-Options-Text-Div"}>
                 <input
                     type="text"
                     onChange={this.handleValueChange}
@@ -582,6 +589,7 @@ class SearchOptions extends React.Component {
                         onClick={this.handleSubmit}
                         name={"search"}/>
                 </span>
+                </div>
               <ResourceSelector
                   title={this.props.labels.matcherIs}
                   initialValue={this.state.matcher}

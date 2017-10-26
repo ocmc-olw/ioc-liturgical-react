@@ -77,10 +77,7 @@ class LinkSearchOptions extends React.Component {
   }
 
   handleTagsSelection = (selection) => {
-    console.log("handleTagsSelection");
-    console.log(selection);
     let tags = selection.map(function(a) {return a.value;});
-    console.log(tags);
 
     this.setState({
           selectedTags: tags
@@ -89,7 +86,6 @@ class LinkSearchOptions extends React.Component {
   }
 
   handleTagOperatorChange = (selection) => {
-    console.log(selection["value"]);
     this.setState({
           selectedTagOperator: selection["value"]
         }

@@ -182,7 +182,6 @@ class TemplateForTable extends React.Component {
   }
 
   handleRowSelect = (row, isSelected, e) => {
-    console.log(row);
     this.setState((prevState, props) => {
       return {
         selectedId: row["id"]
@@ -227,7 +226,6 @@ class TemplateForTable extends React.Component {
   }
 
   onExportToCSV = ( row ) => {
-    console.log('onExportToCSV called')
     return this.state.data.values;
   }
 

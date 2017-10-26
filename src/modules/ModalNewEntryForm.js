@@ -1,8 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
-import Form from "react-jsonschema-form";
+import {Button, ControlLabel, Modal, Well} from 'react-bootstrap';
 
 import Labels from '../Labels';
 import NewEntryForm from './NewEntryForm';
@@ -20,6 +18,7 @@ export class ModalNewEntryForm extends React.Component {
       labels: {
         button: Labels.getButtonLabels(props.session.languageCode)
         , messages: Labels.getMessageLabels(props.session.languageCode)
+        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -40,6 +39,7 @@ export class ModalNewEntryForm extends React.Component {
       labels: {
         button: Labels.getButtonLabels(nextProps.session.languageCode)
         , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
       }
     });
   }
@@ -67,15 +67,27 @@ export class ModalNewEntryForm extends React.Component {
     return (
         <div>
           <Modal
-              dialogClassName="App-Modal-Para-Row-Editor"
+              dialogClassName="App-Modal-New-Entry-Form"
               show={this.state.showModal}
               onHide={this.close}
               keyboard={true}
           >
             <Modal.Header closeButton>
               <Modal.Title>{this.props.title}</Modal.Title>
-              {this.props.text && this.props.textId &&
-              <Well><div className={"App-Modal-Text"}>{this.props.text}<span className={"control-label"}> ({this.props.textId})</span></div></Well>
+              {this.props.fromText && this.props.fromTitle &&
+              <div className={"App-Text-Refers-To"}>{this.props.fromTitle}</div>
+              }
+              {this.props.fromText && this.props.fromId &&
+              <Well className={"App-Well-From-Text"}><div className={"App-Modal-Text"}>{this.props.fromText}<span className={"control-label"}> ({this.props.fromId})</span></div></Well>
+              }
+              {this.props.fromText && this.props.toText && this.props.toTitle &&
+              <div className={"App-Text-Refers-To"}>{this.props.toTitle}</div>
+              }
+              {this.props.toText && this.props.toId &&
+              <Well className={"App-Well-To-Text"}><div className={"App-Modal-Text"}>{this.props.toText}<span className={"control-label"}> ({this.props.toId})</span></div></Well>
+              }
+              {this.props.toText &&
+              <ControlLabel>{this.state.labels.references.infoBelow}</ControlLabel>
               }
             </Modal.Header>
             <Modal.Body>
@@ -104,8 +116,13 @@ ModalNewEntryForm.propTypes = {
   , uiSchema: PropTypes.object.isRequired
   , formData: PropTypes.object.isRequired
   , title: PropTypes.string.isRequired
-  , textId: PropTypes.string
-  , text: PropTypes.string
+  , title: PropTypes.string.isRequired
+  , fromTitle: PropTypes.string
+  , fromId: PropTypes.string
+  , fromText: PropTypes.string
+  , toTitle: PropTypes.string
+  , toId: PropTypes.string
+  , toText: PropTypes.string
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
 };

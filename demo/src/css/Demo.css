@@ -6,6 +6,13 @@ div.container-fluid {
     width: 100%;
     background-color: black;
 }
+div.container {
+    margin-right: 0px;
+    margin-left: 0px;
+    padding-left: 10px;
+    padding-right: 10px;
+    width: 100%;
+}
 .App-header {
     z-index: -1;
 }
@@ -28,12 +35,18 @@ div.container-fluid {
     width: 1.3em;
 }
 .App-Modal-Para-Row-Editor {
-    width: 90vw;
+    width: 80vw;
 }
 .modal-title {
     font-size: small;
     padding-bottom: 10px;
     color: #5bc0de;
+}
+.modal-content {
+    max-width: 80vw;
+}
+.modal-container .modal, .modal-container .modal-backdrop {
+    position: absolute;
 }
 #basic-nav-dropdown {
     padding-top: 21px;
@@ -42,6 +55,8 @@ div.container-fluid {
 .App-search-form {
     padding-top: 15px;
     padding-bottom: 15px;
+    position: relative;
+    background-color: #eaeced;
 }
 .App-search-panel {
     cursor: pointer;
@@ -103,10 +118,7 @@ a.collapsed {
     margin-top: 0px !important;
 }
 .Schema-Based-Add-Button {
-    margin-left: 10px;
-    margin-top: 0px;
-    margin-bottom: 0px;
-    padding: 0;
+    padding: 1px;
 }
 .App-Add-ico {
     padding: 5px !important;
@@ -132,12 +144,12 @@ a.collapsed {
 .App-search-options {
     background-color: white;
 }
+.App-Search-Options-Text-Div {
+}
 .App-search-text-input {
-    color: black;
-    background-color: white;
     height: auto;
-    width: 76%;
-    resize: vertical;
+    width: 80%;
+    box-sizing: border-box;
 }
 .App-search-by-id-parts-icon {
     color: black;
@@ -147,11 +159,6 @@ a.collapsed {
     background-color: white;
     height: auto;
     resize: vertical;
-}
-
-
-.App-search-form {
-    background-color: #eaeced;
 }
 
 .App-search-results {
@@ -200,14 +207,21 @@ a.collapsed {
 .App-header-ico.fa-info-circle {
     color: inherit;
 }
-.modal-container {
-    position: relative;
+.App-Well-From-Text {
+    margin-bottom: 0px;
 }
-.modal-container .modal, .modal-container .modal-backdrop {
-    position: absolute;
+.App-Well-To-Text {
+}
+.App-Text-Refers-To {
+    color: #5bc0de;
+    padding-left: 20px;
 }
 div[class*='App-page'] {
     margin-top: 80px;
+}
+.modal-dialog {
+    margin: 5vw !important;
+    width: 90vw !important;
 }
 @media (max-width: 875px) {
     .App-img-logo {
@@ -260,17 +274,24 @@ div.App-logo.navbar-header {
     margin-left: 20px;
     color: #5bc0de;
 }
-.App-Para-Col-Editor .resourceSelector {
+.App-Para-Col-Editor {
     padding-left: 15px;
+    max-width: 60vw;
+}
+.resourceSelector {
+    max-width: 80%;
 }
 .App-table-filter-clear {
     float: right;
 }
-.Select-control {
-    max-width: 80%;
+.Select {
+    max-width: 90vw;
 }
 .App-Label-Selector-POS .Select-control{
     float: left;
+    width: 45ch;
+}
+.App-Label-Selector-Person .Select-control {
     width: 45ch;
 }
 .App-Label-Selector-Tense .Select-control {
@@ -353,6 +374,22 @@ path.link {
 .App-Modal-Para-Row-Editor {
     width: 90vw;
 }
+.App-DependencyDiagram-Container {
+    overflow: scroll;
+}
+.App-Modal-Dependency-Diagram-Title {
+    color: blue;
+    font-weight: bold;
+}
+.App-Modal-Id-Builder {
+    width: 90vw;
+}
+.App-id-builder {
+    width: 85vw;
+}
+.App-id-builder-header {
+    width: 85vw;
+}
 .App-modal-body {
     background-color: #eaeced;
 }
@@ -383,10 +420,16 @@ path.link {
     width: 100%;
 }
 .App-Modal-Editor-TextArea {
-    width: 80vw;
+    width: 100%;
 }
 .boxsizingBorder {
     -webkit-box-sizing: border-box;
     -moz-box-sizing: border-box;
     box-sizing: border-box;
+}
+.Button-Select {
+    margin: 2px;
+}
+.Button-Cancel {
+    margin: 2px;
 }

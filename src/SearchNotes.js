@@ -311,7 +311,7 @@ export class SearchNotes extends React.Component {
     } else {
       this.setState({
         showModalEditor: false
-      })
+      }, this.fetchData)
     }
     this.deselectAllRows();
   }
@@ -323,8 +323,8 @@ export class SearchNotes extends React.Component {
             restPath={Server.getDbServerDocsApi()}
             showModal={this.state.showModalEditor}
             title={this.state.title}
-            textId={this.state.selectedTopic}
-            text={this.state.selectedText}
+            fromId={this.state.selectedTopic}
+            fromText={this.state.selectedText}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}

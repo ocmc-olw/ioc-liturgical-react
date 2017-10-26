@@ -7,13 +7,19 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
+import Labels from './Labels';
 
 export class SearchRelationships extends React.Component {
 
   constructor(props) {
     super(props);
     this.state = {
-      domain: "*"
+      labels: {
+        messages: Labels.getMessageLabels(this.props.session.languageCode)
+        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+      }
+      , domain: "*"
       ,
       query: ""
       ,
@@ -79,6 +85,10 @@ export class SearchRelationships extends React.Component {
       , selectedLibrary: ""
       , selectedTopic: ""
       , selectedKey: ""
+      , selectedFromId: ""
+      , selectedFromValue: ""
+      , selectedToId: ""
+      , selectedToValue: ""
       , title: ""
       , showModalCompareDocs: false
       , idColumnSize: "80px"
@@ -159,6 +169,11 @@ export class SearchRelationships extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
+      labels: {
+        messages: Labels.getMessageLabels(nextProps.session.languageCode)
+        , references: Labels.getViewReferencesLabels(nextProps.session.languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+      }
     });
   }
 
@@ -270,6 +285,10 @@ export class SearchRelationships extends React.Component {
       , title: row["fromId"] + " " + row["type"] + " " + row["toId"]
       , showIdPartSelector: true
       , showModalCompareDocs: true
+      , selectedFromId: row["fromId"]
+      , selectedFromValue: row["fromValue"]
+      , selectedToId: row["toId"]
+      , selectedToValue: row["toValue"]
     });
   }
 
@@ -301,10 +320,16 @@ export class SearchRelationships extends React.Component {
             session={this.props.session}
             restPath={Server.getDbServerLinksApi()}
             showModal={this.state.showModalCompareDocs}
-            title={this.state.title}
+            title={this.state.labels.references.textualReference}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
+            fromId={this.state.selectedFromId}
+            fromText={this.state.selectedFromValue}
+            toId={this.state.selectedToId}
+            toText={this.state.selectedToValue}
+            fromTitle={this.state.labels.references.theText}
+            toTitle={this.state.labels.references.refersTo}
             onClose={this.handleCloseDocComparison}
             searchLabels={this.props.searchLabels}
         />

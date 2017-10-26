@@ -3,38 +3,54 @@ import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
+import ModalSearchOntologyWithCallback from './ModalSearchOntologyWithCallback';
+import ModalSearchTextWithCallback from './ModalSearchTextWithCallback';
 import ModalNewEntryForm from './ModalNewEntryForm';
 import FontAwesome from 'react-fontawesome';
 
 /**
- * This is a template for a new component.
- * To use it:
- * 1. Rename all occurrences of NewComponentTemplate to your component name.
- * 2. Replace Labels.getViewReferenceLabels with a call to get your component's labels
- * 3. Add content to the render function, etc...
+ * Provides an Add button for adding an entry that is based on a json schema
  */
 class SchemaBasedAddButton extends React.Component {
   constructor(props) {
     super(props);
-
     this.state = {
       labels: { // TODO: replace getViewReferencesLabels with method for this class
         thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
+        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , idTopicType: this.props.formData["partTypeOfTopic"]
+      , idKeyType: this.props.formData["partTypeOfKey"]
       , showModal: false
+      , idSelected: false
+      , idLibrary: this.props.idLibrary
+      , idTopic: this.props.idTopic
+      , idTopicValue: ""
+      , idKey: this.props.idKey
+      , idKeyValue: ""
+      , initialOntologyType: "Animal"
+      , restPath: this.props.restPath
+      , uiSchema: this.props.uiSchema
+      , schema: this.props.schema
+      , formData: this.props.formData
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.handleIdBuilderClose = this.handleIdBuilderClose.bind(this);
     this.handleModalClose = this.handleModalClose.bind(this);
     this.handleModalSubmit = this.handleModalSubmit.bind(this);
     this.getContent = this.getContent.bind(this);
     this.setFormData = this.setFormData.bind(this);
+
+    this.handleIdLibrarySelection = this.handleIdLibrarySelection.bind(this);
+    this.handleIdTopicSelection = this.handleIdTopicSelection.bind(this);
+    this.handleIdKeySelection = this.handleIdKeySelection.bind(this);
   }
 
   componentWillMount = () => {
@@ -51,6 +67,7 @@ class SchemaBasedAddButton extends React.Component {
           labels: {
             thisClass: Labels.getViewReferencesLabels(nextProps.session.languageCode)
             , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+            , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
           }
           , message: Labels.getMessageLabels(props.session.languageCode).initial
@@ -66,9 +83,63 @@ class SchemaBasedAddButton extends React.Component {
     // call a function if needed
   }
 
-  handleAddButtonClick = () => {
+
+  handleIdLibrarySelection = (library) => {
+    if (library) {
+      this.setState({
+        idLibrary: library
+      });
+    }
+  }
+
+  handleIdTopicSelection = (topic, value) => {
     this.setState({
-      showModal: true
+      idTopic: topic
+      , idTopicValue: value
+    });
+  }
+
+  handleIdKeySelection = (
+      id
+      , value
+      , seq
+      , schema
+  ) => {
+    console.log(`SchemaBasedAddButton.handleIdKeySelection.value = ${value}`);
+    let schemaId = this.props.session.uiSchemas.getLinkCreateSchemaIdForSchemaId(schema);
+    let formData = this.props.session.uiSchemas.getForm(schemaId);
+
+    this.setState({
+      idKey: id
+      , idKeyValue: value
+      , idKeySeq: seq
+      , idSelected: true
+      , idSchema: schemaId
+      , idTopicType: formData["partTypeOfTopic"]
+      , idKeyType: formData["partTypeOfKey"]
+      , restPath: this.props.session.uiSchemas.getHttpPostPathForSchema(schemaId)
+      , uiSchema: this.props.session.uiSchemas.getUiSchema(schemaId)
+      , schema: this.props.session.uiSchemas.getSchema(schemaId)
+      , formData: formData
+    });
+  };
+
+  handleAddButtonClick = () => {
+    let idSelected = false;
+    if (this.state.idKeyType === "TIMESTAMP") {
+      idSelected = true;
+    }
+    this.setState({
+      idSelected: idSelected
+      , showModal: true
+    });
+  }
+
+  handleIdBuilderClose = () => {
+    let idSelected = (this.state.idKey && this.state.idKey.length > 0);
+    this.setState({
+      idSelected: idSelected
+      , showModal: idSelected
     });
   }
 
@@ -86,15 +157,15 @@ class SchemaBasedAddButton extends React.Component {
   }
 
   setFormData = () => {
-    let formData = this.props.formData;
+    let formData = this.state.formData;
     formData.library = this.props.idLibrary;
     formData.topic = this.props.idTopic;
-    formData.key = this.props.idKey;
+    formData.key = this.state.idKey;
     formData.id = this.props.idLibrary
         +"~"
         + this.props.idTopic
         +"~"
-        + this.props.idKey;
+        + this.state.idKey;
     formData.seq = this.props.seq;
     formData.status = "FINALIZED";
     return formData;
@@ -102,20 +173,49 @@ class SchemaBasedAddButton extends React.Component {
 
   getContent = () => {
     if (this.state.showModal) {
-      return (
-        <ModalNewEntryForm
-            session={this.props.session}
-            restPath={this.props.restPath}
-            uiSchema={this.props.uiSchema}
-            schema={this.props.schema}
-            formData={this.setFormData()}
-            title={this.props.title}
-            textId={this.props.textId}
-            text={this.props.text}
-            onSubmit={this.handleSubmit}
-            onClose={this.handleModalClose}
-        />
-      )
+      if (this.state.idSelected) {
+        return (
+            <ModalNewEntryForm
+                session={this.props.session}
+                restPath={this.state.restPath}
+                uiSchema={this.state.uiSchema}
+                schema={this.state.schema}
+                formData={this.setFormData()}
+                title={this.props.title}
+                fromId={this.props.fromId}
+                fromText={this.props.fromText}
+                toId={this.state.idKey}
+                toText={this.state.idKeyValue}
+                fromTitle={this.state.labels.references.theText}
+                toTitle={this.state.labels.references.refersTo}
+                onSubmit={this.handleSubmit}
+                onClose={this.handleModalClose}
+            />
+        )
+      } else {
+        switch(this.state.idKeyType) {
+          case "ID_OF_SELECTED_BIBLICAL_VERSE":
+            return (
+                <ModalSearchTextWithCallback
+                    session={this.props.session}
+                    initialDocType={"Biblical"}
+                    onCallback={this.handleIdKeySelection}
+                    onClose={this.handleIdBuilderClose}
+                />
+            )
+            break;
+          case "ID_OF_SELECTED_ONTOLOGY_INSTANCE":
+            return (
+                <ModalSearchOntologyWithCallback
+                    session={this.props.session}
+                    initialDocType={"Animal"}
+                    onCallback={this.handleIdKeySelection}
+                    onClose={this.handleIdBuilderClose}
+                />
+            )
+            break;
+        }
+      }
     } else {
       return (
           <Button
@@ -130,7 +230,6 @@ class SchemaBasedAddButton extends React.Component {
       )
     }
   }
-  //    {this.getContent()}
 
   render() {
     return (
@@ -150,8 +249,11 @@ SchemaBasedAddButton.propTypes = {
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
   , seq: PropTypes.string.isRequired
-  , textId: PropTypes.string
-  , text: PropTypes.string
+  , title: PropTypes.string.isRequired
+  , fromTitle: PropTypes.string
+  , fromId: PropTypes.string
+  , fromText: PropTypes.string
+  , toTitle: PropTypes.string
   , onClose: PropTypes.func.isRequired
   , onSubmit: PropTypes.func
 };
@@ -160,8 +262,10 @@ SchemaBasedAddButton.propTypes = {
 SchemaBasedAddButton.defaultProps = {
   languageCode: "en"
   , title: ""
-  , textId: ""
-  , text: ""
+  , fromTitle: ""
+  , fromId: ""
+  , fromText: ""
+  , toTitle: ""
 };
 
 export default SchemaBasedAddButton;

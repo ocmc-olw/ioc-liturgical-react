@@ -215,8 +215,8 @@ export class NotesLister extends React.Component {
             restPath={Server.getDbServerDocsApi()}
             showModal={this.state.showModalEditor}
             title={this.state.title}
-            textId={this.state.selectedTopic}
-            text={this.state.selectedText}
+            fromId={this.state.selectedTopic}
+            fromText={this.state.selectedText}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
@@ -360,6 +360,8 @@ export class NotesLister extends React.Component {
             seq={IdManager.toId(library, this.props.topicId, key)
             }
             onClose={this.handleAddClose}
+            fromId={this.props.topicId}
+            fromText={this.props.topicText}
         />
     )
   }
@@ -442,6 +444,7 @@ NotesLister.propTypes = {
   , callback: PropTypes.func
   , type: PropTypes.string.isRequired
   , topicId: PropTypes.string.isRequired
+  , topicText: PropTypes.string.isRequired
 };
 
 export default NotesLister;

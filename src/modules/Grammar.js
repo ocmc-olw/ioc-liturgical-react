@@ -2,9 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import server from '../helpers/Server';
 import {
-  ControlLabel
+  Button
+  , ControlLabel
   , Panel
   , PanelGroup
+  , Modal
   , Well
 } from 'react-bootstrap';
 import Iframe from 'react-iframe';
@@ -15,6 +17,7 @@ import HyperTokenText from './HyperTokenText';
 import DependencyDiagram from './DependencyDiagram';
 import WordTagger from '../helpers/WordTagger';
 import GrammarSitePanel from './GrammarSitePanel';
+import CompareDocs from './CompareDocs';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -32,6 +35,10 @@ class Grammar extends React.Component {
     this.getLemmas = this.getLemmas.bind(this);
     this.handleTaggerCallback = this.handleTaggerCallback.bind(this);
     this.handleEnglishLexiconCallback = this.handleEnglishLexiconCallback.bind(this);
+    this.node = this.node.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.getDependencyTreeText = this.getDependencyTreeText.bind(this);
   }
 
   componentWillMount = () => {
@@ -48,6 +55,8 @@ class Grammar extends React.Component {
         , this.state.tokens
         , this.state.analyses
         , this.state.selectedTokenTags
+        , this.state.nodeData
+        , this.state.selectedPerseus
     );
     if (this.state.text && this.state.text.id !== nextId) {
       this.fetchData();
@@ -62,12 +71,15 @@ class Grammar extends React.Component {
       , tokens
       , analyses
       , selectedTokenTags
+      , nodeData
+      , selectedPerseus
   ) => {
     return (
         {
           labels: {
             thisClass: Labels.getGrammarLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            , search: Labels.getSearchLabels(props.session.languageCode)
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
@@ -79,6 +91,7 @@ class Grammar extends React.Component {
             , hideSizePerPage: true
             , paginationShowsTotal: true
           }
+          , showModal: false
           ,
           selectRow: {
             mode: 'radio' // or checkbox
@@ -101,7 +114,9 @@ class Grammar extends React.Component {
           , analyses: analyses
           , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.session.languageCode).panelTitle
           , selectedTokenTags: selectedTokenTags
-        }
+          , nodeData: nodeData
+          , selectedPerseus: selectedPerseus ? selectedPerseus : {}
+      }
     )
   }
 
@@ -138,6 +153,7 @@ class Grammar extends React.Component {
         , data: restCallResult.data.values[0].text
         , tokens: restCallResult.data.values[1].tokens
         , analyses: restCallResult.data.values[2].analyses
+        , nodeData: restCallResult.data.values[3].treeData.nodes
       });
     }
   }
@@ -156,6 +172,13 @@ class Grammar extends React.Component {
         + i
         + " "
         + token
+      , selectedPerseus: {
+        lemma: ""
+        , gloss: ""
+        , pos: ""
+        , grammar: ""
+
+      }
   });
   }
 
@@ -169,12 +192,23 @@ class Grammar extends React.Component {
         lemmas.push(lemma);
       }
     }
-    console.log(lemmas);
     return lemmas;
   }
 
   handleRowSelect = (row, isSelected, e) => {
+    console.log(`Grammar.handleRowSelect.selectedPerseus = `);
     let idParts = row["id"].split("~");
+    let conciseParts = row["concise"].split("/");
+    let selectedPerseus = {
+      lemma: row["lemmaGreek"]
+      , gloss: row["glosses"]
+      , pos: row["partOfSpeech"]
+      , grammar: conciseParts[2]
+    }
+    if (selectedPerseus.pos === "ARTICLE") {
+      selectedPerseus.pos = "ART";
+    }
+    console.log(selectedPerseus);
     this.setState({
       selectedId: row["id"]
       , selectedIdParts: [
@@ -185,6 +219,7 @@ class Grammar extends React.Component {
       , selectedLemma: row["lemmaGreek"]
       , showIdPartSelector: true
       , showModalCompareDocs: true
+      , selectedPerseus: selectedPerseus
     });
   }
 
@@ -210,7 +245,10 @@ class Grammar extends React.Component {
                   index={this.state.selectedTokenIndex}
                   tokens={this.state.tokens}
                   token={this.state.selectedToken}
-                  grammar=""
+                  gloss={this.state.selectedPerseus.gloss}
+                  lemma={this.state.selectedPerseus.lemma}
+                  pos={this.state.selectedPerseus.pos}
+                  grammar={this.state.selectedPerseus.grammar}
                   callBack={this.handleTaggerCallback}
               />
             </Panel>
@@ -356,23 +394,101 @@ class Grammar extends React.Component {
     }
   }
 
+  node = (
+      id
+      , dependsOn
+      , token
+      , lemma
+      , gloss
+      , label
+      , grammar
+  ) => {
+    let n = 0;
+    n = parseInt(id);
+    n++;
+    let result = [
+          {
+            v: id
+            , f:
+          "<span class='App AppDependencyNodeToken'>"
+          + token
+          + "</span>"
+          + "<sup>"
+          + n
+          + "</sup>"
+          + "<div class='App AppDependencyNodeLabel'>"
+          + label
+          + " / "
+          + grammar
+          + '</div>'
+          + "<div>"
+          + "<span class='App AppDependencyNodeGloss'>"
+          + gloss
+          + '</span>'
+          + " / "
+          + "<span class='App AppDependencyNodeLemma'>"
+          + lemma
+          + "</span>"
+          + "</div>"
+          }
+          , dependsOn
+          , grammar
+        ]
+    ;
+    return (
+        result
+    );
+  }
+
+  showModal = () => {
+    this.setState({
+      showModal: true
+    });
+  }
+
+  closeModal = () => {
+    this.setState({
+      showModal: false
+    });
+  }
+
   getBody = () => {
       return (
           <div>
             <Panel
-                header="Dependency Diagram"
-                eventKey="dependencyDiagram"
-                collapsible
-                defaultExpanded={false}
+                className="App-Grammar-Explorer-Compare-Docs"
+                collapsible={true}
+                header={this.state.labels.thisClass.panelCompare}
             >
-              <DependencyDiagram
-                  languageCode={this.props.session.languageCode}
-                  data={['hi']}
-                  size="medium"
-                  width="100%"
-                  height="500px"
+            <CompareDocs
+                  session={this.props.session}
+                  title={"gr_gr_cog~" + this.props.idTopic + "~" + this.props.idKey}
+                  docType={"Liturgical"}
+                  selectedIdParts={[
+                      {key: "domain", label: "gr_gr_cog"},
+                      {key: "topic", label: this.props.idTopic},
+                      {key: "key", label: this.props.idKey}
+                  ]}
+                  labels={this.state.labels.search}
               />
-            </Panel> {/* Dependency Diagram */}
+            </Panel>
+            { this.state.nodeData &&
+              <Panel
+                  className="App-Grammar-Explorer-Dependency-Diagram"
+                  collapsible={true}
+                  header={this.state.labels.thisClass.panelDependency}
+              >
+                  <DependencyDiagram
+                      languageCode={"en"}
+                      id={"GrammarGrammar"}
+                      data={this.state.nodeData}
+                      size="medium"
+                      width="100%"
+                      height="500px"
+                  />
+              </Panel>
+            }
+            <Well>
             <HyperTokenText
                 languageCode={this.props.session.languageCode}
                 tokens={this.state.tokens ? this.state.tokens : []}
@@ -383,15 +499,40 @@ class Grammar extends React.Component {
               this.state.selectedToken &&
               this.getPanels()
             }
+            </Well>
           </div>
       );
+  }
+
+  getDependencyTreeText = () => {
+    if (this.state.data && this.state.data.value) {
+      return this.state.data.value;
+    } else {
+      return this.props.idTopic;
+    }
   }
   render() {
       return (
           <div className="App App-Grammar">
             <Well>
-              <ControlLabel>{this.state.labels.thisClass.title + this.state.id}</ControlLabel>
-              {this.getBody()}
+              <Modal containerClassName={"App-Modal-Dependency-Diagram"} show={this.state.showModal} onHide={this.closeModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title className={"App-Modal-Dependency-Diagram-Title"}>
+                    <ControlLabel>
+                      {this.state.labels.thisClass.title + this.state.id}
+                      </ControlLabel>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  {this.getBody()}
+                </Modal.Body>
+                <Modal.Footer>
+                </Modal.Footer>
+              </Modal>
+              <Button
+                  bsStyle="info"
+                  onClick={this.showModal}>View
+              </Button>
             </Well>
           </div>
       )
@@ -402,9 +543,11 @@ Grammar.propTypes = {
   session: PropTypes.object.isRequired
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
+  , text: PropTypes.string
 };
 
 Grammar.defaultProps = {
+  text: "Dependency Diagram"
 };
 
 export default Grammar;

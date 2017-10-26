@@ -5,7 +5,9 @@
 const   labels = {
   en: {
     button: {
-      close: "Close"
+      cancel: "Cancel"
+      , close: "Close"
+      , select: "Select"
       , submit: "Submit"
     }
     , liturgicalAcronyms: {
@@ -346,6 +348,8 @@ const   labels = {
       , submitting: "Submitting..."
       , typeIs: "and the type is..."
       , weekIs: "and the week is..."
+      , searchToSelectInstructions: "Search the database to select the doc you want. When you find it, click the 'Select' button."
+      , loadingDropdowns: "Loading dropdowns for search..."
     }
     , searchNotes: {
       prompt: "enter a word or phrase"
@@ -447,6 +451,8 @@ const   labels = {
     , Grammar: {
       title: "Grammar Explorer for "
       , instructions: "Use this section to view grammatical information about Greek words..."
+      , panelCompare: "Greek Text and Translations"
+      , panelDependency: "Dependency Diagram"
       , panelAnalyses: "Perseus Analyses"
       , panelPerseusSite: "Perseus Web Site"
       , panelLexigramSite: "Lexigram Web Site (in Greek)"
@@ -576,6 +582,10 @@ const   labels = {
       , biblicalRef: "Biblical References"
       , library: "recorded in the library"
       , ontologyRef: "Ontology References"
+      , theText: "The text..."
+      , textualReference: "Textual Reference"
+      , refersTo: "refers to..."
+      , infoBelow: "Information about the reference is below..."
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
     , GlossBuilder: {
@@ -757,7 +767,9 @@ const   labels = {
   }
     , el: {
     button: {
-    close: "Κλείστε"
+      cancel: "Ματαίωσε"
+      , close: "Κλείστε"
+      , select: "Επίλεξε"
     , submit: "Να Στέιλει"
     }
     , liturgicalAcronyms: {
@@ -1096,6 +1108,8 @@ const   labels = {
           , button: "Set "
         }
       }
+      , searchToSelectInstructions: "Search the database to select the doc you want. When you find it, click the 'Select' button."
+      , loadingDropdowns: "Loading dropdowns for search..."
     }
     , searchNotes: {
       prompt: "Βρείτε σημειώσεις"
@@ -1196,6 +1210,8 @@ const   labels = {
     , Grammar: {
       title: "Grammar Explorer for "
       , instructions: "Use this section to view grammatical information about Greek words..."
+      , panelCompare: "Greek Text and Translations"
+      , panelDependency: "Dependency Diagram"
       , panelAnalyses: "Perseus Analyses"
       , panelPerseusSite: "Perseus Web Site"
       , panelLexigramSite: "Lexigram Web Site (στα Ελληνικά)"
@@ -1327,7 +1343,12 @@ const   labels = {
       panelTitle: "made by"
       , biblicalRef: "Biblical References"
       , library: "recorded in the library library"
+      , liturgicalText: "Liturgical text..."
       , ontologyRef: "Ontology References"
+      , theText: "Το κείμενο..."
+      , textualReference: "Αναφορά Κειμένου"
+      , refersTo: "αναφέρεται σε..."
+      , infoBelow: "Πληροφορίες σχετικά με την αναφορά είναι παρακάτω...."
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
     , WordTagger: {

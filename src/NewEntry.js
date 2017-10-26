@@ -485,15 +485,10 @@ export class NewEntry extends React.Component {
                     expanded={this.state.panel.idBuilderOpen}
                     onSelect={this.toogleIdBuilderPanel}
                     collapsible
-                >00\
-
+                >
                 <IdBuilder
                     session={this.props.session}
                     IdLibrary={this.state.IdLibrary}
-                    biblicalBooksDropdown={this.props.session.dropdowns.biblicalBooksDropdown}
-                    biblicalChaptersDropdown={this.props.session.dropdowns.biblicalChaptersDropdown}
-                    biblicalVersesDropdown={this.props.session.dropdowns.biblicalVersesDropdown}
-                    biblicalSubversesDropdown={this.props.session.dropdowns.biblicalSubversesDropdown}
                     IdTopic={this.state.IdTopic}
                     IdTopicValue={this.state.IdTopicValue}
                     IdTopicType={this.state.IdTopicType}

@@ -19,6 +19,7 @@ export class ModalSchemaBasedEditor extends React.Component {
       labels: {
         button: Labels.getButtonLabels(props.session.languageCode)
         , messages: Labels.getMessageLabels(props.session.languageCode)
+        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -119,7 +120,11 @@ export class ModalSchemaBasedEditor extends React.Component {
 
   close() {
     this.setState({showModal: false});
-    this.props.onClose(this.state.selectedId, this.state.selectedValue);
+    this.props.onClose(
+        this.state.selectedId
+        , this.state.selectedValue
+        , this.state.selectedSchema
+    );
   };
 
   open() {
@@ -136,6 +141,7 @@ export class ModalSchemaBasedEditor extends React.Component {
         {key: "key", label: idParts[2]}
       ]
       , selectedValue: row["value"]
+      , selectedSchema: row["_valueSchemaId"]
     });
   }
 
@@ -161,7 +167,6 @@ export class ModalSchemaBasedEditor extends React.Component {
         , config
     )
         .then(response => {
-          console.log(`ModalSchemaBasedEditor.axios.put.then returned`);
           this.setState({
             message: "updated ",
           });
@@ -184,8 +189,20 @@ export class ModalSchemaBasedEditor extends React.Component {
           >
             <Modal.Header closeButton>
               <Modal.Title>{this.props.title}</Modal.Title>
-              {this.props.text && this.props.textId &&
-                <Well><div className={"App-Modal-Text"}>{this.props.text}<span className={"control-label"}> ({this.props.textId})</span></div></Well>
+              {this.props.fromText && this.props.fromTitle &&
+              <div className={"App-Text-Refers-To"}>{this.props.fromTitle}</div>
+              }
+              {this.props.fromText && this.props.fromId &&
+                <Well className={"App-Well-From-Text"}><div className={"App-Modal-Text"}>{this.props.fromText}<span className={"control-label"}> ({this.props.fromId})</span></div></Well>
+              }
+              {this.props.fromText && this.props.toText && this.props.toTitle &&
+                  <div className={"App-Text-Refers-To"}>{this.props.toTitle}</div>
+              }
+              {this.props.toText && this.props.toId &&
+              <Well className={"App-Well-To-Text"}><div className={"App-Modal-Text"}>{this.props.toText}<span className={"control-label"}> ({this.props.toId})</span></div></Well>
+              }
+              {this.props.toText &&
+              <ControlLabel>{this.state.labels.references.infoBelow}</ControlLabel>
               }
               { this.props.canUpdate ? <div></div>: <ControlLabel>{this.state.labels.messages.readOnly}</ControlLabel>}
             </Modal.Header>
@@ -224,8 +241,12 @@ ModalSchemaBasedEditor.propTypes = {
   , onClose: PropTypes.func.isRequired
   , showModal: PropTypes.bool.isRequired
   , title: PropTypes.string.isRequired
-  , textId: PropTypes.string
-  , text: PropTypes.string
+  , fromTitle: PropTypes.string
+  , fromId: PropTypes.string
+  , fromText: PropTypes.string
+  , toTitle: PropTypes.string
+  , toId: PropTypes.string
+  , toText: PropTypes.string
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired

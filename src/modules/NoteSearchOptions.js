@@ -79,7 +79,7 @@ class OntologySearchOptions extends React.Component {
     let tags = selection.map(function(a) {return a.value;});
 
     this.setState({
-          selectedTags: tags
+          selectedTags: tags.toString()
         }
     );
   }
@@ -160,11 +160,11 @@ class OntologySearchOptions extends React.Component {
                     multiSelect={false}
                 />
                 <ResourceSelector
-                title={this.props.labels.tags}
-                initialValue={this.state.selectedTags}
-                resources={this.props.tags[this.state.selectedType]}
-                changeHandler={this.handleTagsSelection}
-                multiSelect={true}
+                  title={this.props.labels.tags}
+                  initialValue={this.state.selectedTags}
+                  resources={this.props.tags[this.state.selectedType]}
+                  changeHandler={this.handleTagsSelection}
+                  multiSelect={true}
                 />
                   </div>
               }

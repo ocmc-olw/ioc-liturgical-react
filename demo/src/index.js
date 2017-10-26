@@ -18,6 +18,7 @@ import {
   Grid,
   Image,
   Jumbotron,
+  Modal,
   Panel,
   Table
 } from "react-bootstrap"
@@ -84,6 +85,7 @@ class Demo extends React.Component {
           , new UiSchemas()
           , new Dropdowns()
       )
+      , showModal: false
       , npmVersion: VersionNumbers.getPackageNumber()
       , authenticated: false
       , agesIndex: {}
@@ -113,6 +115,15 @@ class Demo extends React.Component {
       , selectedDomain: "Your selection will appear here:"
       , translatedText: ""
       , linkSearchDropdowns: {}
+      , treeData: [
+        this.node('Root','', '', '', '', '', '')
+        , this.node('0','4', 'ὁ', 'ὁ', 'the','ATR','DET.M.SG.NOM')
+        , this.node('1','4', 'κραταιός', 'κραταιός','mighty','ATR','ADJ.M.SG.NOM')
+        , this.node('2','1', 'ἐν', 'ἐν', 'in', 'AuxP','PREP')
+        , this.node('3','2', 'πολέμοις', 'πόλεμος', 'wars','ATR','NOUN.M.PL.DAT')
+        , this.node('4','Root', 'Κύριος', 'κύριος', 'Lord', 'ST-ROOT-SUBJ','NOUN.M.SG.NOM')
+        , this.node('5','', '˙', '˙',  ':','APOS','PM')
+      ]
     };
 
     // language change functions
@@ -135,6 +146,9 @@ class Demo extends React.Component {
     this.handleDropdownsCallback = this.handleDropdownsCallback.bind(this);
     this.getParaTextEditor = this.getParaTextEditor.bind(this);
     this.handleTopicsSelection = this.handleTopicsSelection.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.closeModal = this.closeModal.bind(this);
+    this.node = this.node.bind(this);
   }
 
   componentWillMount = () => {
@@ -250,7 +264,6 @@ class Demo extends React.Component {
   // called after a successful login
   handleDropdownsCallback = (response) => {
     let forms = response.data;
-    console.log(forms);
 
     let session = this.state.session;
     session.userInfo.domains = forms.domains;
@@ -336,6 +349,64 @@ class Demo extends React.Component {
     this.setState({
       searching: true
     });
+  }
+
+  showModal = () => {
+    this.setState({
+      showModal: true
+    });
+  }
+
+  closeModal = () => {
+    this.setState({
+      showModal: false
+    });
+  }
+
+  node = (
+      id
+      , dependsOn
+      , token
+      , lemma
+      , gloss
+      , label
+      , grammar
+  ) => {
+    let n = 0;
+    n = parseInt(id);
+    n++;
+    let result = [
+          {
+            v: id
+            , f:
+          "<span class='App AppDependencyNodeToken'>"
+          + token
+          + "</span>"
+          + "<sup>"
+          + n
+          + "</sup>"
+          + "<div class='App AppDependencyNodeLabel'>"
+          + label
+          + " / "
+          + grammar
+          + '</div>'
+          + "<div>"
+          + "<span class='App AppDependencyNodeGloss'>"
+          + gloss
+          + '</span>'
+          + " / "
+          + "<span class='App AppDependencyNodeLemma'>"
+          + lemma
+          + "</span>"
+          + "</div>"
+          }
+          , dependsOn
+          , grammar
+        ]
+    ;
+    return (
+        result
+    );
   }
 
   doNothingHandler = () => {
@@ -848,14 +919,27 @@ class Demo extends React.Component {
               }
             </Panel> {/* New Item */}
             <Panel header="Dependency Diagram" eventKey="dependencyDiagram">
-              <DependencyDiagram
-                  languageCode={this.state.session.languageCode}
-                  data={['hi']}
-                  text=""
-                  size="medium"
-                  width="100%"
-                  height="500px"
-              />
+              <Modal show={this.state.showModal} onHide={this.closeModal}>
+                <Modal.Header closeButton>
+                  <Modal.Title>Demo</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <DependencyDiagram
+                      languageCode={this.state.session.languageCode}
+                      id={"DemoModalDependencyDiagram"}
+                      data={this.state.treeData}
+                      text="Hi tere"
+                      size="medium"
+                      width="50%"
+                      height="500px"
+                  />
+                </Modal.Body>
+                <Modal.Footer>
+                </Modal.Footer>
+              </Modal>
+              <Button
+                  onClick={this.showModal}>Show Modal
+              </Button>
             </Panel> {/* Dependency Diagram */}
             <Panel header="Greek Liturgical Library Topics Selector" eventKey="grlibtopics">
               { (this.state.authenticated) ?
@@ -920,7 +1004,8 @@ class Demo extends React.Component {
               { this.state.authenticated  && this.state.formsLoaded &&
                   <ViewReferences
                       session={this.state.session}
-                      id="gr_gr_cog~me.m01.d10~meMA.Kathisma11.text"/>
+                      id="gr_gr_cog~me.m01.d10~meMA.Kathisma11.text"
+                  />
               }
             </Panel> {/* View References */}
             <Panel header="Administrator" eventKey="admin">

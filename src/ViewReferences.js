@@ -23,13 +23,11 @@ class ViewReferences extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log(`ViewReferences this.props.id = ${this.props.id}`);
-    console.log(`ViewReferences this.props.type = ${this.props.type}`);
-    console.log(this.props.session);
     this.state = {
       labels: {
         thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
+        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
@@ -67,8 +65,9 @@ class ViewReferences extends React.Component {
     this.handleDomainChange = this.handleDomainChange.bind(this);
     this.getSelector = this.getSelector.bind(this);
     this.editable = this.editable.bind(this);
-    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.getEntityAddButton = this.getEntityAddButton.bind(this);
     this.handleAddClose = this.handleAddClose.bind(this);
+    this.getTableColsForBiblicalReference = this.getTableColsForBiblicalReference.bind(this);
   }
 
   componentWillMount = () => {
@@ -85,6 +84,7 @@ class ViewReferences extends React.Component {
           labels: {
             thisClass: Labels.getViewReferencesLabels(nextProps.session.languageCode)
             , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+            , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
           }
           , message: Labels.getMessageLabels(props.session.languageCode).initial
@@ -168,6 +168,7 @@ class ViewReferences extends React.Component {
 
   handleRowSelect = (row, isSelected, e) => {
     let id = IdManager.toId(row["library"],row["fromId"],row["toId"]);
+    let type = row["type"].toLowerCase().replace(/_/g," ") + "...";
     this.setState({
       selectedId: id
       , selectedLibrary: row["library"]
@@ -176,7 +177,11 @@ class ViewReferences extends React.Component {
       , selectedValue: row["value"]
       , showIdPartSelector: true
       , showModalWindow: true
-      , title: row["fromId"]
+      , selectedType: type
+      , selectedFromId: row["fromId"]
+      , selectedFromValue: row["fromValue"]
+      , selectedToId: row["toId"]
+      , selectedToValue: row["toValue"]
     });
   }
 
@@ -199,10 +204,16 @@ class ViewReferences extends React.Component {
             session={this.props.session}
             restPath={Server.getDbServerLinksApi()}
             showModal={this.state.showModalWindow}
-            title={this.state.title}
+            title={this.state.labels.references.textualReference}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
+            fromId={this.state.selectedFromId}
+            fromText={this.state.selectedFromValue}
+            fromTitle={this.state.labels.references.theText}
+            toTitle={this.state.labels.references.refersTo}
+            toId={this.state.selectedToId}
+            toText={this.state.selectedToValue}
             onClose={this.handleCloseModal}
             canUpdate={this.editable(this.state.selectedLibrary)}
         />
@@ -236,6 +247,18 @@ class ViewReferences extends React.Component {
           , showSearchResults: false
         }
         , this.fetchDocData);
+  }
+
+
+  getTableColsForBiblicalReference = () => {
+    let keys = [];
+    if (this.props.session.uiSchemas) {
+      keys = this.props.session.uiSchemas.getPropsForSchema(
+          "LinkRefersToBiblicalTextCreateForm:1.1"
+          , ["id", "fromId", "type", "toId", "value", "toValue", "tags", "comments" ]
+      );
+    }
+    return keys;
   }
 
   getTable = () => {
@@ -288,7 +311,7 @@ class ViewReferences extends React.Component {
                 >{this.state.labels.resultsTableLabels.headerTo}
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField={this.props.type === "*" ? 'toName' : 'value'}
+                    dataField={this.props.type === "*" ? 'toValue' : 'value'}
                     export={ true }
                     dataSort={ true }
                 >{this.state.labels.resultsTableLabels.headerOntologyInstance}
@@ -344,34 +367,21 @@ class ViewReferences extends React.Component {
     this.fetchDocData();
   }
 
-  handleAddButtonClick = () => {
+  getEntityAddButton = () => {
     /**
      * TODO: write a function in UiSchemas to find the id of a schema
      * based on the first part of the name
      */
-    let id = "UserNoteCreateForm:1.1";
-    if (this.props.type === "REFERS_TO_BIBLICAL_TEXT") {
-      id = "LinkRefersToBiblicalTextCreateForm:1.1";
+    let id = "LinkRefersToBiblicalTextCreateForm:1.1";
+    switch(this.props.type) {
+      case "REFERS_TO_BIBLICAL_TEXT":
+        id = "LinkRefersToBiblicalTextCreateForm:1.1";
+        break;
+      case "*":
+        id = "LinkRefersToAnimalCreateForm:1.1"; // can be changed later by the user
+        break;
     }
     let library = this.state.selectedDomain;
-    let date = new Date();
-    let month = (date.getMonth()+1).toString().padStart(2,"0");
-    let day = date.getDate().toString().padStart(2,"0");
-    let hour = date.getHours().toString().padStart(2,"0");
-    let minute = date.getMinutes().toString().padStart(2,"0");
-    let second = date.getSeconds().toString().padStart(2,"0");
-    let key = date.getFullYear()
-        + "."
-        + month
-        + "."
-        + day
-        + ".T"
-        + hour
-        + "."
-        + minute
-        + "."
-        + second
-    ;
 
     return (
         <SchemaBasedAddButton
@@ -382,10 +392,12 @@ class ViewReferences extends React.Component {
             formData={this.props.session.uiSchemas.getForm(id)}
             idLibrary={library}
             idTopic={this.props.id}
-            idKey={key}
-            seq={IdManager.toId(library, this.props.id, key)
+            idKey={""}
+            seq={IdManager.toId(library, this.props.id, "")
             }
             onClose={this.handleAddClose}
+            fromId={this.props.id}
+            fromText={this.props.value}
         />
     )
   }
@@ -397,7 +409,7 @@ class ViewReferences extends React.Component {
           {this.getSelector()}
           <ControlLabel>{this.props.type === "*" ? this.state.labels.thisClass.ontologyRef : this.state.labels.thisClass.biblicalRef} {this.state.labels.thisClass.panelTitle} {this.props.id} {this.state.labels.thisClass.library} {this.state.selectedDomain}</ControlLabel>
           <div>{this.state.labels.messages.resultLabel}: <span className="App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.messages.docs}  {this.handleAddButtonClick()}</span>
+              name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.messages.docs}  {this.getEntityAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <ControlLabel>
@@ -414,11 +426,13 @@ class ViewReferences extends React.Component {
 ViewReferences.propTypes = {
   session: PropTypes.object.isRequired
   , id: PropTypes.string.isRequired
+  , value: PropTypes.string
   , type: PropTypes.string
 };
 
 ViewReferences.defaultProps = {
   type: "*"
+  , value: ""
 };
 
 export default ViewReferences;

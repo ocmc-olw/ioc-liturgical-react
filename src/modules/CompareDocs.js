@@ -1,21 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Button, Modal} from 'react-bootstrap';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
 import Server from '../helpers/Server';
-import CompareDocs from './CompareDocs';
+import Spinner from '../helpers/Spinner';
+import Labels from '../Labels';
 
 /**
  * Display modal content.
  */
-export class ModalCompareDocs extends React.Component {
+export class CompareDocs extends React.Component {
 
   constructor(props) {
     super(props);
 
     this.state = {
-      showSearchResults: false
+      labels: {
+        messages: Labels.getMessageLabels(props.session.languageCode)
+      }
+      , showSearchResults: false
       , message: this.props.labels.msg1
       ,
       messageIcon: this.messageIcons.info
@@ -32,7 +36,7 @@ export class ModalCompareDocs extends React.Component {
       ,
       selectRow: {
         mode: 'radio' // or checkbox
-        , hideSelectColumn: (this.props.hasCallback ? false : true)
+        , hideSelectColumn: (this.props.handleRowSelect ? false : true)
         , clickToSelect: false
         , onSelect: this.handleRowSelect
         , className: "App-row-select"
@@ -60,11 +64,10 @@ export class ModalCompareDocs extends React.Component {
       , idColumnSize: "80px"
     }
 
-    this.close = this.close.bind(this);
-    this.open = this.open.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.getTable = this.getTable.bind(this);
   };
 
   componentWillMount = () => {
@@ -185,22 +188,6 @@ export class ModalCompareDocs extends React.Component {
         });
   }
 
-
-  close() {
-    this.setState({showModal: false});
-    if (this.props.onClose) {
-      this.props.onClose(
-          this.state.selectedId
-          , this.state.selectedValue
-          , this.state.selectedSeq
-      );
-    }
-  };
-
-  open() {
-    this.setState({showModal: true});
-  };
-
   handleRowSelect = (row, isSelected, e) => {
     let selectRow = this.state.selectRow;
     selectRow.selected = [row["id"]];
@@ -216,43 +203,66 @@ export class ModalCompareDocs extends React.Component {
       , selectedValue: row["value"]
       , selectedSeq: row["seq"]
     });
+    if (this.props.handleRowSelect) {
+      this.props.handleRowSelect(row, isSelected, e);
+    }
+  }
+
+  getTable = () => {
+    if (this.state.showSearchResults) {
+      return (
+          <div className="App-search-results">
+            <div className="row">
+              <BootstrapTable
+                  data={this.state.data.values}
+                  trClassName={"App-data-tr"}
+                  striped
+                  hover
+                  pagination
+                  options={ this.state.options }
+                  selectRow={ this.state.selectRow }
+              >
+                <TableHeaderColumn
+                    isKey
+                    dataField='id'
+                    dataSort={ true }
+                    hidden
+                >ID</TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='seq'
+                    hidden
+                >ID</TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='library'
+                    dataSort={ true }
+                    width={this.state.idColumnSize}>Domain</TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='value'
+                    dataSort={ true }
+                >Value</TableHeaderColumn>
+              </BootstrapTable>
+            </div>
+          </div>
+      )
+    } else {
+      return (
+          <Spinner message={this.state.labels.messages.retrieving}/>
+      )
+    }
   }
 
   render() {
     return (
         <div>
-          <Modal show={this.state.showModal} onHide={this.close}>
-            <Modal.Header closeButton>
-              <Modal.Title>{this.props.title}</Modal.Title>
-            </Modal.Header>
-            <Modal.Body>
-              {this.props.hasCallback &&
-              <div className="control-label">{this.props.labels.selectVersion}</div>
-              }
-              <div>{this.props.labels.resultLabel}: <span className="App-message"><FontAwesome
-                  name={this.state.messageIcon}/>{this.state.message}</span>
-              </div>
-              <CompareDocs
-                  session={this.props.session}
-                  handleRowSelect={this.handleRowSelect}
-                  title={this.props.title}
-                  docType={this.props.docType}
-                  selectedIdParts={this.props.selectedIdParts}
-                  labels={this.props.labels}
-              />
-            </Modal.Body>
-            <Modal.Footer>
-              <Button onClick={this.close}>{this.props.labels.close}</Button>
-            </Modal.Footer>
-          </Modal>
+            {this.state.showSelectionButtons && this.getSelectedDocOptions()}
+            {this.getTable()}
         </div>
     );
   }
 }
-ModalCompareDocs.propTypes = {
+CompareDocs.propTypes = {
   session: PropTypes.object.isRequired
-  , onClose: PropTypes.func.isRequired
-  , showModal: PropTypes.bool.isRequired
+  , handleRowSelect: PropTypes.func
   , title: PropTypes.string.isRequired
   , docType: PropTypes.string.isRequired
   , selectedIdParts: PropTypes.array.isRequired
@@ -260,8 +270,8 @@ ModalCompareDocs.propTypes = {
   , instructions: PropTypes.string
 };
 
-ModalCompareDocs.defaultProps = {
+CompareDocs.defaultProps = {
 };
 
-export default ModalCompareDocs;
+export default CompareDocs;
 

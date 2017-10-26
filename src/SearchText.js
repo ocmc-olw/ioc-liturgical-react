@@ -7,7 +7,6 @@ import ModalCompareDocs from './modules/ModalCompareDocs';
 import FontAwesome from 'react-fontawesome';
 import {
   Button
-  , ButtonGroup
   , ControlLabel
   , FormControl
   , FormGroup
@@ -22,7 +21,6 @@ import Labels from './Labels';
 import ModalParaRowEditor from './ModalParaRowEditor';
 import IdManager from './helpers/IdManager';
 
-
 export class Search extends React.Component {
 
   constructor(props) {
@@ -31,6 +29,7 @@ export class Search extends React.Component {
     this.state = {
       labels: {
         thisClass: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
+        , buttons: Labels.getButtonLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
         , search: Labels.getSearchLabels(this.props.session.languageCode)
       },
@@ -114,7 +113,7 @@ export class Search extends React.Component {
       ,
       showSelectionButtons: false
       ,
-      selectedID: ""
+      selectedId: ""
       ,
       selectedIdPartsPrompt: "Select one or more ID parts, then click on the search icon:"
       ,
@@ -231,7 +230,7 @@ export class Search extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     this.setState({
       docType: nextProps.initialDocType
-      , selectedID: ""
+      , selectedId: ""
       , selectedValue: ""
       , selectedSeq: ""
       , matcherTypes: [
@@ -497,9 +496,10 @@ export class Search extends React.Component {
   handleDoneRequest() {
     if (this.props.callback) {
       this.props.callback(
-          this.state.selectedID
+          this.state.selectedId
           , this.state.selectedValue
           , this.state.selectedSeq
+          , this.state.selectedSchema
       );
     }
   }
@@ -508,25 +508,34 @@ export class Search extends React.Component {
     return (
         <Panel>
           <FormGroup>
+            <div>
+            <ControlLabel>{this.props.searchLabels.searchToSelectInstructions}</ControlLabel>
+            </div>
             <ControlLabel>{this.props.searchLabels.selectedId}</ControlLabel>
             <FormControl
               type="text"
-              value={this.state.selectedID}
+              value={this.state.selectedId}
               disabled
             />
             <ControlLabel>{this.props.searchLabels.selectedValue}</ControlLabel>
             <Well>{this.state.selectedValue}
             </Well>
             <div>
-          <ButtonGroup bsSize="xsmall">
-            <Button onClick={this.handleCancelRequest}>Cancel</Button>
             <Button
-                onClick={this.handleDoneRequest}
-                disabled={this.state.selectedID.length < 1}
-            >
-              Done
+                bsSize="small"
+                className={"Button-Cancel"}
+                onClick={this.handleCancelRequest}>
+                {this.state.labels.buttons.cancel}
             </Button>
-          </ButtonGroup>
+            <Button
+                bsSize="small"
+                className={"Button-Select"}
+                bsStyle="primary"
+                onClick={this.handleDoneRequest}
+                disabled={this.state.selectedId.length < 1}
+            >
+              {this.state.labels.buttons.select}
+            </Button>
             </div>
           </FormGroup>
         </Panel>
@@ -600,6 +609,7 @@ export class Search extends React.Component {
         {key: "key", label: idParts[2]}
       ]
       , selectedValue: row["value"]
+      , selectedSchema: row["_valueSchemaId"]
       , showIdPartSelector: true
       , showModalWindow: true
     }, this.showRowComparison(row["id"], row["value"]));
@@ -608,7 +618,7 @@ export class Search extends React.Component {
   showRowComparison = (id, value) => {
     this.setState({
       showModalWindow: true
-      , selectedID: id
+      , selectedId: id
       , selectedValue: value
     })
   }
@@ -623,7 +633,7 @@ export class Search extends React.Component {
     if (id && id.length > 0) {
       this.setState({
         showModalWindow: false
-        , selectedID: id
+        , selectedId: id
         , selectedValue: value
         , selectedSeq: seq
       })
@@ -640,7 +650,7 @@ export class Search extends React.Component {
     if (id && id.length > 0) {
       this.setState({
         showModalWindow: false
-        , selectedID: id
+        , selectedId: id
         , selectedValue: value
         , selectedSeq: seq
       })
@@ -663,6 +673,7 @@ export class Search extends React.Component {
   }
 
   getDocComparison = () => {
+    let debug = false;
     if (this.state.docType === "Liturgical" && ! this.props.callback) {
       return (
           <ModalParaRowEditor
@@ -680,10 +691,10 @@ export class Search extends React.Component {
           <ModalCompareDocs
               session={this.props.session}
               showModal={this.state.showModalWindow}
-              title={this.state.selectedID}
+              title={this.state.selectedId}
               docType={this.state.docType}
               selectedIdParts={this.state.selectedIdParts}
-              onClose={this.handleCloseDocComparison}
+              onClose={this.props.callback ? this.handleCloseDocComparison : undefined}
               labels={this.props.searchLabels}
           />
       )
@@ -693,7 +704,7 @@ export class Search extends React.Component {
   showSelectionButtons = (id) => {
     this.setState({
       showSelectionButtons: true
-      , selectedID: id
+      , selectedId: id
     });
   }
 
@@ -763,6 +774,7 @@ export class Search extends React.Component {
           );
           let resultCount = 0;
           let message = "No docs found...";
+          let csvData = response.data.values;
           if (response.data.valueCount && response.data.valueCount > 0) {
             resultCount = response.data.valueCount;
             message = this.props.searchLabels.msg3
@@ -843,7 +855,7 @@ export class Search extends React.Component {
 
   render() {
     return (
-        <div className="App-page App-search">
+        <div className="App-search">
           <h3>{this.props.searchLabels.pageTitle}</h3>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
@@ -902,6 +914,12 @@ export class Search extends React.Component {
                     dataField='value'
                     dataSort={ true }
                 >{this.props.resultsTableLabels.headerValue}</TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='_valueSchemaId'
+                    export={ false }
+                    hidden
+                >
+                </TableHeaderColumn>
               </BootstrapTable>
             </div>
           </div>
@@ -919,5 +937,6 @@ Search.propTypes = {
   , initialDocType: PropTypes.string.isRequired
   , dropdowns: PropTypes.object
 };
+
 
 export default Search;

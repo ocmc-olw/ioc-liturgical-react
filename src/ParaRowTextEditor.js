@@ -33,6 +33,8 @@ export class ParaRowTextEditor extends React.Component {
             , messages: Labels.getMessageLabels(props.session.languageCode)
             , search: Labels.getSearchLabels(props.session.languageCode)
           }
+          , greekSourceValue: ""
+          , greekSourceId: ""
           , showSearchResults: false
           , message: Labels.getSearchLabels(props.session.languageCode).msg1
           ,
@@ -88,6 +90,7 @@ export class ParaRowTextEditor extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handlePropsChange = this.handlePropsChange.bind(this);
     this.getTextArea = this.getTextArea.bind(this);
+    this.getParaRows = this.getParaRows.bind(this);
   };
 
   componentWillMount = () => {
@@ -104,6 +107,8 @@ export class ParaRowTextEditor extends React.Component {
             , search: Labels.getSearchLabels(props.session.languageCode)
           }
           , message: Labels.getSearchLabels(props.session.languageCode).msg1
+          , greekSourceValue: ""
+          , greekSourceId: ""
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -177,8 +182,17 @@ export class ParaRowTextEditor extends React.Component {
     let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)
         .then(response => {
+          let greekSource = response.data.values.find( o => o.id.startsWith("gr_gr_cog"));
+          let greekSourceId = "";
+          let greekSourceValue = "";
+          if (greekSource) {
+            greekSourceId = greekSource.id;
+            greekSourceValue = greekSource.value;
+          }
           this.setState({
                 data: response.data
+                , greekSourceId: greekSourceId
+                , greekSourceValue: greekSourceValue
               }
           );
           let message = "No docs found...";
@@ -282,42 +296,55 @@ export class ParaRowTextEditor extends React.Component {
     }
   }
 
+  getParaRows = () => {
+    if (this.state.showSearchResults) {
+      return (
+          <div>
+            <ControlLabel>
+              {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
+            </ControlLabel>
+            <div className="row">
+              <Well>
+                <BootstrapTable
+                    data={this.state.data.values}
+                    trClassName={"App-data-tr"}
+                    striped
+                    hover
+                    pagination
+                    options={ this.state.options }
+                >
+                  <TableHeaderColumn
+                      isKey
+                      dataField='id'
+                      dataSort={ true }
+                      hidden
+                  >ID</TableHeaderColumn>
+                  <TableHeaderColumn
+                      dataField='library'
+                      dataSort={ true }
+                      width={this.state.idColumnSize}>Domain</TableHeaderColumn>
+                  <TableHeaderColumn
+                      dataField='value'
+                      dataSort={ true }
+                  >Value</TableHeaderColumn>
+                </BootstrapTable>
+              </Well>
+            </div>
+          </div>
+      )
+    } else {
+      return (
+          <Spinner message={this.state.labels.messages.retrieving}/>
+      )
+    }
+  }
   render() {
     return (
         <div>
           {(! this.state.showSearchResults) ? <Spinner message={this.state.labels.messages.retrieving}/>
               :
               <div className="App-ParaRow-Text-Editor">
-                <ControlLabel>
-                  {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
-                </ControlLabel>
-                <div className="row">
-                  <Well>
-                  <BootstrapTable
-                      data={this.state.data.values}
-                      trClassName={"App-data-tr"}
-                      striped
-                      hover
-                      pagination
-                      options={ this.state.options }
-                  >
-                    <TableHeaderColumn
-                        isKey
-                        dataField='id'
-                        dataSort={ true }
-                        hidden
-                    >ID</TableHeaderColumn>
-                    <TableHeaderColumn
-                        dataField='library'
-                        dataSort={ true }
-                        width={this.state.idColumnSize}>Domain</TableHeaderColumn>
-                    <TableHeaderColumn
-                        dataField='value'
-                        dataSort={ true }
-                    >Value</TableHeaderColumn>
-                  </BootstrapTable>
-                  </Well>
-                </div>
+                {this.getParaRows()}
                 <div>
                   <Well>
                     {this.getTextArea()}
@@ -356,7 +383,8 @@ export class ParaRowTextEditor extends React.Component {
                     + "~"
                     + this.props.idKey
                   }
-                  type="REFERS_TO_BIBLICAL_TEXT"
+                  type={"REFERS_TO_BIBLICAL_TEXT"}
+                  value={this.state.greekSourceValue}
               />
             </Panel>
             <Panel
@@ -375,6 +403,8 @@ export class ParaRowTextEditor extends React.Component {
                     + "~"
                     + this.props.idKey
                   }
+                  type={"*"}
+                  value={this.state.greekSourceValue}
               />
             </Panel>
             <Panel
@@ -389,6 +419,7 @@ export class ParaRowTextEditor extends React.Component {
                   session={this.props.session}
                   type={"NoteUser"}
                   topicId={this.state.currentId}
+                  topicText={this.props.value}
               />
             </Panel>
           </Accordion>

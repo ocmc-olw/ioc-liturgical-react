@@ -85,13 +85,39 @@ class UiSchemas {
     return this.formsSchemas[id].paths.put;
   }
 
+  getPropsForSchema = (id, exclusions) => {
+    var keys = [];
+    for (var key in this.formsSchemas[id].schema.properties) {
+      if (exclusions.includes(key)) {
+        // skip
+      } else {
+        keys.push(key);
+      }
+    }
+    return keys;
+  }
+
   /**
-   * Search the formsSchemas to find the id that starts with the name provided.
-   * Returns the ID of that formSchema.
-   * @param name
+   * Uses the supplied ID to convert it to its
+   * corresponding LinkRefersTo...CreateForm
+   * @param id
+   * @returns {*}
    */
-  getSchemaIdForSchemaName = (name) => {
-    return name + "1.1";
+  getLinkCreateSchemaIdForSchemaId = (id) => {
+    let name = id;
+    let parts = id.split(":");
+    if (parts.length === 2) {
+      if (parts[0] === "TextBiblical") {
+        name = "LinkRefersToBiblicalTextCreateForm";
+      } else {
+        name = "LinkRefersTo" + parts[0];
+        if (! name.endsWith("CreateForm")) {
+          name = name + "CreateForm";
+        }
+      }
+      name = name + ":1.1";
+    }
+    return name;
   }
 }
 

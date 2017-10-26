@@ -79,9 +79,8 @@ class OntologySearchOptions extends React.Component {
 
   handleTagsSelection = (selection) => {
     let tags = selection.map(function(a) {return a.value;});
-
     this.setState({
-          selectedTags: tags
+          selectedTags: tags.toString()
         }
     );
   }
