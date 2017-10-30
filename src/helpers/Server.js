@@ -29,6 +29,7 @@ const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
 const valuePath = docs + "/value";
 const viewtemplate = docs + "/viewtemplate";
 const viewtopic = docs + "/viewtopic";
+const wordAnalysis = "nlp/word/analysis";
 const ontology = "ontology/ontology";
 const nlp = "nlp/"
 const textAnalysis = nlp + "text/analysis"
@@ -131,7 +132,8 @@ const restGetPdf = (
     };
 
     axios.get(path, config)
-        .then(response => {          console.log(filename);            var blob = new Blob([response.data], {type: 'application/octet-stream'});
+        .then(response => {
+          var blob = new Blob([response.data], {type: 'application/octet-stream'});
             FileSaver.saveAs(blob, filename);
             result.userMessage = "ok"
             result.developerMessage = "ok"
@@ -171,8 +173,6 @@ const restGet = (
   if (parms && parms.length > 0) {
     path = path + "/?" + parms
   }
-
-  console.log(path);
 
   let result = {
     data: {}
@@ -251,6 +251,7 @@ const restPut = (
     , serverPath
     , data
     , parms
+    , callback
 ) => {
 
   let config = {
@@ -280,11 +281,34 @@ const restPut = (
       , config
   )
       .then(response => {
+        let userMessage = "Updated OK";
+        let developerMessage = userMessage;
+        let statusCode = 200;
+        if (response.data) {
+          if (response.data.status) {
+            userMessage = response.data.status.userMessage;
+            developerMessage = response.data.status.developerMessage;
+            statusCode = response.data.status.code;
+          } else if (response.data.userMessage) {
+            userMessage = response.data.userMessage;
+            developerMessage = response.data.developerMessage;
+            statusCode = response.data.code;
+          }
+        }
+        result.userMessage = userMessage
+        result.developerMessage = developerMessage
+        result.code = statusCode
+        if (callback) {
+          callback(result);
+        }
       })
       .catch((error) => {
         result.message = error.message;
         result.messageIcon = messageIcons.error;
         result.status = error.status;
+        if (callback) {
+          callback(result);
+        }
       });
   return result;
 }
@@ -309,6 +333,7 @@ export default {
   , getDbServerLinksApi: () => {return dbApi + links;}
   , getDbServerOntologyApi: () => {return dbApi + ontology;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
+  , getDbServerWordAnalysisApi: () => {return dbApi + wordAnalysis;}
   , getResources: (
       restServer,
       username
@@ -555,6 +580,27 @@ export default {
         , password
         , dbApi
         + clone
+        , value
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , restPutSchemaBasedForm: (
+      restServer
+      , username
+      , password
+      , path
+      , value
+      , parms
+      , callback
+  ) => {
+    restPut(
+        restServer
+        , username
+        , password
+        , path
         , value
         , parms
         , function (result) {

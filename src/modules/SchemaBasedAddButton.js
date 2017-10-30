@@ -105,7 +105,6 @@ class SchemaBasedAddButton extends React.Component {
       , seq
       , schema
   ) => {
-    console.log(`SchemaBasedAddButton.handleIdKeySelection.value = ${value}`);
     let schemaId = this.props.session.uiSchemas.getLinkCreateSchemaIdForSchemaId(schema);
     let formData = this.props.session.uiSchemas.getForm(schemaId);
 

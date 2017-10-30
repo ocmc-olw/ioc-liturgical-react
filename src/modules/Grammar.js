@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import server from '../helpers/Server';
+import Server from '../helpers/Server';
 import {
   Button
   , ControlLabel
@@ -121,18 +121,18 @@ class Grammar extends React.Component {
   }
 
   fetchData = () => {
-    server.getTextAnalysis(
+    Server.getTextAnalysis(
         this.props.session.restServer
         , this.props.session.userInfo.username
         , this.props.session.userInfo.password
         , this.state.id
         , this.setTextInfo
     );
-    server.getTable(
+    Server.getTable(
         this.props.session.restServer
         , this.props.session.userInfo.username
         , this.props.session.userInfo.password
-        , server.tableLexiconOald
+        , Server.tableLexiconOald
         , this.handleEnglishLexiconCallback
     );
   }
@@ -153,23 +153,24 @@ class Grammar extends React.Component {
         , data: restCallResult.data.values[0].text
         , tokens: restCallResult.data.values[1].tokens
         , analyses: restCallResult.data.values[2].analyses
-        , nodeData: restCallResult.data.values[3].treeData.nodes
+        , nodeData: restCallResult.data.values[3].nodes
       });
     }
   }
 
-
   handleTokenClick = (index, token) => {
-    let i = parseInt(index);
-    i = i + 1;
+    let tokenIndex = parseInt(index);
+    let panelIndex = tokenIndex + 1;
     this.setState({
       selectedTokenIndex: index
       , selectedToken: token
+      , selectedAnalysis: this.state.analyses[token]
+      , selectedNodeData: this.state.nodeData[tokenIndex]
       , selectedLemma: this.state.analyses[token][0].lemmaGreek
       , selectedLemmas: this.getLemmas(token)
       , selectedTokenPanelTitle: Labels.getWordTaggerLabels(this.props.session.languageCode).panelTitle
         + " "
-        + i
+        + panelIndex
         + " "
         + token
       , selectedPerseus: {
@@ -196,7 +197,6 @@ class Grammar extends React.Component {
   }
 
   handleRowSelect = (row, isSelected, e) => {
-    console.log(`Grammar.handleRowSelect.selectedPerseus = `);
     let idParts = row["id"].split("~");
     let conciseParts = row["concise"].split("/");
     let selectedPerseus = {
@@ -208,7 +208,6 @@ class Grammar extends React.Component {
     if (selectedPerseus.pos === "ARTICLE") {
       selectedPerseus.pos = "ART";
     }
-    console.log(selectedPerseus);
     this.setState({
       selectedId: row["id"]
       , selectedIdParts: [
@@ -224,8 +223,15 @@ class Grammar extends React.Component {
   }
 
   handleTaggerCallback = (treeNode) => {
+    let nodeData = this.state.nodeData;
+    let i = parseInt(treeNode.id); // + 1;
+    nodeData[i].dependsOn = treeNode.dependsOn;
+    nodeData[i].gloss = treeNode.gloss;
+    nodeData[i].label = treeNode.label;
+    nodeData[i].grammar = treeNode.grammar;
     this.setState({
       selectedTokenTags: treeNode
+      , nodeData: nodeData
     });
   }
 
@@ -241,7 +247,7 @@ class Grammar extends React.Component {
                 collapsible
             >
               <WordTagger
-                  languageCode={this.props.session.languageCode}
+                  session={this.props.session}
                   index={this.state.selectedTokenIndex}
                   tokens={this.state.tokens}
                   token={this.state.selectedToken}
@@ -250,6 +256,7 @@ class Grammar extends React.Component {
                   pos={this.state.selectedPerseus.pos}
                   grammar={this.state.selectedPerseus.grammar}
                   callBack={this.handleTaggerCallback}
+                  tokenAnalysis={this.state.selectedNodeData}
               />
             </Panel>
             <Panel
@@ -368,25 +375,6 @@ class Grammar extends React.Component {
                 />
               </div>
             </Panel>
-            {this.state.selectedTokenTags &&
-              <Panel
-                  className="App-Oxford-Site-panel "
-                  header={this.state.labels.thisClass.panelOald}
-                  eventKey="oald1"
-                  collapsible
-              >
-                <div className="App-iframe-wrapper">
-                  <Iframe
-                      position="relative"
-                      height="1000px"
-                      url={"http://www.oxfordlearnersdictionaries.com/definition/english/boy_1?isEntryInOtherDict=false"
-//                      + this.state.selectedTokenTags.gloss
-//                      + "_1?isEntryInOtherDict=true"
-                      }
-                  />
-                </div>
-              </Panel>
-            }
             </PanelGroup>
       )
     } else {

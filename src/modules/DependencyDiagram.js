@@ -18,6 +18,18 @@ class DependencyDiagram extends React.Component {
 
     this.state = this.setTheState(props, "");
 
+    // chartEvents is left here, but is not useful.
+    // the select event does not return enough information
+    // to be useful for our purposes
+        this.chartEvents = [
+          {
+            eventName: 'select',
+            callback(Chart) {
+//              console.log('Selected ', Chart.chart.getSelection());
+            },
+          },
+        ];
+
     this.node = this.node.bind(this);
     this.getTreeData = this.getTreeData.bind(this);
     this.handleCallback = this.handleCallback.bind(this);
@@ -94,16 +106,26 @@ class DependencyDiagram extends React.Component {
 
   getTreeData = () => {
     let treeData = [];
+    treeData.push(
+        this.node("Root"
+            , ""
+            , ""
+            , ""
+            , ""
+            , ""
+            , ""
+        )
+    );
     for (let i=0; i < this.props.data.length; i++) {
       let parms = this.props.data[i];
       treeData.push(
-          this.node(parms[0]
-              , parms[1]
-              , parms[2]
-              , parms[3]
-              , parms[4]
-              , parms[5]
-              , parms[6]
+          this.node(parms.key
+              , parms.dependsOn
+              , parms.token
+              , parms.lemma
+              , parms.gloss
+              , parms.label
+              , parms.grammar
           )
       );
     }
@@ -118,7 +140,7 @@ class DependencyDiagram extends React.Component {
     return (
         <div className="App App-DependencyDiagram-Container">
           <div>{this.state.labels.thisClass.instructions}</div>
-          <Well>
+          <Well className="App-DependencyDiagram-Container">
               <Chart
                   chartType="OrgChart"
                   data={this.state.treeData}
@@ -137,16 +159,7 @@ class DependencyDiagram extends React.Component {
                   height={this.props.height}
                   chartPackages={['corechart', 'orgchart']}
 
-                  chartEvents={[{
-                    eventName: 'select',
-                    callback(Chart) {
-                      var selectedItem = Chart.chart.getSelection()[0];
-                      if (selectedItem) {
-                        console.log(selectedItem.row);
-                      }
-                    },
-                  }]
-                  }
+                  chartEvents={this.chartEvents}
               />
           </Well>
         </div>

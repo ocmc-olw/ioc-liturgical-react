@@ -82,7 +82,18 @@ class UiSchemas {
    * @returns {*}
    */
   getHttpPutPathForSchema = (id) => {
-    return this.formsSchemas[id].paths.put;
+    let schemaId = id;
+    if (this.formsSchemas[id]) {
+      // ignore
+    } else {
+      schemaId = this.getCreateSchemaIdForSchemaId(id);
+    }
+    if (this.formsSchemas[schemaId]) {
+      return this.formsSchemas[schemaId].paths.put;
+    } else {
+      console.log(`UiSchemas.getHttpPutPathForSchema.schemaId ${schemaId} not found`);
+      console.table(this.formsSchemas);
+    }
   }
 
   getPropsForSchema = (id, exclusions) => {
@@ -95,6 +106,24 @@ class UiSchemas {
       }
     }
     return keys;
+  }
+
+  /**
+   * Uses the supplied ID to convert it to its
+   * corresponding CreateForm
+   * @param id
+   * @returns {*}
+   */
+  getCreateSchemaIdForSchemaId = (id) => {
+    let name = id;
+    let parts = id.split(":");
+    if (parts.length === 2) {
+      if (! name.endsWith("CreateForm")) {
+        name = parts[0] + "CreateForm";
+      }
+      name = name + ":1.1";
+    }
+    return name;
   }
 
   /**

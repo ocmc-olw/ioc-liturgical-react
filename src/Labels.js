@@ -601,6 +601,9 @@ const   labels = {
       , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
       , lemma: "Lemma"
       , gloss: "Gloss"
+      , help: "Tagging Guidelines"
+      , examples: "Tagging Examples"
+      , oxford: "Oxford English Dictionary"
     }
     , WorkflowAssignment: {
       title: "Workflow Assignment"
@@ -622,6 +625,8 @@ const   labels = {
       , status: "Status"
       , retrieving: "retrieving..."
       , searching: "searching..."
+      , updating: "updating..."
+      , updated: "updated..."
       , resultLabel: "Search Result"
       , found: "Found"
       , docs: "docs"
@@ -662,6 +667,7 @@ const   labels = {
           , "ExD": "ellipsis"
           , "OBJ": "object"
           , "OCOMP": "object complement"
+          , "MWE": "multi-word expression"
           , "PNOM": "predicate nominal"
           , "PRED": "predicate"
           , "PRED-CO": "predicate complement"
@@ -1356,6 +1362,9 @@ const   labels = {
       , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
       , lemma: "Lemma"
       , gloss: "Gloss"
+      , help: "Tagging Guidelines"
+      , examples: "Tagging Examples"
+      , oxford: "Oxford English Dictionary"
     }
     , WorkflowAssignment: {
       title: "Workflow Assignment"
@@ -1377,6 +1386,8 @@ const   labels = {
       , status: "Status: "
       , retrieving: "retrieving..."
       , searching: "searching..."
+      , updating: "updating..."
+      , updated: "updated..."
       , resultLabel: "Search Result"
       , found: "Found"
       , docs: "docs"
@@ -1415,6 +1426,7 @@ const   labels = {
           , "AuxZ": "emphasizing particles"
           , "COORD": "coordinator"
           , "ExD": "ellipsis"
+          , "MWE": "multi-word expression"
           , "OBJ": "object"
           , "OCOMP": "object complement"
           , "PNOM": "predicate nominal"

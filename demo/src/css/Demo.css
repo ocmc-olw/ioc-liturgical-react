@@ -318,6 +318,9 @@ div.App-logo.navbar-header {
 .App-WordTagger-Gloss {
     width: 45ch;
 }
+.App-Label-Selector-Help {
+    padding-top: 10px;
+}
 .App-data-tr {
     max-width: 90%;
 }
@@ -375,6 +378,7 @@ path.link {
     width: 90vw;
 }
 .App-DependencyDiagram-Container {
+    background-color: white !important;
     overflow: scroll;
 }
 .App-Modal-Dependency-Diagram-Title {
