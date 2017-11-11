@@ -9,6 +9,7 @@ class TreeNode {
       , lemma
       , gloss
       , dependsOn
+      , refersTo
       , label
       , gCase
       , gender
@@ -20,7 +21,8 @@ class TreeNode {
       , voice
   ) {
     this.id = id;
-    this.dependsOn = dependsOn;
+    this.dependsOn = dependsOn ? dependsOn : "";
+    this.refersTo = refersTo ? refersTo: "";
     this.token = token;
     this.lemma = lemma;
     this.gloss = gloss;
@@ -39,9 +41,9 @@ class TreeNode {
   getGrammarForNounLikeWords = () => {
     return this.pos
         + "."
-        + this.gender
-        + "."
         + this.number
+        + "."
+        + this.gender
         + "."
         + this.case
         ;
@@ -54,7 +56,11 @@ class TreeNode {
         && this.number
         && this.case
     ) {
-      return true;
+      if (TreeNode.requiresReferent(this.pos)) {
+        return this.refersTo;
+      } else {
+        return true;
+      }
     } else {
       return false;
     }
@@ -108,7 +114,7 @@ class TreeNode {
         ;
   }
 
-  hasGrammarForParticiple = () => {
+  hasGrammarForParticiple = (requireReferent) => {
     if (
         this.pos
         && this.voice
@@ -116,6 +122,27 @@ class TreeNode {
         && this.gender
         && this.number
         && this.case
+    ) {
+      if (requireReferent) {
+        if (this.refersTo) {
+          return true;
+        } else {
+          return false;
+        }
+      } else {
+        return true;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  // e.g. INF.AOR.ACT
+  hasGrammarForInfinitive = () => {
+    if (
+        this.pos
+        && this.voice
+        && this.tense
     ) {
       return true;
     } else {
@@ -188,7 +215,35 @@ class TreeNode {
           result = this.hasGrammarForNounLikeWords();
           break;
         }
+        case ("PRON.COR"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
+        case ("PRON.DEF"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
+        case ("PRON.DEM"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
+        case ("PRON.INDF"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
+        case ("PRON.PERS"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
         case ("PRON.POSS"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
+        case ("PRON.Q"): {
+          result = this.hasGrammarForNounLikeWords();
+          break;
+        }
+        case ("PRON.REFL"): {
           result = this.hasGrammarForNounLikeWords();
           break;
         }
@@ -217,7 +272,6 @@ class TreeNode {
         }
       }
     }
-
     return result;
   }
 
@@ -225,64 +279,117 @@ class TreeNode {
     return ! this.isComplete();
   }
 
-
+  static requiresReferent(pos) {
+    switch (pos) {
+      case ("PRON"): {
+        return true;
+        break;
+      }
+      case ("PRON.COR"): {
+        return false;
+        break;
+      }
+      case ("PRON.DEF"): {
+        return true;
+        break;
+      }
+      case ("PRON.DEM"): {
+        return true;
+        break;
+      }
+      case ("PRON.INDF"): {
+        return false;
+        break;
+      }
+      case ("PRON.PERS"): {
+        return true;
+        break;
+      }
+      case ("PRON.POSS"): {
+        return true;
+        break;
+      }
+      case ("PRON.Q"): {
+        return false;
+        break;
+      }
+      case ("PRON.REFL"): {
+        return true;
+        break;
+      }
+      case ("PRON.REL"): {
+        return false;
+        break;
+      }
+      default: {
+        return false;
+      }
+    }
+  }
   getGrammar = () => {
     switch (this.pos) {
       case ("ADJ"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("ADJ.COMP"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("ADJ.SUP.ABS"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("ADJ.SUP.REL"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("ART"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("ART.DEF"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("ART.INDF"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("INF"): {
         return this.getGrammarForInfinitive();
-        break;
       }
       case ("PART"): {
         return this.getGrammarForParticiple();
-        break;
       }
       case ("PRON"): {
         return this.getGrammarForNounLikeWords();
-        break;
+      }
+      case ("PRON.COR"): {
+        return  this.getGrammarForNounLikeWords();
+      }
+      case ("PRON.DEF"): {
+        return  this.getGrammarForNounLikeWords();
+      }
+      case ("PRON.DEM"): {
+        return  this.getGrammarForNounLikeWords();
+      }
+      case ("PRON.INDF"): {
+        return  this.getGrammarForNounLikeWords();
+      }
+      case ("PRON.PERS"): {
+        return  this.getGrammarForNounLikeWords();
       }
       case ("PRON.POSS"): {
-        return this.getGrammarForNounLikeWords();
-        break;
+        return  this.getGrammarForNounLikeWords();
+      }
+      case ("PRON.Q"): {
+        return  this.getGrammarForNounLikeWords();
+      }
+      case ("PRON.REFL"): {
+        return  this.getGrammarForNounLikeWords();
       }
       case ("PRON.REL"): {
-        return this.getGrammarForNounLikeWords();
-        break;
+        return  this.getGrammarForNounLikeWords();
       }
       case ("NOUN"): {
         return this.getGrammarForNounLikeWords();
-        break;
       }
       case ("VERB"): {
         return this.getGrammarForVerb();
-        break;
       }
       default: {
         return this.pos;

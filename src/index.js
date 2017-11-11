@@ -18,6 +18,7 @@ import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchNotes from './SearchNotes';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
+import SearchTreebanks from './SearchTreebanks';
 import SearchRelationships from './SearchRelationships';
 import Server from './helpers/Server';
 import Session from './classes/Session';
@@ -52,6 +53,7 @@ export {
   , SearchNotes
   , SearchOntology
   , SearchText
+  , SearchTreebanks
   , SearchRelationships
   , Server
   , Session

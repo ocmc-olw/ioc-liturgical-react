@@ -6,40 +6,53 @@ import {
   , FormGroup
 } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
+import { get } from 'lodash';
 
-import Server from '../helpers/Server';
-import LabelSelector from '../helpers/LabelSelector';
 import Labels from '../Labels';
-import MessageIcons from '../helpers/MessageIcons';
-import Spinner from '../helpers/Spinner';
+
 import TreeNode from '../classes/TreeNode';
 
-class WordTagger extends React.Component {
+import LabelSelector from '../helpers/LabelSelector';
+import MessageIcons from '../helpers/MessageIcons';
+import Server from '../helpers/Server';
+import Spinner from '../helpers/Spinner';
+
+/**
+ * Provides a means for the user to set the tags for a token.
+ * A token can be a word or a punctuation mark.
+ * The tags initialize using information from the database via the rest api.
+ * The user then has the option of manually setting tag values,
+ * or if the user selects an analysis from an external source,
+ * e.g. Perseus (displayed via the Grammar component),
+ * the selected values are copied and become parms to the TokenTagger.
+ */
+class TokenTagger extends React.Component {
   constructor(props) {
     super(props);
 
     this.state = this.setTheState(props, "");
 
+    this.getCaseComponent = this.getCaseComponent.bind(this);
     this.getDependencyComponent = this.getDependencyComponent.bind(this);
+    this.getGenderComponent = this.getGenderComponent.bind(this);
     this.getLabelComponent = this.getLabelComponent.bind(this);
+    this.getMoodComponent = this.getMoodComponent.bind(this);
+    this.getNumberComponent = this.getNumberComponent.bind(this);
     this.getPartOfSpeechComponent = this.getPartOfSpeechComponent.bind(this);
     this.getPersonComponent = this.getPersonComponent.bind(this);
-    this.getNumberComponent = this.getNumberComponent.bind(this);
-    this.getVerbNumberComponent = this.getVerbNumberComponent.bind(this);
-    this.getCaseComponent = this.getCaseComponent.bind(this);
-    this.getGenderComponent = this.getGenderComponent.bind(this);
+    this.getReferentComponent = this.getReferentComponent.bind(this);
     this.getTenseComponent = this.getTenseComponent.bind(this);
+    this.getVerbNumberComponent = this.getVerbNumberComponent.bind(this);
     this.getVoiceComponent = this.getVoiceComponent.bind(this);
-    this.getMoodComponent = this.getMoodComponent.bind(this);
 
-
+    this.handleReferentChange = this.handleReferentChange.bind(this);
     this.handleDependencyChange = this.handleDependencyChange.bind(this);
     this.handleCaseChange = this.handleCaseChange.bind(this);
     this.handleGenderChange = this.handleGenderChange.bind(this);
     this.handleGlossChange = this.handleGlossChange.bind(this);
     this.handleLabelChange = this.handleLabelChange.bind(this);
     this.handleLemmaChange = this.handleLemmaChange.bind(this);
-    this.handleMoodChange =this.handleMoodChange.bind(this);
+    this.handleMoodChange = this.handleMoodChange.bind(this);
     this.handleNumberChange = this.handleNumberChange.bind(this);
     this.handlePartOfSpeechChange = this.handlePartOfSpeechChange.bind(this);
     this.handlePersonChange = this.handlePersonChange.bind(this);
@@ -50,14 +63,15 @@ class WordTagger extends React.Component {
     this.toggleSubmit = this.toggleSubmit.bind(this);
     this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
     this.getSubmitMessage = this.getSubmitMessage.bind(this);
-  }
+    this.normalizeIndex = this.normalizeIndex.bind(this);
+  };
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let index = props.index;
@@ -75,13 +89,15 @@ class WordTagger extends React.Component {
     // if the index did not change, preserve the previous state
     if (currentState.index && (currentState.index === index)) {
       tokenAnalysis = currentState.tokenAnalysis;
-      let propLemma = props.lemma;
-      let propGloss = props.gloss;
-      let propPos = props.pos;
-      let propGrammar = props.grammar;
+      let propLemma = props.copiedLemma;
+      let propGloss = props.copiedGloss;
+      let propPos = props.copiedPos;
+      let propGrammar = props.copiedGrammar;
       let lemma = currentState.lemma;
       let gloss = currentState.gloss;
 
+      let dependsOn = get(currentState, "dependsOn", props.tokenAnalysis.dependsOn);
+      let refersTo = get(currentState, "refersTo", props.tokenAnalysis.refersTo);
       let selectedCase = currentState.selectedCase;
       let selectedGender = currentState.selectedGender;
       let selectedMood = currentState.selectedMood;
@@ -90,48 +106,52 @@ class WordTagger extends React.Component {
       let selectedPos = currentState.selectedPos;
       let selectedTense = currentState.selectedTense;
       let selectedVoice = currentState.selectedVoice;
-      let theTaggedNode = currentState.theTaggedNode;
+      let theTaggedNode = new TreeNode();
+
+      if (currentState.theTaggedNode) {
+        theTaggedNode = currentState.theTaggedNode;
+      }
 
       if (selectedPos) {
-        if (props.pos) {
-          if(props.pos === currentState.propPos) {
+        if (props.copiedPos) {
+          if(props.copiedPos === currentState.propPos) {
             // ignore
           } else {
-            selectedPos = props.pos;
+            selectedPos = props.copiedPos;
           }
         }
       } else {
-        selectedPos = props.pos;
+        selectedPos = props.copiedPos;
       }
       if (lemma) {
-        if (props.lemma) {
-          if(props.lemma === currentState.lemma) {
+        if (props.copiedLemma) {
+          if(props.copiedLemma === currentState.lemma) {
             // ignore
           } else {
-            lemma = props.lemma;
+            lemma = props.copiedLemma;
           }
         }
       } else {
-        lemma = props.lemma;
+        lemma = props.copiedLemma;
       }
       if (gloss) {
-        if (props.gloss) {
-          if(props.gloss === currentState.propGloss) {
+        if (props.copiedGloss) {
+          if(props.copiedGloss === currentState.propGloss) {
             // ignore
           } else {
-            gloss = props.gloss;
+            gloss = props.copiedGloss;
           }
         }
       } else {
-        gloss = props.gloss;
+        gloss = props.copiedGloss;
       }
-      if (props.grammar) {
-        let tags = props.grammar.split(".");
+      if (props.copiedGrammar) {
+        let tags = props.copiedGrammar.split(".");
         for (let i=1; i < tags.length; i++) {
           let tag = tags[i];
           if (tag === "PRES") {
             tag = "PRS";
-          } else if (tag == "PERF") {
+          } else if (tag === "PERF") {
             tag = "PRF";
           } else if (tag === "INF") { // treat infinitive as a part of speech
             selectedPos = tag;
@@ -154,7 +174,6 @@ class WordTagger extends React.Component {
           }
         }
       }
-
       let submitDisabled = true;
       if (currentState.theTaggedNode) {
         submitDisabled = currentState.theTaggedNode.notComplete();
@@ -163,7 +182,7 @@ class WordTagger extends React.Component {
       return (
           {
             labels: {
-              thisClass: Labels.getWordTaggerLabels(props.session.languageCode)
+              thisClass: Labels.getTokenTaggerLabels(props.session.languageCode)
               , messages: Labels.getMessageLabels(props.session.languageCode)
               , grammar: {
                 case: labelCase
@@ -189,8 +208,9 @@ class WordTagger extends React.Component {
             , selectedPos: selectedPos
             , selectedTense: selectedTense
             , selectedVoice: selectedVoice
-            , selectedLabel: currentState.selectedLabel ? currentState.selectedLabel : ""
-            , dependency: currentState.dependency ? currentState.dependency : ""
+            , selectedLabel: get(currentState, "selectedLabel", "")
+            , dependsOn: dependsOn
+            , refersTo: refersTo
             , lemma: lemma
             , gloss: gloss
             , propLemma: propLemma
@@ -208,7 +228,7 @@ class WordTagger extends React.Component {
       return (
           {
             labels: {
-              thisClass: Labels.getWordTaggerLabels(this.props.session.languageCode)
+              thisClass: Labels.getTokenTaggerLabels(this.props.session.languageCode)
               , messages: Labels.getMessageLabels(this.props.session.languageCode)
               , grammar: {
                 case: labelCase
@@ -239,113 +259,176 @@ class WordTagger extends React.Component {
             , selectedLabel: tokenAnalysis.label ? tokenAnalysis.label : ""
             , lemma: tokenAnalysis.lemma ? tokenAnalysis.lemma : ""
             , gloss: tokenAnalysis.gloss ? tokenAnalysis.gloss : ""
-            , dependency: tokenAnalysis.dependsOn ? tokenAnalysis.dependsOn : "0"
+            , dependsOn: tokenAnalysis.dependsOn ? tokenAnalysis.dependsOn : ""
+            , refersTo: tokenAnalysis.refersTo ? tokenAnalysis.refersTo : ""
             , grammar: tokenAnalysis.grammar ? tokenAnalysis.grammar : ""
             , tokenAnalysis: tokenAnalysis
           }
       )
 
     }
-  }
+  };
 
 
   handleGlossChange =  (event) => {
     this.setState({
       gloss: event.target.value
     }, this.toggleSubmit);
-  }
+  };
 
   handleLemmaChange =  (event) => {
     this.setState({
       lemma: event.target.value
     }, this.toggleSubmit);
-  }
+  };
 
-  // TODO: parm not right
-  handleDependencyChange = (selection) => {
-      this.setState({
-        dependency: selection["value"]
-      }, this.toggleSubmit);
+  normalizeIndex(value) {
+    console.log(`TokenTagger.normalizeIndex.value = ${value}`);
+    let result = value;
+    if (value) {
+      if (value === "0") {
+        result = "Root";
+      } else {
+        result = (parseInt(value)-1).toString();
+      }
+    }
+    console.log(`TokenTagger.normalizeIndex.result = ${result}`);
+    return result;
   }
+  handleDependencyChange = (selection) => {
+    this.setState({
+      dependsOn: this.normalizeIndex(selection["value"])
+    }, this.toggleSubmit);
+  };
+
+  handleReferentChange = (selection) => {
+    console.log(`TokenTagger.handleReferentChange.selection.value = ${selection['value']}`);
+    this.setState({
+      refersTo: selection["value"]
+    }, this.toggleSubmit);
+  };
 
   handleLabelChange =  (selection) => {
     this.setState({
       selectedLabel: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handlePartOfSpeechChange =  (selection) => {
     this.setState({
       selectedPos: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handlePersonChange =  (selection) => {
     this.setState({
       selectedPerson: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handleNumberChange =  (selection) => {
       this.setState({
         selectedNumber: selection["value"]
       }, this.toggleSubmit);
-  }
+  };
 
   handleCaseChange =  (selection) => {
     this.setState({
       selectedCase: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handleGenderChange =  (selection) => {
     this.setState({
       selectedGender: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handleTenseChange =  (selection) => {
     this.setState({
       selectedTense: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handleMoodChange =  (selection) => {
     this.setState({
       selectedMood: selection["value"]
     }, this.toggleSubmit);
-  }
+  };
 
   handleVoiceChange =  (selection) => {
       this.setState({
         selectedVoice: selection["value"]
       }, this.toggleSubmit);
-  }
+  };
 
   getDependencyComponent = () => {
-    let theIndex = parseInt(this.props.index);
+    let theIndex = parseInt(this.props.index)+1;
     let result = {};
     let values = {
       "0": "Root"
     };
-    for (let i=0; i < this.props.tokens.length; i++ ) {
+    for (let i=1; i <= this.props.tokens.length; i++ ) {
       if (i !== theIndex) {
-        values[i] = (i+1) + ": " + this.props.tokens[i];
+        values[i] = (i) + ": " + this.props.tokens[i-1];
       }
     }
     result.title = "Depends On"
     result.values = values;
+    // make adjustments for displaying dependency dropdown
+    let initialValue = this.state.dependsOn;
+    if (initialValue === "Root") {
+      initialValue = "0";
+    } else {
+      initialValue = (parseInt(initialValue)+1).toString();
+    }
     return (
-        <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-POS">
+        <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-Dependency">
           <LabelSelector
               languageCode={this.props.session.languageCode}
               labels={result}
-              initialValue={this.state.dependency ? this.state.dependency : ""}
+              initialValue={initialValue}
               changeHandler={this.handleDependencyChange}
           />
         </div>
     );
-  }
+  };
+
+  getReferentComponent = () => {
+    if (TreeNode.requiresReferent(this.state.selectedPos)
+    ) {
+      let theIndex = parseInt(this.props.index);
+      let result = {};
+      let values = {};
+      for (let i=0; i < this.props.tokens.length; i++ ) {
+        if (i !== theIndex) {
+          values[i] = (i+1) + ": " + this.props.tokens[i];
+        }
+      }
+      result.title = "Refers to"
+      result.values = values;
+      // make adjustments for displaying dropdown index shift
+      let initialValue = this.state.refersTo;
+      // if (initialValue === "Root") {
+      //   initialValue = "0";
+      // } else {
+      //   initialValue = (parseInt(initialValue)+1).toString();
+      // }
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-Referent">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={result}
+                initialValue={initialValue}
+                changeHandler={this.handleReferentChange}
+            />
+          </div>
+      );
+    } else {
+      return (<span/>);
+    }
+  };
+
 
   getLabelComponent = () => {
     return (
@@ -358,7 +441,8 @@ class WordTagger extends React.Component {
           />
         </div>
     );
-  }
+  };
+
   getPartOfSpeechComponent =  () => {
     return (
         <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-POS">
@@ -370,7 +454,8 @@ class WordTagger extends React.Component {
           />
         </div>
     );
-  }
+  };
+
   getPersonComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
     ){
@@ -385,12 +470,10 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      // if (this.state.selectedPerson) {
-      //   this.handlePersonChange("{value: ''}");
-      // }
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
+
   getNumberComponent =  () => {
     if (this.state.selectedPos.startsWith("ADJ")
         || this.state.selectedPos.startsWith("ART")
@@ -408,9 +491,9 @@ class WordTagger extends React.Component {
             </div>
         );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
 
   getVerbNumberComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
@@ -427,9 +510,9 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
 
   getCaseComponent =  () => {
     if (this.state.selectedPos.startsWith("ADJ")
@@ -449,9 +532,9 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
   getGenderComponent =  () => {
     if (this.state.selectedPos.startsWith("ADJ")
         || this.state.selectedPos.startsWith("ART")
@@ -470,9 +553,10 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
+
   getTenseComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
         || this.state.selectedPos.startsWith("INF")
@@ -489,9 +573,9 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
 
   getVoiceComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
@@ -509,9 +593,9 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
   getMoodComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
     ){
@@ -526,14 +610,18 @@ class WordTagger extends React.Component {
           </div>
       );
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-  }
+  };
 
+  /**
+   * Update the database and return the value to the caller
+   */
   submitUpdate = () => {
     let path = this.props.session.uiSchemas.getHttpPutPathForSchema(
         this.state.tokenAnalysis._valueSchemaId
     );
+    // submit update to the database via the rest api
     Server.restPutSchemaBasedForm(
         this.props.session.restServer
         , this.props.session.userInfo.username
@@ -542,18 +630,19 @@ class WordTagger extends React.Component {
         , this.state.tokenAnalysis
         , undefined
         , this.handleValueUpdateCallback
-    )
-    // respond back to the caller
+    );
+    // submit update to the caller
     this.props.callBack(
         this.state.theTaggedNode
     );
-  }
+  };
 
   handleSubmit = (event) => {
     event.preventDefault();
     let tokenAnalysis = this.state.tokenAnalysis;
     let theTaggedNode = this.state.theTaggedNode;
-    tokenAnalysis.dependsOn = this.state.dependency;
+    tokenAnalysis.dependsOn = theTaggedNode.dependsOn;
+    tokenAnalysis.refersTo = theTaggedNode.refersTo;
     tokenAnalysis.lemma = theTaggedNode.lemma;
     tokenAnalysis.gloss = theTaggedNode.gloss;
     tokenAnalysis.label = theTaggedNode.label;
@@ -566,24 +655,23 @@ class WordTagger extends React.Component {
     tokenAnalysis.tense = theTaggedNode.tense;
     tokenAnalysis.voice = theTaggedNode.voice;
     tokenAnalysis.grammar = theTaggedNode.grammar;
-
     this.setState({
       updatingData: true
       , tokenAnalysis: tokenAnalysis
     }, this.submitUpdate);
-  }
+  };
 
   handleValueUpdateCallback = (restCallResult) => {
     if (restCallResult) {
       this.setState({
         message: restCallResult.message
         , messageIcon: restCallResult.messageIcon
+        , messageStatus: restCallResult.status
         , updatingData: false
         , dataUpdated: true
       });
     }
-  }
-
+  };
 
   toggleSubmit = () => {
     let theNode = new TreeNode(
@@ -591,7 +679,8 @@ class WordTagger extends React.Component {
         , this.props.token
         , this.state.lemma
         , this.state.gloss
-        , this.state.dependency
+        , this.state.dependsOn
+        , this.state.refersTo
         , this.state.selectedLabel
         , this.state.selectedCase
         , this.state.selectedGender
@@ -610,7 +699,7 @@ class WordTagger extends React.Component {
     } else {
       this.setState({submitDisabled: true})
     }
-  }
+  };
 
   getSubmitMessage = () => {
     if (this.state.updatingData) {
@@ -618,28 +707,22 @@ class WordTagger extends React.Component {
          <Spinner message={this.state.labels.messages.updating}/>
      );
     } else if (this.state.dataUpdated) {
+      let message = this.state.labels.messages.updated;
+      if (this.state.messageStatus !== "200") {
+        message = this.state.message;
+      }
       return (
           <span>
             <FontAwesome
               name={this.state.messageIcon}
             />
-            {this.state.labels.messages.updated}
+            {message}
           </span>
       )
     } else {
-      return (<span></span>);
+      return (<span/>);
     }
-
-
-  }
-  // ἐρχομενός	part sg pres mp masc nom
-  /**
-   * Order:
-   * POS
-   * ADJ, ART, PRON, NOUN: gender / number / case
-   * PART: tense, voice, gender, number, case
-   * VERB: person / number / tense / voice / mood
-   */
+  };
 
   render() {
         return (
@@ -663,6 +746,7 @@ class WordTagger extends React.Component {
                       {this.getPartOfSpeechComponent()}
                       {this.getDependencyComponent()}
                       {this.getLabelComponent()}
+                      {this.getReferentComponent()}
                       {this.getPersonComponent()}
                       {this.getVerbNumberComponent()}
                       {this.getTenseComponent()}
@@ -674,7 +758,7 @@ class WordTagger extends React.Component {
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
                         <div className="resourceSelectorPrompt">{this.state.labels.thisClass.lemma}</div>
                         <FormControl
-                            className="App App-WordTagger-Lemma"
+                            className="App App-TokenTagger-Lemma"
                             type="text"
                             value={this.state.lemma}
                             placeholder="Enter lemma"
@@ -684,7 +768,7 @@ class WordTagger extends React.Component {
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
                         <div className="resourceSelectorPrompt">{this.state.labels.thisClass.gloss}</div>
                         <FormControl
-                            className="App App-WordTagger-Gloss"
+                            className="App App-TokenTagger-Gloss"
                             type="text"
                             value={this.state.gloss}
                             placeholder="Enter gloss"
@@ -706,26 +790,26 @@ class WordTagger extends React.Component {
                     {Labels.getMessageLabels(this.props.session.languageCode).submit}
                   </Button>
                 </div>
-                <div className="col-sm-4 col-md-4 col-lg-4  App-Label-Selector-Retrieving">
+                <div className="col-sm-6 col-md-6 col-lg-6  App-Label-Selector-Retrieving">
                   {this.getSubmitMessage()}
                 </div>
-                <div className="col-sm-6 col-md-6 col-lg-6  App-Label-Selector-Empty">
+                <div className="col-sm-4 col-md-4 col-lg-4  App-Label-Selector-Empty">
                 </div>
               </div>
               <div className="row">
-                <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
+                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
                   <a
                       href="http://nlp.perseus.tufts.edu/syntax/treebank/guidelines_treebank2.html"
                       target="_blank"
                   >{this.state.labels.thisClass.help}</a>
                 </div>
-                <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
+                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
                   <a
                       href="http://www.perseids.org/tools/arethusa/app/#/perseids?chunk=31&doc=4971"
                       target="_blank"
                   >{this.state.labels.thisClass.examples}</a>
                 </div>
-                <div className="col-sm-4 col-md-4 col-lg-4  App-Label-Selector-Help">
+                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
                   <a
                       href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
                       + this.state.gloss
@@ -733,7 +817,13 @@ class WordTagger extends React.Component {
                       target="_blank"
                   >{this.state.labels.thisClass.oxford}</a>
                 </div>
-                <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
+                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
+                  <a
+                      href={"https://www.eva.mpg.de/lingua/resources/glossing-rules.php"
+                      + this.state.gloss
+                      + "_1?isEntryInOtherDict=false"}
+                      target="_blank"
+                  >{this.state.labels.thisClass.leipzig}</a>
                 </div>
               </div>
             </form>
@@ -741,24 +831,24 @@ class WordTagger extends React.Component {
   }
 }
 
-WordTagger.propTypes = {
+TokenTagger.propTypes = {
     session: PropTypes.object.isRequired
     , index: PropTypes.string.isRequired
     , tokens: PropTypes.array.isRequired
     , token: PropTypes.string.isRequired
-    , lemma: PropTypes.string
-    , gloss: PropTypes.string
-    , pos: PropTypes.string
-    , grammar: PropTypes.string
-    , callBack: PropTypes.func.isRequired
     , tokenAnalysis: PropTypes.object.isRequired
+    , callBack: PropTypes.func.isRequired
+    , copiedLemma: PropTypes.string
+    , copiedGloss: PropTypes.string
+    , copiedPos: PropTypes.string
+    , copiedGrammar: PropTypes.string
 };
 
-WordTagger.defaultProps = {
-  lemma: ""
-  , gloss: ""
-  , pos: ""
-  , grammar: ""
+TokenTagger.defaultProps = {
+  copiedLemma: ""
+  , copiedGloss: ""
+  , copiedPos: ""
+  , copiedGrammar: ""
 };
 
-export default WordTagger;
+export default TokenTagger;

@@ -354,11 +354,11 @@ export class ParaRowTextEditor extends React.Component {
               }
           <Accordion>
             <Panel
-                className="App-Grammar-panel "
+                className="App-biblial-links-panel "
                 header={
                   this.state.labels.thisClass.grammarPanelTitle
                 }
-                eventKey="grammarExplorer"
+                eventKey="grammarPanelTitle"
                 collapsible
             >
               <Grammar

@@ -135,8 +135,6 @@ class AgesEditor extends React.Component {
   handleFetchAgesIndexCallback = (restCallResult) => {
     if (restCallResult) {
       let values = restCallResult.data.values[0];
-      console.log(`AgesEditor.handleFetchAgesIndexCallback values =`);
-      console.log(values);
       this.setState({
         agesIndexFetched: true
         , agesIndexValues: values.tableData

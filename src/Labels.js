@@ -28,6 +28,21 @@ const   labels = {
       , ve: "Vespers"
       , wedding: "Wedding"
     }
+    , treebanksResultsTable: {
+      filterPrompt: "type here to filter search results..."
+      , headerParentLabel: "P.Relation"
+      , headerParentToken: "P.Word"
+      , headerParentLemma: "P.Lemma"
+      , headerParentGrammar: "P.Grammar"
+      , headerLabel: "Relation"
+      , headerToken: "Word"
+      , headerLemma: "Lemma"
+      , headerGrammar: "Grammar"
+      , headerChildLabel: "C.Relation"
+      , headerChildToken: "C.Word"
+      , headerChildLemma: "C.Lemma"
+      , headerChildGrammar: "C.Grammar"
+    }
     , resultsTable: {
       filterPrompt: "type here to filter search results..."
       , headerComments: "Comments"
@@ -382,6 +397,38 @@ const   labels = {
       , submitting: "Submitting..."
       , exists: "already exists..."
     }
+    , searchTreebanks: {
+      prompt: "enter a word or phrase"
+      , searchResultsType: "token analyses"
+      , findWhereTypeIs: "Find where the treebank type is..."
+      , findWhereGenericTypeIs: "and the generic type is..."
+      , typeAny: "any"
+      , propertyIs: "and the property is..."
+      , propertyTextIs: "and has this text..."
+      , matcherIs: "that matches..."
+      , matchesAtTheStart: "at the beginning"
+      , matchesAtTheEnd: "at the end"
+      , matchesAnywhere: "anywhere"
+      , matchesRegEx: "as a regular expression"
+      , msg1: "Important messages will appear here..."
+      , msg2: "searching..."
+      , msg3: "Found"
+      , msg4: "Token analyses"
+      , msg5: "You can use the boxes below to filter the results."
+      , msg6: "To view a DependencyTree, click the radio button of the row you are interested in."
+      , pageTitle: "Search the Database for Treebank Data"
+      , resultLabel: "Search Result"
+      , close: "Close"
+      , has: "and has"
+      , tags: "of the these tags"
+      , typeAll: "all"
+      , tagsAny: "any"
+      , creating: "Creating..."
+      , created: "Created"
+      , submit: "Submit"
+      , submitting: "Submitting..."
+      , exists: "already exists..."
+    }
     , searchOntology: {
       prompt: "enter a word or phrase"
       , findWhereTypeIs: "Find where entry type is..."
@@ -445,15 +492,20 @@ const   labels = {
       , exists: "already exists..."
     }
     , DependencyDiagram: {
-      title: "Dependency Diagram for "
-      , instructions: ""
+      title: "Dependency Diagram for"
+      , about: "Dependency Diagrams provide information about the grammar of words or punctuation marks and their syntactic role."
+      , instructions: "Scroll left or right and up and down to see more of the diagram.  Double-click a node to contract or expand it."
+      , toLearn: "To learn about dependency diagrams see"
+      , this: "this"
+      , and: "and"
     }
     , Grammar: {
       title: "Grammar Explorer for "
+      , button: "Grammar Explorer"
       , instructions: "Use this section to view grammatical information about Greek words..."
       , panelCompare: "Greek Text and Translations"
       , panelDependency: "Dependency Diagram"
-      , panelAnalyses: "Perseus Analyses"
+      , panelAnalyses: "Potential Analyses"
       , panelPerseusSite: "Perseus Web Site"
       , panelLexigramSite: "Lexigram Web Site (in Greek)"
       , panelLogeionSite: "Logeion Web Site"
@@ -468,10 +520,11 @@ const   labels = {
       , colParse: "Parse"
       , colGlosses: "Glosses"
       , colAnalyses: "ExPex"
+      , colSource: "Source"
     }
     , HyperTokenText: {
       title: "Text For "
-      , instructions: "Click on a word to get information about it..."
+      , instructions: "Click on a token (e.g. a word) to get information about it..."
     }
     , ldp: {
       prompt: "Pick the calendar type and date for which you want to view Liturgical Day Properties..."
@@ -596,13 +649,14 @@ const   labels = {
       , wnSense: "WN Sense"
       , oxSense: "Ox Sense"
     }
-    , WordTagger: {
-      panelTitle: "Word Tagger"
-      , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
+    , TokenTagger: {
+      panelTitle: "Token Tagger"
+      , instructions: "Use the Token Tagger to set the grammatical tags, lemma, gloss, and dependency information for the selected token (e.g. word or punctuation mark).  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button to save your work and update the Dependency Diagram."
       , lemma: "Lemma"
       , gloss: "Gloss"
       , help: "Tagging Guidelines"
       , examples: "Tagging Examples"
+      , leipzig: "Leipzig Glossing Rules"
       , oxford: "Oxford English Dictionary"
     }
     , WorkflowAssignment: {
@@ -732,7 +786,14 @@ const   labels = {
           , "PM": "punctuation mark"
           , "PREP": "preposition"
           , "PRON": "pronoun"
-          , "PRON.POSS": "pronoun (possessive"
+          , "PRON.COR": "pronoun (correlative)"
+          , "PRON.DEF": "pronoun (definite)"
+          , "PRON.DEM": "pronoun (demonstrative)"
+          , "PRON.INDF": "pronoun (indefinite)"
+          , "PRON.Q": "pronoun (interrogative)"
+          , "PRON.PERS": "pronoun (personal)"
+          , "PRON.POSS": "pronoun (possessive)"
+          , "PRON.REFL": "pronoun (reflexive)"
           , "PRON.REL": "pronoun (relative)"
           , "PTCP": "participle"
           , "Q": "question particle/marker"
@@ -795,6 +856,21 @@ const   labels = {
       , unction: "Unction"
       , ve: "Vespers"
       , wedding: "Wedding"
+    }
+    , treebanksResultsTable: {
+      filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
+      , headerParentLabel: "Γ.Σχέση"
+      , headerParentToken: "Γ.Λέξη"
+      , headerParentLemma: "Γ.Λέμα"
+      , headerParentGrammar: "Γ.Γραμματική"
+      , headerLabel: "Σχέση"
+      , headerToken: "Λέξη"
+      , headerLemma: "Λεμμά"
+      , headerGrammar: "Γραμματική"
+      , headerChildLabel: "Π.Σσχέση"
+      , headerChildToken: "Π.Λέξη"
+      , headerChildLemma: "Π.Λεμμά"
+      , headerChildGrammar: "Π.Γραμματική"
     }
     , resultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
@@ -1148,6 +1224,37 @@ const   labels = {
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
     }
+    , searchTreebanks: {
+      prompt: "Βρείτε σημειώσεις"
+      , findWhereTypeIs: "Βρες σχέσεις όπου ο τύπος είναι..."
+      , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
+      , docTypeAny: "οποιαδήποτε"
+      , propertyIs: "και η ιδιότητα είναι:"
+      , propertyTextIs: "και έχετε αυτό το κείμενο..."
+      , matcherIs: "που ταιριάζει..."
+      , matchesAtTheStart: "στην αρχή"
+      , matchesAtTheEnd: "στο τέλος"
+      , matchesAnywhere: "παντού"
+      , matchesRegEx: "σαν ένα regular expression"
+      , msg1: "Σημαντικά μηνύματα θα εμφανίζονται εδώ..."
+      , msg2: "αναζήτηση..."
+      , msg3: "Βρέθηκε"
+      , msg4: "αναλύσεις"
+      , msg5: "Μπορείτε να χρησιμοποιήσετε το παρακάτω πλαίσιο για να φιλτράρετε τα αποτελέσματα."
+      , msg6: "Για να επεξεργαστείτε μια σχέση, πατήστε το κουμπί της γραμμής που σας ενδιαφέρει."
+      , pageTitle: "Αναζητήστε τη βάση δεδομένων για στις σημειώσεις σας"
+      , resultLabel: "Αποτέλεσμα αναζήτησης"
+      , close: "Κλείστε"
+      , has: "και έχει"
+      , tags: "αυτές τις ετκέτες"
+      , tagsAll: "όλες"
+      , tagsAny: "οποιαδήποτε από"
+      , creating: "Δημιουργώντας το..."
+      , created: "Το δημιούργησε"
+      , submit: "Να Στέιλει"
+      , submitting: "Έστειλε..."
+      , exists: "υπάρχει ήδη..."
+    }
     , searchOntology: {
       prompt: "εισάγετε μία λέξη ή φράση"
       , findWhereTypeIs: "Βρες σχέσεις όπου το θέμα είναι..."
@@ -1210,15 +1317,20 @@ const   labels = {
       , exists: "υπάρχει ήδη..."
     }
     , DependencyDiagram: {
-      title: "Dependency Diagram for "
-      , instructions: ""
+      title: "Dependency Diagram for"
+      , about: "Dependency Diagrams provide information about the grammar of words or punctuation marks and their syntactic role."
+      , instructions: "Scroll left or right and up and down to see more of the diagram.  Double-click a node to contract or expand it."
+      , toLearn: "To learn about dependency diagrams see"
+      , this: "this"
+      , and: "and"
     }
     , Grammar: {
       title: "Grammar Explorer for "
+      , button: "Grammar Explorer"
       , instructions: "Use this section to view grammatical information about Greek words..."
       , panelCompare: "Greek Text and Translations"
       , panelDependency: "Dependency Diagram"
-      , panelAnalyses: "Perseus Analyses"
+      , panelAnalyses: "Potential Analyses"
       , panelPerseusSite: "Perseus Web Site"
       , panelLexigramSite: "Lexigram Web Site (στα Ελληνικά)"
       , panelLogeion: "Logeion Web Site"
@@ -1233,10 +1345,11 @@ const   labels = {
       , colParse: "Parse"
       , colGlosses: "Glosses"
       , colAnalyses: "ExPex"
+      , colSource: "Source"
     }
     , HyperTokenText: {
       title: "Text For "
-      , instructions: "Click on a word to get information about it..."
+      , instructions: "Click on a token (e.g. a word) to get information about it..."
     }
     , ldp: {
       prompt: "Επιλέξτε τον τύπο ημερολογίου και ημερομηνιών από τον οποίο θέλετε να δείτε τα Λειτουργικά Θέματα των Ημερών..."
@@ -1357,13 +1470,14 @@ const   labels = {
       , infoBelow: "Πληροφορίες σχετικά με την αναφορά είναι παρακάτω...."
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
-    , WordTagger: {
-      panelTitle: "Word Tagger"
-      , instructions: "Use the Word Tagger to set the grammatical tags, lemma, gloss, and dependency information for the word.  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button."
+    , TokenTagger: {
+      panelTitle: "Token Tagger"
+      , instructions: "Use the Token Tagger to set the grammatical tags, lemma, gloss, and dependency information for the selected token (e.g. word or punctuation mark).  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button to save your work and update the Dependency Diagram."
       , lemma: "Lemma"
       , gloss: "Gloss"
       , help: "Tagging Guidelines"
       , examples: "Tagging Examples"
+      , leipzig: "Leipzig Glossing Rules"
       , oxford: "Oxford English Dictionary"
     }
     , WorkflowAssignment: {
@@ -1493,9 +1607,16 @@ const   labels = {
           , "PART": "particle"
           , "PM": "punctuation mark"
           , "PREP": "preposition"
-          , "PRON": "pronoun"
-          , "PRON.POSS": "pronoun (possessive"
-          , "PRON.REL": "pronoun (relative)"
+          , "PRON": "αντωνυμία"
+          , "PRON.COR": "αντωνυμία (συσχετική)"
+          , "PRON.DEF": "αντωνυμία (οριστική)"
+          , "PRON.DEM": "αντωνυμία (δεικτική)"
+          , "PRON.INDF": "αντωνυμία (αόριστη)"
+          , "PRON.Q": "αντωνυμία (ερωτηματική)"
+          , "PRON.PERS": "αντωνυμία (προωπική)"
+          , "PRON.POSS": "αντωνυμία (κτητική)"
+          , "PRON.REFL": "αντωνυμία (αυτοπαθής)"
+          , "PRON.REL": "αντωνυμία (αναφορική)"
           , "PTCP": "participle"
           , "Q": "question particle/marker"
           , "SUF": "suffix"
@@ -1546,6 +1667,7 @@ module.exports = {
   , getMessageLabels: (code) => { return labels[code].messages }
   , getButtonLabels: (code) => { return labels[code].button }
   , getResultsTableLabels: (code) => { return labels[code].resultsTable;}
+  , getTreebankSearchResultsTableLabels: (code) => { return labels[code].treebanksResultsTable;}
   , getLinkSearchResultsTableLabels: (code) => { return labels[code].linkSearchResultsTable;}
   , getHeaderLabels: (code) => { return labels[code].header;}
   , getHelpLabels: (code) => { return labels[code].help;}
@@ -1583,11 +1705,12 @@ module.exports = {
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
   , getSearchNotesLabels: (code) => { return labels[code].searchNotes;}
   , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
+  , getSearchTreebanksLabels: (code) => { return labels[code].searchTreebanks;}
   , getGlossBuilderLabels: (code) => { return labels[code].GlossBuilder;}
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
   , getViewReferencesLabels: (code) => { return labels[code].ViewReferences;}
   , getViewRelationshipsLabels: (code) => { return labels[code].ViewRelationships;}
-  , getWordTaggerLabels: (code) => { return labels[code].WordTagger;}
+  , getTokenTaggerLabels: (code) => { return labels[code].TokenTagger;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
   , getLiturgicalAcronymsLabels: (code) => { return labels[code].liturgicalAcronyms;}
   , getHttpCodeLabels: (code) => { return labels[code].httpCodes;}

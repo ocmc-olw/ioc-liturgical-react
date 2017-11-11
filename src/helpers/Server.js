@@ -19,6 +19,7 @@ const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
 const notes = docs + "/notes";
+const treebanks = docs + "/treebanks";
 const agesPdf = docs + "/agespdf";
 const clone = docs + "/clone";
 const agesIndex = docs + "/agesindex";
@@ -40,6 +41,7 @@ const dbDropdownsUserRolesForDomain = "domains/userdropdown";
 const dbDropdownsSearchOntology = "dropdowns/ontology";
 const dbDropdownDomains = "dropdowns/domains";
 const dbDropdownsSearchRelationships = "dropdowns/relationships";
+const dbDropdownsSearchTreebanks = "dropdowns/treebanks";
 const dbDropdownsGrLibTopics = "dropdowns/grlibtopics";
 const ldp = "ldp";
 const messageIcons = MessageIcons.getMessageIcons();
@@ -306,6 +308,11 @@ const restPut = (
         result.message = error.message;
         result.messageIcon = messageIcons.error;
         result.status = error.status;
+        if (error.response && error.response.data) {
+          result.status = error.response.data.code;
+          result.message = error.response.data.userMessage;
+          console.log(error.response.data.developerMessage);
+        }
         if (callback) {
           callback(result);
         }
@@ -328,10 +335,12 @@ export default {
   , getDbServerDropdownsSearchNotesApi: () => {return dbApi + dbDropdownsSearchNotes;}
   , getDbServerDropdownsSearchOntologyApi: () => {return dbApi + dbDropdownsSearchOntology;}
   , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}
+  , getDbServerDropdownsSearchTreebanksApi: () => {return dbApi + dbDropdownsSearchTreebanks;}
   , getDbServerDocsApi: () => {return dbApi + docs;}
   , getDbServerNotesApi: () => {return dbApi + notes;}
   , getDbServerLinksApi: () => {return dbApi + links;}
   , getDbServerOntologyApi: () => {return dbApi + ontology;}
+  , getDbServerTreebanksApi: () => {return dbApi + treebanks;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
   , getDbServerWordAnalysisApi: () => {return dbApi + wordAnalysis;}
   , getResources: (

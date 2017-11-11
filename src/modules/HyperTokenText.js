@@ -74,7 +74,6 @@ class HyperTokenText extends React.Component {
 HyperTokenText.propTypes = {
   languageCode: PropTypes.string.isRequired
   , tokens: PropTypes.array.isRequired
-  , id: PropTypes.string.isRequired
   , onClick: PropTypes.func.isRequired
 };
 

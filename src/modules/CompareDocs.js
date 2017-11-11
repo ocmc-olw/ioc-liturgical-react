@@ -70,7 +70,7 @@ export class CompareDocs extends React.Component {
     this.getTable = this.getTable.bind(this);
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     this.setState({
           showModal: this.props.showModal
           , domain: "*"
@@ -188,7 +188,7 @@ export class CompareDocs extends React.Component {
         });
   }
 
-  handleRowSelect = (row, isSelected, e) => {
+  handleRowSelect = (row) => {
     let selectRow = this.state.selectRow;
     selectRow.selected = [row["id"]];
     let idParts = row["id"].split("~");

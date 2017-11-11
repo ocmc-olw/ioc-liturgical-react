@@ -3,12 +3,12 @@ import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
 
-class NoteSearchOptions extends React.Component {
+class TreebankSearchOptions extends React.Component {
 
   constructor(props) {
     super(props);
 
-    let initialType = "Human";
+    let initialType = "PtbWord";
     if (this.props.initialType) {
       initialType = this.props.initialType;
     }
@@ -175,7 +175,7 @@ class NoteSearchOptions extends React.Component {
   }
 }
 
-NoteSearchOptions.propTypes = {
+TreebankSearchOptions.propTypes = {
   types: PropTypes.array.isRequired
   , initialType: PropTypes.string.isRequired
   , properties: PropTypes.object.isRequired
@@ -186,4 +186,4 @@ NoteSearchOptions.propTypes = {
   , labels: PropTypes.object.isRequired
 };
 
-export default NoteSearchOptions;
+export default TreebankSearchOptions;

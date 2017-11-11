@@ -5,7 +5,8 @@
 module.exports = {
   getMessageIcons: () => {
     return   {
-      info: "info-circle"
+      arrowRight: "long-arrow-right"
+      , info: "info-circle"
       , warning: "lightbulb-o"
       , error: "exclamation-triangle"
       , toggleOn: "toggle-on"

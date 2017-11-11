@@ -18,12 +18,11 @@ import {
   Grid,
   Image,
   Jumbotron,
-  Modal,
   Panel,
   Table
-} from "react-bootstrap"
-import logo from './images/ioc-liturgical-react-logo.png'
-import CodeExample from './helpers/CodeExample'
+} from "react-bootstrap";
+import logo from './images/ioc-liturgical-react-logo.png';
+import CodeExample from './helpers/CodeExample';
 import {render} from 'react-dom';
 
 import {
@@ -45,6 +44,7 @@ import {
   , SearchNotes
   , SearchOntology
   , SearchText
+  , SearchTreebanks
   , SearchRelationships
   , Session
   , Spinner
@@ -102,6 +102,7 @@ class Demo extends React.Component {
           , searchLinks: Labels.labels.en.searchLinks
           , searchNotes: Labels.labels.en.searchNotes
           , searchOntology: Labels.labels.en.searchOntology
+          , searchTreebanks: Labels.labels.en.searchTreebanks
           , ldp: Labels.labels.en.ldp
           , messages: Labels.getMessageLabels("en")
         }
@@ -136,6 +137,7 @@ class Demo extends React.Component {
     this.handleLoginCallback = this.handleLoginCallback.bind(this);
     this.handleSearchCallback = this.handleSearchCallback.bind(this);
     this.handleSearchNotesCallback = this.handleSearchNotesCallback.bind(this);
+    this.handleSearchTreebanksCallback = this.handleSearchTreebanksCallback.bind(this);
     this.handleSearchOntologyCallback = this.handleSearchOntologyCallback.bind(this);
     this.handleSearchLinksCallback = this.handleSearchLinksCallback.bind(this);
     this.handleLdpCallback = this.handleLdpCallback.bind(this);
@@ -177,6 +179,7 @@ class Demo extends React.Component {
             , search: Labels.getSearchLabels(code)
             , searchLinks: Labels.getSearchLinksLabels(code)
             , searchNotes: Labels.getSearchNotesLabels(code)
+            , searchTreebanks: Labels.getSearchTreebanksLabels(code)
             , searchOntology: Labels.getSearchOntologyLabels(code)
             , ldp: Labels.getLdpLabels(code)
             , messages: Labels.getMessageLabels(code)
@@ -322,6 +325,9 @@ class Demo extends React.Component {
     // TODO
   };
   handleSearchOntologyCallback(id, value) {
+    // TODO
+  };
+  handleSearchTreebanksCallback(id, value) {
     // TODO
   };
 
@@ -807,6 +813,23 @@ class Demo extends React.Component {
                       fixedType={false}
                   />
                 </Panel> {/* Search Relationships */}
+                <Panel header="Search Treebanks" eventKey="searchTreebanks">
+                  <p>Use the Search Notes Component to search your personal notes.</p>
+                  { (this.state.authenticated  && this.state.formsLoaded) ?
+                      <p></p>
+                      :
+                      <p>You must log in first in order to see and use this.</p>
+                  }
+                  { (this.state.authenticated && this.state.formsLoaded) &&
+                  <SearchTreebanks
+                      session={this.state.session}
+                      callback={this.handleSearchTreebanksCallback}
+                      editor={true}
+                      initialType={"PtbWord"}
+                      fixedType={false}
+                  />
+                  }
+                </Panel> {/* Search Treebanks */}
                 <Panel header="Code and Props" eventKey="searchCode">
                   <CodeExample
                       codeText={searchSample}
@@ -919,27 +942,6 @@ class Demo extends React.Component {
               }
             </Panel> {/* New Item */}
             <Panel header="Dependency Diagram" eventKey="dependencyDiagram">
-              <Modal show={this.state.showModal} onHide={this.closeModal}>
-                <Modal.Header closeButton>
-                  <Modal.Title>Demo</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                  <DependencyDiagram
-                      languageCode={this.state.session.languageCode}
-                      id={"DemoModalDependencyDiagram"}
-                      data={this.state.treeData}
-                      text="Hi tere"
-                      size="medium"
-                      width="50%"
-                      height="500px"
-                  />
-                </Modal.Body>
-                <Modal.Footer>
-                </Modal.Footer>
-              </Modal>
-              <Button
-                  onClick={this.showModal}>Show Modal
-              </Button>
             </Panel> {/* Dependency Diagram */}
             <Panel header="Greek Liturgical Library Topics Selector" eventKey="grlibtopics">
               { (this.state.authenticated) ?

@@ -43,7 +43,7 @@ div.container {
     color: #5bc0de;
 }
 .modal-content {
-    max-width: 80vw;
+    max-width: 95vw;
 }
 .modal-container .modal, .modal-container .modal-backdrop {
     position: absolute;
@@ -269,7 +269,33 @@ div[class*='App-page'] {
 div.App-logo.navbar-header {
     overflow: scroll;
 }
-
+.indent {
+    width: 0 !important;
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+}
+.list-group-item {
+      padding-left: 0 !important;
+      margin: 0 !important;
+}
+.treeview {
+    padding-left: 1px !important;
+    margin-left: 1px !important;
+}
+.list-group {
+    padding-left: 0 !important;
+    margin-left: 0 !important;
+}
+.App-Modal-Dependency-Diagram {
+    width: 95vw;
+}
+.treeview {
+    overflow: scroll;
+}
+.App-DependencyDiagram-Well {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
 .App-demo-version {
     margin-left: 20px;
     color: #5bc0de;
@@ -287,7 +313,19 @@ div.App-logo.navbar-header {
 .Select {
     max-width: 90vw;
 }
+.App-Grammar-Well {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
 .App-Label-Selector-POS .Select-control{
+    float: left;
+    width: 45ch;
+}
+.App-Label-Selector-Dependency .Select-control{
+    float: left;
+    width: 45ch;
+}
+.App-Label-Selector-Referent .Select-control{
     float: left;
     width: 45ch;
 }
@@ -312,10 +350,10 @@ div.App-logo.navbar-header {
 .App-Label-Selector-Case .Select-control {
     width: 45ch;
 }
-.App-WordTagger-Lemma {
+.App-TokenTagger-Lemma {
  width: 45ch;
 }
-.App-WordTagger-Gloss {
+.App-TokenTagger-Gloss {
     width: 45ch;
 }
 .App-Label-Selector-Help {
@@ -350,40 +388,8 @@ path.link {
     stroke-width: 1.5px;
 }
 
-.AppDependencyNode {
-    cursor: pointer;
-}
-
-.AppDependencyNodeToken {
-    color: blue;
-    font-size: large;
-}
-.AppDependencyNodeLemma {
-    color: blue;
-    font-size: small;
-}
-.AppDependencySelectedNode {
-    background-color: #bfe6ff;
-}
-.AppDependencyNodeGloss {
-    font-size: small;
-}
-.AppDependencyNodeLabel {
-    text-align: center;
-    color: red;
-    font-style: italic;
-    font-size: xx-small;
-}
 .App-Modal-Para-Row-Editor {
     width: 90vw;
-}
-.App-DependencyDiagram-Container {
-    background-color: white !important;
-    overflow: scroll;
-}
-.App-Modal-Dependency-Diagram-Title {
-    color: blue;
-    font-weight: bold;
 }
 .App-Modal-Id-Builder {
     width: 90vw;
@@ -436,4 +442,26 @@ path.link {
 }
 .Button-Cancel {
     margin: 2px;
+}
+.App-DependencyDiagram-Node-Key {
+    padding-left: 4px;
+}
+.App-DependencyDiagram-Node-Label {
+    color: firebrick;
+    padding-left: 4px;
+}
+.App-DependencyDiagram-Node-Token {
+    font-weight: bold;
+    padding-left: 4px;
+}
+.App-DependencyDiagram-Node-Gloss {
+    color: darkgreen;
+    padding-left: 4px;
+}
+.App-DependencyDiagram-Node-Grammar {
+    color: black;
+    padding-left: 4px;
+}
+.App-DependencyDiagram-Node-Lemma {
+    padding-left: 4px;
 }
