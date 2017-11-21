@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { get, has } from 'lodash';
 import Server from '../helpers/Server';
 import {
   Label
@@ -17,6 +16,7 @@ import DependencyDiagram from './DependencyDiagram';
 import TokenTagger from '../helpers/TokenTagger';
 import TreeViewUtils from '../helpers/TreeViewUtils';
 import GrammarSitePanel from './GrammarSitePanel';
+import SearchTreebanks from '../SearchTreebanks';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -49,6 +49,7 @@ class Grammar extends React.Component {
     this.getPanelKriaras = this.getPanelKriaras.bind(this);
     this.getPanelTriantafyllides = this.getPanelTriantafyllides.bind(this);
     this.getPanelBasicLexicon = this.getPanelBasicLexicon.bind(this);
+    this.getPanelSearchTreebanks = this.getPanelSearchTreebanks.bind(this);
     this.getPanelSmythGrammar = this.getPanelSmythGrammar.bind(this);
   }
 
@@ -174,19 +175,9 @@ class Grammar extends React.Component {
   setTextInfo = (restCallResult) => {
     if (restCallResult) {
       let nodeData = restCallResult.data.values[3].nodes;
-      console.log("Grammar.setTextInfo.nodeData = ");
-      console.log(nodeData);
       let treeViewUtils = new TreeViewUtils(nodeData);
       let nodeDependencies = treeViewUtils.nodeDependencies;
       let treeNodeData = treeViewUtils.toTreeViewData("Root");
-      // let nodeDependencies = this.toDependencyMap(nodeData);
-      // let treeNodeData = this.toTreeViewData(
-      //     nodeData
-      //     , nodeDependencies
-      //     , "Root"
-      //     , undefined
-      // );
-      console.log(nodeData);
       this.setState({
         dropdownsLoaded: true
         , data: restCallResult.data.values[0].text
@@ -227,12 +218,6 @@ class Grammar extends React.Component {
     }
     let treeViewUtils = new TreeViewUtils(this.state.nodeData);
     let treeNodeData = treeViewUtils.toTreeViewData("Root", index);
-    // let treeNodeData = this.toTreeViewData(
-    //     this.state.nodeData
-    //     , this.state.nodeDependencies
-    //     , "Root"
-    //     , index
-    // );
     this.setState({
       selectedTokenIndex: index
       , selectedTokenIndexNumber: tokenIndex
@@ -298,7 +283,6 @@ class Grammar extends React.Component {
   };
 
   handleTaggerCallback = (treeNode) => {
-    console.log(`Grammar.handleTaggerCallback.treeNode.refersTo = ${treeNode.refersTo}`);
     let nodeData = this.state.nodeData;
     let dependsOn = treeNode.dependsOn;
     let i = parseInt(treeNode.id);
@@ -307,19 +291,10 @@ class Grammar extends React.Component {
     nodeData[i].gloss = treeNode.gloss;
     nodeData[i].label = treeNode.label;
     nodeData[i].grammar = treeNode.grammar;
-    console.table(nodeData[i]);
     let treeViewUtils = new TreeViewUtils(nodeData);
     let nodeDependencies = treeViewUtils.nodeDependencies;
     let treeNodeData = treeViewUtils.toTreeViewData("Root");
 
-    // let nodeDependencies = this.toDependencyMap(nodeData);
-    // let treeNodeData = this.toTreeViewData(
-    //     nodeData
-    //     , nodeDependencies
-    //     , "Root"
-    //     , treeNode.id
-    // );
-    console.log(treeNodeData);
     this.setState({
       selectedTokenTags: treeNode
       , nodeData: nodeData
@@ -349,7 +324,8 @@ class Grammar extends React.Component {
                 copiedGrammar={this.state.selectedPerseus.grammar}
                 callBack={this.handleTaggerCallback}
             />
-          </Panel>
+            {this.getPanelSearchTreebanks()}
+            </Panel>
       )
   };
   getPanelPotentialAnalyses = () => {
@@ -414,6 +390,7 @@ class Grammar extends React.Component {
       return (<Label/>);
     }
   };
+
   getPanelLogeion = () => {
     if (this.state.selectedTokenIsWord) {
       return (
@@ -523,6 +500,24 @@ class Grammar extends React.Component {
       return (<Label/>);
     }
   };
+
+  getPanelSearchTreebanks = () => {
+    return (
+          <Panel
+              className="App-TokenTagger-Panel-Search-Treebanks"
+              collapsible={true}
+              header={this.state.labels.thisClass.panelTreebanks}
+          >
+            <SearchTreebanks
+                session={this.props.session}
+                editor={true}
+                initialType={"PtbWord"}
+                fixedType={false}
+            />
+          </Panel>
+    )
+  }
+
   getPanelSmythGrammar = () => {
     if (this.state.selectedTokenIsWord) {
       return (
@@ -647,6 +642,7 @@ class Grammar extends React.Component {
                 languageCode={this.props.session.languageCode}
                 tokens={this.state.tokens ? this.state.tokens : []}
                 onClick={this.handleTokenClick}
+                selectedToken={this.state.selectedTokenIndexNumber}
             />
             {
               this.state.selectedToken &&

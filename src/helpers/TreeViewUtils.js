@@ -68,7 +68,9 @@ class TreeViewUtils {
       let keys = get(this.nodeDependencies, parent);
       for (let i = 0; i < keys.length; i++) {
         let key = keys[i];
-        let selected = (key === selection);
+        let keyNumber = parseInt(key);
+        let selectionNumber = parseInt(selection);
+        let selected = (keyNumber === selectionNumber);
         let node = this.nodes[key];
         if (node) {
           let nodeData = {};
