@@ -73,6 +73,11 @@ div.container {
     color: blue;
     cursor: pointer;
 }
+.App-HyperToken-Word-Selected {
+    color: blue;
+    background-color: #bce8f1;
+    cursor: pointer;
+}
 .App-iframe-wrapper {
     resize: vertical;
 }

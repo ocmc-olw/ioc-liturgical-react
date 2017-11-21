@@ -920,6 +920,8 @@ class Demo extends React.Component {
                   restServer={this.state.session.restServer}
                   restServerLabel={this.state.language.labels.pageAbout.RestServer}
                   wsVersionLabel={this.state.language.labels.pageAbout.wsVersion}
+                  synchEnabledLabel={this.state.language.labels.pageAbout.synchEnabled}
+                  synchDbConnectionOkLabel={this.state.language.labels.pageAbout.synchDbConnectionOk}
               />
             </Panel> {/* Configuration */}
             <Panel header="Help - for Search Component" eventKey="helpSearch">

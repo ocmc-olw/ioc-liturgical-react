@@ -16,6 +16,8 @@ class Configuration extends React.Component {
       , dbServer: ""
       , dbReadOnly: ""
       , wsVersion : ""
+      , synchEnabled: false
+      , synchDbConnectionOk: false
     }
   }
 
@@ -31,6 +33,8 @@ class Configuration extends React.Component {
             ,dbServerDomain: response.data.dbServerDomain
             , dbReadOnly: response.data.dbReadOnly
             , wsVersion: response.data.wsVersion
+            , synchEnabled: response.data.synchEnabled
+            , synchDbConnectionOk: response.data.synchDbConnectionOk
           } );
         })
         .catch( (error) => {
@@ -48,6 +52,8 @@ class Configuration extends React.Component {
                 <p>{this.props.dbServerLabel} {this.state.dbServerDomain}</p>
                 <p>{this.props.restServerLabel} {this.props.restServer}</p>
                 <p>{this.props.wsVersionLabel} {this.state.wsVersion}</p>
+                <p>{this.props.synchEnabledLabel} {this.state.synchEnabled}</p>
+                <p>{this.props.synchDbConnectionOkLabel} {this.state.synchDbConnectionOkLabel}</p>
               </Alert>
             </div>
         );
@@ -64,6 +70,8 @@ Configuration.propTypes = {
   , restServerLabel: PropTypes.string.isRequired
   , wsVersionLabel: PropTypes.string.isRequired
   , dbServerLabel: PropTypes.string.isRequired
+  , synchEnabledLabel: PropTypes.string.isRequired
+  , synchDbConnectionOkLabel: PropTypes.string.isRequired
 };
 
 Configuration.defaultProps = {

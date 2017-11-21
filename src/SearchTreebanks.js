@@ -46,6 +46,7 @@ export class SearchTreebanks extends React.Component {
     this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
     this.handleTokenClick = this.handleTokenClick.bind(this);
+    this.treeViewSelectCallback = this.treeViewSelectCallback.bind(this);
   }
 
   componentWillMount = () => {
@@ -113,6 +114,7 @@ export class SearchTreebanks extends React.Component {
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, currentState) => {
+
     let theSearchLabels = Labels.getSearchTreebanksLabels(props.session.languageCode);
 
     return (
@@ -195,6 +197,7 @@ export class SearchTreebanks extends React.Component {
           , idColumnSize: "80px"
           , updatingData: get(currentState,"updatingData", false)
           , dataUpdated: get(currentState,"dataUpdated",false)
+          , selectedTokenIndexNumber: get(currentState,"selectedTokenIndexNumber", 1)
         }
     )
   }
@@ -228,6 +231,7 @@ export class SearchTreebanks extends React.Component {
             ]
     )
   }
+
   handleCancelRequest() {
     if (this.props.callback) {
       this.props.callback("","");
@@ -240,9 +244,19 @@ export class SearchTreebanks extends React.Component {
     }
   }
 
+  treeViewSelectCallback = (node) => {
+    if (node && node.key) {
+      let intKey = parseInt(node.key);
+      this.handleTokenClick(
+          intKey-1
+          ,this.state.tokens[intKey]
+      );
+    }
+  }
+
   handleTokenClick = (index, token) => {
-    console.log(`handleTokenClick.index=${index} token=${token}`);
-    let tokenIndex = (parseInt(index)+1).toString();
+    let treeViewIndex = (parseInt(index)+1);
+    let tokenIndex = parseInt(index);
     let tokenIsWord = true;
     if (token.length < 2) {
       let notLetter = '"\'·.,;?!~@#$%^&z-z_[]{})(-:0123456789';
@@ -251,7 +265,7 @@ export class SearchTreebanks extends React.Component {
       }
     }
     let treeViewUtils = new TreeViewUtils(this.state.nodes);
-    let treeNodeData = treeViewUtils.toTreeViewData("Root", tokenIndex);
+    let treeNodeData = treeViewUtils.toTreeViewData("Root", treeViewIndex);
 
     this.setState({
       selectedTokenIndex: index
@@ -340,13 +354,14 @@ export class SearchTreebanks extends React.Component {
                 <HyperTokenText
                     languageCode={this.props.session.languageCode}
                     tokens={this.state.tokens}
-                    id={this.state.id}
+                    selectedToken={this.state.selectedTokenIndexNumber}
                     onClick={this.handleTokenClick}
                 />
                 <Well className={"App-DependencyDiagram-Well"}>
                   <DependencyDiagram
                       data={this.state.treeNodeData}
                       highlightSelected={true}
+                      onClick={this.treeViewSelectCallback}
                   />
                 </Well>
               </Modal.Body>

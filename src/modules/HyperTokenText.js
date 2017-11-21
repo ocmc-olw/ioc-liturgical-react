@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import Spinner from '../helpers/Spinner';
@@ -14,6 +15,8 @@ class HyperTokenText extends React.Component {
 
     this.renderTokens = this.renderTokens.bind(this);
     this.handleClick = this.handleClick.bind(this);
+    this.getRuby = this.getRuby.bind(this);
+    this.getTokenWordSpan = this.getTokenWordSpan.bind(this);
 
   }
 
@@ -21,10 +24,14 @@ class HyperTokenText extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.state = this.setTheState(nextProps);
+    this.state = this.setTheState(nextProps, this.state);
   }
 
-  setTheState = (props) => {
+  setTheState = (props, currentState) => {
+    let selectedToken = get(currentState, "selectedToken", -1);
+    if (this.props.selectedToken !== props.selectedToken) {
+      selectedToken = props.selectedToken;
+    }
     return (
         {
           labels: {
@@ -34,28 +41,55 @@ class HyperTokenText extends React.Component {
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
           , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , selectedToken: selectedToken
+          , lastPropToken: get(props,"selectedToken", -1)
         }
     )
   }
 
   handleClick = (event) => {
-    this.props.onClick(event.currentTarget.id, event.currentTarget.textContent.trim());
+    this.setState({
+      selectedToken: parseInt(event.currentTarget.id)
+    });
+    this.props.onClick(
+        event.currentTarget.id
+        , event.currentTarget.textContent.trim()
+    );
   }
 
-  renderTokens = () => {
+  getTokenWordSpan = (token, index) => {
+    if (this.state.selectedToken === index) {
+      return (
+          <rb><span className="App-HyperToken-Word-Selected" id={index} onClick={this.handleClick}>{token}&nbsp;</span>
+          </rb>
+      )
+    } else {
+      return (
+          <rb><span className="App-HyperToken-Word" id={index} onClick={this.handleClick}>{token}&nbsp;</span></rb>
+      )
+    }
+  };
+  getRuby = (token, index) => {
+    return (
+        <ruby className="App App-HyperToken" key={index}>
+          {this.getTokenWordSpan(token, index)}
+          <rt><span className="App-HyperToken-Index">{index+1}</span></rt>
+        </ruby>
+    )
+  };
 
+  renderTokens = () => {
     if (this.props.tokens && this.props.tokens.length > 0) {
-      return this.props.tokens.map((token, index) => (
-          <ruby className="App App-HyperToken" key={index}>
-            <rb><span className="App-HyperToken-Word" id={index} onClick={this.handleClick}>{token}&nbsp;</span></rb>
-            <rt><span className="App-HyperToken-Index">{index+1}</span></rt>
-          </ruby>
-      ));
+      let result = [];
+      let size = this.props.tokens.length;
+      for (let index=0; index < size; index++ ) {
+        result.push(this.getRuby(this.props.tokens[index], index))
+      }
+      return result;
     } else {
       return <div><Spinner message={this.state.labels.messages.retrieving}/></div>;
     }
-  }
-
+  };
 
   render() {
         return (
@@ -75,6 +109,7 @@ HyperTokenText.propTypes = {
   languageCode: PropTypes.string.isRequired
   , tokens: PropTypes.array.isRequired
   , onClick: PropTypes.func.isRequired
+  , selectedToken: PropTypes.number
 };
 
 HyperTokenText.defaultProps = {

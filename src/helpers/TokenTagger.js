@@ -4,9 +4,12 @@ import {
   Button
   , FormControl
   , FormGroup
+  , Panel
+  , Well
 } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import { get } from 'lodash';
+import Iframe from 'react-iframe';
 
 import Labels from '../Labels';
 
@@ -16,6 +19,7 @@ import LabelSelector from '../helpers/LabelSelector';
 import MessageIcons from '../helpers/MessageIcons';
 import Server from '../helpers/Server';
 import Spinner from '../helpers/Spinner';
+import SearchTreebanks from "../SearchTreebanks";
 
 /**
  * Provides a means for the user to set the tags for a token.
@@ -283,7 +287,6 @@ class TokenTagger extends React.Component {
   };
 
   normalizeIndex(value) {
-    console.log(`TokenTagger.normalizeIndex.value = ${value}`);
     let result = value;
     if (value) {
       if (value === "0") {
@@ -292,7 +295,6 @@ class TokenTagger extends React.Component {
         result = (parseInt(value)-1).toString();
       }
     }
-    console.log(`TokenTagger.normalizeIndex.result = ${result}`);
     return result;
   }
   handleDependencyChange = (selection) => {
@@ -302,7 +304,6 @@ class TokenTagger extends React.Component {
   };
 
   handleReferentChange = (selection) => {
-    console.log(`TokenTagger.handleReferentChange.selection.value = ${selection['value']}`);
     this.setState({
       refersTo: selection["value"]
     }, this.toggleSubmit);
@@ -724,6 +725,7 @@ class TokenTagger extends React.Component {
     }
   };
 
+
   render() {
         return (
             <form onSubmit={this.handleSubmit}>
@@ -799,23 +801,9 @@ class TokenTagger extends React.Component {
               <div className="row">
                 <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
                   <a
-                      href="http://nlp.perseus.tufts.edu/syntax/treebank/guidelines_treebank2.html"
+                      href="https://github.com/PerseusDL/treebank_data/blob/master/AGDT2/guidelines/Greek_guidelines.md"
                       target="_blank"
                   >{this.state.labels.thisClass.help}</a>
-                </div>
-                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
-                  <a
-                      href="http://www.perseids.org/tools/arethusa/app/#/perseids?chunk=31&doc=4971"
-                      target="_blank"
-                  >{this.state.labels.thisClass.examples}</a>
-                </div>
-                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
-                  <a
-                      href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
-                      + this.state.gloss
-                      + "_1?isEntryInOtherDict=false"}
-                      target="_blank"
-                  >{this.state.labels.thisClass.oxford}</a>
                 </div>
                 <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
                   <a
@@ -824,6 +812,14 @@ class TokenTagger extends React.Component {
                       + "_1?isEntryInOtherDict=false"}
                       target="_blank"
                   >{this.state.labels.thisClass.leipzig}</a>
+                </div>
+                <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
+                  <a
+                      href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
+                      + this.state.gloss
+                      + "_1?isEntryInOtherDict=false"}
+                      target="_blank"
+                  >{this.state.labels.thisClass.oxford}</a>
                 </div>
               </div>
             </form>
