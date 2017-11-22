@@ -65,6 +65,7 @@ export class NotesLister extends React.Component {
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , messageIcon: get(this.state, "messageIcon", "")
+          , message: get(this.state,"message", "")
           , matcherTypes: [
             {label: theSearchLabels.matchesAnywhere, value: "c"}
             , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
@@ -97,9 +98,9 @@ export class NotesLister extends React.Component {
           ,
           searchFormType: "simple"
           ,
-          showSearchResults: false
+          showSearchResults: get(this.state,"showSearchResults", false)
           ,
-          resultCount: 0
+          resultCount: get(this.state, "resultCount", 0)
           ,
           data: {values: [{"id": "", "value:": ""}]}
           ,
@@ -129,6 +130,7 @@ export class NotesLister extends React.Component {
           , showModalEditor: false
           , idColumnSize: "80px"
           , enableAdd: get(this.state, "enableAdd", false)
+          , data: get(this.state,"data",[])
         }
     )
   }
@@ -284,17 +286,15 @@ export class NotesLister extends React.Component {
     axios.get(path, config)
         .then(response => {
           // response.data will contain: "id, library, topic, key, value, tags, text"
-          this.setState({
-                data: response.data
-              }
-          );
           let resultCount = 0;
+          let data = [];
           let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
-            resultCount = response.data.valueCount;
+          if (response.data && response.data.valueCount && response.data.valueCount > 0) {
+            data = response.data;
+            resultCount = data.valueCount;
             message = this.state.searchLabels.msg3
                 + " "
-                + response.data.valueCount
+                + data.valueCount
                 + " "
                 + this.state.searchLabels.msg4
                 + "."
@@ -307,6 +307,7 @@ export class NotesLister extends React.Component {
           let enableAdd = resultCount > 0;
           this.setState({
                 message: message
+                , data: data
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
