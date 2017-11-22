@@ -258,7 +258,7 @@ export class SearchTreebanks extends React.Component {
     let treeViewIndex = (parseInt(index)+1);
     let tokenIndex = parseInt(index);
     let tokenIsWord = true;
-    if (token.length < 2) {
+    if (token && token.length < 2) {
       let notLetter = '"\'·.,;?!~@#$%^&z-z_[]{})(-:0123456789';
       if (notLetter.includes(token)) {
         tokenIsWord = false;
