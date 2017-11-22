@@ -653,6 +653,25 @@ export default {
         , parms
     );
   }
+  , restGetForId: (
+      restServer
+      , username
+      , password
+      , library
+      , topic
+      , key
+      , callback
+  ) => {
+    return restGet(
+        username
+        , password
+        , restServer + dbApi + docs + "/" + library+ "/" + topic + "/" + key
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , restGetPdf: (
       restServer
       , serverPath
