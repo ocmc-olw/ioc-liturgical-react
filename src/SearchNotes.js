@@ -347,8 +347,6 @@ export class SearchNotes extends React.Component {
     info: "info-circle"
     , warning: "lightbulb-o"
     , error: "exclamation-triangle"
-    // , toggleOn: "eye"
-    // , toggleOff: "eye-slash"
     , toggleOn: "toggle-on"
     , toggleOff: "toggle-off"
     , simpleSearch: "minus"

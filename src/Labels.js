@@ -655,6 +655,8 @@ const   labels = {
     , TemplateEditor: {
       panelTitle: "Template Editor"
       , instructions: "Use the Template Editor to create reusable templates to generate Liturgical books or services."
+      , expandAll: "Expand All"
+      , collapseAll: "Collapse"
     }
     , TokenTagger: {
       panelTitle: "Token Tagger"
@@ -1483,6 +1485,8 @@ const   labels = {
       , TemplateEditor: {
       panelTitle: "Template Editor"
       , instructions: "Use the Template Editor to create reusable templates to generate Liturgical books or services."
+      , expandAll: "Expand All"
+      , collapseAll: "Collapse"
     }
     , TokenTagger: {
       panelTitle: "Token Tagger"

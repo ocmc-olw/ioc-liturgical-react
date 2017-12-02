@@ -5,16 +5,19 @@
 module.exports = {
   getMessageIcons: () => {
     return   {
-      arrowRight: "long-arrow-right"
-      , info: "info-circle"
-      , warning: "lightbulb-o"
+      advancedSearch: "bars"
+      , arrowRight: "long-arrow-right"
       , error: "exclamation-triangle"
+      , idPatternSearch: "key"
+      , info: "info-circle"
+      , pencil: "pencil"
+      , plus: "plus"
+      , simpleSearch: "minus"
+      , spinner: "spinner"
+      , trash: "trash-o"
       , toggleOn: "toggle-on"
       , toggleOff: "toggle-off"
-      , simpleSearch: "minus"
-      , advancedSearch: "bars"
-      , idPatternSearch: "key"
-      , spinner: "spinner"
+      , warning: "lightbulb-o"
     };
   }
 }

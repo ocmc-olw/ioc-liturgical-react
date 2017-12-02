@@ -1,9 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Well} from 'react-bootstrap';
+import {Button, Well} from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
 import SortableTree from 'react-sortable-tree';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
+import ReactSelector from './modules/ReactSelector';
+
 import { addNodeUnderParent, removeNodeAtPath, toggleExpandedForAll } from './helpers/TreeDataUtils';
 // The following is temporary
 //import TreeData from './testdata/sortabletree/demo/TreeData';
@@ -80,91 +83,6 @@ class TemplateEditor extends React.Component {
                 },
               ],
             },
-            {
-              title: 'Button(s) can be added to the node',
-              subtitle:
-                  'Node info is passed when generating so you can use it in your onClick handler',
-            },
-            {
-              title: 'Show node children by setting `expanded`',
-              subtitle: ({ node }) =>
-                  `expanded: ${node.expanded ? 'true' : 'false'}`,
-              children: [
-                {
-                  title: 'Bruce',
-                  subtitle: ({ node }) =>
-                      `expanded: ${node.expanded ? 'true' : 'false'}`,
-                  children: [{ title: 'Bruce Jr.' }, { title: 'Brucette' }],
-                },
-              ],
-            },
-            {
-              title: 'Advanced',
-              subtitle: 'Settings, behavior, etc.',
-              children: [
-                {
-                  title: (
-                      <div>
-                        <div
-                            style={{
-                              backgroundColor: 'gray',
-                              display: 'inline-block',
-                              borderRadius: 10,
-                              color: '#FFF',
-                              padding: '0 5px',
-                            }}
-                        >
-                          Any Component
-                        </div>
-                        &nbsp;can be used for `title`
-                      </div>
-                  ),
-                },
-                {
-                  expanded: true,
-                  title: 'Limit nesting with `maxDepth`',
-                  subtitle: `It's set to ${maxDepth} for this example`,
-                  children: [
-                    {
-                      expanded: true,
-                      title: renderDepthTitle,
-                      children: [
-                        {
-                          expanded: true,
-                          title: renderDepthTitle,
-                          children: [
-                            { title: renderDepthTitle },
-                            {
-                              title: ({ path }) =>
-                                  path.length >= maxDepth
-                                      ? 'This cannot be dragged deeper'
-                                      : 'This can be dragged deeper',
-                            },
-                          ],
-                        },
-                      ],
-                    },
-                  ],
-                },
-                {
-                  title:
-                      'Disable dragging on a per-node basis with the `canDrag` prop',
-                  subtitle: 'Or set it to false to disable all dragging.',
-                  noDragging: true,
-                },
-                {
-                  title: 'You cannot give this children',
-                  subtitle:
-                      'Dropping is prevented via the `canDrop` API using `nextParent`',
-                  noChildren: true,
-                },
-                {
-                  title:
-                  'When node contents are really long, it will cause a horizontal scrollbar' +
-                  ' to appear. Deeply nested elements will also trigger the scrollbar.',
-                },
-              ],
-            },
           ],
         },
       ]
@@ -233,16 +151,19 @@ class TemplateEditor extends React.Component {
       , searchFoundCount
     } = this.state;
 
-    const alertNodeInfo = ({ node, path, treeIndex }) => {
+    const alertNodeInfo = (node, path, treeIndex) => {
+      console.log('alertNodeInfo');
+      console.log(node);
+      console.log(path);
       const objectString = Object.keys(node)
           .map(k => (k === 'children' ? 'children: Array' : `${k}: '${node[k]}'`))
           .join(',\n   ');
 
-      global.alert(
+      console.log(
           'Info passed to the button generator:\n\n' +
           `node: {\n   ${objectString}\n},\n` +
-          `path: [${path.join(', ')}],\n` +
-          `treeIndex: ${treeIndex}`
+          `path: [${path.join(', ')}],\n`
+          + `treeIndex: ${treeIndex}`
       );
     };
 
@@ -270,8 +191,8 @@ class TemplateEditor extends React.Component {
         <div className="App App-Template-Editor">
           <Well>
           <h3>{this.state.labels.thisClass.panelTitle}</h3>
-          <button onClick={this.expandAll}>Expand All</button>
-          <button onClick={this.collapseAll}>Collapse All</button>
+          <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.expandAll}>{this.state.labels.thisClass.expandAll}</Button>
+          <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.collapseAll}>{this.state.labels.thisClass.collapseAll}</Button>
           &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
           <form
               style={{ display: 'inline-block' }}
@@ -291,21 +212,27 @@ class TemplateEditor extends React.Component {
               />
             </label>
 
-            <button
+            <Button
+                className="App-Template-Editor-Button"
+                bsStyle="primary"
+                bsSize="xsmall"
                 type="button"
                 disabled={!searchFoundCount}
                 onClick={selectPrevMatch}
             >
               &lt;
-            </button>
+            </Button>
 
-            <button
+            <Button
+                className="App-Template-Editor-Button-Search"
+                bsStyle="primary"
+                bsSize="xsmall"
                 type="submit"
                 disabled={!searchFoundCount}
                 onClick={selectNextMatch}
             >
               &gt;
-            </button>
+            </Button>
 
             <span>
               &nbsp;
@@ -343,9 +270,39 @@ class TemplateEditor extends React.Component {
                     })
                 }
                 isVirtualized={isVirtualized}
-                generateNodeProps={({ node, path }) => ({
+                generateNodeProps={({ node, path, treeIndex }) => ({
+                  // title: (
+                  //     <input
+                  //         className="App-Template-Editor-Input"
+                  //         style={{ fontSize: '1.1rem'}}
+                  //         value={node.name}
+                  //         onChange={event => {
+                  //           const name = event.target.value;
+                  //
+                  //           this.setState(state => ({
+                  //             treeData: changeNodeAtPath({
+                  //               treeData: state.treeData,
+                  //               path,
+                  //               getNodeKey,
+                  //               newNode: { ...node, name },
+                  //             }),
+                  //           }));
+                  //         }}
+                  //     />
+                  // ),
                   buttons: [
-                    <button
+                    <Button
+                        className="App-Template-Editor-Node-Button"
+                        bsStyle="primary"
+                        bsSize="xsmall"
+                        onClick={() => alertNodeInfo(node, path, treeIndex)}
+                    >
+                      <FontAwesome name={this.state.messageIcons.pencil}/>
+                    </Button>,
+                    <Button
+                        className="App-Template-Editor-Node-Button"
+                        bsStyle="primary"
+                        bsSize="xsmall"
                         onClick={() =>
                             this.setState(state => ({
                               treeData: addNodeUnderParent({
@@ -359,9 +316,12 @@ class TemplateEditor extends React.Component {
                             }))
                         }
                     >
-                      Add Child
-                    </button>,
-                    <button
+                    <FontAwesome name={this.state.messageIcons.plus}/>
+                    </Button>,
+                    <Button
+                        className="App-Template-Editor-Node-Button"
+                        bsStyle="danger"
+                        bsSize="xsmall"
                         onClick={() =>
                             this.setState(state => ({
                               treeData: removeNodeAtPath({
@@ -372,23 +332,12 @@ class TemplateEditor extends React.Component {
                             }))
                         }
                     >
-                      Remove
-                    </button>,
+                      <FontAwesome name={this.state.messageIcons.trash}/>
+                    </Button>,
                   ],
                 })}
             />
           </div>
-            <button
-                onClick={() =>
-                    this.setState(state => ({
-                      treeData: state.treeData.concat({
-                        title: "tbd",
-                      }),
-                    }))
-                }
-            >
-              Add more
-            </button>
           </Well>
         </div>
     )

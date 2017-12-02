@@ -58,6 +58,24 @@ div.container {
     position: relative;
     background-color: #eaeced;
 }
+.App-Template-Editor-Button {
+    margin: 2px;
+}
+.App-Template-Editor-Node-Button {
+    margin-right: 2px;
+}
+.App-Template-Editor-Input {
+    background-color: yellow;
+    padding-bottom: 10px;
+}
+.rst__rowTitleWithSubtitle {
+    margin-bottom: 2px !important;
+}
+.rst__rowSubtitle {
+    color: red;
+    padding-top: 30px !important;
+    margin-top: 10px !important;
+}
 .App-search-panel {
     cursor: pointer;
 }
