@@ -19,7 +19,7 @@ import Spinner from './helpers/Spinner';
 import ViewReferences from './ViewReferences';
 
 /**
- * Display a text edit, with source and models as rows.
+ * Display a text to edit, with source and models as rows.
  */
 export class ParaRowTextEditor extends React.Component {
 

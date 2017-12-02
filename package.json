@@ -52,6 +52,7 @@
     "react-iframe":"^1.0.7",
     "react-jsonschema-form":"^0.49.0",
     "react-select":"^1.0.0-rc.5",
+    "react-sortable-tree": "^1.5.2",
     "react-virtualized-select":"^3.1.0",
     "svgo": "^0.7.2",
     "url-loader": "^0.5.7"

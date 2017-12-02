@@ -8,6 +8,7 @@
 import MessageIcons from './MessageIcons';
 import axios from 'axios';
 import FileSaver from 'file-saver';
+import IdManager from './IdManager';
 
 const adminApi = "/admin/api/v1/";
 const dbApi = "/db/api/v1/";
@@ -651,6 +652,47 @@ export default {
         , username
         , password
         , parms
+    );
+  }
+  , restGetForId: (
+      restServer
+      , username
+      , password
+      , id
+      , callback
+  ) => {
+    let idParts = IdManager.getParts(id);
+    let path = dbApi + docs + "/" + idParts.library + "/" + idParts.topic + "/" + idParts.key;
+    return restGet(
+        restServer
+        , username
+        , password
+        , path
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , restGetForLibraryTopicKey: (
+      restServer
+      , username
+      , password
+      , library
+      , topic
+      , key
+      , callback
+  ) => {
+    let path = dbApi + docs + "/" + library+ "/" + topic + "/" + key;
+    return restGet(
+        restServer
+        , username
+        , password
+        , path
+        , undefined
+        , function (result) {
+          callback(result);
+        }
     );
   }
   , restGetPdf: (

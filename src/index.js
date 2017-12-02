@@ -23,6 +23,7 @@ import SearchRelationships from './SearchRelationships';
 import Server from './helpers/Server';
 import Session from './classes/Session';
 import Spinner from './helpers/Spinner';
+import TemplateEditor from './TemplateEditor';
 import TopicsSelector from './modules/TopicsSelector';
 import UiSchemas from './classes/UiSchemas';
 import ViewReferences from './ViewReferences';
@@ -58,6 +59,7 @@ export {
   , Server
   , Session
   , Spinner
+  , TemplateEditor
   , TopicsSelector
   , UiSchemas
   , User

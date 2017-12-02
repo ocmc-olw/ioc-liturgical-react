@@ -48,6 +48,7 @@ import {
   , SearchRelationships
   , Session
   , Spinner
+  , TemplateEditor
   , TopicsSelector
   , UiSchemas
   , User
@@ -114,7 +115,7 @@ class Demo extends React.Component {
       }
       , searching: false
       , selectedDomain: "Your selection will appear here:"
-      , translatedText: ""
+      , translatedText: "On this day the Master Christ * stood in the streams of the Jordan. * By the holy Forerunner * he was baptized in the waters. * From above, the Father bore witness to Him, saying, * \\\"This is my beloved Son in whom I am well-pleased\\\"; * and amazingly the Spirit * appeared above him * in the form of a dove."
       , linkSearchDropdowns: {}
       , treeData: [
         this.node('Root','', '', '', '', '', '')
@@ -428,7 +429,7 @@ class Demo extends React.Component {
               <ParaRowTextEditor
                   session={this.state.session}
                   docType="Liturgical"
-                  idLibrary="en_uk_gevsot"
+                  idLibrary="en_us_dedes"
                   idTopic="me.m01.d10"
                   idKey="meMA.Kathisma11.text"
                   value={this.state.translatedText}
@@ -1024,6 +1025,18 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Administrator */}
+            <Panel header="Template Editor" eventKey="templateEditor">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  && this.state.formsLoaded &&
+              <TemplateEditor
+                  session={this.state.session}
+              />
+              }
+            </Panel> {/* Template for Table */}
             <Panel header="Template for Table Example" eventKey="tfort">
               { (this.state.authenticated) ?
                   <p></p>

@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { get } from 'lodash';
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
@@ -29,8 +30,10 @@ export class NotesLister extends React.Component {
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
-    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
     this.handleAddClose = this.handleAddClose.bind(this);
+    this.getAddButton = this.getAddButton.bind(this);
+    this.verifyTextId = this.verifyTextId.bind(this);
+    this.handleGetForIdCallback = this.handleGetForIdCallback.bind(this);
   }
 
   componentWillMount = () => {
@@ -38,7 +41,8 @@ export class NotesLister extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    this.setTheState(nextProps, this.state.docType);
+    this.state = this.setTheState(nextProps, this.state.docType);
+    this.verifyTextId(this.props.topicId, nextProps.topicId);
   }
 
   // a method called by both the constructor and componentWillReceiveProps
@@ -60,6 +64,8 @@ export class NotesLister extends React.Component {
           , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
+          , messageIcon: get(this.state, "messageIcon", "")
+          , message: get(this.state,"message", "")
           , matcherTypes: [
             {label: theSearchLabels.matchesAnywhere, value: "c"}
             , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
@@ -92,9 +98,9 @@ export class NotesLister extends React.Component {
           ,
           searchFormType: "simple"
           ,
-          showSearchResults: false
+          showSearchResults: get(this.state,"showSearchResults", false)
           ,
-          resultCount: 0
+          resultCount: get(this.state, "resultCount", 0)
           ,
           data: {values: [{"id": "", "value:": ""}]}
           ,
@@ -123,6 +129,8 @@ export class NotesLister extends React.Component {
           , selectedText: ""
           , showModalEditor: false
           , idColumnSize: "80px"
+          , enableAdd: get(this.state, "enableAdd", false)
+          , data: get(this.state,"data",[])
         }
     )
   }
@@ -278,17 +286,15 @@ export class NotesLister extends React.Component {
     axios.get(path, config)
         .then(response => {
           // response.data will contain: "id, library, topic, key, value, tags, text"
-          this.setState({
-                data: response.data
-              }
-          );
           let resultCount = 0;
+          let data = [];
           let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
-            resultCount = response.data.valueCount;
+          if (response.data && response.data.valueCount && response.data.valueCount > 0) {
+            data = response.data;
+            resultCount = data.valueCount;
             message = this.state.searchLabels.msg3
                 + " "
-                + response.data.valueCount
+                + data.valueCount
                 + " "
                 + this.state.searchLabels.msg4
                 + "."
@@ -298,11 +304,14 @@ export class NotesLister extends React.Component {
                 + this.state.searchLabels.msg4
                 + "."
           }
+          let enableAdd = resultCount > 0;
           this.setState({
                 message: message
+                , data: data
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
+                , enableAdd: enableAdd
               }
           );
         })
@@ -321,57 +330,87 @@ export class NotesLister extends React.Component {
     this.fetchData();
   }
 
-  handleAddButtonClick = () => {
-    /**
-     * TODO: write a function in UiSchemas to find the id of a schema
-     * based on the first part of the name
-     */
-    let id = "UserNoteCreateForm:1.1";
-    let library = this.props.session.userInfo.domain;
-    let date = new Date();
-    let month = (date.getMonth()+1).toString().padStart(2,"0");
-    let day = date.getDate().toString().padStart(2,"0");
-    let hour = date.getHours().toString().padStart(2,"0");
-    let minute = date.getMinutes().toString().padStart(2,"0");
-    let second = date.getSeconds().toString().padStart(2,"0");
-    let key = date.getFullYear()
-        + "."
-        + month
-        + "."
-        + day
-        + ".T"
-        + hour
-        + "."
-        + minute
-        + "."
-        + second
-    ;
 
-    return (
-        <SchemaBasedAddButton
-            session={this.props.session}
-            restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
-            uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
-            schema={this.props.session.uiSchemas.getSchema(id)}
-            formData={this.props.session.uiSchemas.getForm(id)}
-            idLibrary={library}
-            idTopic={this.props.topicId}
-            idKey={key}
-            seq={IdManager.toId(library, this.props.topicId, key)
-            }
-            onClose={this.handleAddClose}
-            fromId={this.props.topicId}
-            fromText={this.props.topicText}
-        />
-    )
+  getAddButton = () => {
+    if (this.state.enableAdd) {
+      let id = "UserNoteCreateForm:1.1";
+      let library = this.props.session.userInfo.domain;
+      let date = new Date();
+      let month = (date.getMonth()+1).toString().padStart(2,"0");
+      let day = date.getDate().toString().padStart(2,"0");
+      let hour = date.getHours().toString().padStart(2,"0");
+      let minute = date.getMinutes().toString().padStart(2,"0");
+      let second = date.getSeconds().toString().padStart(2,"0");
+      let key = date.getFullYear()
+          + "."
+          + month
+          + "."
+          + day
+          + ".T"
+          + hour
+          + "."
+          + minute
+          + "."
+          + second
+      ;
+      return (
+          <SchemaBasedAddButton
+              session={this.props.session}
+              restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
+              uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
+              schema={this.props.session.uiSchemas.getSchema(id)}
+              formData={this.props.session.uiSchemas.getForm(id)}
+              idLibrary={library}
+              idTopic={this.props.topicId}
+              idKey={key}
+              seq={IdManager.toId(library, this.props.topicId, key)
+              }
+              onClose={this.handleAddClose}
+              fromId={this.props.topicId}
+              fromText={this.props.topicText}
+          />
+      )
+    } else {
+      return (<span/>)
+    }
+  }
+
+  handleGetForIdCallback = (restCallResult) => {
+    let enableAdd = false;
+    if (restCallResult && restCallResult.data && restCallResult.data.valueCount) {
+      enableAdd = restCallResult.data.valueCount > 0;
+    }
+    this.setState({enableAdd: enableAdd});
+  }
+
+  verifyTextId = (currentId, nextId) => {
+    let needToVerify = true;
+
+    if (this.state.enableAdd) {
+      if (currentId) {
+        if (currentId == nextId) {
+          needToVerify = false;
+        }
+      }
+    }
+    if (needToVerify) {
+      this.setState({enableAdd: false});
+
+      Server.restGetForId(
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
+          , nextId
+          , this.handleGetForIdCallback
+      );
+    }
   }
 
   render() {
     return (
         <div className="App-page App-Notes-Lister">
           {this.props.title && <h3>{this.props.title}</h3>}
-          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.handleAddButtonClick()}</span>
+          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>
