@@ -48,6 +48,7 @@ import {
   , SearchRelationships
   , Session
   , Spinner
+  , TemplateEditor
   , TopicsSelector
   , UiSchemas
   , User
@@ -1024,6 +1025,18 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Administrator */}
+            <Panel header="Template Editor" eventKey="templateEditor">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  && this.state.formsLoaded &&
+              <TemplateEditor
+                  session={this.state.session}
+              />
+              }
+            </Panel> {/* Template for Table */}
             <Panel header="Template for Table Example" eventKey="tfort">
               { (this.state.authenticated) ?
                   <p></p>

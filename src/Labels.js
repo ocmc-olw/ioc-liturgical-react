@@ -652,6 +652,10 @@ const   labels = {
       , wnSense: "WN Sense"
       , oxSense: "Ox Sense"
     }
+    , TemplateEditor: {
+      panelTitle: "Template Editor"
+      , instructions: "Use the Template Editor to create reusable templates to generate Liturgical books or services."
+    }
     , TokenTagger: {
       panelTitle: "Token Tagger"
       , instructions: "Use the Token Tagger to set the grammatical tags, lemma, gloss, and dependency information for the selected token (e.g. word or punctuation mark).  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button to save your work and update the Dependency Diagram."
@@ -1476,6 +1480,10 @@ const   labels = {
       , infoBelow: "Πληροφορίες σχετικά με την αναφορά είναι παρακάτω...."
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
+      , TemplateEditor: {
+      panelTitle: "Template Editor"
+      , instructions: "Use the Template Editor to create reusable templates to generate Liturgical books or services."
+    }
     , TokenTagger: {
       panelTitle: "Token Tagger"
       , instructions: "Use the Token Tagger to set the grammatical tags, lemma, gloss, and dependency information for the selected token (e.g. word or punctuation mark).  After you select the Part of Speech, you will see additional lists to select from.  When you are finished, click the 'Submit' button to save your work and update the Dependency Diagram."
@@ -1716,6 +1724,7 @@ module.exports = {
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
   , getViewReferencesLabels: (code) => { return labels[code].ViewReferences;}
   , getViewRelationshipsLabels: (code) => { return labels[code].ViewRelationships;}
+  , getTemplateEditorLabels: (code) => { return labels[code].TemplateEditor;}
   , getTokenTaggerLabels: (code) => { return labels[code].TokenTagger;}
   , getLdpLabels: (code) => { return labels[code].ldp;}
   , getLiturgicalAcronymsLabels: (code) => { return labels[code].liturgicalAcronyms;}
