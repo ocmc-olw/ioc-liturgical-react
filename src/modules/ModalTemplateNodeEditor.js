@@ -2,15 +2,15 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
-import Form from "react-jsonschema-form";
-import FontAwesome from 'react-fontawesome';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
+import Spinner from '../helpers/Spinner';
+import TemplateNodeEditor from '../TemplateEditor';
 
 /**
  * Display modal content.
  */
-export class ModalSchemaBasedEditor extends React.Component {
+export class ModalTemplateNodeEditor extends React.Component {
 
   constructor(props) {
     super(props);
@@ -34,11 +34,14 @@ export class ModalSchemaBasedEditor extends React.Component {
       , topicText: ""
       , keyText: ""
       , httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
+      , treeData: undefined
+      , dataFetched: false
     }
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.getEditor = this.getEditor.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   };
@@ -90,7 +93,11 @@ export class ModalSchemaBasedEditor extends React.Component {
     axios.get(path, config)
         .then(response => {
           if (response.data.valueCount && response.data.valueCount > 0) {
+            console.log("This is what you are looking for!");
             let data = response.data.values[0];
+            let treeData = [];
+            treeData.push(JSON.parse(data.node));
+            console.log(treeData);
             let schemaId = data._valueSchemaId;
             let dataSchema = response.data.valueSchemas[schemaId].schema;
             let dataUiSchema = response.data.valueSchemas[schemaId].uiSchema;
@@ -101,6 +108,8 @@ export class ModalSchemaBasedEditor extends React.Component {
                   , showForm: true
                   , message: this.state.labels.messages.found
                   , messageIcon: MessageIcons.getMessageIcons().info
+                  , treeData: treeData
+                  , dataFetched: true
                 }
             );
           }
@@ -163,6 +172,21 @@ export class ModalSchemaBasedEditor extends React.Component {
         });
   }
 
+  getEditor = () => {
+    if (this.state.dataFetched) {
+      return (
+          <TemplateNodeEditor
+              session={this.props.session}
+              treeData={this.state.treeData}
+          />
+      )
+    } else {
+      return (
+          <Spinner message={this.state.labels.messages.searching}/>
+      );
+    }
+  };
+
   render() {
     return (
         <div>
@@ -192,25 +216,7 @@ export class ModalSchemaBasedEditor extends React.Component {
               { this.props.canUpdate ? <div></div>: <ControlLabel>{this.state.labels.messages.readOnly}</ControlLabel>}
             </Modal.Header>
             <Modal.Body>
-              <Form schema={this.state.schema}
-                    uiSchema={this.state.uiSchema}
-                    formData={this.state.formData}
-                    onSubmit={this.onSubmit}
-              >
-                <div>
-                    <Button
-                        bsStyle="primary"
-                        type="submit"
-                        disabled={! this.props.canUpdate}
-                    >
-                      {this.state.labels.button.submit}
-                    </Button>
-                    <span className="App-message"><FontAwesome
-                      name={this.state.messageIcon}/>
-                    {this.state.message}
-                    </span>
-                </div>
-              </Form>
+              {this.getEditor()}
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.close}>{this.state.labels.button.close}</Button>
@@ -220,7 +226,7 @@ export class ModalSchemaBasedEditor extends React.Component {
     );
   }
 }
-ModalSchemaBasedEditor.propTypes = {
+ModalTemplateNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
   , restPath: PropTypes.string.isRequired
   , onClose: PropTypes.func.isRequired
@@ -237,9 +243,9 @@ ModalSchemaBasedEditor.propTypes = {
   , idKey: PropTypes.string.isRequired
   , canUpdate: PropTypes.bool
 };
-ModalSchemaBasedEditor.defaultProps = {
+ModalTemplateNodeEditor.defaultProps = {
   canUpdate: true
 };
 
-export default ModalSchemaBasedEditor;
+export default ModalTemplateNodeEditor;
 

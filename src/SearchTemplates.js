@@ -1,28 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import { get } from 'lodash';
+import TemplateSearchOptions from "./modules/TemplateSearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
+import ModalTemplateNodeEditor from './modules/ModalTemplateNodeEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Labels from './Labels';
-import SchemaBasedAddButton from "./modules/SchemaBasedAddButton";
-import IdManager from './helpers/IdManager';
 
-/**
- * Lists notes for a specific text made by the current user.
- * The ID of a UserNote is:
- * library = the user's personal library
-* topic = library~topic~key (i.e. ID) of the text for which the note is made
- * key = timestamp of when the note was made.
- *
- * The NotesLister searches for notes matching the library and topic
- * of the UserNote ID.
- *
- */
-export class NotesLister extends React.Component {
+export class SearchTemplates extends React.Component {
 
   constructor(props) {
 
@@ -33,33 +21,86 @@ export class NotesLister extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.onSizePerPageList = this.onSizePerPageList.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
+    this.getSearchForm = this.getSearchForm.bind(this);
     this.handleCancelRequest = this.handleCancelRequest.bind(this);
     this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
     this.getModalEditor = this.getModalEditor.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.getMatcherTypes = this.getMatcherTypes.bind(this);
     this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
-    this.handleAddClose = this.handleAddClose.bind(this);
-    this.getAddButton = this.getAddButton.bind(this);
-    this.verifyTextId = this.verifyTextId.bind(this);
-    this.handleGetForIdCallback = this.handleGetForIdCallback.bind(this);
   }
 
   componentWillMount = () => {
-    this.fetchData();
+    let showSelectionButtons = false;
+    if (this.props.callback) {
+      showSelectionButtons = true;
+    }
+    this.setState({
+          message: this.state.searchLabels.msg1
+          , messageIcon: this.messageIcons.info
+          , docPropMessage: this.state.docPropMessageByValue
+          , showSelectionButtons: showSelectionButtons
+        }
+    );
+    let config = {
+      auth: {
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
+      }
+    };
+    let path = this.props.session.restServer + Server.getDbServerDropdownsSearchTemplatesApi();
+    axios.get(path, config)
+        .then(response => {
+          console.log("SearchTemplates.componentWillMonth get dropdown: response is")
+          console.log(response.data.values);
+          // literals used as keys to get data from the response
+          let valueKey = "dropdown";
+          let listKey = "typeList";
+          let propsKey = "typeProps";
+          let tagsKey = "typeTags";
+          let tagOperatorsKey = "tagOperators";
+
+          let values = response.data.values[0][valueKey];
+          this.setState({
+                dropdowns: {
+                  types: values[listKey]
+                  , typeProps: values[propsKey]
+                  , typeTags: values[tagsKey]
+                  , tagOperators: values[tagOperatorsKey]
+                  , loaded: true
+                }
+              }
+          );
+        })
+        .catch((error) => {
+          let message = error.message;
+          let messageIcon = this.messageIcons.error;
+          if (error && error.response && error.response.status === 401) {
+            message = Server.getWsServerDbApi() + " is a protected database.  Please login and try again.";
+            messageIcon = this.messageIcons.error;
+          } else if (error && error.response && error.response.status === 404) {
+            message = "error retrieving values for dropdowns";
+            messageIcon = this.messageIcons.error;
+          } else if (error && error.message && error.message.toLowerCase() === "network error") {
+            message = "The database server " + Server.getWsServerDbApi() + " is not available.";
+            messageIcon = this.messageIcons.error;
+          }
+          this.setState({data: message, message: message, messageIcon: messageIcon});
+        });
   };
 
   componentWillReceiveProps = (nextProps) => {
-    this.state = this.setTheState(nextProps, this.state.docType);
-    this.verifyTextId(this.props.topicId, nextProps.topicId);
+    this.setTheState(nextProps, this.state.docType);
   }
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
+    let theSearchLabels = Labels.getSearchTemplatesLabels(props.session.languageCode);
 
     let selectedId = "";
     if (docType) {
@@ -75,8 +116,6 @@ export class NotesLister extends React.Component {
           , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
-          , messageIcon: get(this.state, "messageIcon", "")
-          , message: get(this.state,"message", "")
           , matcherTypes: [
             {label: theSearchLabels.matchesAnywhere, value: "c"}
             , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
@@ -109,9 +148,9 @@ export class NotesLister extends React.Component {
           ,
           searchFormType: "simple"
           ,
-          showSearchResults: get(this.state,"showSearchResults", false)
+          showSearchResults: false
           ,
-          resultCount: get(this.state, "resultCount", 0)
+          resultCount: 0
           ,
           data: {values: [{"id": "", "value:": ""}]}
           ,
@@ -130,6 +169,11 @@ export class NotesLister extends React.Component {
             , onSelect: this.handleRowSelect
             , className: "App-row-select"
           }
+          , tableColumnFilter: {
+            defaultValue: "",
+            type: 'RegexFilter',
+            placeholder: Labels.getMessageLabels(props.session.languageCode).regEx
+          }
           ,
           showSelectionButtons: false
           , selectedId: selectedId
@@ -140,12 +184,39 @@ export class NotesLister extends React.Component {
           , selectedText: ""
           , showModalEditor: false
           , idColumnSize: "80px"
-          , enableAdd: get(this.state, "enableAdd", false)
-          , data: get(this.state,"data",[])
         }
     )
   }
+  getSearchForm() {
+    return (
+            <div>
+            {this.state.dropdowns ?
+                <TemplateSearchOptions
+                    types={this.state.dropdowns.types}
+                    initialType={this.props.fixedType ? this.props.initialType : this.state.docType}
+                    properties={this.state.dropdowns.typeProps}
+                    matchers={this.getMatcherTypes()}
+                    tags={this.state.dropdowns.typeTags}
+                    tagOperators={this.state.dropdowns.tagOperators}
+                    handleSubmit={this.handleAdvancedSearchSubmit}
+                    labels={this.state.searchLabels}
+                />
+                : "Loading dropdowns for search..."
+            }
+            </div>
+    );
+  }
 
+  getMatcherTypes () {
+    return (
+        [
+            {label: this.state.searchLabels.matchesAnywhere, value: "c"}
+            , {label: this.state.searchLabels.matchesAtTheStart, value: "sw"}
+            , {label: this.state.searchLabels.matchesAtTheEnd, value: "ew"}
+            , {label: this.state.searchLabels.matchesRegEx, value: "rx"}
+            ]
+    )
+  }
   handleCancelRequest() {
     if (this.props.callback) {
       this.props.callback("","");
@@ -185,6 +256,27 @@ export class NotesLister extends React.Component {
     )
   }
 
+  handleAdvancedSearchSubmit = (
+      type
+      , property
+      , matcher
+      , value
+      , tagOperator
+      , tags
+  ) => {
+    this.setState({
+          docType: type
+          , docProp: property
+          , matcher: matcher
+          , query: value
+          , tagOperator: tagOperator
+          , tags: tags
+        }
+        ,
+          this.fetchData
+    );
+  };
+
   deselectAllRows = () => {
     this.refs.theTable.setState({
       selectedRowKeys: []
@@ -200,15 +292,21 @@ export class NotesLister extends React.Component {
       , title: row["id"]
       , selectedText: row["text"]
       , showIdPartSelector: true
-      , showModalEditor: true
+      , showModalEditor: this.props.editor
     });
   }
 
   showRowComparison = (id) => {
+    if (this.props.editor) {
       this.setState({
         showModalEditor: true
         , selectedId: id
       })
+    } else {
+      this.setState({
+        selectedId: id
+      })
+    }
   }
 
   handleCloseModal = (id, value) => {
@@ -221,25 +319,21 @@ export class NotesLister extends React.Component {
     } else {
       this.setState({
         showModalEditor: false
-      })
+      }, this.fetchData)
     }
     this.deselectAllRows();
-    this.fetchData();
   }
-
   getModalEditor = () => {
     return (
-        <ModalSchemaBasedEditor
+        <ModalTemplateNodeEditor
             session={this.props.session}
-            restPath={Server.getDbServerDocsApi()}
-            showModal={this.state.showModalEditor}
+            restPath={Server.getDbServerTemplatesApi()}
+            onClose={this.handleCloseModal}
+            showModal={true}
             title={this.state.title}
-            fromId={this.state.selectedTopic}
-            fromText={this.state.selectedText}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
-            onClose={this.handleCloseModal}
         />
     )
   }
@@ -258,13 +352,17 @@ export class NotesLister extends React.Component {
     info: "info-circle"
     , warning: "lightbulb-o"
     , error: "exclamation-triangle"
-    // , toggleOn: "eye"
-    // , toggleOff: "eye-slash"
     , toggleOn: "toggle-on"
     , toggleOff: "toggle-off"
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
+  }
+
+  searchFormTypes = {
+    simple: "simple"
+    , advanced: "advanced"
+    , idPattern: "id"
   }
 
   setMessage(message) {
@@ -286,26 +384,28 @@ export class NotesLister extends React.Component {
     };
 
     let parms =
-            "?t=" + encodeURIComponent(this.props.type)
-            + "&q=" + encodeURIComponent(this.props.session.userInfo.domain + "~" + this.props.topicId)
-            + "&p=id"
-            + "&m=sw"
-            + "&l="
-            + "&o=any"
+            "?t=" + encodeURIComponent(this.state.docType)
+            + "&q=" + encodeURIComponent(this.state.query)
+            + "&p=" + encodeURIComponent(this.state.docProp)
+            + "&m=" + encodeURIComponent(this.state.matcher)
+            + "&l=" + encodeURIComponent(this.state.tags)
+            + "&o=" + encodeURIComponent(this.state.tagOperator)
         ;
-    let path = this.props.session.restServer + Server.getDbServerNotesApi() + parms;
+    let path = this.props.session.restServer + Server.getDbServerTemplatesApi() + parms;
     axios.get(path, config)
         .then(response => {
           // response.data will contain: "id, library, topic, key, value, tags, text"
+          this.setState({
+                data: response.data
+              }
+          );
           let resultCount = 0;
-          let data = [];
           let message = "No docs found...";
-          if (response.data && response.data.valueCount && response.data.valueCount > 0) {
-            data = response.data;
-            resultCount = data.valueCount;
+          if (response.data.valueCount && response.data.valueCount > 0) {
+            resultCount = response.data.valueCount;
             message = this.state.searchLabels.msg3
                 + " "
-                + data.valueCount
+                + response.data.valueCount
                 + " "
                 + this.state.searchLabels.msg4
                 + "."
@@ -315,14 +415,11 @@ export class NotesLister extends React.Component {
                 + this.state.searchLabels.msg4
                 + "."
           }
-          let enableAdd = resultCount > 0;
           this.setState({
                 message: message
-                , data: data
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
-                , enableAdd: enableAdd
               }
           );
         })
@@ -337,91 +434,21 @@ export class NotesLister extends React.Component {
         });
   }
 
-  handleAddClose = () => {
-    this.fetchData();
-  }
-
-
-  getAddButton = () => {
-    if (this.state.enableAdd) {
-      let id = "UserNoteCreateForm:1.1";
-      let library = this.props.session.userInfo.domain;
-      let date = new Date();
-      let month = (date.getMonth()+1).toString().padStart(2,"0");
-      let day = date.getDate().toString().padStart(2,"0");
-      let hour = date.getHours().toString().padStart(2,"0");
-      let minute = date.getMinutes().toString().padStart(2,"0");
-      let second = date.getSeconds().toString().padStart(2,"0");
-      let key = date.getFullYear()
-          + "."
-          + month
-          + "."
-          + day
-          + ".T"
-          + hour
-          + "."
-          + minute
-          + "."
-          + second
-      ;
-      return (
-          <SchemaBasedAddButton
-              session={this.props.session}
-              restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
-              uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
-              schema={this.props.session.uiSchemas.getSchema(id)}
-              formData={this.props.session.uiSchemas.getForm(id)}
-              idLibrary={library}
-              idTopic={this.props.topicId}
-              idKey={key}
-              seq={IdManager.toId(library, this.props.topicId, key)
-              }
-              onClose={this.handleAddClose}
-              fromId={this.props.topicId}
-              fromText={this.props.topicText}
-          />
-      )
-    } else {
-      return (<span/>)
-    }
-  }
-
-  handleGetForIdCallback = (restCallResult) => {
-    let enableAdd = false;
-    if (restCallResult && restCallResult.data && restCallResult.data.valueCount) {
-      enableAdd = restCallResult.data.valueCount > 0;
-    }
-    this.setState({enableAdd: enableAdd});
-  }
-
-  verifyTextId = (currentId, nextId) => {
-    let needToVerify = true;
-
-    if (this.state.enableAdd) {
-      if (currentId) {
-        if (currentId == nextId) {
-          needToVerify = false;
-        }
-      }
-    }
-    if (needToVerify) {
-      this.setState({enableAdd: false});
-
-      Server.restGetForId(
-          this.props.session.restServer
-          , this.props.session.userInfo.username
-          , this.props.session.userInfo.password
-          , nextId
-          , this.handleGetForIdCallback
-      );
-    }
-  }
-
   render() {
     return (
-        <div className="App-page App-Notes-Lister">
-          {this.props.title && <h3>{this.props.title}</h3>}
-          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.getAddButton()}</span>
+        <div className="App-page App-search">
+          <h3>{this.state.searchLabels.pageTitle}</h3>
+          {this.state.showSelectionButtons && this.getSelectedDocOptions()}
+          <div className="App-search-form">
+            <div className="row">
+              <div className="col-sm-12 col-md-12 col-lg-12">
+                {this.getSearchForm()}
+              </div>
+            </div>
+          </div>
+
+          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
+              name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} </span>
           </div>
           {this.state.showSearchResults &&
           <div>
@@ -437,8 +464,6 @@ export class NotesLister extends React.Component {
                   data={this.state.data.values}
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
-                  search
-                  searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -454,31 +479,35 @@ export class NotesLister extends React.Component {
                 >ID
                 </TableHeaderColumn>
                 <TableHeaderColumn
+                    dataField='library'
+                    dataSort={ true }
+                    export={ false }
+                    tdClassname="tdLibrary"
+                    width={"10%"}
+                    filter={this.state.tableColumnFilter}
+                >{this.state.resultsTableLabels.headerDomain}
+                </TableHeaderColumn>
+                <TableHeaderColumn
                     dataField='topic'
                     dataSort={ true }
                     export={ false }
                     tdClassname="tdTopic"
-                    width={"10%"}
-                >{this.state.resultsTableLabels.headerText}
+                    width={"15%"}
+                    filter={this.state.tableColumnFilter}
+                >{this.state.resultsTableLabels.headerTopic}
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='key'
+                    dataField='description'
                     dataSort={ true }
-                    tdClassname="tdKey"
-                    width={"10%"}
-                >{this.state.resultsTableLabels.headerDate}
+                    filter={this.state.tableColumnFilter}
+                >{this.state.resultsTableLabels.headerDesc}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
                     export={ false }
                     dataSort={ true }
-                    width={"10%"}
+                    filter={this.state.tableColumnFilter}
                 >{this.state.resultsTableLabels.headerTags}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='value'
-                    dataSort={ true }
-                >{this.state.resultsTableLabels.headerNote}
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>
@@ -489,12 +518,12 @@ export class NotesLister extends React.Component {
   }
 }
 
-NotesLister.propTypes = {
+SearchTemplates.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func
-  , type: PropTypes.string.isRequired
-  , topicId: PropTypes.string.isRequired
-  , topicText: PropTypes.string.isRequired
+  , editor: PropTypes.bool.isRequired
+  , initialType: PropTypes.string.isRequired
+  , fixedType: PropTypes.bool.isRequired
 };
 
-export default NotesLister;
+export default SearchTemplates;

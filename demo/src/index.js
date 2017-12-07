@@ -43,12 +43,13 @@ import {
   , ParaRowTextEditor
   , SearchNotes
   , SearchOntology
+  , SearchTemplates
   , SearchText
   , SearchTreebanks
   , SearchRelationships
   , Session
   , Spinner
-  , TemplateEditor
+  , TemplateNodeEditor
   , TopicsSelector
   , UiSchemas
   , User
@@ -126,7 +127,479 @@ class Demo extends React.Component {
         , this.node('4','Root', 'Κύριος', 'κύριος', 'Lord', 'ST-ROOT-SUBJ','NOUN.M.SG.NOM')
         , this.node('5','', '˙', '˙',  ':','APOS','PM')
       ]
-    };
+      , templateTreeData: [
+      {
+        title: 'TEMPLATE',
+        subtitle: 'en_us_ages~datedServices~se.m01.d01.li',
+        expanded: true,
+        children: [
+          {
+            "title": "WHEN_DAY_OF_WEEK_IS",
+            "subtitle": "",
+            "children": [
+              {
+                "title": "SUNDAY",
+                "subtitle": "",
+                "children": [
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~ST.li.ba.oc_me",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._01_Enarxis__.daily",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._02_Antiphons__.sundays_weekdays_feasts",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._04_Entrance__.clergy",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.choir",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "SECTION",
+                    "subtitle": "en_us_ages~se.m01.d01.ma~sunday.hymns",
+                    "children": [
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~AP.res__.modeofweek",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~AP.res__.AP.me2_",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~TI.s._00_saint_.m",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~AP.me1_.hymn",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.local",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~KO.seasonal",
+                        "children": [
+                        ]
+                      },
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._06_Trisagion__.basil",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LE._01_Epistle__.menaion_",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LE._02_Gospel__.menaion_",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._08_Liturgy__.basil",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._09_Dismissal__.commemoration",
+                    "children": [
+                    ]
+                  }
+                ]
+              },
+              {
+                "title": "OTHERWISE",
+                "subtitle": "",
+                "children": [
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~ST.li.ba.me",
+                    "children": [
+                      {
+                        "title": "PARAGRAPH",
+                        "children": [
+                          {
+                            "title": "SID",
+                            "subtitle": "gr_gr_cog~misc~book.Octoechos.name",
+                            "children": [
+                            ]
+                          },
+                        ]
+                      }
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._01_Enarxis__.daily",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._02_Antiphons__.sundays_weekdays_feasts",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._04_Entrance__.clergy",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.choir",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "SECTION",
+                    "subtitle": "en_us_ages~se.m01.d01.ma~otherwise.hymns",
+                    "children": [
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~AP.me2_",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~TI.s._00_saint_.m",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~AP.me1_.hymn",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.local",
+                        "children": [
+                        ]
+                      },
+                      {
+                        "title": "INSERT_SECTION",
+                        "subtitle": "en_us_ages~blocks~KO.seasonal",
+                        "children": [
+                        ]
+                      },
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._06_Trisagion__.basil",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LE._01_Epistle__.menaion_",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LE._02_Gospel__.menaion_",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._08_Liturgy__.basil",
+                    "children": [
+                    ]
+                  },
+                  {
+                    "title": "INSERT_SECTION",
+                    "subtitle": "en_us_ages~blocks~LI._09_Dismissal__.commemoration",
+                    "children": [
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+      ]
+      }
+    ]
+      , oldtemplateTreeData: [
+        {
+          title: 'TEMPLATE',
+          subtitle: 'en_us_ages~datedServices~se.m01.d01.li',
+          expanded: true,
+          children: [
+            {
+              "title": "WHEN_DAY_OF_WEEK_IS",
+              "subtitle": "",
+              "children": [
+                {
+                  "title": "SUNDAY",
+                  "subtitle": "",
+                  "children": [
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~ST.li.ba.oc_me",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._01_Enarxis__.daily",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._02_Antiphons__.sundays_weekdays_feasts",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._04_Entrance__.clergy",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.choir",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "SECTION",
+                      "subtitle": "en_us_ages~se.m01.d01.ma~sunday.hymns",
+                      "children": [
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~AP.res__.modeofweek",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~AP.res__.AP.me2_",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~TI.s._00_saint_.m",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~AP.me1_.hymn",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.local",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~KO.seasonal",
+                          "children": [
+                          ]
+                        },
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._06_Trisagion__.basil",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LE._01_Epistle__.menaion_",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LE._02_Gospel__.menaion_",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._08_Liturgy__.basil",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._09_Dismissal__.commemoration",
+                      "children": [
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "title": "OTHERWISE",
+                  "subtitle": "",
+                  "children": [
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~ST.li.ba.me",
+                      "children": [
+                        {
+                          "title": "PARAGRAPH",
+                          "children": [
+                            {
+                              "title": "SID",
+                              "subtitle": "gr_gr_cog~misc~book.Octoechos.name",
+                              "children": [
+                              ]
+                            },
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._01_Enarxis__.daily",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._02_Antiphons__.sundays_weekdays_feasts",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._04_Entrance__.clergy",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.choir",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "SECTION",
+                      "subtitle": "en_us_ages~se.m01.d01.ma~otherwise.hymns",
+                      "children": [
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~AP.me2_",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~TI.s._00_saint_.m",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~AP.me1_.hymn",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~LI._05_AfterEntranceHymns__.local",
+                          "children": [
+                          ]
+                        },
+                        {
+                          "title": "INSERT_SECTION",
+                          "subtitle": "en_us_ages~blocks~KO.seasonal",
+                          "children": [
+                          ]
+                        },
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._06_Trisagion__.basil",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LE._01_Epistle__.menaion_",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LE._02_Gospel__.menaion_",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._08_Liturgy__.basil",
+                      "children": [
+                      ]
+                    },
+                    {
+                      "title": "INSERT_SECTION",
+                      "subtitle": "en_us_ages~blocks~LI._09_Dismissal__.commemoration",
+                      "children": [
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+  };
 
     // language change functions
     this.handleLanguageChange = this.handleLanguageChange.bind(this);
@@ -138,6 +611,7 @@ class Demo extends React.Component {
     this.handleLoginCallback = this.handleLoginCallback.bind(this);
     this.handleSearchCallback = this.handleSearchCallback.bind(this);
     this.handleSearchNotesCallback = this.handleSearchNotesCallback.bind(this);
+    this.handleSearchTemplatesCallback = this.handleSearchTemplatesCallback.bind(this);
     this.handleSearchTreebanksCallback = this.handleSearchTreebanksCallback.bind(this);
     this.handleSearchOntologyCallback = this.handleSearchOntologyCallback.bind(this);
     this.handleSearchLinksCallback = this.handleSearchLinksCallback.bind(this);
@@ -286,7 +760,14 @@ class Demo extends React.Component {
         , forms.biblicalSubversesDropdown
         , forms.formsDropdown
         , forms.ontologyTypesDropdown
-    );
+        , forms.templateNewTemplateDropdown
+        , forms.templatePartsDropdown
+        , forms.templateWhenDayNameCasesDropdown
+        , forms.templateWhenDayOfMonthCasesDropdown
+        , forms.templateWhenDayOfSeasonCasesDropdown
+        , forms.templateWhenModeOfWeekCasesDropdown
+        , forms.templateWhenMonthNameCasesDropdown
+  );
     session.dropdowns = dropdowns;
     console.log(session);
     this.setState({
@@ -297,12 +778,14 @@ class Demo extends React.Component {
   }
 
   handleAgesIndexCallback = (response) => {
-    if (response) {
+    if (response && response.data && response.data.values) {
       let values = response.data.values[0];
-      this.setState({
-        agesIndexLoaded: true
-        , agesIndex: values.tableData
-      });
+      if (values.tableData) {
+        this.setState({
+          agesIndexLoaded: true
+          , agesIndex: values.tableData
+        });
+      }
     }
   }
 
@@ -326,6 +809,9 @@ class Demo extends React.Component {
     // TODO
   };
   handleSearchOntologyCallback(id, value) {
+    // TODO
+  };
+  handleSearchTemplatesCallback(id, value) {
     // TODO
   };
   handleSearchTreebanksCallback(id, value) {
@@ -814,6 +1300,16 @@ class Demo extends React.Component {
                       fixedType={false}
                   />
                 </Panel> {/* Search Relationships */}
+                <Panel header="Search Templates" eventKey="searchTemplates">
+                  <p>Use the Search Templates Component to search components used for generation of books and services.</p>
+                  <SearchTemplates
+                      session={this.state.session}
+                      callback={this.handleSearchTemplatesCallback}
+                      editor={true}
+                      initialType={"Template"}
+                      fixedType={false}
+                  />
+                </Panel> {/* Search Notes */}
                 <Panel header="Search Treebanks" eventKey="searchTreebanks">
                   <p>Use the Search Notes Component to search your personal notes.</p>
                   { (this.state.authenticated  && this.state.formsLoaded) ?
@@ -1025,15 +1521,16 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Administrator */}
-            <Panel header="Template Editor" eventKey="templateEditor">
+            <Panel header="Template Editor" eventKey="templateNodeEditor">
               { (this.state.authenticated) ?
                   <p></p>
                   :
                   <p>You must log in first in order to see and use this.</p>
               }
               { this.state.authenticated  && this.state.formsLoaded &&
-              <TemplateEditor
+              <TemplateNodeEditor
                   session={this.state.session}
+                  treeData={this.state.templateTreeData}
               />
               }
             </Panel> {/* Template for Table */}

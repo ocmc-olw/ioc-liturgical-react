@@ -62,17 +62,22 @@ div.container {
     margin: 2px;
 }
 .App-Template-Editor-Node-Button {
+    color: #2e6da4;
     margin-right: 2px;
 }
 .App-Template-Editor-Input {
     background-color: yellow;
     padding-bottom: 10px;
 }
+.rst__rowTitle {
+    color: #5bc0de;
+}
 .rst__rowTitleWithSubtitle {
+    color: #5bc0de;
     margin-bottom: 2px !important;
 }
 .rst__rowSubtitle {
-    color: red;
+    font-weight: bold;
     padding-top: 30px !important;
     margin-top: 10px !important;
 }

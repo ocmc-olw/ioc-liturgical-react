@@ -172,14 +172,12 @@ export class NewEntry extends React.Component {
         theTranslationDocType = "Liturgical";
       }
     }
+    let isTemplateForm = selection.value.includes("Template");
     let thisIsAReferenceForm = false;
-
     if (selection.value.startsWith("Link")) { // switch to links if need be
       thisIsAReferenceForm = true;
     }
-
     let isUserNoteForm = theForm["partTypeOfKey"].includes("TIMESTAMP");
-
     let thisIsAnOntologyForm = theForm["partTypeOfKey"].includes("ONTOLOGY");
     let initialOntologyType = "Human";
     if (thisIsAnOntologyForm) {
@@ -191,7 +189,7 @@ export class NewEntry extends React.Component {
         }
     }
 
-    // the purpose of the next series of if states for the
+    // the purpose of the next series of if statements for the
     // library, topic, and key
     // is to either preserve or reset the initial id and value
     // used in the IdBuilder.
@@ -281,6 +279,7 @@ export class NewEntry extends React.Component {
       , isUserNoteForm: isUserNoteForm
       , isTranslationForm: thisIsATranslationForm
       , isReferenceForm: thisIsAReferenceForm
+      , isTemplateForm: isTemplateForm
       , translationDocType: theTranslationDocType
       , formSelected: true
       , IdLibrary: idLibrary
@@ -385,6 +384,23 @@ export class NewEntry extends React.Component {
       , IdTopicParts: idTopicParts
     }
     );
+
+    if (this.state.isTemplateForm) {
+      let node =
+        {
+          title: "TEMPLATE"
+          , subtitle: IdLibrary + "~" + IdTopic + "~head"
+          , expanded: true
+          , children: [
+            {
+              title: "SECTION"
+              , subtitle: "section01"
+              , children: []
+            }
+          ]
+        };
+      this.state.selected.form.node = JSON.stringify(node);
+    }
 
     this.state.selected.form.library = IdLibrary;
     this.state.selected.form.topic = IdTopic;

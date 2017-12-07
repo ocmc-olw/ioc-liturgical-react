@@ -18,12 +18,13 @@ import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchNotes from './SearchNotes';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
+import SearchTemplates from './SearchTemplates';
 import SearchTreebanks from './SearchTreebanks';
 import SearchRelationships from './SearchRelationships';
 import Server from './helpers/Server';
 import Session from './classes/Session';
 import Spinner from './helpers/Spinner';
-import TemplateEditor from './TemplateEditor';
+import TemplateNodeEditor from './TemplateEditor';
 import TopicsSelector from './modules/TopicsSelector';
 import UiSchemas from './classes/UiSchemas';
 import ViewReferences from './ViewReferences';
@@ -53,13 +54,14 @@ export {
   , ParaRowTextEditor
   , SearchNotes
   , SearchOntology
+  , SearchTemplates
   , SearchText
   , SearchTreebanks
   , SearchRelationships
   , Server
   , Session
   , Spinner
-  , TemplateEditor
+  , TemplateNodeEditor
   , TopicsSelector
   , UiSchemas
   , User

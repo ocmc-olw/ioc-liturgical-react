@@ -133,12 +133,14 @@ class AgesEditor extends React.Component {
   }
 
   handleFetchAgesIndexCallback = (restCallResult) => {
-    if (restCallResult) {
+    if (restCallResult && restCallResult.data && restCallResult.data.values) {
       let values = restCallResult.data.values[0];
-      this.setState({
-        agesIndexFetched: true
-        , agesIndexValues: values.tableData
-      });
+      if (values["tableData"]) {
+        this.setState({
+          agesIndexFetched: true
+          , agesIndexValues: values["tableData"]
+        });
+      }
     }
   }
 
@@ -164,7 +166,7 @@ class AgesEditor extends React.Component {
   }
 
   handleFetchCallback = (restCallResult) => {
-    if (restCallResult) {
+    if (restCallResult && restCallResult.data && restCallResult.data.values) {
       let data = restCallResult.data.values[0];
       let values = data.values;
       let topicKeys = data.topicKeys;

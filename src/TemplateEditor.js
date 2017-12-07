@@ -1,28 +1,31 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import {Button, Well} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
-import SortableTree from 'react-sortable-tree';
+import SortableTree, {
+  addNodeUnderParent
+  , changeNodeAtPath
+  , removeNodeAtPath
+  , toggleExpandedForAll
+} from "react-sortable-tree";
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
-import ReactSelector from './modules/ReactSelector';
-
-import { addNodeUnderParent, removeNodeAtPath, toggleExpandedForAll } from './helpers/TreeDataUtils';
-// The following is temporary
-//import TreeData from './testdata/sortabletree/demo/TreeData';
-//import TreeData from './testdata/sortabletree/atem/TreeData';
 
 /**
  * This class provides a visual, drag-and-drop interface for
  * users to create templates to generate liturgical books or services.
  * It is a web browser replacement for the Java application ALWB.
+ *
+ * Note: if you try to drag and drop a node and you see a thick blue
+ * line appear and it won't let you drop where you would like to,
+ * the issue is the value for maxDepth.  It needs to be increased.
  */
 // TODO: rename class
 class TemplateEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    const maxDepth = 5;
     const renderDepthTitle = ({ path }) => `Depth: ${path.length}`;
 
     this.state = {
@@ -34,58 +37,10 @@ class TemplateEditor extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(this.props.session.languageCode).initial
-      , maxDepth: 5
       , searchString: ''
       , searchFocusIndex: 0
       , searchFoundCount: null
-  //    , treeData: TreeData.treeData
-      , treeData: [
-        {
-          title: 'Template',
-          subtitle: 'se.m01.d01.ve',
-          expanded: true,
-          children: [
-            {
-              title: 'Head',
-              subtitle: '',
-              children: [
-                {
-                  title: 'Set_Date',
-                  subtitle: 'month 1 day 1 year 2018',
-                },
-              ],
-            },
-            {
-              expanded: true,
-              title: 'when-name-of-day-is',
-              children: [
-                {
-                  expanded: true,
-                  title: 'Sunday',
-                  children: [
-                      { title: 'Section', subtitle: 'Instance02'
-                      , children: [
-                          { title: 'Insert_section', subtitle: 'ST.ve.oc_me' },
-                          { title: 'Insert_section', subtitle: 'VE._01_Beginning__.vespers' },
-                        ]},
-                    ],
-                },
-                {
-                  expanded: true,
-                  title: 'Otherwise',
-                  children: [
-                    { title: 'Section', subtitle: 'Instance01',
-                    children: [
-                      { title: 'Insert_section', subtitle: 'ST.ve.me' },
-                      { title: 'Insert_section', subtitle: 'VE._01_Beginning__.vespers' },
-                    ]},
-                  ],
-                },
-              ],
-            },
-          ],
-        },
-      ]
+      , treeData: props.treeData
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -111,6 +66,7 @@ class TemplateEditor extends React.Component {
             , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
           }
           , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , treeData: nextProps.treeData
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -144,17 +100,39 @@ class TemplateEditor extends React.Component {
 
   render() {
 
+    const maxDepth = this.props.maxDepth;
     const {
-      maxDepth
-      , searchString
+      searchString
       , searchFocusIndex
       , searchFoundCount
     } = this.state;
 
-    const alertNodeInfo = (node, path, treeIndex) => {
-      console.log('alertNodeInfo');
+    const handleEditRequest = (node, path, treeIndex) => {
+      console.log('handleEditRequest');
       console.log(node);
       console.log(path);
+      switch (node.title) {
+        case ("INSERT_SECTION"): {
+          console.log("invoke section search");
+          break;
+        }
+        case ("RID"): {
+          console.log("invoke liturgical resource search");
+          break;
+        }
+        case ("SECTION"): {
+          console.log("invoke Section schema-based editor");
+          break;
+        }
+        case ("SID"): {
+          console.log("invoke liturgical resource search");
+          break;
+        }
+        case ("TEMPLATE"): {
+          console.log("invoke Template schema-based editor");
+          break;
+        }
+      }
       const objectString = Object.keys(node)
           .map(k => (k === 'children' ? 'children: Array' : `${k}: '${node[k]}'`))
           .join(',\n   ');
@@ -293,15 +271,15 @@ class TemplateEditor extends React.Component {
                   buttons: [
                     <Button
                         className="App-Template-Editor-Node-Button"
-                        bsStyle="primary"
+                        bsStyle="default"
                         bsSize="xsmall"
-                        onClick={() => alertNodeInfo(node, path, treeIndex)}
+                        onClick={() => handleEditRequest(node, path, treeIndex)}
                     >
                       <FontAwesome name={this.state.messageIcons.pencil}/>
                     </Button>,
                     <Button
                         className="App-Template-Editor-Node-Button"
-                        bsStyle="primary"
+                        bsStyle="default"
                         bsSize="xsmall"
                         onClick={() =>
                             this.setState(state => ({
@@ -320,7 +298,7 @@ class TemplateEditor extends React.Component {
                     </Button>,
                     <Button
                         className="App-Template-Editor-Node-Button"
-                        bsStyle="danger"
+                        bsStyle="default"
                         bsSize="xsmall"
                         onClick={() =>
                             this.setState(state => ({
@@ -346,10 +324,27 @@ class TemplateEditor extends React.Component {
 
 TemplateEditor.propTypes = {
   session: PropTypes.object.isRequired
+  , treeData: PropTypes.array
+  , maxDepth: PropTypes.number
 };
 
 TemplateEditor.defaultProps = {
   languageCode: "en"
+  , treeData: [
+    {
+      title: 'Template',
+      subtitle: 'tbd',
+      expanded: true,
+      children: [
+        {
+          title: "Section"
+          , subtitle: 'tbd'
+          , children: []
+        }
+      ]
+    }
+    ]
+  , maxDepth: 20
 };
 
 // TODO: rename class for export

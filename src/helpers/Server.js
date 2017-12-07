@@ -26,17 +26,19 @@ const clone = docs + "/clone";
 const agesIndex = docs + "/agesindex";
 const agesReactTemplate = docs + "/agesreacttemplate";
 const agesReadOnlyTemplate = docs + "/agesreadonlytemplate";
+const nlp = "nlp/"
+const ontology = "ontology/ontology";
 const tables = docs + "/tables";
 const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
+const templates = docs + "/templates";
 const valuePath = docs + "/value";
 const viewtemplate = docs + "/viewtemplate";
 const viewtopic = docs + "/viewtopic";
 const wordAnalysis = "nlp/word/analysis";
-const ontology = "ontology/ontology";
-const nlp = "nlp/"
 const textAnalysis = nlp + "text/analysis"
 const adminDomains = "misc/domains";
 const dbDropdownsSearchText = "dropdowns/texts";
+const dbDropdownsSearchTemplates = "dropdowns/templates";
 const dbDropdownsSearchNotes = "dropdowns/notes";
 const dbDropdownsUserRolesForDomain = "domains/userdropdown";
 const dbDropdownsSearchOntology = "dropdowns/ontology";
@@ -333,6 +335,7 @@ export default {
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
   , getDbServerAgesPdfApi: () => {return dbApi + agesPdf;}
   , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
+  , getDbServerDropdownsSearchTemplatesApi: () => {return dbApi + dbDropdownsSearchTemplates;}
   , getDbServerDropdownsSearchNotesApi: () => {return dbApi + dbDropdownsSearchNotes;}
   , getDbServerDropdownsSearchOntologyApi: () => {return dbApi + dbDropdownsSearchOntology;}
   , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}
@@ -341,6 +344,7 @@ export default {
   , getDbServerNotesApi: () => {return dbApi + notes;}
   , getDbServerLinksApi: () => {return dbApi + links;}
   , getDbServerOntologyApi: () => {return dbApi + ontology;}
+  , getDbServerTemplatesApi: () => {return dbApi + templates;}
   , getDbServerTreebanksApi: () => {return dbApi + treebanks;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
   , getDbServerWordAnalysisApi: () => {return dbApi + wordAnalysis;}
