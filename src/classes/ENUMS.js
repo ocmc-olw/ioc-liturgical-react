@@ -1,0 +1,25 @@
+/**
+ * Created by mac002 on 12/6/17.
+ */
+export const DOW = {
+  SUNDAY: "SUNDAY"
+  , MONDAY: "MONDAY"
+  , TUESDAY: "TUESDAY"
+  , WEDNESDAY: "WEDNESDAY"
+  , THURSDAY: "THURSDAY"
+  , FRIDAY: "FRIDAY"
+  , SATURDAY: "SATURDAY"
+};
+export const MONTHS = {
+  JANUARY: "JANUARY"
+  , FEBRUARY: "FEBRUARY"
+  , MARCH: "MARCH"
+  , APRIL: "APRIL"
+  , MAY: "MAY"
+  , JUNE: "JUNE"
+  , JULY: "JULY"
+  , SEPTEMBER: "SEPTEMBER"
+  , OCTOBER: "OCTOBER"
+  , NOVEMBER: "NOVEMBER"
+  , DECEMBER: "DECEMBER"
+}
