@@ -608,6 +608,24 @@ const   labels = {
       , dayOfWeek: "Day of Week"
       , close: "Close"
     }
+    , ModalReactSelector: {
+      panelTitle: "Selector"
+      , msg1: "Make a selection..."
+      , close: "Close"
+    }
+    , ModalTemplateNodeEditor: {
+      panelTitle: "Template Node Editor"
+      , msg1: "Use this form to enter information about the node... "
+      , msg2: " "
+      , msg3: " "
+      , msg4: ""
+      , editProperties: "Edit Properties"
+      , nodeTypePrompt: "Node type:"
+      , nodeSubtitle: "Node ID:"
+      , selectTextId: "Select Text ID"
+      , selectInsertId: "Select Template or Section ID"
+      , close: "Close"
+    }
     , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Double-click on text to open an editor window."
@@ -1472,6 +1490,24 @@ const   labels = {
       , dayOfWeek: "Day of Week"
       , close: "Close"
     }
+    , ModalReactSelector: {
+      panelTitle: "Selector"
+      , msg1: "Make a selection..."
+      , close: "Close"
+    }
+    , ModalTemplateNodeEditor: {
+      panelTitle: "Template Node Editor"
+      , msg1: "Use this form to enter information about the node... "
+      , msg2: " "
+      , msg3: " "
+      , msg4: ""
+      , editProperties: "Edit Properties"
+      , nodeTypePrompt: "Node type:"
+      , nodeSubtitle: "Node ID:"
+      , selectTextId: "Select Text ID"
+      , selectInsertId: "Select Template or Section ID"
+      , close: "Close"
+    }
     , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Double-click on text to open an editor window."
@@ -1772,12 +1808,14 @@ module.exports = {
   , getHyperTokenTextLabels: (code) => { return labels[code].HyperTokenText;}
   , getComponentNewEntryLabels: (code) => { return labels[code].NewEntry;}
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
-  , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
   , getAgesEditorLabels: (code) => { return labels[code].AgesEditor;}
   , getAgesViewerLabels: (code) => { return labels[code].AgesViewer;}
   , getNewEntryFormLabels: (code) => { return labels[code].NewEntryForm;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
+  , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
   , getModalParaRowEditorLabels: (code) => { return labels[code].ModalParaRowEditor;}
+  , getModalReactSelectorLabels: (code) => { return labels[code].ModalReactSelector;}
+  , getModalTemplateNodeEditorLabels: (code) => { return labels[code].ModalTemplateNodeEditor;}
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}

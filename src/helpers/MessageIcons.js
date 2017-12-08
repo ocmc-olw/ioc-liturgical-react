@@ -12,6 +12,7 @@ module.exports = {
       , info: "info-circle"
       , pencil: "pencil"
       , plus: "plus"
+      , search: "search"
       , simpleSearch: "minus"
       , spinner: "spinner"
       , trash: "trash-o"

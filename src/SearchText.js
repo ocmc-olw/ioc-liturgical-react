@@ -99,8 +99,6 @@ export class Search extends React.Component {
         , onSizePerPageList: this.onSizePerPageList
         , hideSizePerPage: true
         , paginationShowsTotal: true
-//        , onRowClick: this.onRowClick
-//        , onRowDoubleClick: this.onRowDoubleClick
       }
       ,
       selectRow: {
@@ -699,14 +697,14 @@ export class Search extends React.Component {
           />
       )
     }
-  }
+  };
 
   showSelectionButtons = (id) => {
     this.setState({
       showSelectionButtons: true
       , selectedId: id
     });
-  }
+  };
 
   onSizePerPageList = (sizePerPage) => {
     this.setState({

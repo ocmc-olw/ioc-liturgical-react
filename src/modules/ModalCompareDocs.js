@@ -75,10 +75,11 @@ export class ModalCompareDocs extends React.Component {
           , selectedChapter: "*"
           , docProp: "id"
           , matcher: "rx"
-          , query: ".*"
+          , query: ".*~"
           + this.props.selectedIdParts[1].label
-          + "~.*"
+          + "~"
           + this.props.selectedIdParts[2].label
+          + "$"
         }
         , function () {
           this.fetchData();
@@ -111,6 +112,8 @@ export class ModalCompareDocs extends React.Component {
   }
 
   fetchData() {
+    console.log("ModalCompareDocs.fetchData");
+    console.log(`query=${this.state.query}`);
     this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
     let config = {
       auth: {
@@ -129,6 +132,7 @@ export class ModalCompareDocs extends React.Component {
             + "&m=" + encodeURIComponent(this.state.matcher)
         ;
     let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
+console.log(path);
     axios.get(path, config)
         .then(response => {
           // if one of the values is greek, then make it the selected row

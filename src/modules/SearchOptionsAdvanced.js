@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
 
+
 /**
  * To future maintainers of this code.
  * Two months ago, I had never coded using React Js.

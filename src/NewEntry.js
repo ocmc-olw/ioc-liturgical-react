@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import 'react-select/dist/react-select.css';
 import ResourceSelector from './modules/ReactSelector'
 import Labels from './Labels'
+import TemplateNodeInitializer from './classes/TemplateNodeInitializer';
 import IdManager from './helpers/IdManager';
 import server from './helpers/Server';
 import IdBuilder from './modules/IdBuilder';
@@ -386,19 +387,26 @@ export class NewEntry extends React.Component {
     );
 
     if (this.state.isTemplateForm) {
-      let node =
-        {
-          title: "TEMPLATE"
-          , subtitle: IdLibrary + "~" + IdTopic + "~head"
-          , expanded: true
-          , children: [
-            {
-              title: "SECTION"
-              , subtitle: "section01"
-              , children: []
-            }
-          ]
-        };
+      let nodeBuilder = new TemplateNodeInitializer(
+        IdLibrary
+        , IdTopic
+        , IdKey
+        , "SERVICE"
+        , "WHEN_DAY_NAME_IS"
+      );
+      let node = nodeBuilder.getRootNode();
+        // {
+        //   title: "TEMPLATE"
+        //   , subtitle: IdLibrary + "~" + IdTopic + "~head"
+        //   , expanded: true
+        //   , children: [
+        //     {
+        //       title: "SECTION"
+        //       , subtitle: "section01"
+        //       , children: []
+        //     }
+        //   ]
+        // };
       this.state.selected.form.node = JSON.stringify(node);
     }
 

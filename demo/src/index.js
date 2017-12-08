@@ -49,7 +49,7 @@ import {
   , SearchRelationships
   , Session
   , Spinner
-  , TemplateNodeEditor
+  , TemplateEditor
   , TopicsSelector
   , UiSchemas
   , User
@@ -1528,9 +1528,11 @@ class Demo extends React.Component {
                   <p>You must log in first in order to see and use this.</p>
               }
               { this.state.authenticated  && this.state.formsLoaded &&
-              <TemplateNodeEditor
+              <TemplateEditor
                   session={this.state.session}
                   treeData={this.state.templateTreeData}
+                  idLibrary={"en_us_dedes"}
+                  idTopic={"se.m01.d01.li"}
               />
               }
             </Panel> {/* Template for Table */}

@@ -11,6 +11,7 @@ import SortableTree, {
 } from "react-sortable-tree";
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
+import ModalTemplateNodeEditor from './modules/ModalTemplateNodeEditor';
 
 /**
  * This class provides a visual, drag-and-drop interface for
@@ -41,12 +42,29 @@ class TemplateEditor extends React.Component {
       , searchFocusIndex: 0
       , searchFoundCount: null
       , treeData: props.treeData
+      , idKey: "head"
+      , showModalEditor: false
+      , showModalReactSelector: false
+      , selectorResource: []
+      , selectorInitialValue: ""
+      , modalTitle: ""
+      , editingNode: undefined
+      , editingPath: undefined
+      , editingTreeIndex: undefined
+      , selectedId: "" // from SearchText
+      , selectedItem: "" // from ReactSelector
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
+
     this.updateTreeData = this.updateTreeData.bind(this);
+
     this.expandAll = this.expandAll.bind(this);
     this.collapseAll = this.collapseAll.bind(this);
+
+    this.getNodeEditor = this.getNodeEditor.bind(this);
+    this.handleNodeEditorCallback = this.handleNodeEditorCallback.bind(this);
+
   }
 
   componentWillMount = () => {
@@ -76,6 +94,30 @@ class TemplateEditor extends React.Component {
   handleStateChange = (parm) => {
     // call a function if needed
   }
+
+
+  getNodeEditor = () => {
+    return (
+        <ModalTemplateNodeEditor
+            session={this.props.session}
+            node={this.state.editingNode}
+            path={this.state.editingPath}
+            treeIndex={this.state.editingTreeIndex}
+            callBack={this.handleNodeEditorCallback}
+            templateLibrary={this.props.idLibrary}
+            templateTopic={this.props.idTopic}
+        />
+    )
+  };
+
+  handleNodeEditorCallback = (node) => {
+    this.setState(
+        {
+          showModalEditor: false
+        }
+    );
+  };
+
 
   updateTreeData(treeData) {
     this.setState({ treeData });
@@ -108,31 +150,22 @@ class TemplateEditor extends React.Component {
     } = this.state;
 
     const handleEditRequest = (node, path, treeIndex) => {
-      console.log('handleEditRequest');
-      console.log(node);
-      console.log(path);
-      switch (node.title) {
-        case ("INSERT_SECTION"): {
-          console.log("invoke section search");
-          break;
+      console.log("handleEditRequest");
+      this.setState(
+        {
+          editingNode: node
+          , editingPath: path
+          , editingTreeIndex: treeIndex
+          , showModalEditor: true
         }
-        case ("RID"): {
-          console.log("invoke liturgical resource search");
-          break;
-        }
-        case ("SECTION"): {
-          console.log("invoke Section schema-based editor");
-          break;
-        }
-        case ("SID"): {
-          console.log("invoke liturgical resource search");
-          break;
-        }
-        case ("TEMPLATE"): {
-          console.log("invoke Template schema-based editor");
-          break;
-        }
-      }
+      );
+
+      /**
+       * path array elements have a dual meaning.
+       * 0 = level 0, root node
+       * 0,1 = level 1, 1st node
+       */
+
       const objectString = Object.keys(node)
           .map(k => (k === 'children' ? 'children: Array' : `${k}: '${node[k]}'`))
           .join(',\n   ');
@@ -167,6 +200,7 @@ class TemplateEditor extends React.Component {
 
     return (
         <div className="App App-Template-Editor">
+          {this.state.showModalEditor && this.getNodeEditor()}
           <Well>
           <h3>{this.state.labels.thisClass.panelTitle}</h3>
           <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.expandAll}>{this.state.labels.thisClass.expandAll}</Button>
@@ -224,7 +258,7 @@ class TemplateEditor extends React.Component {
                 treeData={this.state.treeData}
                 onChange={this.updateTreeData}
                 onMoveNode={({ node, treeIndex, path }) =>
-                    global.console.debug(
+                    console.debug(
                         'node:',
                         node,
                         'treeIndex:',
@@ -249,25 +283,6 @@ class TemplateEditor extends React.Component {
                 }
                 isVirtualized={isVirtualized}
                 generateNodeProps={({ node, path, treeIndex }) => ({
-                  // title: (
-                  //     <input
-                  //         className="App-Template-Editor-Input"
-                  //         style={{ fontSize: '1.1rem'}}
-                  //         value={node.name}
-                  //         onChange={event => {
-                  //           const name = event.target.value;
-                  //
-                  //           this.setState(state => ({
-                  //             treeData: changeNodeAtPath({
-                  //               treeData: state.treeData,
-                  //               path,
-                  //               getNodeKey,
-                  //               newNode: { ...node, name },
-                  //             }),
-                  //           }));
-                  //         }}
-                  //     />
-                  // ),
                   buttons: [
                     <Button
                         className="App-Template-Editor-Node-Button"
@@ -289,7 +304,7 @@ class TemplateEditor extends React.Component {
                                 expandParent: true,
                                 getNodeKey,
                                 newNode: {
-                                  title: "tbd"},
+                                  title: "tbd", subtitle: "", config: ""},
                               }).treeData,
                             }))
                         }
@@ -324,6 +339,8 @@ class TemplateEditor extends React.Component {
 
 TemplateEditor.propTypes = {
   session: PropTypes.object.isRequired
+  , idLibrary: PropTypes.string.isRequired
+  , idTopic: PropTypes.string.isRequired
   , treeData: PropTypes.array
   , maxDepth: PropTypes.number
 };

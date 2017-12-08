@@ -78,10 +78,11 @@ export class CompareDocs extends React.Component {
           , selectedChapter: "*"
           , docProp: "id"
           , matcher: "rx"
-          , query: ".*"
+          , query: ".*~"
           + this.props.selectedIdParts[1].label
-          + "~.*"
+          + "~"
           + this.props.selectedIdParts[2].label
+          + "$"
         }
         , function () {
           this.fetchData();

@@ -1,188 +1,390 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import axios from 'axios';
-import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
+import {Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon, InputGroup, Modal, Well} from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
-import Spinner from '../helpers/Spinner';
-import TemplateNodeEditor from '../TemplateEditor';
+import ReactSelector from './ReactSelector';
+import ModalReactSelector from './ModalReactSelector';
+import ModalSearchTextWithCallback from './ModalSearchTextWithCallback';
+import ModalSchemaBasedEditor from './ModalSchemaBasedEditor';
+import Server from "../helpers/Server";
 
 /**
- * Display modal content.
+ * Display modal window to allow user to edit information about a template node.
  */
 export class ModalTemplateNodeEditor extends React.Component {
 
   constructor(props) {
     super(props);
 
+    console.log("formData for template");
+    console.log(props.formData);
+
     this.state = {
       labels: {
-        button: Labels.getButtonLabels(props.session.languageCode)
-        , messages: Labels.getMessageLabels(props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        thisClass: Labels.getModalTemplateNodeEditorLabels(this.props.session.languageCode)
+        , buttons: Labels.getButtonLabels(this.props.session.languageCode)
+        , messages: Labels.getMessageLabels(this.props.session.languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.session.languageCode).initial
-      , resultCount: 0
-      , showSearchResults: false
-      , schema: {}
-      , uiSchema: {}
-      , formData: {}
-      , data: {values: [{"id": "", "value:": ""}]}
-      , showForm: false
-      , topicText: ""
-      , keyText: ""
-      , httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
-      , treeData: undefined
-      , dataFetched: false
+      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , node: this.props.node
+      , selectedNodeType: this.props.node.title
+      , selectedSubtitle: this.props.node.subtitle
+      , selectedSchemaValue: ""
+      , showModal: true
+      , showModalSchemaEditor: false
+      , showModalTextSearch: false
+      , showTextInput: false
+      , idKey: "head"
+      , modalTitle: this.props.node.subtitle
     }
 
+    this.cancel = this.cancel.bind(this);
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
-    this.fetchData = this.fetchData.bind(this);
-    this.getEditor = this.getEditor.bind(this);
-    this.setMessage = this.setMessage.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
+
+    this.handleSelectionChange = this.handleSelectionChange.bind(this);
+
+    this.getModalTextSearch = this.getModalTextSearch.bind(this);
+    this.handleTextLookupCallback = this.handleTextLookupCallback.bind(this);
+
+    this.getModalSchemaEditorButton = this.getModalSchemaEditorButton.bind(this);
+    this.enableModalSchemaEditor = this.enableModalSchemaEditor.bind(this);
+    this.getModalSchemaEditor = this.getModalSchemaEditor.bind(this);
+    this.handleCloseModalSchemaEditor = this.handleCloseModalSchemaEditor.bind(this);
+
+    this.getModalReactSelector = this.getModalReactSelector.bind(this);
+    this.handleReactSelectorCallback = this.handleReactSelectorCallback.bind(this);
+
+    this.getSubtitleTextInput = this.getSubtitleTextInput.bind(this);
+    this.handleSubtitleChange = this.handleSubtitleChange.bind(this);
+
+    this.getSubtitleTextIdLookup = this.getSubtitleTextIdLookup.bind(this);
+    this.handleSubtitleTextIdChange = this.handleSubtitleTextIdChange.bind(this);
+    this.enableModalTextSearch = this.enableModalTextSearch.bind(this);
+
+    this.getNodeTypeSelector = this.getNodeTypeSelector.bind(this);
+    this.handleNodeTypeChange = this.handleNodeTypeChange.bind(this);
+
+    this.setSubtitle = this.setSubtitle.bind(this);
+
   };
 
-  componentWillMount = () => {
-    this.setState({
-          showModal: this.props.showModal
-        }
-        , function () {
-          this.fetchData();
-        }
-    );
-
+  PropTypesWillMount = () => {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({
-     httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
-    });
-  }
-
-  setMessage(message) {
-    this.setState({
-      message: message
-    });
-  }
-
-  fetchData() {
-    this.setState({
-      message: this.state.labels.messages.searching
-      , messageIcon: MessageIcons.getMessageIcons().info
-    });
-    let config = {
-      auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+    console.log("ModalTemplateNodeEditor willReceiveProps");
+    this.setState((prevState, props) => {
+      return {
+        labels: {
+          thisClass: Labels.getModalTemplateNodeEditorLabels(nextProps.session.languageCode)
+          , buttons: Labels.getButtonLabels(nextProps.session.languageCode)
+          , messages: Labels.getMessageLabels(nextProps.session.languageCode)
+          , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+        }
+        , message: Labels.getMessageLabels(nextProps.session.languageCode).initial
+        , node: nextProps.node
+        , selectedNodeType: nextProps.node.title
+        , selectedSubtitle: nextProps.node.subtitle
+        , selectedSchemaValue: ""
+        , showModal: true
+        , showModalSchemaEditor: false
+        , showModalTextSearch: false
+        , showTextInput: false
+        , idKey: "head"
+        , modalTitle: this.props.node.subtitle
       }
-    };
-
-    let path = this.props.session.restServer
-        + this.props.restPath
-        + "/"
-        + this.props.idLibrary
-        + "/"
-        + this.props.idTopic
-        + "/"
-        + this.props.idKey
-    ;
-    axios.get(path, config)
-        .then(response => {
-          if (response.data.valueCount && response.data.valueCount > 0) {
-            console.log("This is what you are looking for!");
-            let data = response.data.values[0];
-            let treeData = [];
-            treeData.push(JSON.parse(data.node));
-            console.log(treeData);
-            let schemaId = data._valueSchemaId;
-            let dataSchema = response.data.valueSchemas[schemaId].schema;
-            let dataUiSchema = response.data.valueSchemas[schemaId].uiSchema;
-            this.setState({
-                  schema:dataSchema
-                  , uiSchema:dataUiSchema
-                  , formData: data
-                  , showForm: true
-                  , message: this.state.labels.messages.found
-                  , messageIcon: MessageIcons.getMessageIcons().info
-                  , treeData: treeData
-                  , dataFetched: true
-                }
-            );
-          }
-        })
-        .catch((error) => {
-          let message = error.message;
-          let messageIcon = MessageIcons.getMessageIcons().error;
-          if (error && error.response && error.response.status === 404) {
-            message = "not found";
-            messageIcon = MessageIcons.getMessageIcons().warning;
-            this.setState({data: message, message: message, messageIcon: messageIcon});
-          }
-        });
+    });
   }
 
 
-  close() {
+  cancel = () => {
     this.setState({showModal: false});
-    this.props.onClose(
-        this.state.selectedId
-        , this.state.selectedValue
-        , this.state.selectedSchema
-    );
   };
 
-  open() {
+  open = () => {
     this.setState({showModal: true});
   };
 
-  onSubmit = ({formData}) => {
-    let config = {
-      auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
-      }
-    };
-    let path = this.props.session.restServer
-        + this.props.restPath
-        + "/"
-        + this.props.idLibrary
-        + "/"
-        + this.props.idTopic
-        + "/"
-        + this.props.idKey
-    ;
-    axios.put(
-        path
-        , formData
-        , config
-    )
-        .then(response => {
-          this.setState({
-            message: "updated ",
-          });
-        })
-        .catch( (error) => {
-          var message = error.message;
-          var messageIcon = MessageIcons.getMessageIcons().error;
-          this.setState( { data: message, message: message, messageIcon: messageIcon });
-        });
+  close = () => {
+    this.setState({showModal: false});
+    this.props.callBack(this.state.node);
+  };
+
+  getModalSchemaEditorButton = () => {
+    if (this.state.selectedNodeType === "TEMPLATE") {
+      return (
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>&nbsp;</Col>
+            <Col sm={8}>
+              <Button onClick={this.enableModalSchemaEditor}>
+                {this.state.labels.thisClass.editProperties}
+              </Button>
+            </Col>
+          </FormGroup>
+      );
+    }
+  };
+
+  enableModalSchemaEditor = () => {
+    console.log("Setting showModalSchemaEditor=true");
+    this.setState({showModalSchemaEditor: true});
   }
 
-  getEditor = () => {
-    if (this.state.dataFetched) {
+
+  getModalSchemaEditor = () => {
+    return (
+        <ModalSchemaBasedEditor
+            session={this.props.session}
+            restPath={Server.getDbServerDocsApi()}
+            showModal={this.state.showModalSchemaEditor}
+            title={this.state.modalTitle}
+            idLibrary={this.props.templateLibrary}
+            idTopic={this.props.templateTopic}
+            idKey={this.state.idKey}
+            onClose={this.handleCloseModalSchemaEditor}
+        />
+    )
+  };
+
+  handleCloseModalSchemaEditor = (id, value) => {
+    if (id && id.length > 0) {
+      this.setState({
+        showModalSchemaEditor: false
+        , selectedId: id
+        , selectedSchemaValue: value
+      });
+    } else {
+      this.setState({
+        showModalSchemaEditor: false
+      });
+    }
+  };
+
+  getModalReactSelector = () => {
+    return (
+        <ModalReactSelector
+            languageCode={this.props.session.languageCode}
+            resources={this.state.selectorResource}
+            initialValue={this.state.selectorInitialValue}
+            callBack={this.handleReactSelectorCallback}
+        />
+    )
+  };
+
+  handleReactSelectorCallback = (item) => {
+    if (item.length > 0) {
+      this.setState({
+        showModalReactSelector: false
+        , selectedItem: item
+        , selectedNodeType:item["value"]
+      })
+    } else {
+      this.setState({
+        showModalReactSelector: false
+      })
+    }
+  };
+
+  handleNodeTypeChange = (selection) => {
+    let value = selection["value"];
+    let node = this.state.node;
+    node.title = value;
+    this.setState({node: node, selectedNodeType: value}
+    , this.handleSelectionChange
+    );
+  }
+
+  handleSelectionChange = () => {
+    switch (this.state.selectedNodeType) {
+      case ("INSERT_SECTION"): {
+        console.log("invoke section search");
+        break;
+      }
+      case ("RID"): {
+        this.setState({
+          showModalTextSearch: true
+        });
+        break;
+      }
+      case ("SECTION"): {
+        this.setState({
+          showTextInput: true
+        });
+        break;
+      }
+      case ("SID"): {
+        this.setState({
+          showModalTextSearch: true
+        });
+        break;
+      }
+      case ("TEMPLATE"): {
+        console.log("invoke Template schema-based editor");
+        this.setState({
+          idKey: "head"
+          ,showModalSchemaEditor: true
+          , modalTitle: this.props.idLibrary + "~" + this.props.idTopic + "~head"
+        });
+        break;
+      }
+      case ("tbd"): {
+        this.setState({
+          showModalReactSelector: true
+          , selectorResource: this.props.session.dropdowns["templatePartsDropdown"]
+          , selectorInitialValue: "SECTION"
+        });
+        break;
+      }
+    }
+  };
+
+  getModalTextSearch = () => {
+    return (
+        <ModalSearchTextWithCallback
+            session={this.props.session}
+            onCallback={this.handleTextLookupCallback}
+            initialDocType={"Liturgical"}
+        />
+    )
+  };
+
+  handleTextLookupCallback = (id, value) => {
+    if (id && id.length > 0) {
+      console.log(id);
+      this.setState({
+        showModalTextSearch: false
+        , selectedId: id
+        , selectedSchemaValue: value
+      }, this.setSubtitle(id)
+      );
+    } else {
+      this.setState({
+        showModalTextSearch: false
+      })
+    }
+  };
+
+  enableModalTextSearch = () => {
+    this.setState({showModalTextSearch: true});
+  }
+
+  handleSubtitleTextIdChange = () => {
+
+  }
+
+  getSubtitleTextIdLookup = () => {
+
+  }
+
+  setSubtitle = (value) => {
+    console.log(`setSubtitle.value=${value}`);
+    let node = this.state.node;
+    node.subtitle = value;
+    this.setState({node: node, selectedSubtitle: value});
+  }
+
+  handleSubtitleChange = (event) => {
+    this.setSubtitle(event.target.value);
+  }
+
+  getSubtitleTextInput = () => {
+    // Note: use fall throughs (i.e. no break) for switches that group together
+    switch (this.state.selectedNodeType) {
+      case ("SID"):
+      case ("RID"): {
+        return (
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={2}>
+                {this.state.labels.thisClass.nodeSubtitle}
+              </Col>
+              <Col sm={8}>
+                <InputGroup className="App-InputGroup-Static">
+                  <FormControl.Static>
+                    {this.state.selectedSubtitle}
+                  </FormControl.Static>
+                <InputGroup.Button>
+                  <Button onClick={this.enableModalTextSearch}>
+                    <Glyphicon glyph="search" />
+                  </Button>
+                </InputGroup.Button>
+                </InputGroup>
+              </Col>
+            </FormGroup>
+        );
+        break;
+      }
+      case ("SECTION"):
+        return (
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={2}>
+                {this.state.labels.thisClass.nodeSubtitle}
+              </Col>
+              <Col sm={10}>
+                <FormControl
+                    type="text"
+                    defaultValue={this.state.selectedSubtitle}
+                    onChange={this.handleSubtitleChange}
+                />
+              </Col>
+            </FormGroup>
+        );
+        break;
+      case ("TEMPLATE"): {
+        return (
+            <FormGroup>
+              <Col componentClass={ControlLabel} sm={2}>
+                {this.state.labels.thisClass.nodeSubtitle}
+              </Col>
+              <Col sm={8}>
+                <InputGroup className="App-InputGroup-Static">
+                  <FormControl.Static>
+                    {this.state.selectedSubtitle}
+                  </FormControl.Static>
+                </InputGroup>
+              </Col>
+            </FormGroup>
+        );
+        break;
+      }
+    }
+  };
+
+  getNodeTypeSelector = () => {
+    if (this.state.selectedNodeType === "TEMPLATE") {
       return (
-          <TemplateNodeEditor
-              session={this.props.session}
-              treeData={this.state.treeData}
-          />
-      )
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>
+              {this.state.labels.thisClass.nodeTypePrompt}
+            </Col>
+            <Col sm={8}>
+              <InputGroup className="App-InputGroup-Static">
+                <FormControl.Static>
+                  {this.state.selectedNodeType}
+                </FormControl.Static>
+              </InputGroup>
+            </Col>
+          </FormGroup>
+          )
     } else {
       return (
-          <Spinner message={this.state.labels.messages.searching}/>
+          <FormGroup>
+            <Col componentClass={ControlLabel} sm={2}>
+              {this.state.labels.thisClass.nodeTypePrompt}
+            </Col>
+            <Col sm={10}>
+              <ReactSelector
+                  initialValue={this.state.selectedNodeType}
+                  resources={this.props.session.dropdowns["templatePartsDropdown"]}
+                  changeHandler={this.handleNodeTypeChange}
+                  multiSelect={false}
+              />
+            </Col>
+          </FormGroup>
       );
     }
   };
@@ -190,36 +392,28 @@ export class ModalTemplateNodeEditor extends React.Component {
   render() {
     return (
         <div>
-          <Modal
-              dialogClassName="App-Modal-Para-Row-Editor"
-              show={this.state.showModal}
-              onHide={this.close}
-              keyboard={true}
-          >
+          {this.state.showModalSchemaEditor && this.getModalSchemaEditor()}
+          {this.state.showModalTextSearch && this.getModalTextSearch()}
+          <Modal show={this.state.showModal} onHide={this.close}>
             <Modal.Header closeButton>
-              <Modal.Title>{this.props.title}</Modal.Title>
-              {this.props.fromText && this.props.fromTitle &&
-              <div className={"App-Text-Refers-To"}>{this.props.fromTitle}</div>
-              }
-              {this.props.fromText && this.props.fromId &&
-                <Well className={"App-Well-From-Text"}><div className={"App-Modal-Text"}>{this.props.fromText}<span className={"control-label"}> ({this.props.fromId})</span></div></Well>
-              }
-              {this.props.fromText && this.props.toText && this.props.toTitle &&
-                  <div className={"App-Text-Refers-To"}>{this.props.toTitle}</div>
-              }
-              {this.props.toText && this.props.toId &&
-              <Well className={"App-Well-To-Text"}><div className={"App-Modal-Text"}>{this.props.toText}<span className={"control-label"}> ({this.props.toId})</span></div></Well>
-              }
-              {this.props.toText &&
-              <ControlLabel>{this.state.labels.references.infoBelow}</ControlLabel>
-              }
-              { this.props.canUpdate ? <div></div>: <ControlLabel>{this.state.labels.messages.readOnly}</ControlLabel>}
+              <Modal.Title>{this.state.labels.thisClass.panelTitle}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              {this.getEditor()}
+              <div className="App-modal-body">
+                <Well>
+                  <Form horizontal>
+                    {this.getNodeTypeSelector()}
+                    {this.getSubtitleTextInput()}
+                    {this.getModalSchemaEditorButton()}
+                  </Form>
+                </Well>
+              </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+              <Button onClick={this.cancel}>{this.state.labels.buttons.cancel}</Button>
+              <Button bsStyle="primary" onClick={this.close}>
+                {this.state.labels.thisClass.close}
+              </Button>
             </Modal.Footer>
           </Modal>
         </div>
@@ -228,23 +422,14 @@ export class ModalTemplateNodeEditor extends React.Component {
 }
 ModalTemplateNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
-  , restPath: PropTypes.string.isRequired
-  , onClose: PropTypes.func.isRequired
-  , showModal: PropTypes.bool.isRequired
-  , title: PropTypes.string.isRequired
-  , fromTitle: PropTypes.string
-  , fromId: PropTypes.string
-  , fromText: PropTypes.string
-  , toTitle: PropTypes.string
-  , toId: PropTypes.string
-  , toText: PropTypes.string
-  , idLibrary: PropTypes.string.isRequired
-  , idTopic: PropTypes.string.isRequired
-  , idKey: PropTypes.string.isRequired
-  , canUpdate: PropTypes.bool
+  , node: PropTypes.object.isRequired
+  , path: PropTypes.array.isRequired
+  , treeIndex: PropTypes.number.isRequired
+  , callBack: PropTypes.func.isRequired
+  , templateLibrary: PropTypes.string.isRequired
+  , templateTopic: PropTypes.string.isRequired
 };
 ModalTemplateNodeEditor.defaultProps = {
-  canUpdate: true
 };
 
 export default ModalTemplateNodeEditor;

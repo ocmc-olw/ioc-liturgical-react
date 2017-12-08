@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import TemplateSearchOptions from "./modules/TemplateSearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
-import ModalTemplateNodeEditor from './modules/ModalTemplateNodeEditor';
+import ModalTemplateEditor from './modules/ModalTemplateEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
@@ -325,7 +325,7 @@ export class SearchTemplates extends React.Component {
   }
   getModalEditor = () => {
     return (
-        <ModalTemplateNodeEditor
+        <ModalTemplateEditor
             session={this.props.session}
             restPath={Server.getDbServerTemplatesApi()}
             onClose={this.handleCloseModal}

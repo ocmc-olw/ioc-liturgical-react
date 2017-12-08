@@ -10,6 +10,15 @@ export const DOW = {
   , FRIDAY: "FRIDAY"
   , SATURDAY: "SATURDAY"
 };
+export const dowArray = [
+  {name: "SUNDAY"}
+  ,{ name: "MONDAY"}
+  ,{ name: "TUESDAY"}
+  ,{ name: "WEDNESDAY"}
+  ,{ name: "THURSDAY"}
+  ,{ name: "FRIDAY"}
+  ,{ name: "SATURDAY"}
+];
 export const MONTHS = {
   JANUARY: "JANUARY"
   , FEBRUARY: "FEBRUARY"
@@ -22,4 +31,17 @@ export const MONTHS = {
   , OCTOBER: "OCTOBER"
   , NOVEMBER: "NOVEMBER"
   , DECEMBER: "DECEMBER"
-}
+};
+export const monthsArray = [
+  { name: "JANUARY"}
+  , { name: "FEBRUARY"}
+  , { name: "MARCH"}
+  , { name: "APRIL"}
+  , { name: "MAY"}
+  , { name: "JUNE"}
+  , { name: "JULY"}
+  , { name: "SEPTEMBER"}
+  , { name: "OCTOBER"}
+  , { name: "NOVEMBER"}
+  , { name: "DECEMBER"}
+];
