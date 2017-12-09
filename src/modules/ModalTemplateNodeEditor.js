@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import FontAwesome from 'react-fontawesome';
 import {Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon, InputGroup, Modal, Well} from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
@@ -12,15 +11,12 @@ import Server from "../helpers/Server";
 
 /**
  * Display modal window to allow user to edit information about a template node.
+ * TODO: when user sets node type to a switch (e.g. WHEN_DAY_NAME_IS), display a list of cases and allow user to check box to include.
  */
 export class ModalTemplateNodeEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    console.log("formData for template");
-    console.log(props.formData);
-
     this.state = {
       labels: {
         thisClass: Labels.getModalTemplateNodeEditorLabels(this.props.session.languageCode)
@@ -34,7 +30,7 @@ export class ModalTemplateNodeEditor extends React.Component {
       , selectedNodeType: this.props.node.title
       , selectedSubtitle: this.props.node.subtitle
       , selectedSchemaValue: ""
-      , showModal: true
+      , showModal: props.showModal
       , showModalSchemaEditor: false
       , showModalTextSearch: false
       , showTextInput: false
@@ -42,7 +38,6 @@ export class ModalTemplateNodeEditor extends React.Component {
       , modalTitle: this.props.node.subtitle
     }
 
-    this.cancel = this.cancel.bind(this);
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
 
@@ -70,6 +65,7 @@ export class ModalTemplateNodeEditor extends React.Component {
     this.handleNodeTypeChange = this.handleNodeTypeChange.bind(this);
 
     this.setSubtitle = this.setSubtitle.bind(this);
+    this.getServiceDate = this.getServiceDate.bind(this);
 
   };
 
@@ -78,7 +74,8 @@ export class ModalTemplateNodeEditor extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     console.log("ModalTemplateNodeEditor willReceiveProps");
-    this.setState((prevState, props) => {
+    console.log(`nextProps.showModal=${nextProps.showModal}`);
+    this.setState((prevState, nextProps) => {
       return {
         labels: {
           thisClass: Labels.getModalTemplateNodeEditorLabels(nextProps.session.languageCode)
@@ -91,7 +88,7 @@ export class ModalTemplateNodeEditor extends React.Component {
         , selectedNodeType: nextProps.node.title
         , selectedSubtitle: nextProps.node.subtitle
         , selectedSchemaValue: ""
-        , showModal: true
+        , showModal: nextProps.showModal
         , showModalSchemaEditor: false
         , showModalTextSearch: false
         , showTextInput: false
@@ -102,27 +99,28 @@ export class ModalTemplateNodeEditor extends React.Component {
   }
 
 
-  cancel = () => {
-    this.setState({showModal: false});
-  };
-
   open = () => {
     this.setState({showModal: true});
   };
 
   close = () => {
-    this.setState({showModal: false});
-    this.props.callBack(this.state.node);
+    this.setState({showModal: false}, this.props.callBack());
   };
 
+  /**
+   * This editor uses uischemas from the REST API
+   * @returns {*}
+   */
   getModalSchemaEditorButton = () => {
     if (this.state.selectedNodeType === "TEMPLATE") {
       return (
           <FormGroup>
-            <Col componentClass={ControlLabel} sm={2}>&nbsp;</Col>
+            <Col componentClass={ControlLabel} sm={2}>&nbsp;
+              {this.state.labels.thisClass.editProperties}
+            </Col>
             <Col sm={8}>
               <Button onClick={this.enableModalSchemaEditor}>
-                {this.state.labels.thisClass.editProperties}
+                <Glyphicon glyph="pencil" />
               </Button>
             </Col>
           </FormGroup>
@@ -135,6 +133,36 @@ export class ModalTemplateNodeEditor extends React.Component {
     this.setState({showModalSchemaEditor: true});
   }
 
+  /**
+   * TODO: This is unfinished.  The idea is to allow the user
+   * to see (and perhaps easily set) the year, month, and date
+   * without having to invoke the modal schema based editor.
+   * @returns {*}
+   */
+  getServiceDate = () => {
+    if (this.state.selectedNodeType === "TEMPLATE") {
+      return (
+          <Form inline>
+            <FormGroup controlId="formInlineYear">
+              <ControlLabel>Year</ControlLabel>
+              {' '}
+              <FormControl type="text" placeholder="" />
+            </FormGroup>
+            {' '}
+            <FormGroup controlId="formInlineMonth">
+              <ControlLabel>Month</ControlLabel>
+              {' '}
+              <FormControl type="text" placeholder="" />
+            </FormGroup>
+            <FormGroup controlId="formInlineDay">
+              <ControlLabel>Month</ControlLabel>
+              {' '}
+              <FormControl type="text" placeholder="" />
+            </FormGroup>
+        </Form>
+      );
+    }
+  }
 
   getModalSchemaEditor = () => {
     return (
@@ -410,7 +438,6 @@ export class ModalTemplateNodeEditor extends React.Component {
               </div>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.cancel}>{this.state.labels.buttons.cancel}</Button>
               <Button bsStyle="primary" onClick={this.close}>
                 {this.state.labels.thisClass.close}
               </Button>
@@ -422,6 +449,7 @@ export class ModalTemplateNodeEditor extends React.Component {
 }
 ModalTemplateNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
+  , showModal: PropTypes.bool.isRequired
   , node: PropTypes.object.isRequired
   , path: PropTypes.array.isRequired
   , treeIndex: PropTypes.number.isRequired

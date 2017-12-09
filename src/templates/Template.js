@@ -14,16 +14,17 @@ import MessageIcons from './helpers/MessageIcons';
 class NewComponentTemplate extends React.Component {
   constructor(props) {
     super(props);
-
+    let languageCode = props.session.languageCode;
     this.state = {
       labels: { // TODO: replace getViewReferencesLabels with method for this class
-        thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+        thisClass: Labels.getViewReferencesLabels(languageCode)
+        , buttons: Labels.getButtonLabels(languageCode)
+        , messages: Labels.getMessageLabels(languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: Labels.getMessageLabels(languageCode).initial
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -38,14 +39,16 @@ class NewComponentTemplate extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
+      let languageCode = nextProps.session.languageCode;
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getViewReferencesLabels(nextProps.session.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+            thisClass: Labels.getViewReferencesLabels(languageCode)
+            , buttons: Labels.getButtonLabels(languageCode)
+            , messages: Labels.getMessageLabels(languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
           }
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , message: Labels.getMessageLabels(languageCode).initial
         }
       }, function () { return this.handleStateChange("place holder")});
     }

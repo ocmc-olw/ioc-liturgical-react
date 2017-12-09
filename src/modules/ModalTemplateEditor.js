@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
+import FontAwesome from 'react-fontawesome';
+import {Col, ControlLabel, Button, Grid, Modal, Row, Well} from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import Spinner from '../helpers/Spinner';
@@ -17,7 +18,7 @@ export class ModalTemplateEditor extends React.Component {
 
     this.state = {
       labels: {
-        button: Labels.getButtonLabels(props.session.languageCode)
+        buttons: Labels.getButtonLabels(props.session.languageCode)
         , messages: Labels.getMessageLabels(props.session.languageCode)
         , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
       }
@@ -43,7 +44,6 @@ export class ModalTemplateEditor extends React.Component {
     this.fetchData = this.fetchData.bind(this);
     this.getEditor = this.getEditor.bind(this);
     this.setMessage = this.setMessage.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   };
 
   componentWillMount = () => {
@@ -121,7 +121,7 @@ export class ModalTemplateEditor extends React.Component {
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
         });
-  }
+  };
 
 
   close() {
@@ -136,39 +136,6 @@ export class ModalTemplateEditor extends React.Component {
   open() {
     this.setState({showModal: true});
   };
-
-  onSubmit = ({formData}) => {
-    let config = {
-      auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
-      }
-    };
-    let path = this.props.session.restServer
-        + this.props.restPath
-        + "/"
-        + this.props.idLibrary
-        + "/"
-        + this.props.idTopic
-        + "/"
-        + this.props.idKey
-    ;
-    axios.put(
-        path
-        , formData
-        , config
-    )
-        .then(response => {
-          this.setState({
-            message: "updated ",
-          });
-        })
-        .catch( (error) => {
-          var message = error.message;
-          var messageIcon = MessageIcons.getMessageIcons().error;
-          this.setState( { data: message, message: message, messageIcon: messageIcon });
-        });
-  }
 
   getEditor = () => {
     if (this.state.dataFetched) {
@@ -222,7 +189,7 @@ export class ModalTemplateEditor extends React.Component {
               {this.getEditor()}
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+              <Button onClick={this.close}>{this.state.labels.buttons.close}</Button>
             </Modal.Footer>
           </Modal>
         </div>

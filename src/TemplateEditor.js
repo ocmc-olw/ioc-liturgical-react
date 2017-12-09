@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import {Button, Well} from 'react-bootstrap';
+import {Col, ControlLabel, Button, Grid, Modal, Row, Well} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import SortableTree, {
   addNodeUnderParent
@@ -10,8 +10,11 @@ import SortableTree, {
   , toggleExpandedForAll
 } from "react-sortable-tree";
 import Labels from './Labels';
+import Spinner from './helpers/Spinner';
 import MessageIcons from './helpers/MessageIcons';
 import ModalTemplateNodeEditor from './modules/ModalTemplateNodeEditor';
+import axios from "axios/index";
+import Server from './helpers/Server';
 
 /**
  * This class provides a visual, drag-and-drop interface for
@@ -28,16 +31,18 @@ class TemplateEditor extends React.Component {
     super(props);
 
     const renderDepthTitle = ({ path }) => `Depth: ${path.length}`;
+    let languageCode = props.session.languageCode;
 
     this.state = {
       labels: { // TODO: replace getViewReferencesLabels with method for this class
-        thisClass: Labels.getTemplateEditorLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+        thisClass: Labels.getTemplateEditorLabels(languageCode)
+        , buttons: Labels.getButtonLabels(languageCode)
+        , messages: Labels.getMessageLabels(languageCode)
+        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: Labels.getMessageLabels(languageCode).initial
       , searchString: ''
       , searchFocusIndex: 0
       , searchFoundCount: null
@@ -53,6 +58,7 @@ class TemplateEditor extends React.Component {
       , editingTreeIndex: undefined
       , selectedId: "" // from SearchText
       , selectedItem: "" // from ReactSelector
+      , updating: false
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -64,6 +70,10 @@ class TemplateEditor extends React.Component {
 
     this.getNodeEditor = this.getNodeEditor.bind(this);
     this.handleNodeEditorCallback = this.handleNodeEditorCallback.bind(this);
+
+    this.getMessages = this.getMessages.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    this.handleSubmitCallback = this.handleSubmitCallback.bind(this);
 
   }
 
@@ -77,14 +87,27 @@ class TemplateEditor extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
       this.setState((prevState, props) => {
+        let languageCode = nextProps.session.languageCode;
         return {
           labels: {
-            thisClass: Labels.getTemplateEditorLabels(nextProps.session.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+            thisClass: Labels.getTemplateEditorLabels(languageCode)
+            , buttons: Labels.getButtonLabels(languageCode)
+            , messages: Labels.getMessageLabels(languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
           }
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , message: Labels.getMessageLabels(languageCode).initial
           , treeData: nextProps.treeData
+          , updating: false
+          , showModalEditor: false
+          , showModalReactSelector: false
+          , selectorResource: []
+          , selectorInitialValue: ""
+          , modalTitle: ""
+          , editingNode: undefined
+          , editingPath: undefined
+          , editingTreeIndex: undefined
+          , selectedId: "" // from SearchText
+          , selectedItem: "" // from ReactSelector
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -97,17 +120,21 @@ class TemplateEditor extends React.Component {
 
 
   getNodeEditor = () => {
-    return (
-        <ModalTemplateNodeEditor
-            session={this.props.session}
-            node={this.state.editingNode}
-            path={this.state.editingPath}
-            treeIndex={this.state.editingTreeIndex}
-            callBack={this.handleNodeEditorCallback}
-            templateLibrary={this.props.idLibrary}
-            templateTopic={this.props.idTopic}
-        />
-    )
+    if (this.state.showModalEditor) {
+      console.log("getNodeEditor");
+      return (
+          <ModalTemplateNodeEditor
+              session={this.props.session}
+              showModal={this.state.showModalEditor}
+              node={this.state.editingNode}
+              path={this.state.editingPath}
+              treeIndex={this.state.editingTreeIndex}
+              callBack={this.handleNodeEditorCallback}
+              templateLibrary={this.props.idLibrary}
+              templateTopic={this.props.idTopic}
+          />
+      )
+    }
   };
 
   handleNodeEditorCallback = (node) => {
@@ -115,9 +142,8 @@ class TemplateEditor extends React.Component {
         {
           showModalEditor: false
         }
-    );
+    , console.log(`handleNodeEditorCallback, this.state.showModalEditor=${this.state.showModalEditor}`));
   };
-
 
   updateTreeData(treeData) {
     this.setState({ treeData });
@@ -140,6 +166,84 @@ class TemplateEditor extends React.Component {
     this.expand(false);
   }
 
+  onSubmit = () => {
+    this.setState({
+      updating: true
+    });
+    let formData = this.props.formData;
+    formData.node = JSON.stringify(this.state.treeData[0]);
+    console.log("treeData:");
+    console.log(this.state.treeData);
+    let config = {
+      auth: {
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
+      }
+    };
+    let path = Server.getDbServerTemplatesApi()
+        + "/"
+        + this.props.idLibrary
+        + "/"
+        + this.props.idTopic
+        + "/"
+        + this.props.idKey
+    ;
+    Server.restPutSchemaBasedForm(
+        this.props.session.restServer
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
+        , path
+        , formData
+        , undefined
+        , this.handleSubmitCallback
+    )
+  };
+
+  handleSubmitCallback = (restCallResult) => {
+    if (restCallResult) {
+      this.setState({
+        message: restCallResult.message
+        , messageIcon: restCallResult.messageIcon
+        , updating: false
+      });
+    }
+  }
+
+  getSubmitButton = () => {
+    if (this.props.formData) {
+      return (
+          <Grid>
+            <Row className="show-grid">
+              <Col sm={12} md={12}>
+                <Button bsStyle="primary" onClick={this.onSubmit}>
+                  {this.state.labels.buttons.submit}
+                </Button>
+                {this.getMessages()}
+              </Col>
+            </Row>
+          </Grid>
+      );
+    }
+  }
+
+  getMessages = () => {
+    if (this.state.updating) {
+      return (
+          <span>
+            <Spinner message={this.state.labels.messages.updating}/>
+          </span>
+      );
+    } else {
+      return (
+          <span>
+            <FontAwesome name={this.state.messageIcon}/>
+            {this.state.message}
+          </span>
+      )
+    }
+  };
+
+
   render() {
 
     const maxDepth = this.props.maxDepth;
@@ -159,12 +263,6 @@ class TemplateEditor extends React.Component {
           , showModalEditor: true
         }
       );
-
-      /**
-       * path array elements have a dual meaning.
-       * 0 = level 0, root node
-       * 0,1 = level 1, 1st node
-       */
 
       const objectString = Object.keys(node)
           .map(k => (k === 'children' ? 'children: Array' : `${k}: '${node[k]}'`))
@@ -332,6 +430,7 @@ class TemplateEditor extends React.Component {
             />
           </div>
           </Well>
+          {this.getSubmitButton()}
         </div>
     )
   }
@@ -343,6 +442,9 @@ TemplateEditor.propTypes = {
   , idTopic: PropTypes.string.isRequired
   , treeData: PropTypes.array
   , maxDepth: PropTypes.number
+  , formData: PropTypes.object
+  , uiSchema: PropTypes.object
+  , schema: PropTypes.object
 };
 
 TemplateEditor.defaultProps = {

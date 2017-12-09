@@ -1,5 +1,7 @@
 /**
  * Default user interface labels
+ * TODO: reorganize to eliminate duplicates.
+ * TODO: Flatten the structure so that each object under en and gr can be used in the parallel column editor.
  */
 
 const   labels = {
@@ -9,6 +11,7 @@ const   labels = {
       , close: "Close"
       , select: "Select"
       , submit: "Submit"
+      , update: "Update"
     }
     , liturgicalAcronyms: {
       baptism: "Baptism"
@@ -619,7 +622,7 @@ const   labels = {
       , msg2: " "
       , msg3: " "
       , msg4: ""
-      , editProperties: "Edit Properties"
+      , editProperties: "Properties:"
       , nodeTypePrompt: "Node type:"
       , nodeSubtitle: "Node ID:"
       , selectTextId: "Select Text ID"
@@ -895,7 +898,8 @@ const   labels = {
       cancel: "Ματαίωσε"
       , close: "Κλείστε"
       , select: "Επίλεξε"
-    , submit: "Να Στέιλει"
+      , submit: "Να Στέιλει"
+      , update: "Να Ανανεώσει"
     }
     , liturgicalAcronyms: {
       baptism: "Baptism"
@@ -1501,7 +1505,7 @@ const   labels = {
       , msg2: " "
       , msg3: " "
       , msg4: ""
-      , editProperties: "Edit Properties"
+      , editProperties: "Properties:"
       , nodeTypePrompt: "Node type:"
       , nodeSubtitle: "Node ID:"
       , selectTextId: "Select Text ID"
