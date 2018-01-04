@@ -300,6 +300,7 @@ export class NotesLister extends React.Component {
           let resultCount = 0;
           let data = [];
           let message = "No docs found...";
+          let showSearchResults = false;
           if (response.data && response.data.valueCount && response.data.valueCount > 0) {
             data = response.data;
             resultCount = data.valueCount;
@@ -309,6 +310,7 @@ export class NotesLister extends React.Component {
                 + " "
                 + this.state.searchLabels.msg4
                 + "."
+            showSearchResults = true;
           } else {
             message = this.state.searchLabels.msg3
                 + " 0 "
@@ -321,7 +323,7 @@ export class NotesLister extends React.Component {
                 , data: data
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
-                , showSearchResults: true
+                , showSearchResults: showSearchResults
                 , enableAdd: enableAdd
               }
           );

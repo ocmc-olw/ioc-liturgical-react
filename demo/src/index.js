@@ -742,7 +742,6 @@ class Demo extends React.Component {
   // called after a successful login
   handleDropdownsCallback = (response) => {
     let forms = response.data;
-
     let session = this.state.session;
     session.userInfo.domains = forms.domains;
 
