@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.0.34",
+  "version": "0.0.35",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -37,6 +37,7 @@
     "fs-extra": "^0.30.0",
     "fs-promise": "^0.5.0",
     "jquery":"^3.2.1",
+    "json2csv": "^3.11.5",
     "lodash": "^4.17.4",
     "orgchart": "2.0.4",
     "prop-types":"^15.5.10",

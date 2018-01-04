@@ -141,7 +141,7 @@ class LinkSearchOptions extends React.Component {
             </div>
           </div>
           <div className="row">
-            <div className="col-sm-12">
+            <div className="col-sm-12 col-md-12 col-lg-12">
               <ResourceSelector
                   title={this.props.labels.propertyIs}
                   initialValue={this.state.selectedProperty}
@@ -149,6 +149,10 @@ class LinkSearchOptions extends React.Component {
                   changeHandler={this.handlePropertyChange}
                   multiSelect={false}
               />
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-12 col-md-12 col-lg-12">
               <form onSubmit={this.handleSubmit}>
                 <div className="control-label">{this.props.labels.propertyTextIs}</div>
                 <input
@@ -163,6 +167,10 @@ class LinkSearchOptions extends React.Component {
                         name={"search"}/>
                 </span>
               </form>
+            </div>
+          </div>
+          <div className="row">
+            <div className="col-sm-12 col-md-12 col-lg-12">
               <ResourceSelector
                   title={this.props.labels.matcherIs}
                   initialValue={this.state.selectedMatcher}
