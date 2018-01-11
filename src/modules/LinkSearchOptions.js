@@ -154,7 +154,7 @@ class LinkSearchOptions extends React.Component {
           <div className="row">
             <div className="col-sm-12 col-md-12 col-lg-12">
               <form onSubmit={this.handleSubmit}>
-                <div className="control-label">{this.props.labels.propertyTextIs}</div>
+                <div className="resourceSelectorPrompt">{this.props.labels.propertyTextIs}</div>
                 <input
                     type="text"
                     onChange={this.handleValueChange}
