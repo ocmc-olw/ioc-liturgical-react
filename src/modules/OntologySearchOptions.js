@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
+import { Button } from 'react-bootstrap';
 
 class OntologySearchOptions extends React.Component {
 
@@ -36,6 +37,7 @@ class OntologySearchOptions extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTagsSelection = this.handleTagsSelection.bind(this);
     this.handleTagOperatorChange = this.handleTagOperatorChange.bind(this);
+    this.isDisabled = this.isDisabled.bind(this);
   }
 
   componentWillMount = () => {
@@ -112,6 +114,26 @@ class OntologySearchOptions extends React.Component {
     );
   };
 
+  isDisabled = () => {
+    // For now, we are not disabling the search for any reason.
+    // The code below is stubbed out for the event that we
+    // start disabling.
+    let disableButton = false;
+    if (this.state.value && this.state.value.length > 0) {
+      disableButton = false;
+    } else {
+      switch (this.state.selectedType) {
+        case "*": {
+          break;
+        }
+        default: {
+          disableButton = false;
+          break;
+        }
+      }
+    }
+    return disableButton;
+  };
 
   render() {
     return (
@@ -157,12 +179,6 @@ class OntologySearchOptions extends React.Component {
                     onChange={this.handleValueChange}
                     className="App-search-text-input"
                     name="search"/>
-                <span className="App-text-search-icon" >
-                    <FontAwesome
-                        type="submit"
-                        onClick={this.handleSubmit}
-                        name={"search"}/>
-                </span>
               </form>
               <ResourceSelector
                   title={this.props.labels.matcherIs}
@@ -189,6 +205,17 @@ class OntologySearchOptions extends React.Component {
                 />
                   </div>
               }
+              <div className="control-label">{this.props.labels.clickTheButton}</div>
+              <Button
+                  bsStyle="primary"
+                  bsSize="xsmall"
+                  type="submit"
+                  disabled={this.isDisabled()}
+                  onClick={this.handleSubmit}
+              >
+                <FontAwesome className="Button-Select-FontAwesome" name={"search"}/>
+                {this.props.labels.submit}
+              </Button>
             </div>
           </div>
         </div>

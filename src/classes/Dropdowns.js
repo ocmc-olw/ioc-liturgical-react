@@ -16,7 +16,10 @@ class Dropdowns {
     , templateWhenDayOfMonthCasesDropdown
     , templateWhenDayOfSeasonCasesDropdown
     , templateWhenModeOfWeekCasesDropdown
-    , templateWhenMonthNameCasesDropdown  ) {
+    , templateWhenMonthNameCasesDropdown
+    , liturgicalBooksDropdown
+    ) {
+    this.liturgicalBooksDropdown = (liturgicalBooksDropdown ? liturgicalBooksDropdown : []);
     this.biblicalBooksDropdown = (biblicalBooksDropdown ? biblicalBooksDropdown : []);
     this.biblicalChaptersDropdown = (biblicalChaptersDropdown ? biblicalChaptersDropdown : []);
     this.biblicalVersesDropdown = (biblicalVersesDropdown ? biblicalVersesDropdown : []);

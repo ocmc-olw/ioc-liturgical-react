@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
+import { Button, FormControl, FormGroup, InputGroup } from 'react-bootstrap';
 
 class SearchOptions extends React.Component {
 
@@ -30,18 +31,31 @@ class SearchOptions extends React.Component {
               <form className={"App-Search-Options-Text-Form"} onSubmit={this.handleSubmit}>
                 <div className="control-label">{this.props.valueTitle}</div>
                 <div className={"App-Search-Options-Text-Div"}>
-                <input
-                    type="text"
-                    placeholder={this.props.placeholder}
-                    onChange={this.setValue}
-                    className="App-search-text-input"
-                    name="search"/>
-                <span className="App-text-search-icon" >
-                    <FontAwesome
-                        type="submit"
-                        onClick={this.handleSubmit}
-                        name={"search"}/>
-                </span>
+                  <FormGroup>
+                    <InputGroup>
+                      <FormControl
+                          type="text"
+                          placeholder={this.props.placeholder}
+                          onChange={this.setValue}
+                          className="App-search-text-input"
+                      />
+                      <InputGroup.Button>
+                        <Button
+                            className="App-search-button"
+                            bsStyle="primary"
+                            bsSize="xsmall"
+                            type="submit"
+                            disabled={! this.state.value}
+                            onClick={this.handleSubmit}
+                        >
+                    <span className="App-text-search-icon" >
+                      <FontAwesome name={"search"}/>
+                    </span>
+                          {this.props.buttonLabel}
+                        </Button>
+                      </InputGroup.Button>
+                    </InputGroup>
+                  </FormGroup>
                 </div>
               </form>
             </div>
@@ -53,6 +67,7 @@ class SearchOptions extends React.Component {
 
 SearchOptions.propTypes = {
   valueTitle: PropTypes.string.isRequired
+  , buttonLabel: PropTypes.string.isRequired
   , placeholder: PropTypes.string.isRequired
   , handleSubmit: PropTypes.func.isRequired
 };

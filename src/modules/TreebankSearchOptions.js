@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import FontAwesome from 'react-fontawesome';
+import { Button } from 'react-bootstrap';
 
 class TreebankSearchOptions extends React.Component {
 
@@ -34,13 +35,14 @@ class TreebankSearchOptions extends React.Component {
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleTagsSelection = this.handleTagsSelection.bind(this);
     this.handleTagOperatorChange = this.handleTagOperatorChange.bind(this);
+    this.isDisabled = this.isDisabled.bind(this);
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
-  }
+  };
 
   handleDocTypeChange = (selection) => {
     let type = selection["value"];
@@ -65,15 +67,15 @@ class TreebankSearchOptions extends React.Component {
       , value: newSelectedValue
     }
     );
-  }
+  };
 
   handleMatcherChange = (item) => {
     this.setState({selectedMatcher: item.value});
-  }
+  };
 
   handleValueChange = (event) => {
     this.setState({value: event.target.value});
-  }
+  };
 
   handleTagsSelection = (selection) => {
     let tags = selection.map(function(a) {return a.value;});
@@ -82,14 +84,14 @@ class TreebankSearchOptions extends React.Component {
           selectedTags: tags.toString()
         }
     );
-  }
+  };
 
   handleTagOperatorChange = (selection) => {
     this.setState({
           selectedTagOperator: selection["value"]
         }
     );
-  }
+  };
 
   handleSubmit = (event) => {
     this.props.handleSubmit(
@@ -101,7 +103,29 @@ class TreebankSearchOptions extends React.Component {
         , this.state.selectedTags
     );
     event.preventDefault();
-  }
+  };
+
+  isDisabled = () => {
+    // For now, we are not disabling the search for any reason.
+    // The code below is stubbed out for the event that we
+    // start disabling.
+    let disableButton = false;
+    if (this.state.value && this.state.value.length > 0) {
+      disableButton = false;
+    } else {
+      switch (this.state.selectedType) {
+        case "*": {
+          break;
+        }
+        default: {
+          disableButton = false;
+          break;
+        }
+      }
+    }
+    return disableButton;
+  };
+
 
   render() {
     return (
@@ -136,13 +160,6 @@ class TreebankSearchOptions extends React.Component {
                     onChange={this.handleValueChange}
                     className="App-search-text-input"
                     name="search"/>
-                <span className="App-text-search-icon" >
-                    <FontAwesome
-                        type="submit"
-                        onClick={this.handleSubmit}
-                        name={"search"}/>
-                </span>
-              </form>
               <ResourceSelector
                   title={this.props.labels.matcherIs}
                   initialValue={this.state.selectedMatcher}
@@ -168,6 +185,18 @@ class TreebankSearchOptions extends React.Component {
                 />
                   </div>
               }
+              <div className="control-label">{this.props.labels.clickTheButton}</div>
+              <Button
+                  bsStyle="primary"
+                  bsSize="xsmall"
+                  type="submit"
+                  disabled={this.isDisabled()}
+                  onClick={this.handleSubmit}
+              >
+                <FontAwesome className="Button-Select-FontAwesome" name={"search"}/>
+                {this.props.labels.submit}
+              </Button>
+              </form>
             </div>
           </div>
         </div>

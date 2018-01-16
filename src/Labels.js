@@ -9,6 +9,7 @@ const   labels = {
     button: {
       cancel: "Cancel"
       , close: "Close"
+      , search: "Search"
       , select: "Select"
       , submit: "Submit"
       , update: "Update"
@@ -229,6 +230,7 @@ const   labels = {
       advanced: "Advanced Search"
       , bookIs: "and the book is..."
       , chapterIs: "and the chapter is..."
+      , clickTheButton: "Click the button below to submit your search criteria..."
       , close: "Close"
       , creating: "Creating..."
       , created: "Created"
@@ -373,6 +375,7 @@ const   labels = {
     }
     , searchNotes: {
       prompt: "enter a word or phrase"
+      , clickTheButton: "Click the button below to submit your search criteria..."
       , findWhereTypeIs: "Find where the note type is..."
       , findWhereGenericTypeIs: "and the generic type is..."
       , typeAny: "any"
@@ -404,6 +407,7 @@ const   labels = {
     }
     , searchTemplates: {
       prompt: "enter a word or phrase"
+      , clickTheButton: "Click the button below to submit your search criteria..."
       , findWhereTypeIs: "Find where the generation unit type is..."
       , findWhereGenericTypeIs: "and the generic type is..."
       , typeAny: "any"
@@ -435,6 +439,7 @@ const   labels = {
     }
     , searchTreebanks: {
       prompt: "enter a word or phrase"
+      , clickTheButton: "Click the button below to submit your search criteria..."
       , searchResultsType: "token analyses"
       , findWhereTypeIs: "Find where the treebank type is..."
       , findWhereGenericTypeIs: "and the generic type is..."
@@ -467,6 +472,7 @@ const   labels = {
     }
     , searchOntology: {
       prompt: "enter a word or phrase"
+      , clickTheButton: "Click the button below to submit your search criteria..."
       , findWhereTypeIs: "Find where entry type is..."
       , findWhereGenericTypeIs: "and the generic type is..."
       , typeAny: "any"
@@ -498,6 +504,7 @@ const   labels = {
     }
     , searchLinks: {
       prompt: "enter a word or phrase"
+      , clickTheButton: "Click the button below to submit your search criteria..."
       , findWhereTypeIs: "Find link(s) where type is..."
       , typeAny: "any"
       , domainIs: "and the domain is..."
@@ -897,6 +904,7 @@ const   labels = {
     button: {
       cancel: "Ματαίωσε"
       , close: "Κλείστε"
+      , search: "Αναζήτηση"
       , select: "Επίλεξε"
       , submit: "Να Στέιλει"
       , update: "Να Ανανεώσει"
@@ -1114,6 +1122,7 @@ const   labels = {
       , findWhereTypeIs: "Βρες Έγγραφο(-α) όπου ο τύπος είναι..."
       , docTypeAny: "οποιαδήποτε"
       , biblical: "βιβλικό"
+      , clickTheButton: "Κάντε κλικ στο παρακάτω κουμπί για να υποβάλετε τα κριτήρια αναζήτησής σας..."
       , liturgical: "λειτουργική"
       , domainIs: "και ο τομέας είναι..."
       , bookIs: "και το βιβλίο είναι..."
@@ -1259,6 +1268,7 @@ const   labels = {
     }
     , searchNotes: {
       prompt: "Βρείτε σημειώσεις"
+      , clickTheButton: "Κάντε κλικ στο παρακάτω κουμπί για να υποβάλετε τα κριτήρια αναζήτησής σας..."
       , findWhereTypeIs: "Βρες σχέσεις όπου το θέμα είναι..."
       , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
       , docTypeAny: "οποιαδήποτε"
@@ -1290,6 +1300,7 @@ const   labels = {
     }
     , searchTemplates: {
       prompt: "Βρείτε κομμάτια"
+      , clickTheButton: "Κάντε κλικ στο παρακάτω κουμπί για να υποβάλετε τα κριτήρια αναζήτησής σας..."
       , findWhereTypeIs: "Βρείτε κομμάτια όπου βρίσκεται ο τύπος..."
       , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
       , docTypeAny: "οποιαδήποτε"
@@ -1321,6 +1332,7 @@ const   labels = {
     }
     , searchTreebanks: {
       prompt: "Βρείτε σημειώσεις"
+      , clickTheButton: "Κάντε κλικ στο παρακάτω κουμπί για να υποβάλετε τα κριτήρια αναζήτησής σας..."
       , findWhereTypeIs: "Βρες σχέσεις όπου ο τύπος είναι..."
       , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
       , docTypeAny: "οποιαδήποτε"
@@ -1352,6 +1364,7 @@ const   labels = {
     }
     , searchOntology: {
       prompt: "εισάγετε μία λέξη ή φράση"
+      , clickTheButton: "Κάντε κλικ στο παρακάτω κουμπί για να υποβάλετε τα κριτήρια αναζήτησής σας..."
       , findWhereTypeIs: "Βρες σχέσεις όπου το θέμα είναι..."
       , findWhereGenericTypeIs: "και το γενικό θέμα είναι..."
       , docTypeAny: "οποιαδήποτε"
@@ -1383,6 +1396,7 @@ const   labels = {
     }
     , searchLinks: {
       prompt: "εισάγετε μία λέξη ή φράση"
+      , clickTheButton: "Κάντε κλικ στο παρακάτω κουμπί για να υποβάλετε τα κριτήρια αναζήτησής σας..."
       , findWhereTypeIs: "Βρες σχέσεις όπου ο τύπος είναι..."
       , docTypeAny: "οποιαδήποτε"
       , propertyIs: "και η ιδιότητα είναι:"

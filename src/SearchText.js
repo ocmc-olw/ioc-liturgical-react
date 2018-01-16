@@ -426,6 +426,7 @@ export class Search extends React.Component {
             <Panel  className="App-search-panel" header={this.props.searchLabels.simple} eventKey="1">
               <SearchOptionsSimple
                   valueTitle=""
+                  buttonLabel={this.props.searchLabels.submit}
                   placeholder={this.props.searchLabels.prompt}
                   handleSubmit={this.handleSimpleSearchSubmit}
               />
@@ -467,6 +468,7 @@ export class Search extends React.Component {
         return (
             <SearchOptionsSimple
                 valueTitle=""
+                buttonLabel={this.props.searchLabels.submit}
                 placeholder="enter a word or phrase and press the search icon..."
                 handleSubmit={this.handleSimpleSearchSubmit}
             />

@@ -86,7 +86,6 @@ div.container {
     margin-top: 10px !important;
 }
 .App-search-panel {
-    cursor: pointer;
 }
 .App-text-search-icon {
     cursor: pointer;
@@ -180,6 +179,7 @@ a.collapsed {
 }
 .App-search-text-input {
     height: auto;
+    padding-left: 12px;
     width: 80%;
     box-sizing: border-box;
 }
@@ -471,6 +471,9 @@ path.link {
 }
 .Button-Select {
     margin: 2px;
+}
+.Button-Select-FontAwesome {
+    padding-left: 0px;
 }
 .Button-Cancel {
     margin: 2px;

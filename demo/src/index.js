@@ -766,6 +766,7 @@ class Demo extends React.Component {
         , forms.templateWhenDayOfSeasonCasesDropdown
         , forms.templateWhenModeOfWeekCasesDropdown
         , forms.templateWhenMonthNameCasesDropdown
+        , forms.liturgicalBooksDropdown
   );
     session.dropdowns = dropdowns;
     console.log(session);

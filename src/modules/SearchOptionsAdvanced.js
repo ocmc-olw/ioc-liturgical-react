@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
+import { Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
-
 
 /**
  * To future maintainers of this code.
- * Two months ago, I had never coded using React Js.
+ * This was written when I just started learning React Js.
  * The code I have written without a doubt needs to be
- * examined carefully if you are skilled in React JS.
+ * examined carefully if you are skilled in React JS,
+ * and rewritten...
  * Michael Colburn, March 1, 2017
  */
 class SearchOptions extends React.Component {
@@ -63,6 +64,7 @@ class SearchOptions extends React.Component {
     this.getDropdownSectionTitle = this.getDropdownSectionTitle.bind(this);
     this.resetDropDownBooksState = this.resetDropDownBooksState.bind(this);
     this.cascadeDocTypeChange = this.cascadeDocTypeChange.bind(this);
+    this.isDisabled = this.isDisabled.bind(this);
   }
 
   componentWillMount = () => {
@@ -88,7 +90,7 @@ class SearchOptions extends React.Component {
         } , function () {
           this.handleDocTypeChange({
             label: this.props.docType
-            , value: this.props.docType
+            , value: this.props.docTyped
           })
         }
         }
@@ -165,6 +167,43 @@ class SearchOptions extends React.Component {
         }
   )
   }
+
+  isDisabled = () => {
+    let disableButton = true;
+    switch (this.state.docType) {
+      case "All": {
+        break;
+      }
+      case "Biblical": {
+        disableButton = ! this.state.value.length;
+        break;
+      }
+      case "Liturgical": {
+        if (this.state.value.length > 0) {
+          disableButton = false;
+        } else {
+          if (this.state.domain == "*") {
+            if (this.state.selectedBook == "*") {
+
+            } else {
+              disableButton = false;
+            }
+          } else {
+            if (this.state.selectedBook == "*") {
+
+            } else {
+              disableButton = false;
+            }
+          }
+        }
+        break;
+      }
+      default: {
+        break;
+      }
+    }
+    return disableButton;
+  };
 
   resetDropDownBooksState() {
     this.setState({
@@ -324,28 +363,31 @@ class SearchOptions extends React.Component {
     } catch (error) {
       console.log(error.message);
     }
-  } // end of method
+  }; // end of method
 
   setBookDropdown(domain) {
     let msg = this.props.labels.bookIs;
     let show = false;
     let source = {};
-    if (this.state.docType === "Biblical") {
-      show = true;
-      source = this.state.dropdowns.Biblical.topics[domain];
-    } else if (this.state.docType === "Liturgical") {
-      show = true;
-      source = this.state.dropdowns.Liturgical["all"].books;
-//      source = this.state.dropdowns.Liturgical.topics[domain];
-    } // end of if
-    this.setState({
-      dropDownBooks: {
-        show: show
-        , msg: msg
-        , source: source
-      }
-    });
-  } // end of method
+    if (domain && domain === "*") {
+      this.setGenericBookDropdown(this.state.docType);
+    } else {
+      if (this.state.docType === "Biblical") {
+        show = true;
+        source = this.state.dropdowns.Biblical.topics[domain];
+      } else if (this.state.docType === "Liturgical") {
+        show = true;
+        source = this.state.dropdowns.Liturgical.topics[domain];
+      } // end of if
+      this.setState({
+        dropDownBooks: {
+          show: show
+          , msg: msg
+          , source: source
+        }
+      });
+    }
+  }; // end of method
 
   setChaptersDropdown(book) {
     let msg = "";
@@ -584,20 +626,25 @@ class SearchOptions extends React.Component {
                     name="search"
                     value={this.state.value}
                 />
-                <span className="App-text-search-icon" >
-                    <FontAwesome
-                        type="submit"
-                        onClick={this.handleSubmit}
-                        name={"search"}/>
-                </span>
                 </div>
-              <ResourceSelector
-                  title={this.props.labels.matcherIs}
-                  initialValue={this.state.matcher}
-                  resources={this.props.matchers}
-                  changeHandler={this.handleMatcherChange}
-                  multiSelect={false}
-              />
+                <ResourceSelector
+                    title={this.props.labels.matcherIs}
+                    initialValue={this.state.matcher}
+                    resources={this.props.matchers}
+                    changeHandler={this.handleMatcherChange}
+                    multiSelect={false}
+                />
+                <div className="control-label">{this.props.labels.clickTheButton}</div>
+                <Button
+                    bsStyle="primary"
+                    bsSize="xsmall"
+                    type="submit"
+                    disabled={this.isDisabled()}
+                    onClick={this.handleSubmit}
+                >
+                  <FontAwesome className="Button-Select-FontAwesome" name={"search"}/>
+                  {this.props.labels.submit}
+                </Button>
               </form>
             </div>
           </div>
