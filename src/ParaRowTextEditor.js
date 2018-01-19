@@ -189,6 +189,10 @@ export class ParaRowTextEditor extends React.Component {
             greekSourceId = greekSource.id;
             greekSourceValue = greekSource.value;
           }
+          let values = response.data.values.filter((row) => {
+            return row.value.length > 0;
+          });
+          response.data.values = values;
           this.setState({
                 data: response.data
                 , greekSourceId: greekSourceId

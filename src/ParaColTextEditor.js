@@ -81,10 +81,6 @@ class ParaColTextEditor extends React.Component {
       }
       if (currentState.dataFetched) {
         values = currentState.values;
-        about = about;
-        libraryKeyValues = libraryKeyValues;
-        libraryKeys = libraryKeys;
-        templateKeys = templateKeys;
       }
     }
 

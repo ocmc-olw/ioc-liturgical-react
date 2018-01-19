@@ -264,6 +264,7 @@ div[class*='App-page'] {
         font-size: 15px;
     }
     .navbar-header {
+        z-index: 2000;
         float: none;
     }
     .navbar-left,.navbar-right {
