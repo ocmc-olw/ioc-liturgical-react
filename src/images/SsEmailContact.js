@@ -1,5 +1,5 @@
 import React from 'react'
-import screenShot from './graphics/emailDbOrg.png'
+import screenShot from './graphics/emailOcmc.jpg'
 
 export default React.createClass({
   render() {

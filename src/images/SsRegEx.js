@@ -1,5 +1,5 @@
 import React from 'react'
-import screenShot from './graphics/ScreenShotRegExPrayersBefore.png'
+import screenShot from './graphics/ScreenShotRegExPrayersBefore.jpg'
 
 export default React.createClass({
   render() {

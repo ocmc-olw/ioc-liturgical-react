@@ -14,7 +14,7 @@ class DocSimpleSearch extends React.Component {
         </p>
         <ol>
           <li>{this.props.labels.secDocSimpleSearchP03}</li>
-          <li>{this.props.labels.secDocSimpleSearchP04} <FontAwesome name={"search"}/>.</li>
+          <li>{this.props.labels.secDocSimpleSearchP04} <FontAwesome name={"search"}/> Submit.</li>
         </ol>
         <p>
           {this.props.labels.secDocSimpleSearchP05}
