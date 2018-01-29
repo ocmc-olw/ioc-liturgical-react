@@ -428,16 +428,11 @@ class Grammar extends React.Component {
               eventKey="perseus"
               collapsible
           >
-            <div className="App-iframe-wrapper">
-              <Iframe
-                  position="relative"
-                  height="500px"
-                  url={"http://www.perseus.tufts.edu/hopper/morph?l="
-                  + this.state.selectedToken
-                  + "&la=greek"
-                  }
-              />
-            </div>
+            <a key={"perseus" + this.state.selectedToken} target="_blank" href={
+              "http://www.perseus.tufts.edu/hopper/morph?l="
+                + this.state.selectedToken
+                + "&la=greek"
+            }>{this.state.selectedToken}</a>
           </Panel>
       )
     } else {
@@ -527,14 +522,7 @@ class Grammar extends React.Component {
               eventKey="smyth"
               collapsible
           >
-            <div className="App-iframe-wrapper">
-              <Iframe
-                  position="relative"
-                  height="1000px"
-                  url={"http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0007"
-                  }
-              />
-            </div>
+            <a key="smyth" target="_blank" href="http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0007">View</a>
           </Panel>
       )
     } else {

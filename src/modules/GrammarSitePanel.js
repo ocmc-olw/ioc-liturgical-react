@@ -45,6 +45,15 @@ class GrammarSitePanel extends React.Component {
         </div>
     );
 
+    const TheLinks = () => (
+        <div>
+          {this.props.lemmas.map(lemma => (
+              <div>
+                  <a key={this.props.title + lemma} target="_blank" href={this.props.url + lemma}>{lemma}</a>
+              </div>
+          ))}
+        </div>
+    );
 
     return (
             <div>
@@ -53,7 +62,7 @@ class GrammarSitePanel extends React.Component {
                   header={this.props.title}
                   collapsible
               >
-                <ThePanels/>
+                <TheLinks/>
               </Panel>
             </div>
         )
