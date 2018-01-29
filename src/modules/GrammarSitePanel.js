@@ -49,7 +49,12 @@ class GrammarSitePanel extends React.Component {
         <div>
           {this.props.lemmas.map(lemma => (
               <div>
-                  <a key={this.props.title + lemma} target="_blank" href={this.props.url + lemma}>{lemma}</a>
+                  <a
+                      key={this.props.title + lemma}
+                      target="_blank"
+                      href={this.props.url + lemma}
+                      rel={"noopener noreferrer"}
+                  >{lemma}</a>
               </div>
           ))}
         </div>

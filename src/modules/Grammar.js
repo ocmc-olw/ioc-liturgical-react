@@ -428,11 +428,16 @@ class Grammar extends React.Component {
               eventKey="perseus"
               collapsible
           >
-            <a key={"perseus" + this.state.selectedToken} target="_blank" href={
+            <a
+                key={"perseus" + this.state.selectedToken}
+                target="_blank"
+                rel={"noopener noreferrer"}
+                href={
               "http://www.perseus.tufts.edu/hopper/morph?l="
                 + this.state.selectedToken
                 + "&la=greek"
-            }>{this.state.selectedToken}</a>
+            }
+            >{this.state.selectedToken}</a>
           </Panel>
       )
     } else {
@@ -522,7 +527,12 @@ class Grammar extends React.Component {
               eventKey="smyth"
               collapsible
           >
-            <a key="smyth" target="_blank" href="http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0007">View</a>
+            <a
+                key="smyth"
+                target="_blank"
+                rel={"noopener noreferrer"}
+                href="http://www.perseus.tufts.edu/hopper/text?doc=Perseus:text:1999.04.0007"
+            >View</a>
           </Panel>
       )
     } else {
