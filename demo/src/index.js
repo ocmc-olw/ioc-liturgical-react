@@ -33,6 +33,7 @@ import {
   , Configuration
   , DependencyDiagram
   , DomainSelector
+  , DownloadUserRecords
   , Dropdowns
   , Flag
   , HelpSearch
@@ -1551,6 +1552,15 @@ class Demo extends React.Component {
             {/*<Panel header="Life Cycle Demo" eventKey="lcd">*/}
               {/*<LifeCycleDemo languageCode={this.state.language.code}/>*/}
             {/*</Panel> /!* Life Cycle Demo *!/*/}
+            <Panel header="User Records Download" eventKey="userRecords">
+              { (this.state.authenticated) ?
+                  <DownloadUserRecords
+                      session={this.state.session}
+                  />
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+            </Panel> {/* Download User Records */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

@@ -175,7 +175,23 @@ class SearchOptions extends React.Component {
         break;
       }
       case "Biblical": {
-        disableButton = ! this.state.value.length;
+        if (this.state.value.length > 0) {
+          disableButton = false;
+        } else {
+          if (this.state.domain == "*") {
+            if (this.state.selectedBook == "*") {
+
+            } else {
+              disableButton = false;
+            }
+          } else {
+            if (this.state.selectedBook == "*") {
+
+            } else {
+              disableButton = false;
+            }
+          }
+        }
         break;
       }
       case "Liturgical": {

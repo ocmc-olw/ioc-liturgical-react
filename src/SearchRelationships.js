@@ -70,6 +70,7 @@ export class SearchRelationships extends React.Component {
         , onSizePerPageList: this.onSizePerPageList
         , hideSizePerPage: true
         , paginationShowsTotal: true
+        , onExportToCSV: this.onExportToCSV
       }
       ,
       selectRow: {
@@ -106,6 +107,7 @@ export class SearchRelationships extends React.Component {
     this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
+    this.onExportToCSV = this.onExportToCSV.bind(this);
   }
 
   componentWillMount = () => {
@@ -432,6 +434,10 @@ export class SearchRelationships extends React.Component {
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
         });
+  }
+
+  onExportToCSV = ( row ) => {
+    return this.state.data.values;
   }
 
   render() {

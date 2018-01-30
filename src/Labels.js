@@ -80,6 +80,7 @@ const   labels = {
     , header: {
       about: "About"
       , browser: "Cypher"
+      , myRecords: "My Records"
       , help: "Help"
       , login: "Login"
       , logout: "Logout"
@@ -971,6 +972,7 @@ const   labels = {
     , header: {
       about: "Σχετικά"
       , browser: "Σαΐφερ"
+      , myRecords: "Τα αρχεία μου"
       , help: "Βοήθεια"
       , login: "Σύνδεση"
       , logout: "Αποσύνδεση"

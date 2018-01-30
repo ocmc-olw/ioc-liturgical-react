@@ -20,6 +20,7 @@ const loginUser = "login/user"
 const links = "links";
 const docs = "docs";
 const notes = docs + "/notes";
+const userdocs = docs + "/userdocs";
 const treebanks = docs + "/treebanks";
 const agesPdf = docs + "/agespdf";
 const clone = docs + "/clone";
@@ -48,6 +49,30 @@ const dbDropdownsSearchTreebanks = "dropdowns/treebanks";
 const dbDropdownsGrLibTopics = "dropdowns/grlibtopics";
 const ldp = "ldp";
 const messageIcons = MessageIcons.getMessageIcons();
+
+const getTimestamp = () => {
+  console.log("in timestamp");
+  let date = new Date();
+  let month = (date.getMonth()+1).toString().padStart(2,"0");
+  let day = date.getDate().toString().padStart(2,"0");
+  let hour = date.getHours().toString().padStart(2,"0");
+  let minute = date.getMinutes().toString().padStart(2,"0");
+  let second = date.getSeconds().toString().padStart(2,"0");
+  let idKey = date.getFullYear()
+      + "."
+      + month
+      + "."
+      + day
+      + ".T"
+      + hour
+      + "."
+      + minute
+      + "."
+      + second
+  ;
+  console.log(`return=${idKey}`);
+  return idKey;
+};
 
 const restGetPromise = (
     restServer
@@ -155,6 +180,52 @@ const restGetPdf = (
   })
 }
 
+const restGetUserDocs = (
+    restServer
+    , serverPath
+    , username
+    , password
+) => {
+  return new Promise((resolve, reject) => {
+    let responseType = "blob";
+    let config = {
+      auth: {
+        username: username
+        , password: password
+      }
+      , responseType: responseType
+    };
+
+    let path = restServer
+        + serverPath
+    ;
+
+    let result = {
+      data: {}
+      , userMessage: "OK"
+      , developerMessage: "OK"
+      , messageIcon: messageIcons.info
+      , status: 200
+    };
+
+    axios.get(path, config)
+        .then(response => {
+          var blob = new Blob([response.data], {type: 'application/json'});
+          FileSaver.saveAs(blob, getTimestamp() + "_" + username + ".json");
+          result.userMessage = "ok";
+          result.developerMessage = "ok";
+          result.code = "200";
+          result.data = response.data;
+          resolve(result);
+        })
+        .catch((error) => {
+          result.message = error.message;
+          result.messageIcon = messageIcons.error;
+          result.status = error.status;
+          reject(result);
+        });
+  })
+};
 const restGet = (
     restServer
     , username
@@ -342,6 +413,7 @@ export default {
   , getDbServerDropdownsSearchTreebanksApi: () => {return dbApi + dbDropdownsSearchTreebanks;}
   , getDbServerDocsApi: () => {return dbApi + docs;}
   , getDbServerNotesApi: () => {return dbApi + notes;}
+  , getDbServerUserDocsApi: () => {return dbApi + userdocs;}
   , getDbServerLinksApi: () => {return dbApi + links;}
   , getDbServerOntologyApi: () => {return dbApi + ontology;}
   , getDbServerTemplatesApi: () => {return dbApi + templates;}
@@ -714,6 +786,19 @@ export default {
         , password
         , parms
         , filename
+    );
+  }
+  , restGetUserDocs: (
+      restServer
+      , serverPath
+      , username
+      , password
+  ) => {
+    return restGetUserDocs(
+        restServer
+        , serverPath
+        , username
+        , password
     );
   }
 }

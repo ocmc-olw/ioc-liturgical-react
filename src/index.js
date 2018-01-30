@@ -5,6 +5,7 @@ import AboutDatabase from './AboutDatabase';
 import Configuration from './Configuration';
 import DependencyDiagram from './modules/DependencyDiagram';
 import DomainSelector from './DomainSelector';
+import DownloadUserRecords from './helpers/DownloadUserRecords';
 import Dropdowns from './classes/Dropdowns';
 import Flag from './Flag';
 import HelpSearch from './HelpSearch';
@@ -41,6 +42,7 @@ export {
   , Configuration
   , DependencyDiagram
   , DomainSelector
+  , DownloadUserRecords
   , Dropdowns
   , Flag
   , HelpSearch

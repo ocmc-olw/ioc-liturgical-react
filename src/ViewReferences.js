@@ -269,7 +269,7 @@ class ViewReferences extends React.Component {
             <div className="row">
               <BootstrapTable
                   data={this.state.data.values}
-                  exportCSV={ true }
+                  exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
                   searchPlaceholder={this.state.labels.resultsTableLabels.filterPrompt}
