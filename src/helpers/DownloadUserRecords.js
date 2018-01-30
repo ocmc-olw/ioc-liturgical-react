@@ -38,7 +38,6 @@ class DownloadUserRecords extends React.Component {
   };
 
   fetchDocData = () => {
-    console.log("fetchDocData clicked");
     this.setState({fetching: true});
     Server.restGetUserDocs(
         this.props.session.restServer
