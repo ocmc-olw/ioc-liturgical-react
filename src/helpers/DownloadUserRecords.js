@@ -9,33 +9,46 @@ import Labels from "../Labels";
 class DownloadUserRecords extends React.Component {
   constructor(props) {
     super(props);
-
+    let languageCode = props.session.languageCode;
     this.state = {
       fetching: false
       , labels: {
-        messages: Labels.getMessageLabels(props.session.languageCode)
+        messages: Labels.getMessageLabels(languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.session.languageCode).initial
+      , message: Labels.getMessageLabels(languageCode).initial
+    }
 
-    };
+    this.handleStateChange = this.handleStateChange.bind(this);
     this.fetchDocData = this.fetchDocData.bind(this);
-  };
+  }
 
   componentWillMount = () => {
-  };
+  }
+
+  componentDidMount = () => {
+    // make any initial function calls here...
+  }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState(
-        {
+    if (this.props.session.languageCode !== nextProps.session.languageCode) {
+      let languageCode = nextProps.session.languageCode;
+      this.setState((prevState, props) => {
+        return {
           labels: {
-            messages: Labels.getMessageLabels(nextProps.session.languageCode)
+            messages: Labels.getMessageLabels(languageCode)
           }
-          , message: Labels.getMessageLabels(nextProps.session.languageCode).initial
+          , message: Labels.getMessageLabels(languageCode).initial
+        }
+      }, function () { return this.handleStateChange("place holder")});
+    }
+  }
 
-        }    )
-  };
+  // if we need to do something after setState, do it here...
+  handleStateChange = (parm) => {
+    // call a function if needed
+  }
 
   fetchDocData = () => {
     this.setState({fetching: true});
@@ -73,16 +86,23 @@ class DownloadUserRecords extends React.Component {
   render() {
     if (this.state.fetching) {
       return (
-        <Spinner message={this.state.labels.messages.retrieving}/>
+          <Spinner message={this.state.labels.messages.retrieving}/>
       );
     } else {
       return (<div><Button onClick={this.fetchDocData}>Download</Button></div>);
     }
   };
+
+
 }
 
 DownloadUserRecords.propTypes = {
   session: PropTypes.object.isRequired
+};
+
+// set default values for props here
+DownloadUserRecords.defaultProps = {
+  languageCode: "en"
 };
 
 export default DownloadUserRecords;

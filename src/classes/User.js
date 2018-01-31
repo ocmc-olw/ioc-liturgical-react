@@ -50,11 +50,15 @@ class User {
    */
   isAuthorFor = (library) => {
     let authorized = false;
-    if (this.domains && this.domains.author) {
-      for (let entry of this.domains.author) {
-        if (entry.value == library) {
-          authorized = true;
-          break;
+    if (this.isAdminFor(library)) {
+      authorized = true;
+    } else {
+      if (this.domains && this.domains.author) {
+        for (let entry of this.domains.author) {
+          if (entry.value == library) {
+            authorized = true;
+            break;
+          }
         }
       }
     }
@@ -68,10 +72,14 @@ class User {
   isReaderFor = (library) => {
     let authorized = false;
     if (this.domains && this.domains.reader) {
-      for (let entry of this.domains.reader) {
-        if (entry.value == library) {
-          authorized = true;
-          break;
+      if (this.isAdminFor(library) || this.isAuthorFor(library)) {
+        authorized = true;
+      } else {
+        for (let entry of this.domains.reader) {
+          if (entry.value == library) {
+            authorized = true;
+            break;
+          }
         }
       }
     }
