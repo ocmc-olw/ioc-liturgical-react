@@ -1589,8 +1589,19 @@ class Demo extends React.Component {
                   </div>
                   :
                   <p>You must log in first in order to see and use this.</p>
-            </Panel> {/* Download User Records */}
               }
+              </Panel> {/* Biblical Reference Selector */}
+            <Panel header="Text Note Editor" eventKey="TextNoteEditor">
+              { (this.state.authenticated) ?
+                  <div>
+                    <TextNoteEditor
+                        session={this.state.session}
+                    />
+                  </div>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+            </Panel> {/* Text Note Editor */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

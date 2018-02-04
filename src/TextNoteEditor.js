@@ -67,7 +67,8 @@ class TextNodeEditor extends React.Component {
     return (
         <div className="App-New-Component-Template">
           <Editor
-
+              apiKey="MceEditorKey"
+              init={{ plugins: 'link table' }}
           />
         </div>
     )

@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Labels from './Labels';
-import MessageIcons from './helpers/MessageIcons';
+import Labels from '../Labels';
+import MessageIcons from './MessageIcons';
 
 class BibleRefSelector extends React.Component {
   constructor(props) {
@@ -60,6 +60,7 @@ class BibleRefSelector extends React.Component {
   render() {
     return (
         <div className="App-New-Component-Template">
+          This will be the selector
         </div>
     )
   }
