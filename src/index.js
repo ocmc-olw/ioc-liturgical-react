@@ -26,6 +26,7 @@ import Server from './helpers/Server';
 import Session from './classes/Session';
 import Spinner from './helpers/Spinner';
 import TemplateEditor from './TemplateEditor';
+import TextNoteEditor from './TextNoteEditor';
 import TopicsSelector from './modules/TopicsSelector';
 import UiSchemas from './classes/UiSchemas';
 import ViewReferences from './ViewReferences';
@@ -64,6 +65,7 @@ export {
   , Session
   , Spinner
   , TemplateEditor
+  , TextNoteEditor
   , TopicsSelector
   , UiSchemas
   , User

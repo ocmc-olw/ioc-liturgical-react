@@ -51,6 +51,7 @@ import {
   , Session
   , Spinner
   , TemplateEditor
+  , TextNoteEditor
   , TopicsSelector
   , UiSchemas
   , User
@@ -1555,6 +1556,15 @@ class Demo extends React.Component {
             <Panel header="User Records Download" eventKey="userRecords">
               { (this.state.authenticated) ?
                   <DownloadUserRecords
+                      session={this.state.session}
+                  />
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+            </Panel> {/* Download User Records */}
+            <Panel header="Text Note Editor" eventKey="textNoteEditor">
+              { (this.state.authenticated) ?
+                  <TextNoteEditro
                       session={this.state.session}
                   />
                   :
