@@ -1,25 +1,18 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-
-import { Editor } from '@tinymce/tinymce-react';
-
+import tinymce from 'tinymce';
+import 'tinymce/themes/modern';
+import 'tinymce/plugins/wordcount';
+import 'tinymce/plugins/table';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
-/**
- * This is a template for a new component.
- * To use it:
- * 1. Rename all occurrences of NewComponentTemplate to your component name.
- * 2. Replace Labels.getViewReferenceLabels with a call to get your component's labels
- * 3. Add content to the render function, etc...
- */
-// TODO: rename class
 class TextNodeEditor extends React.Component {
   constructor(props) {
     super(props);
     let languageCode = props.session.languageCode;
     this.state = {
-      labels: { // TODO: replace getViewReferencesLabels with method for this class
+      labels: { //
         thisClass: Labels.getViewReferencesLabels(languageCode)
         , buttons: Labels.getButtonLabels(languageCode)
         , messages: Labels.getMessageLabels(languageCode)
@@ -28,16 +21,28 @@ class TextNodeEditor extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
+      , editor: null
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
+    this.handleSave = this.handleSave.bind(this);
   }
 
   componentWillMount = () => {
   }
 
   componentDidMount = () => {
-    // make any initial function calls here...
+    tinymce.init({
+      selector: `#${this.props.id}`,
+      plugins: 'wordcount table',
+      setup: editor => {
+        this.setState({ editor });
+        editor.on('keyup change', () => {
+          const content = editor.getContent();
+          this.props.onEditorChange(content);
+        });
+      }
+    });
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -57,35 +62,38 @@ class TextNodeEditor extends React.Component {
     }
   }
 
-  // if we need to do something after setState, do it here...
-  handleStateChange = (parm) => {
-    // call a function if needed
+  componentWillUnmount() {
+    tinymce.remove(this.state.editor);
   }
 
-  // TODO: add the content for the render function
+  // if we need to do something after setState, do it here...
+  handleStateChange = (parm) => {
+    // call a function if neededd
+  }
+
+  handleSave = (e) => {
+    console.log('Content was updated:', e.target.getContent());
+  }
+
   render() {
     return (
         <div className="App-New-Component-Template">
-          <Editor
-              apiKey="MceEditorKey"
-              init={{ plugins: 'link table' }}
-          />
+          <form onSubmit={this.handleSave}>
+            <textarea id={this.props.id}/>
+          </form>
         </div>
     )
   }
 }
 
-// TODO: rename class and add any additional propTypes you need
-// TODO: review the structure of the Session class, which also holds User, UiSchemas, and Dropdowns
 TextNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
+  , onEditorChange: PropTypes.func.isRequired
 };
 
 // set default values for props here
-// TODO: rename class
 TextNodeEditor.defaultProps = {
-  languageCode: "en"
+  id: "tinymceeditor"
 };
 
-// TODO: rename class for export
 export default TextNodeEditor;

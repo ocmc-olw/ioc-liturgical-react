@@ -1,7 +1,9 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
-
+import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
+import '../../node_modules/tinymce/skins/lightgray/skin.min.css'
+import '../../node_modules/tinymce/skins/lightgray/content.min.css'
 import './css/alwb.css';
 import './css/Demo.css'; // important that you load this as the last css
 import RestServer from './helpers/restServer'
@@ -630,11 +632,15 @@ class Demo extends React.Component {
     this.closeModal = this.closeModal.bind(this);
     this.node = this.node.bind(this);
     this.bibleRefSelectorCallback = this.bibleRefSelectorCallback.bind(this);
+    this.handleTextNoteContentChange = this.handleTextNoteContentChange.bind(this);
   }
 
   componentWillMount = () => {
   }
 
+  handleTextNoteContentChange = (content) => {
+    console.log(content);
+  }
 
   bibleRefSelectorCallback = (book, chapter, verse) => {
     this.setState (
@@ -1596,6 +1602,7 @@ class Demo extends React.Component {
                   <div>
                     <TextNoteEditor
                         session={this.state.session}
+                        onEditorChange={this.handleTextNoteContentChange }
                     />
                   </div>
                   :
