@@ -14,6 +14,11 @@ const   labels = {
       , submit: "Submit"
       , update: "Update"
     }
+    , BibleRefSelector: {
+      book: "Book"
+      , chapter: "Chapter"
+      , verse: "Verse"
+      }
     , liturgicalAcronyms: {
       baptism: "Baptism"
       , funeral: "Funeral"
@@ -910,6 +915,11 @@ const   labels = {
       , submit: "Να Στέιλει"
       , update: "Να Ανανεώσει"
     }
+    , BibleRefSelector: {
+        book: "το βιβλίο"
+        , chapter: "το κεφάλαιο"
+        , verse: "Verse"
+        }
     , liturgicalAcronyms: {
       baptism: "Baptism"
       , funeral: "Funeral"
@@ -1830,6 +1840,7 @@ module.exports = {
   , getComponentParaTextEditorLabels: (code) => { return labels[code].ParaTextEditor;}
   , getAgesEditorLabels: (code) => { return labels[code].AgesEditor;}
   , getAgesViewerLabels: (code) => { return labels[code].AgesViewer;}
+  , getBibleRefSelectorLabels: (code) => { return labels[code].BibleRefSelector;}
   , getNewEntryFormLabels: (code) => { return labels[code].NewEntryForm;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}

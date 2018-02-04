@@ -2,6 +2,7 @@ import Administrator from './Administrator';
 import AgesEditor from './AgesEditor';
 import AgesViewer from './AgesViewer';
 import AboutDatabase from './AboutDatabase';
+import BibleRefSelector from './helpers/BibleRefSelector';
 import Configuration from './Configuration';
 import DependencyDiagram from './modules/DependencyDiagram';
 import DomainSelector from './DomainSelector';
@@ -40,6 +41,7 @@ export {
   , AgesEditor
   , AgesViewer
   , AboutDatabase
+  , BibleRefSelector
   , Configuration
   , DependencyDiagram
   , DomainSelector

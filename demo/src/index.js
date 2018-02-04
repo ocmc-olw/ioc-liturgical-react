@@ -31,6 +31,7 @@ import {
   , AgesEditor
   , AgesViewer
   , Configuration
+  , BibleRefSelector
   , DependencyDiagram
   , DomainSelector
   , DownloadUserRecords
@@ -628,11 +629,22 @@ class Demo extends React.Component {
     this.showModal = this.showModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
     this.node = this.node.bind(this);
+    this.bibleRefSelectorCallback = this.bibleRefSelectorCallback.bind(this);
   }
 
   componentWillMount = () => {
   }
 
+
+  bibleRefSelectorCallback = (book, chapter, verse) => {
+    this.setState (
+        {
+          bibleRefSelectorBook: book
+          , bibleRefSelectorChapter: chapter
+          , bibleRefSelectorVerse: verse
+        }
+    );
+  };
 
   /**
    *
@@ -744,6 +756,7 @@ class Demo extends React.Component {
   // called after a successful login
   handleDropdownsCallback = (response) => {
     let forms = response.data;
+    console.log(forms);
     let session = this.state.session;
     session.userInfo.domains = forms.domains;
 
@@ -1562,15 +1575,22 @@ class Demo extends React.Component {
                   <p>You must log in first in order to see and use this.</p>
               }
             </Panel> {/* Download User Records */}
-            <Panel header="Text Note Editor" eventKey="textNoteEditor">
+            <Panel header="Biblical Reference Selector" eventKey="BibleRefSelector">
               { (this.state.authenticated) ?
-                  <TextNoteEditro
+                  <div>
+                  <BibleRefSelector
                       session={this.state.session}
+                      callback={this.bibleRefSelectorCallback}
                   />
+                  <p>
+                    <span>{this.state.bibleRefSelectorBook}</span>
+                    <span>{this.state.bibleRefSelectorChapter}:</span>
+                  </p>
+                  </div>
                   :
                   <p>You must log in first in order to see and use this.</p>
-              }
             </Panel> {/* Download User Records */}
+              }
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

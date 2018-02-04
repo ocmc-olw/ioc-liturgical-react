@@ -55,8 +55,6 @@ export class SearchTemplates extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerDropdownsSearchTemplatesApi();
     axios.get(path, config)
         .then(response => {
-          console.log("SearchTemplates.componentWillMonth get dropdown: response is")
-          console.log(response.data.values);
           // literals used as keys to get data from the response
           let valueKey = "dropdown";
           let listKey = "typeList";
