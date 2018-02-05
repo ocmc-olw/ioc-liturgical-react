@@ -502,6 +502,12 @@ path.link {
     padding-left: 4px;
 }
 
+
+
+
 .App-Text-Note-Editor-Scope {
     width: 100px;
+}
+.mce-branding {
+    visibility: hidden !important;
 }
