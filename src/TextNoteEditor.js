@@ -4,7 +4,7 @@ import tinymce from 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/table';
-import { Button, ButtonGroup, Col, ControlLabel, Grid, HelpBlock, FormControl, FormGroup, Row } from 'react-bootstrap';
+import { Button, ButtonGroup, Col, ControlLabel, Grid, HelpBlock, FormControl, FormGroup, Row, Well } from 'react-bootstrap';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
@@ -91,6 +91,7 @@ class TextNodeEditor extends React.Component {
   render() {
     return (
         <div className="App-Text-Note-Editor">
+          <Well>
           <form onSubmit={this.handleSave}>
             <FormGroup
                 controlId="formBasicText"
@@ -183,6 +184,7 @@ class TextNodeEditor extends React.Component {
               </Grid>
             </FormGroup>
           </form>
+          </Well>
         </div>
     )
   }
