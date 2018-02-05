@@ -504,9 +504,30 @@ path.link {
 
 
 
-
-.App-Text-Note-Editor-Scope {
+.App-Text-Note-Editor-Title {
+    margin-right: 0px;
+    padding-right: 0px;
+    width: 101%;
+}
+.App-Bible-Ref-Selector-Book {
+    width: 400px;
+    margin-right: 2px;
+}
+.App-Bible-Ref-Selector-Chapter {
     width: 100px;
+}
+.App-Bible-Ref-Selector-Verse {
+    width: 100px;
+    padding-left: 9px;
+}
+.App-Text-Note-Editor-Scope {
+    height: auto;
+    padding-left: 12px;
+    width: 80%;
+    box-sizing: border-box;
+}
+.mce-container-body {
+    width: 80vw;
 }
 .mce-branding {
     visibility: hidden !important;

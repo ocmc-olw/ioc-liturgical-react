@@ -788,6 +788,7 @@ class Demo extends React.Component {
         , forms.templateWhenModeOfWeekCasesDropdown
         , forms.templateWhenMonthNameCasesDropdown
         , forms.liturgicalBooksDropdown
+        , forms.noteTypesDropdown
   );
     session.dropdowns = dropdowns;
     console.log(session);
@@ -1603,6 +1604,8 @@ class Demo extends React.Component {
                     <TextNoteEditor
                         session={this.state.session}
                         onEditorChange={this.handleTextNoteContentChange }
+                        scope={"he.h.m2~VythouAnekalypse.text"}
+                        liturgicalText={"Βυθοῦ ἀνεκάλυψε πυθμένα καὶ διὰ ξηρᾶς οἰκείους ἕλκει, ἐν αὐτῷ κατακαλύψας ἀντιπάλους, ὁ κραταιός, ἐν πολέμοις Κύριος, ὅτι δεδόξασται."}
                     />
                   </div>
                   :

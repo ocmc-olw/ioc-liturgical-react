@@ -46,11 +46,17 @@ export class ReactSelector extends React.Component {
 }
 
 ReactSelector.propTypes = {
-  initialValue: PropTypes.string.isRequired
+  initialValue: PropTypes.string
   , resources: PropTypes.array.isRequired
   , changeHandler: PropTypes.func.isRequired
   , multiSelect: PropTypes.bool.isRequired
   , title: PropTypes.string
+};
+
+// set default values for props here
+ReactSelector.defaultProps = {
+  initialValue: ""
+  , title: ""
 };
 
 export default ReactSelector;

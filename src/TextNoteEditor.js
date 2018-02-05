@@ -7,6 +7,8 @@ import 'tinymce/plugins/table';
 import { Button, ButtonGroup, Col, ControlLabel, Grid, HelpBlock, FormControl, FormGroup, Row, Well } from 'react-bootstrap';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
+import ResourceSelector from './modules/ReactSelector';
+import BibleRefSelector from './helpers/BibleRefSelector';
 
 class TextNodeEditor extends React.Component {
   constructor(props) {
@@ -23,16 +25,30 @@ class TextNodeEditor extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
       , editor: null
-      , scope: undefined
-      , lemma: undefined
-      , type: undefined
-      , biblicalRef: undefined
-      , note: undefined
-    }
+      , scope: props.scope
+      , liturgicalText: props.liturgicalText
+      , lemma: ""
+      , selectedType: ""
+      , selectedBibleBook: ""
+      , selectedBibleChapter: ""
+      , selectedBibleVerse: ""
+      , bibleRef: ""
+      , ontologyRef: ""
+      , note: ""
+    };
 
+    this.handleBibleRefChange = this.handleBibleRefChange.bind(this);
+    this.handleLemmaChange = this.handleLemmaChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
     this.handleScopeChange = this.handleScopeChange.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
+    this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
+    this.getBibleRefRow = this.getBibleRefRow.bind(this);
+    this.getLiturgicalTextRow = this.getLiturgicalTextRow.bind(this);
+    this.getOntologyRefRow = this.getOntologyRefRow.bind(this);
+    this.getTitleRow = this.getTitleRow.bind(this);
   }
 
   componentWillMount = () => {
@@ -41,7 +57,7 @@ class TextNodeEditor extends React.Component {
   componentDidMount = () => {
     tinymce.init({
       selector: `#${this.props.id}`,
-      plugins: 'wordcount table',
+      plugins: 'wordcount',
       setup: editor => {
         this.setState({ editor });
         editor.on('keyup change', () => {
@@ -50,6 +66,9 @@ class TextNodeEditor extends React.Component {
         });
       }
       , entity_encoding : "raw"
+      , browser_spellcheck: true
+      , branding: false
+      , menubar: false
     });
   }
 
@@ -75,8 +94,14 @@ class TextNodeEditor extends React.Component {
   };
 
   handleScopeChange = (e) => {
-    console.log(`scope: ${e.target.value}`);
     this.setState({scope: e.target.value});
+  };
+
+  handleNoteTypeChange = (selection) => {
+    console.log(`selectedType=${selection["value"]}`);
+    this.setState({
+      selectedType: selection["value"]
+    });
   };
 
   // if we need to do something after setState, do it here...
@@ -86,11 +111,98 @@ class TextNodeEditor extends React.Component {
 
   handleSave = (e) => {
     console.log('Content was updated:', e.target.getContent());
+    this.setState({note: e.target.getContent()});
+  };
+
+  handleBibleRefChange = (e) => {
+    this.setState({bibleRef: e.target.value});
+  };
+
+  handleOntologyRefChange = (e) => {
+    this.setState({ontologyRef: e.target.value});
+  };
+
+  handleLemmaChange = (e) => {
+    this.setState({lemma: e.target.value});
+  };
+
+  handleTitleChange = (e) => {
+    this.setState({title: e.target.value});
+  };
+
+  getTitleRow = () => {
+    return (
+        <Row className="show-grid">
+          <Col xs={2} md={2}>
+            <ControlLabel>Title:</ControlLabel>
+          </Col>
+          <Col className="App App-Text-Note-Editor-Title" xs={8} md={8}>
+            <FormControl
+                className={"App App-Text-Note-Editor-Title"}
+                type="text"
+                value={this.state.title}
+                placeholder="title"
+                onChange={this.handleTitleChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
+  getBibleRefRow = () => {
+    if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
+      return (
+        <BibleRefSelector
+            session={this.props.session}
+            callback={this.handleBibleRefChange}
+        />
+      );
+    } else {
+      <span></span>
+    }
+  };
+
+  getOntologyRefRow = () => {
+    if (this.state.selectedType
+        && this.state.selectedType.startsWith("REF_TO")
+        && (this.state.selectedType !== ("REF_TO_BIBLE"))
+    ) {
+      return (
+          <Row className="show-grid">
+            <Col xs={2} md={2}>
+              <ControlLabel>Ontology Reference:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <FormControl
+                  className={"App App-Text-Note-Editor-Scope"}
+                  type="text"
+                  value={this.state.ontologyRef}
+                  placeholder="Ontology reference"
+                  onChange={this.handleOntologyRefChange}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span></span>);
+    }
+  };
+
+  getLiturgicalTextRow = () => {
+    console.log(this.props.liturgicalText);
+    if (this.props.liturgicalText && this.props.liturgicalText.length > 0) {
+      return (
+          <Well><div>{this.props.liturgicalText}</div></Well>
+      );
+    } else {
+      return (<span></span>);
+    }
   };
 
   render() {
     return (
         <div className="App-Text-Note-Editor">
+          {this.getLiturgicalTextRow()}
           <Well>
           <form onSubmit={this.handleSave}>
             <FormGroup
@@ -101,68 +213,47 @@ class TextNodeEditor extends React.Component {
                   <Col xs={2} md={2}>
                     <ControlLabel>Scope:</ControlLabel>
                   </Col>
-                  <Col xs={4} md={2}>
+                  <Col xs={10} md={10}>
                     <FormControl
                         className={"App App-Text-Note-Editor-Scope"}
                         type="text"
-                        value={this.state.value}
+                        value={this.state.scope}
                         placeholder="scope"
                         onChange={this.handleScopeChange}
                     />
                   </Col>
+                </Row>
+                <Row className="show-grid">
                   <Col xs={2} md={2}>
                     <ControlLabel>Type:</ControlLabel>
                   </Col>
-                  <Col xs={4} md={2}>
-                    <FormControl
-                        className={"App App-Text-Note-Editor-Scope"}
-                        type="text"
-                        value={this.state.value}
-                        placeholder="type"
-                        onChange={this.handleScopeChange}
+                  <Col xs={10} md={10}>
+                    <ResourceSelector
+                        title={""}
+                        initialValue={this.state.selectedType}
+                        resources={this.props.session.dropdowns.noteTypesDropdown}
+                        changeHandler={this.handleNoteTypeChange}
+                        multiSelect={false}
                     />
                   </Col>
                 </Row>
+                {this.getTitleRow()}
                 <Row className="show-grid">
                   <Col xs={2} md={2}>
                     <ControlLabel>Lemma:</ControlLabel>
                   </Col>
-                  <Col xs={4} md={4}>
+                  <Col xs={10} md={10}>
                     <FormControl
                         className={"App App-Text-Note-Editor-Scope"}
                         type="text"
-                        value={this.state.value}
+                        value={this.state.lemma}
                         placeholder="lemma"
-                        onChange={this.handleScopeChange}
-                    />
-                  </Col>
-                  <Col xs={2} md={2}>
-                    <ControlLabel>Bible Reference:</ControlLabel>
-                  </Col>
-                  <Col xs={4} md={4}>
-                    <FormControl
-                        className={"App App-Text-Note-Editor-Scope"}
-                        type="text"
-                        value={this.state.value}
-                        placeholder="Bible reference"
-                        onChange={this.handleScopeChange}
+                        onChange={this.handleLemmaChange}
                     />
                   </Col>
                 </Row>
-                <Row className="show-grid">
-                  <Col xs={2} md={2}>
-                    <ControlLabel>Title:</ControlLabel>
-                  </Col>
-                  <Col xs={8} md={8}>
-                    <FormControl
-                        className={"App App-Text-Note-Editor-Title"}
-                        type="text"
-                        value={this.state.value}
-                        placeholder="title"
-                        onChange={this.handleScopeChange}
-                    />
-                  </Col>
-                </Row>
+                {this.getBibleRefRow()}
+                {this.getOntologyRefRow()}
                 <Row className="show-grid">
                   <Col xs={12} md={8}>
                     <ControlLabel>Note:</ControlLabel>
@@ -193,11 +284,15 @@ class TextNodeEditor extends React.Component {
 TextNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
   , onEditorChange: PropTypes.func.isRequired
+  , scope: PropTypes.string
+  , liturgicalText: PropTypes.string
 };
 
 // set default values for props here
 TextNodeEditor.defaultProps = {
   id: "tinymceeditor"
+  , scope: ""
+  , liturgicalText: ""
 };
 
 export default TextNodeEditor;

@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import Select from 'react-select';
+import {Col, ControlLabel, Grid, Row } from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
+import ResourceSelector from '../modules/ReactSelector';
 
 class BibleRefSelector extends React.Component {
   constructor(props) {
@@ -17,8 +20,14 @@ class BibleRefSelector extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
+      , selectedBook: "*"
+      , selectedChapter: "C001"
+      , selectedVerse: "001"
     }
 
+    this.handleBookChange = this.handleBookChange.bind(this);
+    this.handleChapterChange = this.handleChapterChange.bind(this);
+    this.handleVerseChange = this.handleVerseChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleCallback = this.handleCallback.bind(this);
   }
@@ -56,12 +65,71 @@ class BibleRefSelector extends React.Component {
 
   }
 
+  handleBookChange = (selection) => {
+    console.log(`selectedType=${selection["value"]}`);
+    this.setState({
+      selectedBook: selection["value"]
+    });
+  };
+
+  handleChapterChange = (selection) => {
+    console.log(`selectedType=${selection["value"]}`);
+    this.setState({
+      selectedChapter: selection["value"]
+    });
+  };
+
+  handleVerseChange = (selection) => {
+    console.log(`selectedType=${selection["value"]}`);
+    this.setState({
+      selectedVerse: selection["value"]
+    });
+  };
+
   // TODO: add the content for the render function
   render() {
     return (
-        <div className="App-New-Component-Template">
-          This will be the selector
-        </div>
+        <Row>
+          <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
+            <ControlLabel>Bible Ref:</ControlLabel>
+          </Col>
+          <Col className="App-Bible-Ref-Selector-Book" xs={6} md={6}>
+            <Select
+                name="App-Bible-Ref-Selector-Book"
+                className="App-Bible-Ref-Selector-Book"
+                value={this.state.selectedBook}
+                options={this.props.session.dropdowns.biblicalBooksDropdown}
+                onChange={this.handleBookChange}
+                multi={false}
+                autosize={true}
+                clearable
+            />
+          </Col>
+          <Col className="App-Bible-Ref-Selector-Chapter" xs={2} md={2}>
+          <Select
+              name="App-Bible-Ref-Selector-Chapter"
+              className="App-Bible-Ref-Selector-Chapter"
+              value={this.state.selectedChapter}
+              options={this.props.session.dropdowns.biblicalChaptersDropdown}
+              onChange={this.handleChapterChange}
+              multi={false}
+              autosize={true}
+              clearable
+          />
+          </Col>
+          <Col className="App-Bible-Ref-Selector-Verse" xs={2} md={2}>
+          <Select
+              name="App-Bible-Ref-Selector-Verse"
+              className="App-Bible-Ref-Selector-Verse"
+              value={this.state.selectedVerse}
+              options={this.props.session.dropdowns.biblicalVersesDropdown}
+              onChange={this.handleVerseChange}
+              multi={false}
+              autosize={true}
+              clearable
+          />
+          </Col>
+        </Row>
     )
   }
 }

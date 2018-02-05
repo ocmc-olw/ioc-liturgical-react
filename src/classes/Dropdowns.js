@@ -18,6 +18,7 @@ class Dropdowns {
     , templateWhenModeOfWeekCasesDropdown
     , templateWhenMonthNameCasesDropdown
     , liturgicalBooksDropdown
+    , noteTypesDropdown
     ) {
     this.liturgicalBooksDropdown = (liturgicalBooksDropdown ? liturgicalBooksDropdown : []);
     this.biblicalBooksDropdown = (biblicalBooksDropdown ? biblicalBooksDropdown : []);
@@ -25,6 +26,7 @@ class Dropdowns {
     this.biblicalVersesDropdown = (biblicalVersesDropdown ? biblicalVersesDropdown : []);
     this.biblicalSubversesDropdown = (biblicalSubversesDropdown ? biblicalSubversesDropdown : []);
     this.formsDropdown = (formsDropdown ? formsDropdown : []);
+    this.noteTypesDropdown = (noteTypesDropdown ? noteTypesDropdown : []);
     this.ontologyTypesDropdown = (ontologyTypesDropdown ? ontologyTypesDropdown : []);
     this.templatePartsDropdown = (templatePartsDropdown ?  templatePartsDropdown: []);
     this.templateNewTemplateDropdown = (templateNewTemplateDropdown ? templateNewTemplateDropdown : []);
