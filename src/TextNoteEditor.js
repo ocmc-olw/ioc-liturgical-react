@@ -4,6 +4,7 @@ import tinymce from 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/table';
+import { Button, ButtonGroup, Col, ControlLabel, Grid, HelpBlock, FormControl, FormGroup, Row } from 'react-bootstrap';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
@@ -22,10 +23,16 @@ class TextNodeEditor extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
       , editor: null
+      , scope: undefined
+      , lemma: undefined
+      , type: undefined
+      , biblicalRef: undefined
+      , note: undefined
     }
 
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
+    this.handleScopeChange = this.handleScopeChange.bind(this);
   }
 
   componentWillMount = () => {
@@ -42,6 +49,7 @@ class TextNodeEditor extends React.Component {
           this.props.onEditorChange(content);
         });
       }
+      , entity_encoding : "raw"
     });
   }
 
@@ -60,26 +68,120 @@ class TextNodeEditor extends React.Component {
         }
       }, function () { return this.handleStateChange("place holder")});
     }
-  }
+  };
 
   componentWillUnmount() {
     tinymce.remove(this.state.editor);
-  }
+  };
+
+  handleScopeChange = (e) => {
+    console.log(`scope: ${e.target.value}`);
+    this.setState({scope: e.target.value});
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
-    // call a function if neededd
-  }
+    // call a function if needed
+  };
 
   handleSave = (e) => {
     console.log('Content was updated:', e.target.getContent());
-  }
+  };
 
   render() {
     return (
-        <div className="App-New-Component-Template">
+        <div className="App-Text-Note-Editor">
           <form onSubmit={this.handleSave}>
-            <textarea id={this.props.id}/>
+            <FormGroup
+                controlId="formBasicText"
+            >
+              <Grid>
+                <Row className="show-grid">
+                  <Col xs={2} md={2}>
+                    <ControlLabel>Scope:</ControlLabel>
+                  </Col>
+                  <Col xs={4} md={2}>
+                    <FormControl
+                        className={"App App-Text-Note-Editor-Scope"}
+                        type="text"
+                        value={this.state.value}
+                        placeholder="scope"
+                        onChange={this.handleScopeChange}
+                    />
+                  </Col>
+                  <Col xs={2} md={2}>
+                    <ControlLabel>Type:</ControlLabel>
+                  </Col>
+                  <Col xs={4} md={2}>
+                    <FormControl
+                        className={"App App-Text-Note-Editor-Scope"}
+                        type="text"
+                        value={this.state.value}
+                        placeholder="type"
+                        onChange={this.handleScopeChange}
+                    />
+                  </Col>
+                </Row>
+                <Row className="show-grid">
+                  <Col xs={2} md={2}>
+                    <ControlLabel>Lemma:</ControlLabel>
+                  </Col>
+                  <Col xs={4} md={4}>
+                    <FormControl
+                        className={"App App-Text-Note-Editor-Scope"}
+                        type="text"
+                        value={this.state.value}
+                        placeholder="lemma"
+                        onChange={this.handleScopeChange}
+                    />
+                  </Col>
+                  <Col xs={2} md={2}>
+                    <ControlLabel>Bible Reference:</ControlLabel>
+                  </Col>
+                  <Col xs={4} md={4}>
+                    <FormControl
+                        className={"App App-Text-Note-Editor-Scope"}
+                        type="text"
+                        value={this.state.value}
+                        placeholder="Bible reference"
+                        onChange={this.handleScopeChange}
+                    />
+                  </Col>
+                </Row>
+                <Row className="show-grid">
+                  <Col xs={2} md={2}>
+                    <ControlLabel>Title:</ControlLabel>
+                  </Col>
+                  <Col xs={8} md={8}>
+                    <FormControl
+                        className={"App App-Text-Note-Editor-Title"}
+                        type="text"
+                        value={this.state.value}
+                        placeholder="title"
+                        onChange={this.handleScopeChange}
+                    />
+                  </Col>
+                </Row>
+                <Row className="show-grid">
+                  <Col xs={12} md={8}>
+                    <ControlLabel>Note:</ControlLabel>
+                  </Col>
+                </Row>
+                <Row className="show-grid">
+                  <Col xs={12} md={8}>
+                    <textarea id={this.props.id}/>
+                  </Col>
+                </Row>
+                <Row className="show-grid">
+                  <Col xs={12} md={8}>
+                    <ButtonGroup>
+                      <Button>Save as Draft</Button>
+                      <Button bsStyle="primary">Submit</Button>
+                    </ButtonGroup>
+                  </Col>
+                </Row>
+              </Grid>
+            </FormGroup>
           </form>
         </div>
     )
