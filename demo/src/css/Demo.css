@@ -503,22 +503,13 @@ path.link {
 }
 
 
-
+.App-Text-Note-Text-Source {
+    padding-left: 10px;
+    font-size: smaller;
+}
 .App-Text-Note-Editor-Title {
     margin-right: 0px;
     padding-right: 0px;
-    width: 101%;
-}
-.App-Bible-Ref-Selector-Book {
-    width: 400px;
-    margin-right: 2px;
-}
-.App-Bible-Ref-Selector-Chapter {
-    width: 100px;
-}
-.App-Bible-Ref-Selector-Verse {
-    width: 100px;
-    padding-left: 9px;
 }
 .App-Text-Note-Editor-Scope {
     height: auto;
@@ -531,4 +522,90 @@ path.link {
 }
 .mce-branding {
     visibility: hidden !important;
+}
+.App-Text-Note-Header-Scope-Glyph {
+    padding-left: 10px;
+    padding-right: 8px;
+}
+.App-Text-Note-Type-As-Heading {
+    margins: 0px;
+    padding: 0px;
+    font-weight: bold;
+    font-size: larger;
+}
+.App-Text-Note-Type-Glyph {
+    padding-left: 10px;
+    margins: 0px;
+}
+.App-Text-Note-Type {
+    text-align: center;
+}
+.App-Text-Note-formatted {
+    background-color: white;
+    padding: 10px;
+    text-align: justify;
+    word-spacing:normal;
+    text-justify: auto;
+    overflow-wrap: break-word;
+}
+.App-Text-Note-Header-Scope {
+    font-weight: bold;
+    text-justify: none;
+    display: inline-block;
+}
+
+.App-Text-Note-Header-Scope-Biblical {
+    font-weight: bold;
+    text-justify: none;
+    display: inline-block;
+}
+.App-Text-Note-Header-Lemma {
+    font-weight: bold;
+    font-style: italic;
+    text-justify: none;
+    display: inline-block;
+}
+
+.App-Text-Note-Header-Title {
+    font-weight: bold;
+    text-justify: none;
+    display: inline-block;
+}
+
+.App-Text-Note-Header-Note > p {
+    text-justify: inter-word;
+    display: inline-block;
+}
+.App-Text-Note-Header-Note > ul {
+    padding-left: 16px;
+}
+.App-Text-Note-Header-Note > li {
+}
+.App-no-display {
+    margins: 0px;
+    padding: 0px;
+    display: none;
+}
+
+.App-Bible-Ref-Selector-Book .Select-control{
+    float: left;
+    width: 28ch;
+}
+.App-Bible-Ref-Selector-Chapter .Select-control{
+    float: left;
+    width: 12ch;
+    margin-left: 128px;
+}
+.App-Bible-Ref-Selector-Verse .Select-control{
+    float: left;
+    width: 12ch;
+    margin-left: 113px;
+}
+.App-Ontology-Ref-Selector-Type .Select-control{
+    float: left;
+    width: 20ch;
+}
+.App-Ontology-Ref-Selector-Entity .Select-control{
+    float: left;
+    width: 20ch;
 }

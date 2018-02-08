@@ -3,12 +3,15 @@ import PropTypes from 'prop-types';
 import tinymce from 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/wordcount';
-import 'tinymce/plugins/table';
-import { Button, ButtonGroup, Col, ControlLabel, Grid, HelpBlock, FormControl, FormGroup, Row, Well } from 'react-bootstrap';
+import 'tinymce/plugins/lists';
+import { Accordion, Button, ButtonGroup, Col, ControlLabel, Glyphicon, Grid, FormControl, FormGroup, Panel, Row, Well } from 'react-bootstrap';
 import Labels from './Labels';
+import Server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
 import ResourceSelector from './modules/ReactSelector';
 import BibleRefSelector from './helpers/BibleRefSelector';
+import OntologyRefSelector from './helpers/OntologyRefSelector';
+import CompareDocs from './modules/CompareDocs';
 
 class TextNodeEditor extends React.Component {
   constructor(props) {
@@ -20,49 +23,90 @@ class TextNodeEditor extends React.Component {
         , buttons: Labels.getButtonLabels(languageCode)
         , messages: Labels.getMessageLabels(languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+        , search: Labels.getSearchLabels(languageCode)
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
       , editor: null
-      , scope: props.scope
+      , scopeBiblical: ""
+      , scopeLiturgical: props.scope
+      , lemmaBiblical: ""
+      , lemmaLiturgical: ""
+      , title: ""
       , liturgicalText: props.liturgicalText
-      , lemma: ""
       , selectedType: ""
+      , selectedTypeLabel: ""
       , selectedBibleBook: ""
       , selectedBibleChapter: ""
       , selectedBibleVerse: ""
       , bibleRef: ""
-      , ontologyRef: ""
       , note: ""
+      , selectedLiturgicalIdParts: [
+        {key: "domain", label: "*"},
+        {key: "topic", label: props.idTopic},
+        {key: "key", label: props.idKey}
+      ]
+      , selectedBiblicalIdParts: [
+        {key: "domain", label: "*"},
+        {key: "topic", label: ""},
+        {key: "key", label: ""}
+      ]
+      , showBibleView: false
+      , ontologyRefType: ""
+      , ontologyRefEntity: ""
+      , showOntologyView: false
     };
 
+    this.createMarkup = this.createMarkup.bind(this);
+    this.fetchBibleText = this.fetchBibleText.bind(this);
+    this.handleFetchBibleTextCallback = this.handleFetchBibleTextCallback.bind(this);
+
     this.handleBibleRefChange = this.handleBibleRefChange.bind(this);
-    this.handleLemmaChange = this.handleLemmaChange.bind(this);
+    this.handleBiblicalLemmaChange = this.handleBiblicalLemmaChange.bind(this);
+    this.handleLiturgicalLemmaChange = this.handleLiturgicalLemmaChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.handleScopeChange = this.handleScopeChange.bind(this);
+    this.handleBiblicalScopeChange = this.handleBiblicalScopeChange.bind(this);
+    this.handleLiturgicalScopeChange = this.handleLiturgicalScopeChange.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
+    this.handleEditorChange = this.handleEditorChange.bind(this);
+
+    this.getFormattedScopes = this.getFormattedScopes.bind(this);
+    this.getHeaderWell = this.getHeaderWell.bind(this);
     this.getBibleRefRow = this.getBibleRefRow.bind(this);
     this.getLiturgicalTextRow = this.getLiturgicalTextRow.bind(this);
     this.getOntologyRefRow = this.getOntologyRefRow.bind(this);
     this.getTitleRow = this.getTitleRow.bind(this);
+    this.getLiturgicalView = this.getLiturgicalView.bind(this);
+    this.getLiturgicalScopeRow = this.getLiturgicalScopeRow.bind(this);
+    this.getLiturgicalLemmaRow = this.getLiturgicalLemmaRow.bind(this);
+    this.getBiblicalScopeRow = this.getBiblicalScopeRow.bind(this);
+    this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
+    this.getNoteTypeRow = this.getNoteTypeRow.bind(this);
+    this.getButtonRow = this.getButtonRow.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
+
   }
 
   componentWillMount = () => {
   }
 
+  // right arrow &rarr;
+  // scroll &ac;
+
   componentDidMount = () => {
     tinymce.init({
       selector: `#${this.props.id}`,
-      plugins: 'wordcount',
+      plugins: 'lists, wordcount',
       setup: editor => {
         this.setState({ editor });
         editor.on('keyup change', () => {
           const content = editor.getContent();
-          this.props.onEditorChange(content);
+          this.handleEditorChange(content);
         });
       }
       , entity_encoding : "raw"
@@ -93,14 +137,70 @@ class TextNodeEditor extends React.Component {
     tinymce.remove(this.state.editor);
   };
 
-  handleScopeChange = (e) => {
-    this.setState({scope: e.target.value});
+  fetchBibleText = () => {
+    let parms =
+        "t=" + encodeURIComponent(this.state.topic)
+        + "&l=" + encodeURIComponent(this.state.libraries)
+    ;
+
+    this.setState({
+          message: this.state.labels.messages.retrieving
+        },
+        Server.getViewForTopic(
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
+            , parms
+            , this.handleFetchCallback
+        )
+    );
+
+  };
+
+  handleFetchBibleTextCallback = (restCallResult) => {
+    if (restCallResult) {
+      let data = restCallResult.data.values[0];
+      let about = data.about;
+      let templateKeys = data.templateKeys;
+      let libraryKeys = data.libraryKeys;
+      let libraryKeyValues = data.libraryKeyValues;
+      this.setState({
+        dataFetched: true
+        , about: about
+        , libraryKeyValues: libraryKeyValues
+        , libraryKeys: libraryKeys
+        , templateKeys: templateKeys
+        , message: this.state.labels.messages.found
+        + " "
+        + templateKeys.length
+        + " "
+        + this.state.labels.messages.docs
+        , messageIcon: restCallResult.messageIcon
+        , resultCount: templateKeys.length
+      }, this.setTableData);
+    }
+  };
+
+  handleRowSelect = () => {
+
+  };
+
+  handleEditorChange = (content) => {
+    this.setState({note: content});
+  }
+
+  handleBiblicalScopeChange = (e) => {
+    this.setState({scopeBiblical: e.target.value});
+  };
+
+  handleLiturgicalScopeChange = (e) => {
+    this.setState({scopeLiturgical: e.target.value});
   };
 
   handleNoteTypeChange = (selection) => {
-    console.log(`selectedType=${selection["value"]}`);
     this.setState({
       selectedType: selection["value"]
+      , selectedTypeLabel: selection["label"]
     });
   };
 
@@ -110,20 +210,47 @@ class TextNodeEditor extends React.Component {
   };
 
   handleSave = (e) => {
-    console.log('Content was updated:', e.target.getContent());
     this.setState({note: e.target.getContent()});
   };
 
-  handleBibleRefChange = (e) => {
-    this.setState({bibleRef: e.target.value});
+  handleBibleRefChange = (book, chapter, verse) => {
+    let showBibleView = false;
+    if (book.length > 0 && chapter.length > 0 && verse.length > 0) {
+      showBibleView = true;
+    }
+    this.setState(
+        {
+        selectedBiblicalIdParts: [
+          {key: "domain", label: "*"},
+          {key: "topic", label: book},
+          {key: "key", label: chapter + ":" + verse}
+          ]
+          , showBibleView
+        }
+    );
   };
 
-  handleOntologyRefChange = (e) => {
-    this.setState({ontologyRef: e.target.value});
+
+  handleOntologyRefChange = (type, entity) => {
+    let showOntologyView = false;
+    if (type.length > 0 && entity.length > 0) {
+      showOntologyView = true;
+    }
+    this.setState(
+        {
+          ontologyRefType: type
+          , ontologyRefEntity: entity
+          , showOntologyView: showOntologyView
+        }
+    );
   };
 
-  handleLemmaChange = (e) => {
-    this.setState({lemma: e.target.value});
+  handleBiblicalLemmaChange = (e) => {
+    this.setState({lemmaBiblical: e.target.value});
+  };
+
+  handleLiturgicalLemmaChange = (e) => {
+    this.setState({lemmaLiturgical: e.target.value});
   };
 
   handleTitleChange = (e) => {
@@ -158,7 +285,7 @@ class TextNodeEditor extends React.Component {
         />
       );
     } else {
-      <span></span>
+      return (<span className="App-no-display"></span>);
     }
   };
 
@@ -168,92 +295,302 @@ class TextNodeEditor extends React.Component {
         && (this.state.selectedType !== ("REF_TO_BIBLE"))
     ) {
       return (
+          <OntologyRefSelector
+              session={this.props.session}
+              callback={this.handleOntologyRefChange}
+          />
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  getLiturgicalView = () => {
+    return (
+        <Accordion>
+          <Panel header="View Liturgical Text" eventKey="TextNoteEditor">
+            <CompareDocs
+                session={this.props.session}
+                handleRowSelect={this.handleRowSelect}
+                title={"Liturgical Texts"}
+                docType={"Liturgical"}
+                selectedIdParts={this.state.selectedLiturgicalIdParts}
+                labels={this.state.labels.search}
+            />
+          </Panel>
+        </Accordion>
+    );
+  };
+  getBiblicalView = () => {
+    if (this.state.showBibleView) {
+      return (
+          <Accordion>
+          <Panel header="View Biblical Text" eventKey="TextNoteEditor">
+            <CompareDocs
+                session={this.props.session}
+                handleRowSelect={this.handleRowSelect}
+                title={"Biblical Texts"}
+                docType={"Biblical"}
+                selectedIdParts={this.state.selectedBiblicalIdParts}
+                labels={this.state.labels.search}
+            />
+          </Panel>
+          </Accordion>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  getLiturgicalTextRow = () => {
+    if (this.props.liturgicalTextGrk && this.props.liturgicalTextGrk.length > 0) {
+      return (
+          <Well>
+            <ControlLabel>Liturgical Text</ControlLabel>
+            <Grid>
+              <Row className="show-grid">
+                <Col xs={6} md={6}>
+                  <div>
+                    {this.props.liturgicalTextGrk}
+                    <ControlLabel className="App-Text-Note-Text-Source">
+                         ({this.props.liturgicalTextGrkSource})
+                    </ControlLabel>
+                  </div>
+                </Col>
+                <Col xs={6} md={6}>
+                  <div>
+                    {this.props.liturgicalTextEng}
+                    <ControlLabel className="App-Text-Note-Text-Source">
+                       ({this.props.liturgicalTextEngSource})
+                    </ControlLabel>
+                  </div>
+                </Col>
+              </Row>
+            </Grid>
+          </Well>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  getLiturgicalScopeRow = () => {
+    return (
+        <Row className="show-grid">
+          <Col xs={2} md={2}>
+            <ControlLabel>Liturgical Scope:</ControlLabel>
+          </Col>
+          <Col xs={10} md={10}>
+            <FormControl
+                className={"App App-Text-Note-Editor-Scope"}
+                type="text"
+                value={this.state.scopeLiturgical}
+                placeholder="scope"
+                onChange={this.handleLiturgicalScopeChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
+  getLiturgicalLemmaRow = () => {
+    return (
+        <Row className="show-grid">
+          <Col xs={2} md={2}>
+            <ControlLabel>Liturgical lemma:</ControlLabel>
+          </Col>
+          <Col xs={10} md={10}>
+            <FormControl
+                className={"App App-Text-Note-Editor-Scope"}
+                type="text"
+                value={this.state.lemmaLiturgical}
+                placeholder="liturgical lemma"
+                onChange={this.handleLiturgicalLemmaChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
+  getBiblicalScopeRow = () => {
+    if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
+      return (
           <Row className="show-grid">
             <Col xs={2} md={2}>
-              <ControlLabel>Ontology Reference:</ControlLabel>
+              <ControlLabel>Biblical Scope:</ControlLabel>
             </Col>
             <Col xs={10} md={10}>
               <FormControl
                   className={"App App-Text-Note-Editor-Scope"}
                   type="text"
-                  value={this.state.ontologyRef}
-                  placeholder="Ontology reference"
-                  onChange={this.handleOntologyRefChange}
+                  value={this.state.scopeBiblical}
+                  placeholder="scope"
+                  onChange={this.handleBiblicalScopeChange}
               />
             </Col>
           </Row>
       );
     } else {
-      return (<span></span>);
+      return (<span className="App-no-display"></span>);
+    }
+
+  };
+
+  getBiblicalLemmaRow = () => {
+    if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
+      return (
+          <Row className="show-grid">
+            <Col xs={2} md={2}>
+              <ControlLabel>Biblical lemma:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <FormControl
+                  className={"App App-Text-Note-Editor-Scope"}
+                  type="text"
+                  value={this.state.lemmaBiblical}
+                  placeholder="biblical lemma"
+                  onChange={this.handleBiblicalLemmaChange}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
     }
   };
 
-  getLiturgicalTextRow = () => {
-    console.log(this.props.liturgicalText);
-    if (this.props.liturgicalText && this.props.liturgicalText.length > 0) {
-      return (
-          <Well><div>{this.props.liturgicalText}</div></Well>
+  getNoteTypeRow = () => {
+    return (
+        <Row className="show-grid">
+          <Col xs={2} md={2}>
+            <ControlLabel>Type:</ControlLabel>
+          </Col>
+          <Col xs={10} md={10}>
+            <ResourceSelector
+                title={""}
+                initialValue={this.state.selectedType}
+                resources={this.props.session.dropdowns.noteTypesDropdown}
+                changeHandler={this.handleNoteTypeChange}
+                multiSelect={false}
+            />
+          </Col>
+        </Row>
+    );
+
+  };
+
+  getButtonRow = () => {
+    return (
+        <Row className="show-grid">
+          <Col xs={12} md={8}>
+            <ButtonGroup>
+              <Button>Save as Draft</Button>
+              <Button bsStyle="primary">Submit</Button>
+            </ButtonGroup>
+          </Col>
+        </Row>
+    );
+
+  };
+
+  getFormattedHeaderRow = () => {
+    return (
+        <Accordion>
+          <Panel header="View Formatted Note" eventKey="TextNoteEditor">
+            <Well>
+              <div className="App-Text-Note-Type">
+                <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+                <span className="App-Text-Note-Type-As-Heading">{this.state.selectedTypeLabel}</span>
+                <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+              </div>
+              {this.getFormattedScopes()}
+            </Well>
+          </Panel>
+        </Accordion>
+    );
+  };
+
+  getFormattedScopes = () => {
+      if (this.state.showBibleView) {
+        return (
+            <div className="App-Text-Note-formatted">
+              <span className="App-Text-Note-Header-Scope">
+                {this.state.scopeLiturgical}
+              </span>
+              <span className="App-Text-Note-Header-Lemma">
+                  {this.state.lemmaLiturgical}
+                </span>
+              <Glyphicon className="App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
+              <span className="App-Text-Note-Header-Scope-Biblical">
+                {this.state.scopeBiblical}
+              </span>
+              <span className="App-Text-Note-Header-Lemma">
+                  {this.state.lemmaBiblical}
+                </span>
+              <span className="App-Text-Note-Header-Title">
+                  {this.state.title}
+                </span>
+              <span className="App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
+                </span>
+            </div>
+        );
+      } else {
+        return (
+            <div className="App-Text-Note-formatted">
+              <span className="App-Text-Note-Header-Scope">
+                {this.state.scopeLiturgical}
+              </span>
+              <span className="App-Text-Note-Header-Lemma">
+                  {this.state.lemmaLiturgical}
+                </span>
+              <span className="App-Text-Note-Header-Title">
+                  {this.state.title}
+                </span>
+              <span className="App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
+                </span>
+            </div>
       );
-    } else {
-      return (<span></span>);
-    }
+      }
+  };
+
+  createMarkup() {
+    return {__html: this.state.note};
+  }
+
+  getHeaderWell = () => {
+      return (
+          <Accordion>
+            <Panel header="Set Type, Scope, Lemma, Title" eventKey="TextNoteEditor">
+              <Well>
+                <Grid>
+                  {this.getNoteTypeRow()}
+                  {this.getLiturgicalScopeRow()}
+                  {this.getLiturgicalLemmaRow()}
+                  {this.getTitleRow()}
+                  {this.getBibleRefRow()}
+                  {this.getBiblicalScopeRow()}
+                  {this.getBiblicalLemmaRow()}
+                  {this.getOntologyRefRow()}
+                </Grid>
+              </Well>
+            </Panel>
+          </Accordion>
+      );
   };
 
   render() {
     return (
         <div className="App-Text-Note-Editor">
-          {this.getLiturgicalTextRow()}
+          {this.getLiturgicalView()}
+          {this.getBiblicalView()}
+          {this.getHeaderWell()}
+          {this.getFormattedHeaderRow()}
           <Well>
           <form onSubmit={this.handleSave}>
             <FormGroup
                 controlId="formBasicText"
             >
               <Grid>
-                <Row className="show-grid">
-                  <Col xs={2} md={2}>
-                    <ControlLabel>Scope:</ControlLabel>
-                  </Col>
-                  <Col xs={10} md={10}>
-                    <FormControl
-                        className={"App App-Text-Note-Editor-Scope"}
-                        type="text"
-                        value={this.state.scope}
-                        placeholder="scope"
-                        onChange={this.handleScopeChange}
-                    />
-                  </Col>
-                </Row>
-                <Row className="show-grid">
-                  <Col xs={2} md={2}>
-                    <ControlLabel>Type:</ControlLabel>
-                  </Col>
-                  <Col xs={10} md={10}>
-                    <ResourceSelector
-                        title={""}
-                        initialValue={this.state.selectedType}
-                        resources={this.props.session.dropdowns.noteTypesDropdown}
-                        changeHandler={this.handleNoteTypeChange}
-                        multiSelect={false}
-                    />
-                  </Col>
-                </Row>
-                {this.getTitleRow()}
-                <Row className="show-grid">
-                  <Col xs={2} md={2}>
-                    <ControlLabel>Lemma:</ControlLabel>
-                  </Col>
-                  <Col xs={10} md={10}>
-                    <FormControl
-                        className={"App App-Text-Note-Editor-Scope"}
-                        type="text"
-                        value={this.state.lemma}
-                        placeholder="lemma"
-                        onChange={this.handleLemmaChange}
-                    />
-                  </Col>
-                </Row>
-                {this.getBibleRefRow()}
-                {this.getOntologyRefRow()}
                 <Row className="show-grid">
                   <Col xs={12} md={8}>
                     <ControlLabel>Note:</ControlLabel>
@@ -264,14 +601,7 @@ class TextNodeEditor extends React.Component {
                     <textarea id={this.props.id}/>
                   </Col>
                 </Row>
-                <Row className="show-grid">
-                  <Col xs={12} md={8}>
-                    <ButtonGroup>
-                      <Button>Save as Draft</Button>
-                      <Button bsStyle="primary">Submit</Button>
-                    </ButtonGroup>
-                  </Col>
-                </Row>
+                {this.getButtonRow()}
               </Grid>
             </FormGroup>
           </form>
@@ -285,14 +615,22 @@ TextNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
   , onEditorChange: PropTypes.func.isRequired
   , scope: PropTypes.string
-  , liturgicalText: PropTypes.string
+  , idTopic: PropTypes.string
+  , idKey: PropTypes.string
+  , liturgicalTextGrk: PropTypes.string
+  , liturgicalTextGrkSource: PropTypes.string
+  , liturgicalTextEng: PropTypes.string
+  , liturgicalTextEngSource: PropTypes.string
 };
 
 // set default values for props here
 TextNodeEditor.defaultProps = {
   id: "tinymceeditor"
   , scope: ""
-  , liturgicalText: ""
+  , liturgicalTextGrk: ""
+  , liturgicalTextGrkSource: ""
+  , liturgicalTextEng: ""
+  , liturgicalTextEngSource: ""
 };
 
 export default TextNodeEditor;

@@ -4,7 +4,6 @@ import Select from 'react-select';
 import {Col, ControlLabel, Grid, Row } from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
-import ResourceSelector from '../modules/ReactSelector';
 
 class BibleRefSelector extends React.Component {
   constructor(props) {
@@ -21,8 +20,9 @@ class BibleRefSelector extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
       , selectedBook: "*"
-      , selectedChapter: "C001"
-      , selectedVerse: "001"
+      , selectedChapter: "*"
+      , selectedVerse: "*"
+      , selectedRef: ""
     }
 
     this.handleBookChange = this.handleBookChange.bind(this);
@@ -62,38 +62,44 @@ class BibleRefSelector extends React.Component {
   };
 
   handleCallback = () => {
-
-  }
+    this.props.callback(
+        this.state.selectedBook
+        , this.state.selectedChapter
+        , this.state.selectedVerse
+    );
+  };
 
   handleBookChange = (selection) => {
-    console.log(`selectedType=${selection["value"]}`);
+    let book = selection["value"];
     this.setState({
-      selectedBook: selection["value"]
-    });
+      selectedBook: book
+      , selectedRef: book + "~" + this.state.selectedChapter + "~" + this.state.selectedVerse
+    }, this.handleCallback);
   };
 
   handleChapterChange = (selection) => {
-    console.log(`selectedType=${selection["value"]}`);
+    let chapter = selection["value"];
     this.setState({
-      selectedChapter: selection["value"]
-    });
+      selectedChapter: chapter
+      , selectedRef: this.state.selectedBook + "~" + chapter + "~" + this.state.selectedVerse
+    }, this.handleCallback);
   };
 
   handleVerseChange = (selection) => {
-    console.log(`selectedType=${selection["value"]}`);
+    let verse = selection["value"];
     this.setState({
       selectedVerse: selection["value"]
-    });
+      , selectedRef: this.state.selectedBook + "~" + this.state.selectedChapter + "~" + verse
+    }, this.handleCallback);
   };
 
-  // TODO: add the content for the render function
   render() {
     return (
         <Row>
           <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
             <ControlLabel>Bible Ref:</ControlLabel>
           </Col>
-          <Col className="App-Bible-Ref-Selector-Book" xs={6} md={6}>
+          <Col className="App-Bible-Ref-Selector-Book" xs={2} md={2}>
             <Select
                 name="App-Bible-Ref-Selector-Book"
                 className="App-Bible-Ref-Selector-Book"
@@ -128,6 +134,10 @@ class BibleRefSelector extends React.Component {
               autosize={true}
               clearable
           />
+          </Col>
+          <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
+          </Col>
+          <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
           </Col>
         </Row>
     )

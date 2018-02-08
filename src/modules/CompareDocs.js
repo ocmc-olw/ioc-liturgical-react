@@ -61,7 +61,7 @@ export class CompareDocs extends React.Component {
       ,
       showIdPartSelector: false
       , showModalCompareDocs: false
-      , idColumnSize: "80px"
+      , idColumnSize: "130px"
     }
 
     this.fetchData = this.fetchData.bind(this);
@@ -70,7 +70,31 @@ export class CompareDocs extends React.Component {
     this.getTable = this.getTable.bind(this);
   };
 
+  componentWillReceiveProps = (nextProps) => {
+    console.log('willReceiveProps.selectedIdParts=');
+    console.log(nextProps.selectedIdParts);
+    this.setState({
+          showModal: nextProps.showModal
+          , domain: "*"
+          , selectedBook: "*"
+          , selectedChapter: "*"
+          , docProp: "id"
+          , matcher: "rx"
+          , query: ".*~"
+          + nextProps.selectedIdParts[1].label
+          + "~"
+          + nextProps.selectedIdParts[2].label
+          + "$"
+        }
+        , function () {
+          this.fetchData();
+        }
+    );
+  };
+
   componentDidMount = () => {
+    console.log('didMount.selectedIdParts=');
+    console.log(this.props.selectedIdParts);
     this.setState({
           showModal: this.props.showModal
           , domain: "*"
@@ -88,8 +112,7 @@ export class CompareDocs extends React.Component {
           this.fetchData();
         }
     );
-
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -155,6 +178,10 @@ export class CompareDocs extends React.Component {
               }
             }
           }
+          let values = response.data.values.filter((row) => {
+            return row.value.length > 0;
+          });
+          response.data.values = values;
           this.setState({
                 selectRow: selectRow
                 , selectedId: selectedId

@@ -21,6 +21,7 @@ import {
   Image,
   Jumbotron,
   Panel,
+  PanelGroup,
   Table
 } from "react-bootstrap";
 import logo from './images/ioc-liturgical-react-logo.png';
@@ -1005,53 +1006,6 @@ class Demo extends React.Component {
             </Alert>
           </Grid>
           <Accordion>
-            <Panel header="Setup" eventKey="setup">
-              <p>In order to use the ioc-liturgical-react components, at the top level of your web app, you need to do
-                the following:</p>
-              <Accordion>
-                <Panel header="Import the Labels Component" eventKey="setupImport">
-                  The Labels component holds the translations of all the text used by the user interface of the
-                  ioc-liturgical-react components.
-                  <CodeExample codeText="import {Labels} from 'ioc-liturgical-react';"/>
-                </Panel>
-                <Panel header="Initialize the App State" eventKey="setupInitialize">
-                  Here is the minimum you need to do to initialize the state of your App:
-                  <CodeExample codeText={initialStateExample}/>
-                  The restServer can be set to whatever domain you want, as long as it is running an ioc-liturgical-ws
-                  server. The username and password are initialized to be an empty string, and authenticated is set to
-                  false. You should set it to true later, after a user has successfully logged in. The authenticated
-                  boolean can then be used for parts of your application that need to know whether the user has
-                  successfully authenticated.
-                  <p/>
-                  <p>The language part of the state indicates what language is being used for the user interface. In
-                    this case it is set to 'en' for English.</p>
-                  <p/>
-                  <p>The language.labels state is here initialized to 'en' (English), e.g. Labels.labels.en.search means
-                    the English labels for the Search component. You will see below how to set up a mechanism for the
-                    user to change the language of the user interface. It can only be changed to a language provided by
-                    the ioc-liturgical-react, unless you complete replace the Labels with our own language.</p>
-                </Panel>
-                <Panel header="Create a Language Change Handler" eventKey="setupChangeHandler">
-                  If your web app is only going to use a single language in the user interface, you will still need a
-                  change handler, but it doesn't have to do anything. If you do plan to support more than one language
-                  in your user interface, then here is how to set up your change handler:
-                  <CodeExample codeText={languageChangeHandlerExample}/>
-                  You will have to write your own code to give the user a way to indicate which language he/she wants to
-                  use for the user interface. One technique is to set the language code in the id property of an
-                  element, and pass it back to an onClick handler for the element. The language code used in the id is a
-                  two or three character ISO code.
-                  <p/>
-                  <p>For example, you could have a menu item that displays the language choices, and set the id property
-                    of the element to the language code. If you then have an onClick handler for that element, you can
-                    use the event.target.id as the parameter to the languageChangeHander:</p>
-                  <CodeExample codeText={menuLanguageChangeExample}/>
-                  If the user clicks the above menu item, it calls a local language change handler. The local handler,
-                  in turn, calls the handler passed as a prop:
-                  <CodeExample codeText={localLanguageChangeHandlerExample}/>
-                  Note that the event.target.id property holds the language code.
-                </Panel>
-              </Accordion>
-            </Panel> {/* setup */}
             <Panel header="Flags and User Interface Labels" eventKey="flags">
               <p>Labels are provided in a variety of languages for the components.</p>
               <p>Click a language name below to change the language for the labels used by the demo components:</p>
@@ -1591,7 +1545,7 @@ class Demo extends React.Component {
                   />
                   <p>
                     <span>{this.state.bibleRefSelectorBook}</span>
-                    <span>{this.state.bibleRefSelectorChapter}:</span>
+                    <span>{this.state.bibleRefSelectorChapter}</span>
                   </p>
                   </div>
                   :
@@ -1603,9 +1557,14 @@ class Demo extends React.Component {
                   <div>
                     <TextNoteEditor
                         session={this.state.session}
+                        idTopic={"he.h.m2"}
+                        idKey={"VythouAnekalypse.text"}
                         onEditorChange={this.handleTextNoteContentChange }
                         scope={"he.h.m2~VythouAnekalypse.text"}
-                        liturgicalText={"Βυθοῦ ἀνεκάλυψε πυθμένα καὶ διὰ ξηρᾶς οἰκείους ἕλκει, ἐν αὐτῷ κατακαλύψας ἀντιπάλους, ὁ κραταιός, ἐν πολέμοις Κύριος, ὅτι δεδόξασται."}
+                        liturgicalTextGrk={"Βυθοῦ ἀνεκάλυψε πυθμένα καὶ διὰ ξηρᾶς οἰκείους ἕλκει, ἐν αὐτῷ κατακαλύψας ἀντιπάλους, ὁ κραταιός, ἐν πολέμοις Κύριος, ὅτι δεδόξασται."}
+                        liturgicalTextGrkSource={"gr_gr_cog"}
+                        liturgicalTextEngSource={"en_us_dedes"}
+                        liturgicalTextEng={"The Lord who is powerful in battle * once exposed the bottom of deep sea * and He drew His people through it as on dry land, * while there again He engulfed the enemies, * for He is glorified."}
                     />
                   </div>
                   :

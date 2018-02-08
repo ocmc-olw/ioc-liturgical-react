@@ -19,6 +19,10 @@ const   labels = {
       , chapter: "Chapter"
       , verse: "Verse"
       }
+    , OntologyRefSelector: {
+      type: "Ontology Type"
+      , entity: "Entity"
+    }
     , liturgicalAcronyms: {
       baptism: "Baptism"
       , funeral: "Funeral"
@@ -920,6 +924,10 @@ const   labels = {
         , chapter: "το κεφάλαιο"
         , verse: "Verse"
         }
+    , OntologyRefSelector: {
+      type: "Οντολογικού τύπου"
+      , entity: "Οντότητα"
+    }
     , liturgicalAcronyms: {
       baptism: "Baptism"
       , funeral: "Funeral"
@@ -1841,6 +1849,7 @@ module.exports = {
   , getAgesEditorLabels: (code) => { return labels[code].AgesEditor;}
   , getAgesViewerLabels: (code) => { return labels[code].AgesViewer;}
   , getBibleRefSelectorLabels: (code) => { return labels[code].BibleRefSelector;}
+  , getOntologyRefSelectorLabels: (code) => { return labels[code].OntologyRefSelector;}
   , getNewEntryFormLabels: (code) => { return labels[code].NewEntryForm;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
