@@ -9,6 +9,7 @@ import Labels from './Labels';
 import Server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
 import ResourceSelector from './modules/ReactSelector';
+import EditableSelector from './modules/EditableSelector';
 import BibleRefSelector from './helpers/BibleRefSelector';
 import OntologyRefSelector from './helpers/OntologyRefSelector';
 import CompareDocs from './modules/CompareDocs';
@@ -19,7 +20,7 @@ class TextNodeEditor extends React.Component {
     let languageCode = props.session.languageCode;
     this.state = {
       labels: { //
-        thisClass: Labels.getViewReferencesLabels(languageCode)
+        thisClass: Labels.getTextNoteEditorLabels(languageCode)
         , buttons: Labels.getButtonLabels(languageCode)
         , messages: Labels.getMessageLabels(languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
@@ -54,7 +55,8 @@ class TextNodeEditor extends React.Component {
       ]
       , showBibleView: false
       , ontologyRefType: ""
-      , ontologyRefEntity: ""
+      , ontologyRefEntityId: ""
+      , ontologyRefEntityName: ""
       , showOntologyView: false
     };
 
@@ -73,6 +75,7 @@ class TextNodeEditor extends React.Component {
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
 
     this.getFormattedScopes = this.getFormattedScopes.bind(this);
     this.getHeaderWell = this.getHeaderWell.bind(this);
@@ -89,11 +92,13 @@ class TextNodeEditor extends React.Component {
     this.getButtonRow = this.getButtonRow.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
+    this.getOntologyLabel = this.getOntologyLabel.bind(this);
+    this.getTagsRow = this.getTagsRow.bind(this);
 
   }
 
   componentWillMount = () => {
-  }
+  };
 
   // right arrow &rarr;
   // scroll &ac;
@@ -117,20 +122,19 @@ class TextNodeEditor extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       let languageCode = nextProps.session.languageCode;
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getViewReferencesLabels(languageCode)
+            thisClass: Labels.getTextNoteEditorLabels(languageCode)
             , buttons: Labels.getButtonLabels(languageCode)
             , messages: Labels.getMessageLabels(languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            , search: Labels.getSearchLabels(languageCode)
           }
           , message: Labels.getMessageLabels(languageCode).initial
         }
       }, function () { return this.handleStateChange("place holder")});
-    }
   };
 
   componentWillUnmount() {
@@ -185,6 +189,10 @@ class TextNodeEditor extends React.Component {
 
   };
 
+  handleEditableListCallback = (values) => {
+    console.log(values);
+  };
+
   handleEditorChange = (content) => {
     this.setState({note: content});
   }
@@ -201,6 +209,29 @@ class TextNodeEditor extends React.Component {
     this.setState({
       selectedType: selection["value"]
       , selectedTypeLabel: selection["label"]
+      , scopeBiblical: ""
+      , lemmaBiblical: ""
+      , lemmaLiturgical: ""
+      , selectedBibleBook: ""
+      , selectedBibleChapter: ""
+      , selectedBibleVerse: ""
+      , bibleRef: ""
+      , note: ""
+      , selectedLiturgicalIdParts: [
+        {key: "domain", label: "*"},
+        {key: "topic", label: this.props.idTopic},
+        {key: "key", label: this.props.idKey}
+      ]
+      , selectedBiblicalIdParts: [
+        {key: "domain", label: "*"},
+        {key: "topic", label: ""},
+        {key: "key", label: ""}
+      ]
+      , showBibleView: false
+      , ontologyRefType: ""
+      , ontologyRefEntityId: ""
+      , ontologyRefName: ""
+      , showOntologyView: false
     });
   };
 
@@ -231,15 +262,15 @@ class TextNodeEditor extends React.Component {
   };
 
 
-  handleOntologyRefChange = (type, entity) => {
+  handleOntologyRefChange = (entityId, entityName) => {
     let showOntologyView = false;
-    if (type.length > 0 && entity.length > 0) {
+    if (entityId.length > 0) {
       showOntologyView = true;
     }
     this.setState(
         {
-          ontologyRefType: type
-          , ontologyRefEntity: entity
+          ontologyRefEntityId: entityId
+          , ontologyRefEntityName: entityName
           , showOntologyView: showOntologyView
         }
     );
@@ -255,25 +286,6 @@ class TextNodeEditor extends React.Component {
 
   handleTitleChange = (e) => {
     this.setState({title: e.target.value});
-  };
-
-  getTitleRow = () => {
-    return (
-        <Row className="show-grid">
-          <Col xs={2} md={2}>
-            <ControlLabel>Title:</ControlLabel>
-          </Col>
-          <Col className="App App-Text-Note-Editor-Title" xs={8} md={8}>
-            <FormControl
-                className={"App App-Text-Note-Editor-Title"}
-                type="text"
-                value={this.state.title}
-                placeholder="title"
-                onChange={this.handleTitleChange}
-            />
-          </Col>
-        </Row>
-    );
   };
 
   getBibleRefRow = () => {
@@ -294,21 +306,41 @@ class TextNodeEditor extends React.Component {
         && this.state.selectedType.startsWith("REF_TO")
         && (this.state.selectedType !== ("REF_TO_BIBLE"))
     ) {
+      let type = this.getOntologyLabel(this.state.selectedType);
       return (
-          <OntologyRefSelector
-              session={this.props.session}
-              callback={this.handleOntologyRefChange}
-          />
+          <Row className="show-grid App-Ontology-Ref-Selector-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.refersTo}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <div className={"App App-Ontology-Ref-Selector-Entity"}>
+                <OntologyRefSelector
+                    session={this.props.session}
+                    type={type}
+                    callback={this.handleOntologyRefChange}
+                />
+              </div>
+            </Col>
+          </Row>
       );
     } else {
       return (<span className="App-no-display"></span>);
     }
   };
 
+  getOntologyLabel = (type) => {
+    try {
+      let label = type.split("_")[2];
+      return label.charAt(0) + label.slice(1).toLowerCase();
+    } catch (err) {
+      return type;
+    };
+  };
+
   getLiturgicalView = () => {
     return (
         <Accordion>
-          <Panel header="View Liturgical Text" eventKey="TextNoteEditor">
+          <Panel header={this.state.labels.thisClass.viewLiturgicalText} eventKey="TextNoteEditor">
             <CompareDocs
                 session={this.props.session}
                 handleRowSelect={this.handleRowSelect}
@@ -325,7 +357,7 @@ class TextNodeEditor extends React.Component {
     if (this.state.showBibleView) {
       return (
           <Accordion>
-          <Panel header="View Biblical Text" eventKey="TextNoteEditor">
+          <Panel header={this.state.labels.thisClass.viewBiblicalText} eventKey="TextNoteEditor">
             <CompareDocs
                 session={this.props.session}
                 handleRowSelect={this.handleRowSelect}
@@ -376,9 +408,9 @@ class TextNodeEditor extends React.Component {
 
   getLiturgicalScopeRow = () => {
     return (
-        <Row className="show-grid">
+        <Row className="show-grid  App-Text-Note-Scope-Row">
           <Col xs={2} md={2}>
-            <ControlLabel>Liturgical Scope:</ControlLabel>
+            <ControlLabel>{this.state.labels.thisClass.liturgicalScope}:</ControlLabel>
           </Col>
           <Col xs={10} md={10}>
             <FormControl
@@ -395,13 +427,13 @@ class TextNodeEditor extends React.Component {
 
   getLiturgicalLemmaRow = () => {
     return (
-        <Row className="show-grid">
+        <Row className="show-grid  App-Text-Note-Editor-Lemma-Row">
           <Col xs={2} md={2}>
-            <ControlLabel>Liturgical lemma:</ControlLabel>
+            <ControlLabel>{this.state.labels.thisClass.liturgicalLemma}:</ControlLabel>
           </Col>
           <Col xs={10} md={10}>
             <FormControl
-                className={"App App-Text-Note-Editor-Scope"}
+                className={"App App-Text-Note-Editor-Lemma"}
                 type="text"
                 value={this.state.lemmaLiturgical}
                 placeholder="liturgical lemma"
@@ -412,12 +444,31 @@ class TextNodeEditor extends React.Component {
     );
   };
 
+  getTitleRow = () => {
+    return (
+        <Row className="show-grid App-Text-Note-Editor-Title-Row">
+          <Col xs={2} md={2}>
+            <ControlLabel>{this.state.labels.thisClass.title}:</ControlLabel>
+          </Col>
+          <Col xs={10} md={10}>
+            <FormControl
+                className={"App App-Text-Note-Editor-Title"}
+                type="text"
+                value={this.state.title}
+                placeholder="title"
+                onChange={this.handleTitleChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
   getBiblicalScopeRow = () => {
     if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
-          <Row className="show-grid">
+          <Row className="show-grid App-Text-Note-Editor-Scope-Row">
             <Col xs={2} md={2}>
-              <ControlLabel>Biblical Scope:</ControlLabel>
+              <ControlLabel>{this.state.labels.thisClass.biblicalScope}:</ControlLabel>
             </Col>
             <Col xs={10} md={10}>
               <FormControl
@@ -439,13 +490,13 @@ class TextNodeEditor extends React.Component {
   getBiblicalLemmaRow = () => {
     if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
-          <Row className="show-grid">
+          <Row className="show-grid App-Text-Note-Editor-Lemma-Row">
             <Col xs={2} md={2}>
-              <ControlLabel>Biblical lemma:</ControlLabel>
+              <ControlLabel>{this.state.labels.thisClass.biblicalLemma}:</ControlLabel>
             </Col>
             <Col xs={10} md={10}>
               <FormControl
-                  className={"App App-Text-Note-Editor-Scope"}
+                  className={"App App-Text-Note-Editor-Lemma"}
                   type="text"
                   value={this.state.lemmaBiblical}
                   placeholder="biblical lemma"
@@ -461,11 +512,12 @@ class TextNodeEditor extends React.Component {
 
   getNoteTypeRow = () => {
     return (
-        <Row className="show-grid">
+        <Row className="show-grid App-Text-Note-Editor-Type-Row">
           <Col xs={2} md={2}>
-            <ControlLabel>Type:</ControlLabel>
+            <ControlLabel>{this.state.labels.thisClass.type}:</ControlLabel>
           </Col>
           <Col xs={10} md={10}>
+            <div className={"App App-Text-Note-Type-Selector"}>
             <ResourceSelector
                 title={""}
                 initialValue={this.state.selectedType}
@@ -473,6 +525,7 @@ class TextNodeEditor extends React.Component {
                 changeHandler={this.handleNoteTypeChange}
                 multiSelect={false}
             />
+            </div>
           </Col>
         </Row>
     );
@@ -481,11 +534,11 @@ class TextNodeEditor extends React.Component {
 
   getButtonRow = () => {
     return (
-        <Row className="show-grid">
+        <Row className="show-grid App-Text-Note-Editor-Button-Row">
           <Col xs={12} md={8}>
             <ButtonGroup>
-              <Button>Save as Draft</Button>
-              <Button bsStyle="primary">Submit</Button>
+              <Button>{this.state.labels.buttons.saveAsDraft}</Button>
+              <Button bsStyle="primary">{this.state.labels.buttons.submit}</Button>
             </ButtonGroup>
           </Col>
         </Row>
@@ -493,10 +546,24 @@ class TextNodeEditor extends React.Component {
 
   };
 
+  getTagsRow = () => {
+    return (
+        <Well className="App-Text-Note-Editor-Button-Row">
+          <EditableSelector
+              session={this.props.session}
+              options={[]}
+              changeHandler={this.handleEditableListCallback}
+              title={"Tags"}
+              multiSelect={false}/>
+        </Well>
+    );
+
+  };
+
   getFormattedHeaderRow = () => {
     return (
         <Accordion>
-          <Panel header="View Formatted Note" eventKey="TextNoteEditor">
+          <Panel header={this.state.labels.thisClass.viewFormattedNote} eventKey="TextNoteEditor">
             <Well>
               <div className="App-Text-Note-Type">
                 <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
@@ -534,6 +601,26 @@ class TextNodeEditor extends React.Component {
                 </span>
             </div>
         );
+      } else if (this.state.showOntologyView) {
+        return (
+            <div className="App-Text-Note-formatted">
+              <span className="App-Text-Note-Header-Scope">
+                {this.state.scopeLiturgical}
+              </span>
+              <span className="App-Text-Note-Header-Lemma">
+                  {this.state.lemmaLiturgical}
+                </span>
+              <Glyphicon className="App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
+              <span className="App-Text-Note-Header-Scope-Ontological">
+                {this.state.ontologyRefEntityName}
+              </span>
+              <span className="App-Text-Note-Header-Title">
+                  {this.state.title}
+                </span>
+              <span className="App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
+                </span>
+            </div>
+        );
       } else {
         return (
             <div className="App-Text-Note-formatted">
@@ -560,7 +647,7 @@ class TextNodeEditor extends React.Component {
   getHeaderWell = () => {
       return (
           <Accordion>
-            <Panel header="Set Type, Scope, Lemma, Title" eventKey="TextNoteEditor">
+            <Panel header={this.state.labels.thisClass.setTypeScope} eventKey="TextNoteEditor">
               <Well>
                 <Grid>
                   {this.getNoteTypeRow()}
@@ -593,10 +680,10 @@ class TextNodeEditor extends React.Component {
               <Grid>
                 <Row className="show-grid">
                   <Col xs={12} md={8}>
-                    <ControlLabel>Note:</ControlLabel>
+                    <ControlLabel>{this.state.labels.thisClass.note}:</ControlLabel>
                   </Col>
                 </Row>
-                <Row className="show-grid">
+                <Row className="show-grid  App-Text-Note-Editor-Row">
                   <Col xs={12} md={8}>
                     <textarea id={this.props.id}/>
                   </Col>
@@ -606,6 +693,7 @@ class TextNodeEditor extends React.Component {
             </FormGroup>
           </form>
           </Well>
+          {this.getTagsRow()}
         </div>
     )
   }

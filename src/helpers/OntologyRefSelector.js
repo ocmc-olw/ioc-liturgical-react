@@ -4,10 +4,14 @@ import Select from 'react-select';
 import {Col, ControlLabel, Grid, Row } from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
+import Server from "./Server";
 
 class OntologyRefSelector extends React.Component {
   constructor(props) {
     super(props);
+
+    console.log(`onto type=${props.type}`);
+
     let languageCode = props.session.languageCode;
     this.state = {
       labels: { //
@@ -19,20 +23,22 @@ class OntologyRefSelector extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
-      , selectedType: "*"
-      , selectedEntity: "*"
+      , selectedEntityValue: "*"
+      , selectedEntityLabel: ""
+      , fetching: false
+      , data: []
     }
 
-    this.handleTypeChange = this.handleTypeChange.bind(this);
     this.handleEntityChange = this.handleEntityChange.bind(this);
     this.handleCallback = this.handleCallback.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   }
 
   componentWillMount = () => {
   }
 
   componentDidMount = () => {
-    // make any initial function calls here...
+    this.setState({fetching: true}, this.fetchData);
   }
 
   componentWillReceiveProps = (nextProps) => {
@@ -47,8 +53,11 @@ class OntologyRefSelector extends React.Component {
             , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
           }
           , message: Labels.getMessageLabels(languageCode).initial
+          , selectedEntity: "*"
+          , fetching: false
+          , data: []
         }
-      }, function () { return this.handleStateChange("place holder")});
+      }, this.fetchData());
     }
   }
 
@@ -59,66 +68,99 @@ class OntologyRefSelector extends React.Component {
 
   handleCallback = () => {
     this.props.callback(
-        this.state.selectedType
-        , this.state.selectedEntity
+      this.state.selectedEntityValue
+        , this.state.selectedEntityLabel
     );
   };
 
-  handleTypeChange = (selection) => {
-    let book = selection["value"];
+  handleEntityChange = (selection) => {
+    console.log(selection);
     this.setState({
-      selectedType: book
+      selectedEntityValue: selection["value"]
+      , selectedEntityLabel: selection["label"]
     }, this.handleCallback);
   };
 
-  handleEntityChange = (selection) => {
-    this.setState({
-      selectedEntity: selection["value"]
-    }, this.handleCallback);
-  };
+  fetchData = () => {
+    console.log("fetching data");
+    let parms =
+        "t=" + encodeURIComponent(this.props.type)
+    ;
+
+    Server.restGetPromise(
+        this.props.session.restServer
+        , Server.getDbServerDropdownsOntologyEntitiesApi()
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
+        , parms
+    )
+        .then( response => {
+          this.setState(
+              {
+                data: response.data.values[0].dropdown
+                , userMessage: response.userMessage
+                , developerMessage: response.developerMessage
+                , messageIcon: response.messageIcon
+                , status: response.status
+                , showSearchResults: response.data.values.length > 0
+                , resultCount: response.data.values.length
+                , fetching: false
+              }
+          );
+        })
+        .catch( error => {
+          this.setState(
+              {
+                data: {
+                  values:
+                      [
+                        {
+                          "id": ""
+                          , "library": ""
+                          , "topic": ""
+                          , "key": ""
+                          , "value:": ""
+                        }
+                      ]
+                  , userMessage: error.userMessage
+                  , developerMessage: error.developerMessage
+                  , messageIcon: error.messageIcon
+                  , status: error.status
+                  , showSearchResults: false
+                  , resultCount: 0
+                  , fetching: false
+                }
+              })
+        })
+    ;
+  }
+
 
   render() {
-    return (
-        <Row>
-          <Col className="App-Ontology-Ref-Selector-Label" xs={2} md={2}>
-            <ControlLabel>{this.state.labels.thisClass.type}:</ControlLabel>
-          </Col>
-          <Col className="App-Ontology-Ref-Selector-Type" xs={6} md={6}>
-            <Select
-                name="App-Ontology-Ref-Selector-Type"
-                className="App-Ontology-Ref-Selector-Type"
-                value={this.state.selectedType}
-                options={this.props.session.dropdowns.ontologyTypesDropdown}
-                onChange={this.handleTypeChange}
-                multi={false}
-                autosize={true}
-                clearable
-            />
-          </Col>
-          <Col className="App-Ontology-Ref-Selector-Entity" xs={2} md={2}>
-            <Col className="App-Ontology-Ref-Selector-Label" xs={2} md={2}>
-              <ControlLabel>{this.state.labels.thisClass.type}:</ControlLabel>
-            </Col>
-          <Select
-              name="App-Ontology-Ref-Selector-Entity"
-              className="App-Ontology-Ref-Selector-Entity"
-              value={this.state.selectedEntity}
-              options={this.props.session.dropdowns.ontologyTypesDropdown}
-              onChange={this.handleEntityChange}
-              multi={false}
-              autosize={true}
-              clearable
-          />
-          </Col>
-          <Col className="App-Ontology-Ref-Selector-Verse" xs={2} md={2}>
-          </Col>
-        </Row>
-    )
+    if (this.state.data && this.state.data.length > 0) {
+      return (
+          <div className="resourceSelector">
+            <div className="resourceSelectorPrompt">{this.props.title}</div>
+              <Select
+                  name="App-Ontology-Ref-Selector-Entity"
+                  value={this.state.selectedEntityValue}
+                  options={this.state.data}
+                  onChange={this.handleEntityChange}
+                  multi={false}
+                  autosize={true}
+                  clearable
+              />
+          </div>
+      )
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
   }
 }
 
 OntologyRefSelector.propTypes = {
   session: PropTypes.object.isRequired
+  , type: PropTypes.string.isRequired
   , callback: PropTypes.func.isRequired
 };
 

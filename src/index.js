@@ -8,6 +8,7 @@ import DependencyDiagram from './modules/DependencyDiagram';
 import DomainSelector from './DomainSelector';
 import DownloadUserRecords from './helpers/DownloadUserRecords';
 import Dropdowns from './classes/Dropdowns';
+import EditableSelector from './modules/EditableSelector';
 import Flag from './Flag';
 import HelpSearch from './HelpSearch';
 import Labels from './Labels';
@@ -47,6 +48,7 @@ export {
   , DomainSelector
   , DownloadUserRecords
   , Dropdowns
+  , EditableSelector
   , Flag
   , HelpSearch
   , Labels

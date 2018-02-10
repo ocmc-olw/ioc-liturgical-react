@@ -141,7 +141,6 @@ a.collapsed {
 .active {
     color: gold;
 }
-
 .control-label,  .resourceSelectorPrompt {
     color: #5bc0de;
 }
@@ -507,13 +506,36 @@ path.link {
     padding-left: 10px;
     font-size: smaller;
 }
-.App-Text-Note-Editor-Title {
-    margin-right: 0px;
-    padding-right: 0px;
+.App-Text-Note-Editor-Type-Row {
+    margin-top: 10px;
+}
+.App-Text-Note-Editor-Scope-Row {
+    margin-top: 10px;
+}
+.App-Text-Note-Editor-Lemma-Row {
+    margin-top: 0px;
+}
+.App-Text-Note-Editor-Title-Row {
+    margin-top: 0px;
+}
+.App-Bible-Ref-Selector-Row {
+    margin-top: 8px;
+}
+.App-Ontology-Ref-Selector-Row {
+    margin-top: 8px;
 }
 .App-Text-Note-Editor-Scope {
     height: auto;
-    padding-left: 12px;
+    width: 80%;
+    box-sizing: border-box;
+}
+.App-Text-Note-Editor-Lemma {
+    height: auto;
+    width: 80%;
+    box-sizing: border-box;
+}
+.App-Text-Note-Editor-Title {
+    height: auto;
     width: 80%;
     box-sizing: border-box;
 }
@@ -540,6 +562,10 @@ path.link {
 .App-Text-Note-Type {
     text-align: center;
 }
+.App-Text-Note-Type-Selector {
+    width: 100%;
+    padding-bottom: 7px;
+}
 .App-Text-Note-formatted {
     background-color: white;
     padding: 10px;
@@ -555,6 +581,11 @@ path.link {
 }
 
 .App-Text-Note-Header-Scope-Biblical {
+    font-weight: bold;
+    text-justify: none;
+    display: inline-block;
+}
+.App-Text-Note-Header-Scope-Ontological {
     font-weight: bold;
     text-justify: none;
     display: inline-block;
@@ -587,25 +618,32 @@ path.link {
     display: none;
 }
 
+.App-Bible-Ref-Selector-Container {
+    display: inline-flex;
+}
 .App-Bible-Ref-Selector-Book .Select-control{
     float: left;
-    width: 28ch;
+    width: 30ch;
+    margin-right: 10px;
 }
 .App-Bible-Ref-Selector-Chapter .Select-control{
     float: left;
     width: 12ch;
-    margin-left: 128px;
+    margin-right: 10px;
 }
 .App-Bible-Ref-Selector-Verse .Select-control{
     float: left;
     width: 12ch;
-    margin-left: 113px;
+}
+.App-Ontology-Ref-Selector-Container {
+    display: inline-block;
+    max-width: 80vw;
 }
 .App-Ontology-Ref-Selector-Type .Select-control{
     float: left;
-    width: 20ch;
+    width: 30ch;
+    margin-right: 10px;
 }
-.App-Ontology-Ref-Selector-Entity .Select-control{
-    float: left;
-    width: 20ch;
+.App-Ontology-Ref-Selector-Entity{
+    width: 100%;
 }

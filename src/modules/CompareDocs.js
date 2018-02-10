@@ -71,8 +71,6 @@ export class CompareDocs extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    console.log('willReceiveProps.selectedIdParts=');
-    console.log(nextProps.selectedIdParts);
     this.setState({
           showModal: nextProps.showModal
           , domain: "*"
@@ -93,8 +91,6 @@ export class CompareDocs extends React.Component {
   };
 
   componentDidMount = () => {
-    console.log('didMount.selectedIdParts=');
-    console.log(this.props.selectedIdParts);
     this.setState({
           showModal: this.props.showModal
           , domain: "*"

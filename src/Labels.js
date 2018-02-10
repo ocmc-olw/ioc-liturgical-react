@@ -9,10 +9,31 @@ const   labels = {
     button: {
       cancel: "Cancel"
       , close: "Close"
+      , remove: "Remove"
+      , removeAll: "Remove All"
+      , saveAsDraft: "Save as Draft"
       , search: "Search"
       , select: "Select"
       , submit: "Submit"
       , update: "Update"
+    }
+    , TextNoteEditor: {
+      type: "Type"
+      , bibleRef: "Bible Ref"
+      , biblicalScope: "Biblical Scope"
+      , biblicalLemma: "Biblical Lemma"
+      , liturgicalScope: "Liturgical Scope"
+      , liturgicalLemma: "Liturgical Lemma"
+      , note: "Note"
+      , title: "Title"
+      , refersTo: "Refers to"
+      , setTypeScope: "Set Type, Scope, Lemma, Title"
+      , viewLiturgicalText: "View Liturgical Text"
+      , viewBiblicalText: "View Biblical Text"
+      , viewFormattedNote: "View Formatted Note"
+    }
+    , ToDoList: {
+
     }
     , BibleRefSelector: {
       book: "Book"
@@ -914,10 +935,31 @@ const   labels = {
     button: {
       cancel: "Ματαίωσε"
       , close: "Κλείστε"
+      , remove: "Βγάλε"
+      , removeAll: "Βγάλε όλων"
+      , saveAsDraft: "Αποθηκεύσετε ως πρόχειρο"
       , search: "Αναζήτηση"
       , select: "Επίλεξε"
       , submit: "Να Στέιλει"
       , update: "Να Ανανεώσει"
+    }
+    , TextNoteEditor: {
+      type: "Type"
+      , bibleRef: "Bible Ref"
+      , biblicalScope: "Biblical Scope"
+      , biblicalLemma: "Biblical Lemma"
+      , liturgicalScope: "Liturgical Scope"
+      , liturgicalLemma: "Liturgical Lemma"
+      , note: "Σημείωση"
+      , title: "Title"
+      , refersTo: "Refers to"
+      , setTypeScope: "Set Type, Scope, Lemma, Title"
+      , viewLiturgicalText: "View Liturgical Text"
+      , viewBiblicalText: "View Biblical Text"
+      , viewFormattedNote: "View Formatted Note"
+    }
+    , ToDoList: {
+
     }
     , BibleRefSelector: {
         book: "το βιβλίο"
@@ -1865,6 +1907,8 @@ module.exports = {
   , getSearchTemplatesLabels: (code) => { return labels[code].searchTemplates;}
   , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
   , getSearchTreebanksLabels: (code) => { return labels[code].searchTreebanks;}
+  , getTextNoteEditorLabels: (code) => { return labels[code].TextNoteEditor;}
+  , getToDoListLabels: (code) => { return labels[code].ToDoList;}
   , getGlossBuilderLabels: (code) => { return labels[code].GlossBuilder;}
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
   , getViewReferencesLabels: (code) => { return labels[code].ViewReferences;}

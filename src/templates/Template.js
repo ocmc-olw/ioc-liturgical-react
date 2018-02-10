@@ -25,20 +25,19 @@ class NewComponentTemplate extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
-    }
+    };
 
     this.handleStateChange = this.handleStateChange.bind(this);
-  }
+  };
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     // make any initial function calls here...
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       let languageCode = nextProps.session.languageCode;
       this.setState((prevState, props) => {
         return {
@@ -51,13 +50,12 @@ class NewComponentTemplate extends React.Component {
           , message: Labels.getMessageLabels(languageCode).initial
         }
       }, function () { return this.handleStateChange("place holder")});
-    }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function if needed
-  }
+  };
 
   // TODO: add the content for the render function
   render() {
@@ -66,7 +64,7 @@ class NewComponentTemplate extends React.Component {
         </div>
     )
   }
-}
+};
 
 // TODO: rename class and add any additional propTypes you need
 // TODO: review the structure of the Session class, which also holds User, UiSchemas, and Dropdowns

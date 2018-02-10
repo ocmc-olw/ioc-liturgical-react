@@ -95,11 +95,11 @@ class BibleRefSelector extends React.Component {
 
   render() {
     return (
-        <Row>
-          <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
+        <Row  className="show-grid App-Bible-Ref-Selector-Row">
+          <Col className="App App-Bible-Ref-Selector-Label" xs={2} md={2}>
             <ControlLabel>Bible Ref:</ControlLabel>
           </Col>
-          <Col className="App-Bible-Ref-Selector-Book" xs={2} md={2}>
+          <Col className="App-Bible-Ref-Selector-Container" xs={2} md={2}>
             <Select
                 name="App-Bible-Ref-Selector-Book"
                 className="App-Bible-Ref-Selector-Book"
@@ -110,8 +110,6 @@ class BibleRefSelector extends React.Component {
                 autosize={true}
                 clearable
             />
-          </Col>
-          <Col className="App-Bible-Ref-Selector-Chapter" xs={2} md={2}>
           <Select
               name="App-Bible-Ref-Selector-Chapter"
               className="App-Bible-Ref-Selector-Chapter"
@@ -122,8 +120,6 @@ class BibleRefSelector extends React.Component {
               autosize={true}
               clearable
           />
-          </Col>
-          <Col className="App-Bible-Ref-Selector-Verse" xs={2} md={2}>
           <Select
               name="App-Bible-Ref-Selector-Verse"
               className="App-Bible-Ref-Selector-Verse"
@@ -134,10 +130,6 @@ class BibleRefSelector extends React.Component {
               autosize={true}
               clearable
           />
-          </Col>
-          <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
-          </Col>
-          <Col className="App-Bible-Ref-Selector-Label" xs={2} md={2}>
           </Col>
         </Row>
     )

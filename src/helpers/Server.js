@@ -42,6 +42,7 @@ const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownsSearchTemplates = "dropdowns/templates";
 const dbDropdownsSearchNotes = "dropdowns/notes";
 const dbDropdownsUserRolesForDomain = "domains/userdropdown";
+const dbDropdownsOntologyEntites = "dropdowns/ontologyentities";
 const dbDropdownsSearchOntology = "dropdowns/ontology";
 const dbDropdownDomains = "dropdowns/domains";
 const dbDropdownsSearchRelationships = "dropdowns/relationships";
@@ -409,6 +410,7 @@ export default {
   , getDbServerDropdownsSearchTemplatesApi: () => {return dbApi + dbDropdownsSearchTemplates;}
   , getDbServerDropdownsSearchNotesApi: () => {return dbApi + dbDropdownsSearchNotes;}
   , getDbServerDropdownsSearchOntologyApi: () => {return dbApi + dbDropdownsSearchOntology;}
+  , getDbServerDropdownsOntologyEntitiesApi: () => {return dbApi + dbDropdownsOntologyEntites;}
   , getDbServerDropdownsSearchRelationshipsApi: () => {return dbApi + dbDropdownsSearchRelationships;}
   , getDbServerDropdownsSearchTreebanksApi: () => {return dbApi + dbDropdownsSearchTreebanks;}
   , getDbServerDocsApi: () => {return dbApi + docs;}

@@ -21,7 +21,6 @@ import {
   Image,
   Jumbotron,
   Panel,
-  PanelGroup,
   Table
 } from "react-bootstrap";
 import logo from './images/ioc-liturgical-react-logo.png';
@@ -39,6 +38,7 @@ import {
   , DomainSelector
   , DownloadUserRecords
   , Dropdowns
+  , EditableSelector
   , Flag
   , HelpSearch
   , Labels
@@ -634,15 +634,19 @@ class Demo extends React.Component {
     this.node = this.node.bind(this);
     this.bibleRefSelectorCallback = this.bibleRefSelectorCallback.bind(this);
     this.handleTextNoteContentChange = this.handleTextNoteContentChange.bind(this);
+    this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
   }
 
   componentWillMount = () => {
-  }
+  };
 
   handleTextNoteContentChange = (content) => {
     console.log(content);
-  }
+  };
 
+  handleEditableListCallback = (values) => {
+    console.log(values);
+  };
   bibleRefSelectorCallback = (book, chapter, verse) => {
     this.setState (
         {
@@ -1552,6 +1556,21 @@ class Demo extends React.Component {
                   <p>You must log in first in order to see and use this.</p>
               }
               </Panel> {/* Biblical Reference Selector */}
+            <Panel header="Editable Selector" eventKey="EditableSelector">
+              { (this.state.authenticated) ?
+                  <div>
+                    <EditableSelector
+                        session={this.state.session}
+                        initialValue={[]}
+                        options={[]}
+                        changeHandler={this.handleEditableListCallback}
+                        title={"Tags"}
+                        multiSelect={true}/>
+                  </div>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+            </Panel> {/* Biblical Reference Selector */}
             <Panel header="Text Note Editor" eventKey="TextNoteEditor">
               { (this.state.authenticated) ?
                   <div>
