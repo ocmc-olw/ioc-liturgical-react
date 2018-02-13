@@ -2,7 +2,7 @@
  * Created by mac002 on 1/2/17.
  */
 
-const packageNumber = "0.0.49";
+const packageNumber = "0.0.50";
 
 module.exports = {
   getPackageNumber: () => { return packageNumber;}
