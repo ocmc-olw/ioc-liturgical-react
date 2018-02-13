@@ -4,6 +4,8 @@ import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import '../../node_modules/tinymce/skins/lightgray/skin.min.css'
 import '../../node_modules/tinymce/skins/lightgray/content.min.css'
+import './skins/lightgray/skin.min.css';
+import './skins/lightgray/content.min.css';
 import './css/alwb.css';
 import './css/Demo.css'; // important that you load this as the last css
 import RestServer from './helpers/restServer'
@@ -55,12 +57,13 @@ import {
   , Session
   , Spinner
   , TemplateEditor
+  , TemplateForTable
   , TextNoteEditor
   , TopicsSelector
   , UiSchemas
   , User
   , ViewReferences
-  , TemplateForTable
+  , WorkflowForm
 } from '../../src';
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
@@ -635,9 +638,14 @@ class Demo extends React.Component {
     this.bibleRefSelectorCallback = this.bibleRefSelectorCallback.bind(this);
     this.handleTextNoteContentChange = this.handleTextNoteContentChange.bind(this);
     this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
+    this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
   }
 
   componentWillMount = () => {
+  };
+
+  handleWorkflowCallback = (status, visibility, user) => {
+    console.log(`status=${status} visibility=${visibility} user=${user}`);
   };
 
   handleTextNoteContentChange = (content) => {
@@ -931,6 +939,7 @@ class Demo extends React.Component {
 
   doNothingHandler = () => {
   }
+
 
 
   getParaTextEditor = () => {
@@ -1561,11 +1570,11 @@ class Demo extends React.Component {
                   <div>
                     <EditableSelector
                         session={this.state.session}
-                        initialValue={[]}
+                        initialValue={""}
                         options={[]}
                         changeHandler={this.handleEditableListCallback}
                         title={"Tags"}
-                        multiSelect={true}/>
+                        multiSelect={false}/>
                   </div>
                   :
                   <p>You must log in first in order to see and use this.</p>
@@ -1590,6 +1599,19 @@ class Demo extends React.Component {
                   <p>You must log in first in order to see and use this.</p>
               }
             </Panel> {/* Text Note Editor */}
+            <Panel header="Workflow Form" eventKey="WorkflowForm">
+              { (this.state.authenticated) ?
+                  <div>
+                    <WorkflowForm
+                        session={this.state.session}
+                        library={"en_sys_ontology"}
+                        callback={this.handleWorkflowCallback}
+                    />
+                  </div>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+            </Panel> {/* Workflow Form */}
             <Panel header="TBD" eventKey="tbd">
               Placeholder
             </Panel> {/* TDB */}

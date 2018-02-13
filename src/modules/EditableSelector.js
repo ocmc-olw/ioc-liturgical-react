@@ -73,10 +73,12 @@ export class EditableSelector extends React.Component {
           />
           <div className="App resourceSelectorButtons">
           <Button
+              className="App App-Button"
               bsStyle="primary"
               onClick={this.onRemoveClick}>{this.state.labels.buttons.remove}
               </Button>
           <Button
+              className="App App-Button"
               bsStyle="warning"
               onClick={this.onRemoveAllClick}>{this.state.labels.buttons.removeAll}
           </Button>
@@ -87,7 +89,7 @@ export class EditableSelector extends React.Component {
 }
 
 EditableSelector.propTypes = {
-  session: PropTypes.object.require
+  session: PropTypes.object.isRequired
   , initialValue: PropTypes.string
   , options: PropTypes.array.isRequired
   , changeHandler: PropTypes.func.isRequired

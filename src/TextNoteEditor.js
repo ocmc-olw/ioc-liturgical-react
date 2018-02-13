@@ -4,7 +4,21 @@ import tinymce from 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/wordcount';
 import 'tinymce/plugins/lists';
-import { Accordion, Button, ButtonGroup, Col, ControlLabel, Glyphicon, Grid, FormControl, FormGroup, Panel, Row, Well } from 'react-bootstrap';
+import {
+  Accordion
+  , Button
+  , Col
+  , ControlLabel
+  , Glyphicon
+  , Grid
+  , FormControl
+  , FormGroup
+  , Panel
+  , Row
+  , Tab
+  , Tabs
+  , Well
+} from 'react-bootstrap';
 import Labels from './Labels';
 import Server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
@@ -12,15 +26,18 @@ import ResourceSelector from './modules/ReactSelector';
 import EditableSelector from './modules/EditableSelector';
 import BibleRefSelector from './helpers/BibleRefSelector';
 import OntologyRefSelector from './helpers/OntologyRefSelector';
+import WorkflowForm from './helpers/WorkflowForm';
+
 import CompareDocs from './modules/CompareDocs';
 
 class TextNodeEditor extends React.Component {
   constructor(props) {
     super(props);
     let languageCode = props.session.languageCode;
+    let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
     this.state = {
       labels: { //
-        thisClass: Labels.getTextNoteEditorLabels(languageCode)
+        thisClass: thisClassLabels
         , buttons: Labels.getButtonLabels(languageCode)
         , messages: Labels.getMessageLabels(languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
@@ -37,7 +54,7 @@ class TextNodeEditor extends React.Component {
       , title: ""
       , liturgicalText: props.liturgicalText
       , selectedType: ""
-      , selectedTypeLabel: ""
+      , selectedTypeLabel: thisClassLabels.typeLabel
       , selectedBibleBook: ""
       , selectedBibleChapter: ""
       , selectedBibleVerse: ""
@@ -58,6 +75,12 @@ class TextNodeEditor extends React.Component {
       , ontologyRefEntityId: ""
       , ontologyRefEntityName: ""
       , showOntologyView: false
+      , workflow: {
+        visibility: "PERSONAL"
+        , status: "EDITING"
+        , assignedTo: props.session.userInfo.username
+      }
+      , selectedNoteLibrary: props.session.userInfo.domain
     };
 
     this.createMarkup = this.createMarkup.bind(this);
@@ -76,6 +99,7 @@ class TextNodeEditor extends React.Component {
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
+    this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
 
     this.getFormattedScopes = this.getFormattedScopes.bind(this);
     this.getHeaderWell = this.getHeaderWell.bind(this);
@@ -93,7 +117,10 @@ class TextNodeEditor extends React.Component {
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
     this.getOntologyLabel = this.getOntologyLabel.bind(this);
+    this.getRevisionsPanel = this.getRevisionsPanel.bind(this);
     this.getTagsRow = this.getTagsRow.bind(this);
+    this.getWorkflowPanel = this.getWorkflowPanel.bind(this);
+    this.getTabs = this.getTabs.bind(this);
 
   }
 
@@ -159,6 +186,19 @@ class TextNodeEditor extends React.Component {
         )
     );
 
+  };
+
+  handleWorkflowCallback = ( visibility, status, assignedTo ) => {
+    console.log(`visibility=${visibility} status=${status} user=${assignedTo}`);
+    this.setState(
+        {
+          workflow: {
+            visibility: visibility
+            , status: status
+            , assignedTo: assignedTo
+          }
+        }
+    );
   };
 
   handleFetchBibleTextCallback = (restCallResult) => {
@@ -536,10 +576,8 @@ class TextNodeEditor extends React.Component {
     return (
         <Row className="show-grid App-Text-Note-Editor-Button-Row">
           <Col xs={12} md={8}>
-            <ButtonGroup>
-              <Button>{this.state.labels.buttons.saveAsDraft}</Button>
-              <Button bsStyle="primary">{this.state.labels.buttons.submit}</Button>
-            </ButtonGroup>
+              <Button className="App App-Button">{this.state.labels.buttons.saveAsDraft}</Button>
+              <Button className="App App-Button" bsStyle="primary">{this.state.labels.buttons.submit}</Button>
           </Col>
         </Row>
     );
@@ -548,32 +586,48 @@ class TextNodeEditor extends React.Component {
 
   getTagsRow = () => {
     return (
-        <Well className="App-Text-Note-Editor-Button-Row">
-          <EditableSelector
-              session={this.props.session}
-              options={[]}
-              changeHandler={this.handleEditableListCallback}
-              title={"Tags"}
-              multiSelect={false}/>
+            <Well className="App-Text-Note-Editor-Button-Row">
+              <EditableSelector
+                  session={this.props.session}
+                  options={[]}
+                  changeHandler={this.handleEditableListCallback}
+                  title={""}
+                  multiSelect={false}/>
+            </Well>
+    );
+
+  };
+
+  getRevisionsPanel = () => {
+    return (
+        <Well>
+          revisions will appear here
         </Well>
+    );
+  }
+    getWorkflowPanel = () => {
+    return (
+        <WorkflowForm
+            session={this.props.session}
+            callback={this.handleWorkflowCallback}
+            library={this.state.selectedNoteLibrary}
+        />
     );
 
   };
 
   getFormattedHeaderRow = () => {
     return (
-        <Accordion>
-          <Panel header={this.state.labels.thisClass.viewFormattedNote} eventKey="TextNoteEditor">
             <Well>
-              <div className="App-Text-Note-Type">
-                <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
-                <span className="App-Text-Note-Type-As-Heading">{this.state.selectedTypeLabel}</span>
-                <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+              <div className="App App-Text-Note-formatted">
+                <div className="App-Text-Note-Type">
+                  <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+                  <span className="App-Text-Note-Type-As-Heading">{this.state.selectedTypeLabel}</span>
+                  <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+                </div>
+                {this.getFormattedScopes()}
               </div>
-              {this.getFormattedScopes()}
             </Well>
-          </Panel>
-        </Accordion>
     );
   };
 
@@ -646,8 +700,6 @@ class TextNodeEditor extends React.Component {
 
   getHeaderWell = () => {
       return (
-          <Accordion>
-            <Panel header={this.state.labels.thisClass.setTypeScope} eventKey="TextNoteEditor">
               <Well>
                 <Grid>
                   {this.getNoteTypeRow()}
@@ -660,9 +712,32 @@ class TextNodeEditor extends React.Component {
                   {this.getOntologyRefRow()}
                 </Grid>
               </Well>
-            </Panel>
-          </Accordion>
       );
+  };
+
+getTabs = () => {
+    return (
+        <Well>
+          <Tabs defaultActiveKey={1} animation={false} id="noanim-tab-example">
+            <Tab eventKey={"heading"} title={this.state.labels.thisClass.settings}>
+              {this.getHeaderWell()}
+            </Tab>
+            <Tab eventKey={"formattedheading"} title={this.state.labels.thisClass.viewFormattedNote}>
+              {this.getFormattedHeaderRow()}
+            </Tab>
+            <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
+              {this.getRevisionsPanel()}
+            </Tab>
+            <Tab eventKey={"tags"} title={this.state.labels.thisClass.tags}>
+              {this.getTagsRow()}
+            </Tab>
+            <Tab eventKey={"workflow"} title={this.state.labels.thisClass.workflow}>
+              {this.getWorkflowPanel()}
+            </Tab>
+          </Tabs>
+        </Well>
+    );
+
   };
 
   render() {
@@ -670,8 +745,6 @@ class TextNodeEditor extends React.Component {
         <div className="App-Text-Note-Editor">
           {this.getLiturgicalView()}
           {this.getBiblicalView()}
-          {this.getHeaderWell()}
-          {this.getFormattedHeaderRow()}
           <Well>
           <form onSubmit={this.handleSave}>
             <FormGroup
@@ -680,7 +753,10 @@ class TextNodeEditor extends React.Component {
               <Grid>
                 <Row className="show-grid">
                   <Col xs={12} md={8}>
-                    <ControlLabel>{this.state.labels.thisClass.note}:</ControlLabel>
+                    <ControlLabel>
+                      {this.state.labels.thisClass.note}:
+                      {this.state.selectedTypeLabel}
+                    </ControlLabel>
                   </Col>
                 </Row>
                 <Row className="show-grid  App-Text-Note-Editor-Row">
@@ -693,7 +769,7 @@ class TextNodeEditor extends React.Component {
             </FormGroup>
           </form>
           </Well>
-          {this.getTagsRow()}
+          {this.getTabs()}
         </div>
     )
   }

@@ -22,18 +22,25 @@ const   labels = {
       , bibleRef: "Bible Ref"
       , biblicalScope: "Biblical Scope"
       , biblicalLemma: "Biblical Lemma"
+      , settings: "Settings"
+      , typeLabel: "please set the note type in the settings tab"
       , liturgicalScope: "Liturgical Scope"
       , liturgicalLemma: "Liturgical Lemma"
       , note: "Note"
       , title: "Title"
       , refersTo: "Refers to"
+      , revisions: "Revisions"
       , setTypeScope: "Set Type, Scope, Lemma, Title"
       , viewLiturgicalText: "View Liturgical Text"
       , viewBiblicalText: "View Biblical Text"
-      , viewFormattedNote: "View Formatted Note"
+      , viewFormattedNote: "Formatted"
+      , tags: "Tags"
+      , workflow: "Workflow"
     }
-    , ToDoList: {
-
+    , WorkflowForm: {
+      visibility: "Visibility"
+      , status: "Status"
+      , AssignedTo: "Assigned to"
     }
     , BibleRefSelector: {
       book: "Book"
@@ -948,18 +955,25 @@ const   labels = {
       , bibleRef: "Bible Ref"
       , biblicalScope: "Biblical Scope"
       , biblicalLemma: "Biblical Lemma"
+      , settings: "Settings"
+      , typeLabel: "please set the note type in the settings tab"
       , liturgicalScope: "Liturgical Scope"
       , liturgicalLemma: "Liturgical Lemma"
       , note: "Σημείωση"
       , title: "Title"
       , refersTo: "Refers to"
+      , revisions: "Revisions"
       , setTypeScope: "Set Type, Scope, Lemma, Title"
       , viewLiturgicalText: "View Liturgical Text"
       , viewBiblicalText: "View Biblical Text"
-      , viewFormattedNote: "View Formatted Note"
+      , viewFormattedNote: "Formatted"
+      , tags: "Tags"
+      , workflow: "Workflow"
     }
-    , ToDoList: {
-
+    , WorkflowForm: {
+      visibility: "Visibility"
+      , status: "Status"
+      , AssignedTo: "Assigned to"
     }
     , BibleRefSelector: {
         book: "το βιβλίο"
@@ -1908,7 +1922,7 @@ module.exports = {
   , getSearchOntologyLabels: (code) => { return labels[code].searchOntology;}
   , getSearchTreebanksLabels: (code) => { return labels[code].searchTreebanks;}
   , getTextNoteEditorLabels: (code) => { return labels[code].TextNoteEditor;}
-  , getToDoListLabels: (code) => { return labels[code].ToDoList;}
+  , getWorkflowFormLabels: (code) => { return labels[code].WorkflowForm;}
   , getGlossBuilderLabels: (code) => { return labels[code].GlossBuilder;}
   , getTopicsSelectorLabels: (code) => { return labels[code].TopicsSelector;}
   , getViewReferencesLabels: (code) => { return labels[code].ViewReferences;}

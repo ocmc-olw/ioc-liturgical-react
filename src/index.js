@@ -33,6 +33,7 @@ import TopicsSelector from './modules/TopicsSelector';
 import UiSchemas from './classes/UiSchemas';
 import ViewReferences from './ViewReferences';
 import User from './classes/User';
+import WorkflowForm from './helpers/WorkflowForm';
 
 //import LifeCycleDemo from './helpers/LifeCycleDemo';
 import TemplateForTable from './templates/TemplateForTable';
@@ -69,10 +70,11 @@ export {
   , Session
   , Spinner
   , TemplateEditor
+  , TemplateForTable
   , TextNoteEditor
   , TopicsSelector
   , UiSchemas
   , User
   , ViewReferences
-  , TemplateForTable
+  , WorkflowForm
 }

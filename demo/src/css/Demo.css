@@ -567,6 +567,7 @@ path.link {
     padding-bottom: 7px;
 }
 .App-Text-Note-formatted {
+    color: black;
     background-color: white;
     padding: 10px;
     text-align: justify;
@@ -646,4 +647,20 @@ path.link {
 }
 .App-Ontology-Ref-Selector-Entity{
     width: 100%;
+}
+.App-Button {
+    margin-top: 10px;
+    margin-right: 5px;
+}
+.App-Workflow-Selector-Row {
+
+}
+.App-Workflow-Selector-Label {
+
+}
+.App-Workflow-Selector-Dropdown {
+
+}
+.Select-control {
+    margin-bottom: 10px;
 }

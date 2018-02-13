@@ -64,7 +64,7 @@ export class NewEntry extends React.Component {
           , readers: []
           , reviewers: []
         }
-        , statuses: []
+        , statusDropdown: []
         , isPublic: false
         , stateEnabled: false
         , workflowEnabled: false
@@ -312,7 +312,7 @@ export class NewEntry extends React.Component {
       this.setState({
         workflow: {
           userRolesForLibrary: restCallResult.data.values[0]
-          , statuses: restCallResult.data.values[1].statuses
+          , statusDropdown: restCallResult.data.values[1].statusDropdown
           , isPublic: config.isPublic
           , stateEnabled: config.stateEnabled
           , workflowEnabled: config.workflowEnabled
@@ -321,7 +321,7 @@ export class NewEntry extends React.Component {
         }
       });
     }
-  }
+  };
 
   handleIdLibrarySelection = (library) => {
     if (library) {

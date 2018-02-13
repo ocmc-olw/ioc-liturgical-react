@@ -45,7 +45,7 @@ class BibleRefSelector extends React.Component {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getViewReferencesLabels(languageCode)
+            thisClass: Labels.getBibleRefSelectorLabels(languageCode)
             , buttons: Labels.getButtonLabels(languageCode)
             , messages: Labels.getMessageLabels(languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
