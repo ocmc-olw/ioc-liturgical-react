@@ -1585,14 +1585,10 @@ class Demo extends React.Component {
                   <div>
                     <TextNoteEditor
                         session={this.state.session}
+                        idLibrary={"gr_gr_cog"}
                         idTopic={"he.h.m2"}
                         idKey={"VythouAnekalypse.text"}
                         onEditorChange={this.handleTextNoteContentChange }
-                        scope={"he.h.m2~VythouAnekalypse.text"}
-                        liturgicalTextGrk={"Βυθοῦ ἀνεκάλυψε πυθμένα καὶ διὰ ξηρᾶς οἰκείους ἕλκει, ἐν αὐτῷ κατακαλύψας ἀντιπάλους, ὁ κραταιός, ἐν πολέμοις Κύριος, ὅτι δεδόξασται."}
-                        liturgicalTextGrkSource={"gr_gr_cog"}
-                        liturgicalTextEngSource={"en_us_dedes"}
-                        liturgicalTextEng={"The Lord who is powerful in battle * once exposed the bottom of deep sea * and He drew His people through it as on dry land, * while there again He engulfed the enemies, * for He is glorified."}
                     />
                   </div>
                   :

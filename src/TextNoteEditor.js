@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import FontAwesome from 'react-fontawesome';
 import tinymce from 'tinymce';
 import 'tinymce/themes/modern';
 import 'tinymce/plugins/wordcount';
@@ -13,6 +14,7 @@ import {
   , Grid
   , FormControl
   , FormGroup
+  , HelpBlock
   , Panel
   , Row
   , Tab
@@ -35,6 +37,14 @@ class TextNodeEditor extends React.Component {
     super(props);
     let languageCode = props.session.languageCode;
     let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
+    let initialMessage = Labels.getMessageLabels(languageCode).initial;
+    let form = {};
+    if (props.form) {
+      form = props.form;
+    } else {
+      form = props.session.uiSchemas.forms.TextualNote
+    }
+
     this.state = {
       labels: { //
         thisClass: thisClassLabels
@@ -45,14 +55,16 @@ class TextNodeEditor extends React.Component {
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: initialMessage
+      , form: form
       , editor: null
       , scopeBiblical: ""
-      , scopeLiturgical: props.scope
+      , scopeLiturgical: props.idKey
       , lemmaBiblical: ""
       , lemmaLiturgical: ""
       , title: ""
       , liturgicalText: props.liturgicalText
+      , selectedLibrary: props.session.userInfo.domain
       , selectedType: ""
       , selectedTypeLabel: thisClassLabels.typeLabel
       , selectedBibleBook: ""
@@ -81,6 +93,10 @@ class TextNodeEditor extends React.Component {
         , assignedTo: props.session.userInfo.username
       }
       , selectedNoteLibrary: props.session.userInfo.domain
+      , buttonSaveAsDraftDisabled: false
+      , buttonSubmitDisabled: true
+      , selectedTag: ""
+      , tags: []
     };
 
     this.createMarkup = this.createMarkup.bind(this);
@@ -94,6 +110,7 @@ class TextNodeEditor extends React.Component {
     this.handleSave = this.handleSave.bind(this);
     this.handleBiblicalScopeChange = this.handleBiblicalScopeChange.bind(this);
     this.handleLiturgicalScopeChange = this.handleLiturgicalScopeChange.bind(this);
+    this.handleLibraryChange = this.handleLibraryChange.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
@@ -104,9 +121,10 @@ class TextNodeEditor extends React.Component {
     this.getFormattedScopes = this.getFormattedScopes.bind(this);
     this.getHeaderWell = this.getHeaderWell.bind(this);
     this.getBibleRefRow = this.getBibleRefRow.bind(this);
-    this.getLiturgicalTextRow = this.getLiturgicalTextRow.bind(this);
     this.getOntologyRefRow = this.getOntologyRefRow.bind(this);
+    this.getTimestamp = this.getTimestamp.bind(this);
     this.getTitleRow = this.getTitleRow.bind(this);
+    this.getLibraryRow = this.getLibraryRow.bind(this);
     this.getLiturgicalView = this.getLiturgicalView.bind(this);
     this.getLiturgicalScopeRow = this.getLiturgicalScopeRow.bind(this);
     this.getLiturgicalLemmaRow = this.getLiturgicalLemmaRow.bind(this);
@@ -114,7 +132,6 @@ class TextNodeEditor extends React.Component {
     this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
     this.getNoteTypeRow = this.getNoteTypeRow.bind(this);
     this.getButtonRow = this.getButtonRow.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
     this.getOntologyLabel = this.getOntologyLabel.bind(this);
     this.getRevisionsPanel = this.getRevisionsPanel.bind(this);
@@ -122,13 +139,15 @@ class TextNodeEditor extends React.Component {
     this.getWorkflowPanel = this.getWorkflowPanel.bind(this);
     this.getTabs = this.getTabs.bind(this);
 
+    this.onSaveAsDraft = this.onSaveAsDraft.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+    
+    this.getForm = this.getForm.bind(this);
+
   }
 
   componentWillMount = () => {
   };
-
-  // right arrow &rarr;
-  // scroll &ac;
 
   componentDidMount = () => {
     tinymce.init({
@@ -164,8 +183,67 @@ class TextNodeEditor extends React.Component {
       }, function () { return this.handleStateChange("place holder")});
   };
 
-  componentWillUnmount() {
-    tinymce.remove(this.state.editor);
+  getTimestamp = () => {
+    let date = new Date();
+    let month = (date.getMonth()+1).toString().padStart(2,"0");
+    let day = date.getDate().toString().padStart(2,"0");
+    let hour = date.getHours().toString().padStart(2,"0");
+    let minute = date.getMinutes().toString().padStart(2,"0");
+    let second = date.getSeconds().toString().padStart(2,"0");
+    let timestamp = date.getFullYear()
+        + "."
+        + month
+        + "."
+        + day
+        + ".T"
+        + hour
+        + "."
+        + minute
+        + "."
+        + second
+    ;
+    return timestamp;
+  };
+
+  getForm = () => {
+    let form = this.state.form;
+    let tags = this.state.tags.map(function(item) {
+      return item['label'];
+    });
+    let topic = this.props.idLibrary + "~" + this.props.idTopic + "~" + this.props.idKey;
+    let key = this.getTimestamp();
+
+    form.assignedToUser = this.state.workflow.assignedTo;
+    form.bibLemma = this.state.lemmaBiblical;
+    form.bibScope = this.state.scopeBiblical;
+    form.bibRef = this.state.bibleRef;
+    form.library = this.state.selectedLibrary;
+    form.topic = topic;
+    form.key = key;
+    form.id = this.state.selectedLibrary + "~" + topic + "~" + key;
+    form.lemma = this.state.lemmaLiturgical;
+    form.noteType = this.state.selectedType;
+    form.scope = this.state.scopeLiturgical;
+    form.status = this.state.workflow.status;
+    form.tags = tags;
+    form.title = this.state.title;
+    form.valueFormatted = this.state.note;
+    form.visibility = this.state.workflow.visibility;
+    console.log("form=");
+    console.log(form);
+    return form;
+  };
+
+  onSaveAsDraft = () => {
+    this.setState(
+        {form: this.getForm()}
+    );
+  };
+
+  onSubmit = () => {
+    this.setState(
+        {form: this.getForm()}
+    );
   };
 
   fetchBibleText = () => {
@@ -189,7 +267,21 @@ class TextNodeEditor extends React.Component {
   };
 
   handleWorkflowCallback = ( visibility, status, assignedTo ) => {
-    console.log(`visibility=${visibility} status=${status} user=${assignedTo}`);
+    let buttonSaveAsDraftDisabled = true;
+
+    switch (status) {
+      case ("EDITING"): {
+        buttonSaveAsDraftDisabled = false;
+        break;
+      }
+      case ("REVIEWING"): {
+        buttonSaveAsDraftDisabled = false;
+        break;
+      }
+      default: {
+      }
+    }
+    let buttonSubmitDisabled = ! buttonSaveAsDraftDisabled;
     this.setState(
         {
           workflow: {
@@ -197,6 +289,8 @@ class TextNodeEditor extends React.Component {
             , status: status
             , assignedTo: assignedTo
           }
+          , buttonSubmitDisabled: buttonSubmitDisabled
+          , buttonSaveAsDraftDisabled: buttonSaveAsDraftDisabled
         }
     );
   };
@@ -225,12 +319,8 @@ class TextNodeEditor extends React.Component {
     }
   };
 
-  handleRowSelect = () => {
-
-  };
-
-  handleEditableListCallback = (values) => {
-    console.log(values);
+  handleEditableListCallback = (value, values) => {
+    this.setState({selectedTag: value, tags: values});
   };
 
   handleEditorChange = (content) => {
@@ -297,6 +387,7 @@ class TextNodeEditor extends React.Component {
           {key: "key", label: chapter + ":" + verse}
           ]
           , showBibleView
+          , bibleRef: book + "~" + chapter + "~" + verse
         }
     );
   };
@@ -414,41 +505,10 @@ class TextNodeEditor extends React.Component {
     }
   };
 
-  getLiturgicalTextRow = () => {
-    if (this.props.liturgicalTextGrk && this.props.liturgicalTextGrk.length > 0) {
-      return (
-          <Well>
-            <ControlLabel>Liturgical Text</ControlLabel>
-            <Grid>
-              <Row className="show-grid">
-                <Col xs={6} md={6}>
-                  <div>
-                    {this.props.liturgicalTextGrk}
-                    <ControlLabel className="App-Text-Note-Text-Source">
-                         ({this.props.liturgicalTextGrkSource})
-                    </ControlLabel>
-                  </div>
-                </Col>
-                <Col xs={6} md={6}>
-                  <div>
-                    {this.props.liturgicalTextEng}
-                    <ControlLabel className="App-Text-Note-Text-Source">
-                       ({this.props.liturgicalTextEngSource})
-                    </ControlLabel>
-                  </div>
-                </Col>
-              </Row>
-            </Grid>
-          </Well>
-      );
-    } else {
-      return (<span className="App-no-display"></span>);
-    }
-  };
 
   getLiturgicalScopeRow = () => {
     return (
-        <Row className="show-grid  App-Text-Note-Scope-Row">
+        <Row className="show-grid  App-Text-Note-Editor-Scope-Row">
           <Col xs={2} md={2}>
             <ControlLabel>{this.state.labels.thisClass.liturgicalScope}:</ControlLabel>
           </Col>
@@ -484,6 +544,33 @@ class TextNodeEditor extends React.Component {
     );
   };
 
+  handleLibraryChange = ( selection ) => {
+    this.setState( { selectedLibrary: selection["value"] } );
+  };
+
+  getLibraryRow = () => {
+    if (this.props.session.userInfo.domains.author) {
+      return (
+          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.library}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <ResourceSelector
+                  title={""}
+                  initialValue={this.state.selectedLibrary}
+                  resources={this.props.session.userInfo.domains.author}
+                  changeHandler={this.handleLibraryChange}
+                  multiSelect={false}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
   getTitleRow = () => {
     return (
         <Row className="show-grid App-Text-Note-Editor-Title-Row">
@@ -506,7 +593,7 @@ class TextNodeEditor extends React.Component {
   getBiblicalScopeRow = () => {
     if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
-          <Row className="show-grid App-Text-Note-Editor-Scope-Row">
+          <Row className="show-grid  App-Text-Note-Editor-Scope-Biblical-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.biblicalScope}:</ControlLabel>
             </Col>
@@ -530,7 +617,9 @@ class TextNodeEditor extends React.Component {
   getBiblicalLemmaRow = () => {
     if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
-          <Row className="show-grid App-Text-Note-Editor-Lemma-Row">
+
+
+          <Row className="show-grid  App-Text-Note-Editor-Lemma-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.biblicalLemma}:</ControlLabel>
             </Col>
@@ -576,8 +665,21 @@ class TextNodeEditor extends React.Component {
     return (
         <Row className="show-grid App-Text-Note-Editor-Button-Row">
           <Col xs={12} md={8}>
-              <Button className="App App-Button">{this.state.labels.buttons.saveAsDraft}</Button>
-              <Button className="App App-Button" bsStyle="primary">{this.state.labels.buttons.submit}</Button>
+              <Button
+                  className="App App-Button"
+                  disabled={this.state.buttonSaveAsDraftDisabled}
+                  onClick={this.onSaveAsDraft}
+              >
+                {this.state.labels.buttons.saveAsDraft}
+              </Button>
+              <Button
+                  className="App App-Button"
+                  bsStyle="primary"
+                  disabled={this.state.buttonSubmitDisabled}
+                  onClick={this.onSubmit}
+              >
+                {this.state.labels.buttons.submit}
+              </Button>
           </Col>
         </Row>
     );
@@ -589,7 +691,8 @@ class TextNodeEditor extends React.Component {
             <Well className="App-Text-Note-Editor-Button-Row">
               <EditableSelector
                   session={this.props.session}
-                  options={[]}
+                  initialValue={this.state.selectedTag}
+                  options={this.state.tags}
                   changeHandler={this.handleEditableListCallback}
                   title={""}
                   multiSelect={false}/>
@@ -710,6 +813,7 @@ class TextNodeEditor extends React.Component {
                   {this.getBiblicalScopeRow()}
                   {this.getBiblicalLemmaRow()}
                   {this.getOntologyRefRow()}
+                  {this.getLibraryRow()}
                 </Grid>
               </Well>
       );
@@ -765,6 +869,11 @@ getTabs = () => {
                   </Col>
                 </Row>
                 {this.getButtonRow()}
+                <HelpBlock>
+                  <div><span className="App-message"><FontAwesome
+                      name={this.state.messageIcon}/> {this.state.message}</span>
+                  </div>
+                </HelpBlock>
               </Grid>
             </FormGroup>
           </form>
@@ -778,23 +887,16 @@ getTabs = () => {
 TextNodeEditor.propTypes = {
   session: PropTypes.object.isRequired
   , onEditorChange: PropTypes.func.isRequired
-  , scope: PropTypes.string
-  , idTopic: PropTypes.string
-  , idKey: PropTypes.string
-  , liturgicalTextGrk: PropTypes.string
-  , liturgicalTextGrkSource: PropTypes.string
-  , liturgicalTextEng: PropTypes.string
-  , liturgicalTextEngSource: PropTypes.string
+  , idLibrary: PropTypes.string.isRequired
+  , idTopic: PropTypes.string.isRequired
+  , idKey: PropTypes.string.isRequired
+  , form: PropTypes.object
 };
 
 // set default values for props here
 TextNodeEditor.defaultProps = {
   id: "tinymceeditor"
-  , scope: ""
-  , liturgicalTextGrk: ""
-  , liturgicalTextGrkSource: ""
-  , liturgicalTextEng: ""
-  , liturgicalTextEngSource: ""
+  , form: {}
 };
 
 export default TextNodeEditor;

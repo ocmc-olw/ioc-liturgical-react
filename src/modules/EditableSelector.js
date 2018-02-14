@@ -37,7 +37,7 @@ export class EditableSelector extends React.Component {
   };
 
   callBack = () => {
-      this.props.changeHandler(this.state.options);
+      this.props.changeHandler(this.state.value, this.state.options);
   };
 
   handleChange = (selection) => {
