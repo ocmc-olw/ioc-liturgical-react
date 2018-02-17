@@ -636,14 +636,13 @@ export class Search extends React.Component {
         , selectedId: id
         , selectedValue: value
         , selectedSeq: seq
-      })
+      }, this.deselectAllRows)
     } else {
       this.setState({
         showModalWindow: false
-      })
+      }, this.deselectAllRows)
     }
-    this.deselectAllRows();
-  }
+  };
 
 
   handleEditorClose = (id, value, seq) => {
@@ -660,7 +659,7 @@ export class Search extends React.Component {
       })
     }
     this.deselectAllRows();
-  }
+  };
 
   getDocTypes = () => {
     return (
@@ -694,7 +693,7 @@ export class Search extends React.Component {
               title={this.state.selectedId}
               docType={this.state.docType}
               selectedIdParts={this.state.selectedIdParts}
-              onClose={this.props.callback ? this.handleCloseDocComparison : undefined}
+              onClose={this.handleCloseDocComparison}
               labels={this.props.searchLabels}
           />
       )

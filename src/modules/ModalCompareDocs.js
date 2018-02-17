@@ -255,8 +255,9 @@ console.log(path);
 }
 ModalCompareDocs.propTypes = {
   session: PropTypes.object.isRequired
-  , onClose: PropTypes.func.isRequired
+  , onClose: PropTypes.func
   , showModal: PropTypes.bool.isRequired
+  , hasCallback: PropTypes.func
   , title: PropTypes.string.isRequired
   , docType: PropTypes.string.isRequired
   , selectedIdParts: PropTypes.array.isRequired

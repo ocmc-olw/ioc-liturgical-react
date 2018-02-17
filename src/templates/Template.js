@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
@@ -48,6 +49,7 @@ class NewComponentTemplate extends React.Component {
             , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
           }
           , message: Labels.getMessageLabels(languageCode).initial
+          , somethingWeTrackIfChanged: get(this.state, "somethingWeTrackIfChanged", "" )
         }
       }, function () { return this.handleStateChange("place holder")});
   };

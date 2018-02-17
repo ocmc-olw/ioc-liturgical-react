@@ -64,13 +64,20 @@ class TextNodeEditor extends React.Component {
       , lemmaLiturgical: ""
       , title: ""
       , liturgicalText: props.liturgicalText
-      , selectedLibrary: props.session.userInfo.domain
+      , liturgicalLibraries: undefined
+      , biblicalLibraries: undefined
+      , selectedNoteLibrary: props.session.userInfo.domain
       , selectedType: ""
       , selectedTypeLabel: thisClassLabels.typeLabel
       , selectedBibleBook: ""
       , selectedBibleChapter: ""
       , selectedBibleVerse: ""
       , bibleRef: ""
+      , selectedBiblicalGreekId: ""
+      , selectedBiblicalTranslationId: ""
+      , selectedLiturgicalGreekId: ""
+      , selectedLiturgicalTranslationId: ""
+      , greekBibleId: ""
       , note: ""
       , selectedLiturgicalIdParts: [
         {key: "domain", label: "*"},
@@ -103,14 +110,18 @@ class TextNodeEditor extends React.Component {
     this.fetchBibleText = this.fetchBibleText.bind(this);
     this.handleFetchBibleTextCallback = this.handleFetchBibleTextCallback.bind(this);
 
+    this.handleBiblicalIdSelection = this.handleBiblicalIdSelection.bind(this);
     this.handleBibleRefChange = this.handleBibleRefChange.bind(this);
     this.handleBiblicalLemmaChange = this.handleBiblicalLemmaChange.bind(this);
+    this.handleBiblicalScopeChange = this.handleBiblicalScopeChange.bind(this);
+
     this.handleLiturgicalLemmaChange = this.handleLiturgicalLemmaChange.bind(this);
+    this.handleLiturgicalScopeChange = this.handleLiturgicalScopeChange.bind(this);
+    this.handleLiturgicalIdSelection = this.handleLiturgicalIdSelection.bind(this);
+
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSave = this.handleSave.bind(this);
-    this.handleBiblicalScopeChange = this.handleBiblicalScopeChange.bind(this);
-    this.handleLiturgicalScopeChange = this.handleLiturgicalScopeChange.bind(this);
-    this.handleLibraryChange = this.handleLibraryChange.bind(this);
+    this.handleNoteLibraryChange = this.handleNoteLibraryChange.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
@@ -120,16 +131,24 @@ class TextNodeEditor extends React.Component {
 
     this.getFormattedScopes = this.getFormattedScopes.bind(this);
     this.getHeaderWell = this.getHeaderWell.bind(this);
+    this.handleLibrariesCallback = this.handleLibrariesCallback.bind(this);
     this.getBibleRefRow = this.getBibleRefRow.bind(this);
     this.getOntologyRefRow = this.getOntologyRefRow.bind(this);
     this.getTimestamp = this.getTimestamp.bind(this);
     this.getTitleRow = this.getTitleRow.bind(this);
-    this.getLibraryRow = this.getLibraryRow.bind(this);
+    this.getNoteLibraryRow = this.getNoteLibraryRow.bind(this);
+
+    this.getBiblicalScopeRow = this.getBiblicalScopeRow.bind(this);
+    this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
+    this.getBiblicalGreekLibraryRow = this.getBiblicalGreekLibraryRow.bind(this);
+    this.getBiblicalTranslationLibraryRow = this.getBiblicalTranslationLibraryRow.bind(this);
+
     this.getLiturgicalView = this.getLiturgicalView.bind(this);
     this.getLiturgicalScopeRow = this.getLiturgicalScopeRow.bind(this);
     this.getLiturgicalLemmaRow = this.getLiturgicalLemmaRow.bind(this);
-    this.getBiblicalScopeRow = this.getBiblicalScopeRow.bind(this);
-    this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
+    this.getLiturgicalGreekLibraryRow = this.getLiturgicalGreekLibraryRow.bind(this);
+    this.getLiturgicalTranslationLibraryRow = this.getLiturgicalTranslationLibraryRow.bind(this);
+
     this.getNoteTypeRow = this.getNoteTypeRow.bind(this);
     this.getButtonRow = this.getButtonRow.bind(this);
     this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
@@ -139,9 +158,17 @@ class TextNodeEditor extends React.Component {
     this.getWorkflowPanel = this.getWorkflowPanel.bind(this);
     this.getTabs = this.getTabs.bind(this);
 
+    this.getIdsWell = this.getIdsWell.bind(this);
+
+    this.handleBiblicalGreekLibraryChange = this.handleBiblicalGreekLibraryChange.bind(this);
+    this.handleBiblicalTranslationLibraryChange = this.handleBiblicalTranslationLibraryChange.bind(this);
+
+    this.handleLiturgicalGreekLibraryChange = this.handleLiturgicalGreekLibraryChange.bind(this);
+    this.handleLiturgicalTranslationLibraryChange = this.handleLiturgicalTranslationLibraryChange.bind(this);
+
     this.onSaveAsDraft = this.onSaveAsDraft.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-    
+
     this.getForm = this.getForm.bind(this);
 
   }
@@ -216,7 +243,7 @@ class TextNodeEditor extends React.Component {
     form.assignedToUser = this.state.workflow.assignedTo;
     form.bibLemma = this.state.lemmaBiblical;
     form.bibScope = this.state.scopeBiblical;
-    form.bibRef = this.state.bibleRef;
+    form.bibRef = this.state.selectedBiblicalId;
     form.library = this.state.selectedLibrary;
     form.topic = topic;
     form.key = key;
@@ -474,24 +501,87 @@ class TextNodeEditor extends React.Component {
           <Panel header={this.state.labels.thisClass.viewLiturgicalText} eventKey="TextNoteEditor">
             <CompareDocs
                 session={this.props.session}
-                handleRowSelect={this.handleRowSelect}
+                handleRowSelect={this.handleLiturgicalIdSelection}
                 title={"Liturgical Texts"}
                 docType={"Liturgical"}
                 selectedIdParts={this.state.selectedLiturgicalIdParts}
                 labels={this.state.labels.search}
+                librariesInfoCallback={this.handleLibrariesCallback}
             />
           </Panel>
         </Accordion>
     );
   };
+
+  handleLiturgicalIdSelection = (row) => {
+    let id = row["id"];
+    console.log(`handleLiturgicalIdSelect.id = ${id}`);
+    if (id.startsWith("gr_")) {
+      this.setState({ selectedLiturgicalGreekId: id })
+    } else {
+      this.setState({ selectedLiturgicalTranslationId: id })
+    }
+  };
+
+  handleBiblicalIdSelection = (row) => {
+    let id = row["id"];
+    console.log(`handleBiblicalIdSelect.id = ${id}`);
+    if (id.startsWith("gr_")) {
+      this.setState({ selectedBiblicalGreekId: id })
+    } else {
+      this.setState({ selectedBiblicalTranslationId: id })
+    }
+  };
+
+  handleLibrariesCallback = ( type, id , libraries ) => {
+    if (libraries) {
+
+      let greekDropdown = libraries.filter((row) => {
+        return row.library.startsWith("gr_");
+      }).map((row) => {
+        return {label: row.library , value: row.id} ;
+      });
+
+      let translationDropdown = libraries.filter((row) => {
+        return ! row.library.startsWith("gr_");
+      }).map((row) => {
+        return {label: row.library , value: row.id} ;
+      });
+
+      if (type === "Biblical") {
+        biblicalLibraries =
+        this.setState({
+          biblicalLibraries: {
+            greekBibleId: id
+            , libraries: libraries
+            , greekDropdown: greekDropdown
+            , translationDropdown: translationDropdown
+          }
+          , selectedBiblicalGreekId: id
+        });
+      } else {
+        this.setState({
+          liturgicalLibraries: {
+            greekBibleId: id
+            , libraries: libraries
+            , greekDropdown: greekDropdown
+            , translationDropdown: translationDropdown
+          }
+          , selectedLiturgicalGreekId: id
+        });
+      }
+    }
+  };
+
   getBiblicalView = () => {
     if (this.state.showBibleView) {
       return (
           <Accordion>
-          <Panel header={this.state.labels.thisClass.viewBiblicalText} eventKey="TextNoteEditor">
+          <Panel header={this.state.labels.thisClass.viewBiblicalText + ": " + this.state.bibleRef} eventKey="TextNoteEditor">
             <CompareDocs
                 session={this.props.session}
-                handleRowSelect={this.handleRowSelect}
+                handleRowSelect={this.handleBiblicalIdSelection}
+                librariesInfoCallback={this.handleLibrariesCallback}
                 title={"Biblical Texts"}
                 docType={"Biblical"}
                 selectedIdParts={this.state.selectedBiblicalIdParts}
@@ -544,23 +634,140 @@ class TextNodeEditor extends React.Component {
     );
   };
 
-  handleLibraryChange = ( selection ) => {
-    this.setState( { selectedLibrary: selection["value"] } );
+
+  handleNoteLibraryChange = ( selection ) => {
+    this.setState( { selectedNoteLibrary: selection["value"] } );
   };
 
-  getLibraryRow = () => {
+  getNoteLibraryRow = () => {
     if (this.props.session.userInfo.domains.author) {
       return (
           <Row className="show-grid  App-Text-Note-Editor-Library-Row">
             <Col xs={2} md={2}>
-              <ControlLabel>{this.state.labels.thisClass.library}:</ControlLabel>
+              <ControlLabel>{this.state.labels.thisClass.noteLibrary}:</ControlLabel>
             </Col>
             <Col xs={10} md={10}>
               <ResourceSelector
                   title={""}
-                  initialValue={this.state.selectedLibrary}
+                  initialValue={this.state.selectedNoteLibrary}
                   resources={this.props.session.userInfo.domains.author}
-                  changeHandler={this.handleLibraryChange}
+                  changeHandler={this.handleNoteLibraryChange}
+                  multiSelect={false}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  handleBiblicalTranslationLibraryChange = ( selection ) => {
+    this.setState( { selectedBiblicalTranslationId: selection["value"] } );
+  };
+
+  getBiblicalTranslationLibraryRow = () => {
+    if (this.state.selectedType
+        && this.state.selectedType === "REF_TO_BIBLE"
+        && this.state.biblicalLibraries
+    ) {
+      return (
+          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.biblicalTranslationLibrary}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <ResourceSelector
+                  title={""}
+                  initialValue={this.state.selectedBiblicalTranslationId}
+                  resources={this.state.biblicalLibraries.translationDropdown}
+                  changeHandler={this.handleBiblicalTranslationLibraryChange}
+                  multiSelect={false}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  handleLiturgicalGreekLibraryChange = ( selection ) => {
+    this.setState( { selectedLiturgicalGreekId: selection["value"] } );
+  };
+
+  getLiturgicalGreekLibraryRow = () => {
+    if (this.state.liturgicalLibraries) {
+      return (
+          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.liturgicalGreekLibrary}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <ResourceSelector
+                  title={""}
+                  initialValue={this.state.selectedLiturgicalGreekId}
+                  resources={this.state.liturgicalLibraries.greekDropdown}
+                  changeHandler={this.handleLiturgicalGreekLibraryChange}
+                  multiSelect={false}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  handleBiblicalGreekLibraryChange = ( selection ) => {
+    this.setState( { selectedBiblicalGreekId: selection["value"] } );
+  };
+
+
+  getBiblicalGreekLibraryRow = () => {
+    if (this.state.selectedType
+        && this.state.selectedType === "REF_TO_BIBLE"
+        && this.state.biblicalLibraries
+    ) {
+      return (
+          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.biblicalGreekLibrary}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <ResourceSelector
+                  title={""}
+                  initialValue={this.state.selectedBiblicalGreekId}
+                  resources={this.state.biblicalLibraries.greekDropdown}
+                  changeHandler={this.handleBiblicalGreekLibraryChange}
+                  multiSelect={false}
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
+  handleLiturgicalTranslationLibraryChange = ( selection ) => {
+    this.setState( { selectedLiturgicalTranslationId: selection["value"] } );
+  };
+
+
+  getLiturgicalTranslationLibraryRow = () => {
+    if (this.state.liturgicalLibraries && this.state.liturgicalLibraries.translationDropdown) {
+      return (
+          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.liturgicalTranslationLibrary}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <ResourceSelector
+                  title={""}
+                  initialValue={this.state.selectedLiturgicalTranslationId}
+                  resources={this.state.liturgicalLibraries.translationDropdown}
+                  changeHandler={this.handleLiturgicalTranslationLibraryChange}
                   multiSelect={false}
               />
             </Col>
@@ -707,7 +914,8 @@ class TextNodeEditor extends React.Component {
           revisions will appear here
         </Well>
     );
-  }
+  };
+
     getWorkflowPanel = () => {
     return (
         <WorkflowForm
@@ -799,7 +1007,22 @@ class TextNodeEditor extends React.Component {
 
   createMarkup() {
     return {__html: this.state.note};
-  }
+  };
+
+  getIdsWell = () => {
+    return (
+        <Well>
+          <ControlLabel>{this.state.labels.thisClass.dbIds}</ControlLabel>
+          <Grid>
+            {this.getNoteLibraryRow()}
+            {this.getLiturgicalGreekLibraryRow()}
+            {this.getLiturgicalTranslationLibraryRow()}
+            {this.getBiblicalGreekLibraryRow()}
+            {this.getBiblicalTranslationLibraryRow()}
+          </Grid>
+        </Well>
+    );
+  };
 
   getHeaderWell = () => {
       return (
@@ -813,7 +1036,6 @@ class TextNodeEditor extends React.Component {
                   {this.getBiblicalScopeRow()}
                   {this.getBiblicalLemmaRow()}
                   {this.getOntologyRefRow()}
-                  {this.getLibraryRow()}
                 </Grid>
               </Well>
       );
@@ -828,6 +1050,9 @@ getTabs = () => {
             </Tab>
             <Tab eventKey={"formattedheading"} title={this.state.labels.thisClass.viewFormattedNote}>
               {this.getFormattedHeaderRow()}
+            </Tab>
+            <Tab eventKey={"idsheading"} title={this.state.labels.thisClass.ids}>
+              {this.getIdsWell()}
             </Tab>
             <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
               {this.getRevisionsPanel()}
@@ -858,8 +1083,7 @@ getTabs = () => {
                 <Row className="show-grid">
                   <Col xs={12} md={8}>
                     <ControlLabel>
-                      {this.state.labels.thisClass.note}:
-                      {this.state.selectedTypeLabel}
+                      {this.state.labels.thisClass.note}: {this.state.selectedTypeLabel}
                     </ControlLabel>
                   </Col>
                 </Row>

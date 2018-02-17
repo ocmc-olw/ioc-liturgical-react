@@ -19,9 +19,9 @@ class BibleRefSelector extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
-      , selectedBook: "*"
-      , selectedChapter: "*"
-      , selectedVerse: "*"
+      , selectedBook: ""
+      , selectedChapter: ""
+      , selectedVerse: ""
       , selectedRef: ""
     }
 
@@ -78,19 +78,23 @@ class BibleRefSelector extends React.Component {
   };
 
   handleChapterChange = (selection) => {
-    let chapter = selection["value"];
-    this.setState({
-      selectedChapter: chapter
-      , selectedRef: this.state.selectedBook + "~" + chapter + "~" + this.state.selectedVerse
-    }, this.handleCallback);
+    if (selection && selection["value"]) {
+      let chapter = selection["value"];
+      this.setState({
+        selectedChapter: chapter
+        , selectedRef: this.state.selectedBook + "~" + chapter + "~" + this.state.selectedVerse
+      }, this.handleCallback);
+    }
   };
 
   handleVerseChange = (selection) => {
-    let verse = selection["value"];
-    this.setState({
-      selectedVerse: selection["value"]
-      , selectedRef: this.state.selectedBook + "~" + this.state.selectedChapter + "~" + verse
-    }, this.handleCallback);
+    if (selection && selection["value"]) {
+      let verse = selection["value"];
+      this.setState({
+        selectedVerse: selection["value"]
+        , selectedRef: this.state.selectedBook + "~" + this.state.selectedChapter + "~" + verse
+      }, this.handleCallback);
+    }
   };
 
   render() {

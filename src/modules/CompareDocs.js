@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
 import Server from '../helpers/Server';
 import Spinner from '../helpers/Spinner';
@@ -15,6 +14,14 @@ export class CompareDocs extends React.Component {
   constructor(props) {
     super(props);
 
+    let topic = props.selectedIdParts[1].label;
+    let key = props.selectedIdParts[2].label;
+    let query = ".*~"
+        + topic
+        + "~"
+        + key
+        + "$";
+
     this.state = {
       labels: {
         messages: Labels.getMessageLabels(props.session.languageCode)
@@ -25,8 +32,7 @@ export class CompareDocs extends React.Component {
       messageIcon: this.messageIcons.info
       ,
       data: {values: [{"id": "", "value:": ""}]}
-      ,
-      options: {
+      , options: {
         sizePerPage: 30
         , sizePerPageList: [5, 15, 30]
         , onSizePerPageList: this.onSizePerPageList
@@ -62,52 +68,49 @@ export class CompareDocs extends React.Component {
       showIdPartSelector: false
       , showModalCompareDocs: false
       , idColumnSize: "130px"
-    }
+      , query: query
+      , lastQuery: undefined
+      , domain: "*"
+      , selectedBook: "*"
+      , selectedChapter: "*"
+      , docProp: "id"
+      , matcher: "rx"
+    };
 
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.getTable = this.getTable.bind(this);
+    this.evaluateNeedToFetch = this.evaluateNeedToFetch.bind(this);
+    this.sendLibrariesInfo = this.sendLibrariesInfo.bind(this);
   };
 
   componentWillReceiveProps = (nextProps) => {
+    let lastQuery = undefined;
+    if (this.state.lastQuery) {
+      lastQuery = this.state.lastQuery;
+    }
+    let topic = nextProps.selectedIdParts[1].label;
+    let key = nextProps.selectedIdParts[2].label;
+    let query = ".*~"
+        + topic
+        + "~"
+        + key
+        + "$";
+
     this.setState({
           showModal: nextProps.showModal
-          , domain: "*"
-          , selectedBook: "*"
-          , selectedChapter: "*"
-          , docProp: "id"
-          , matcher: "rx"
-          , query: ".*~"
-          + nextProps.selectedIdParts[1].label
-          + "~"
-          + nextProps.selectedIdParts[2].label
-          + "$"
+          , query: query
+          , lastQuery: lastQuery
         }
         , function () {
-          this.fetchData();
+          this.evaluateNeedToFetch();
         }
     );
   };
 
   componentDidMount = () => {
-    this.setState({
-          showModal: this.props.showModal
-          , domain: "*"
-          , selectedBook: "*"
-          , selectedChapter: "*"
-          , docProp: "id"
-          , matcher: "rx"
-          , query: ".*~"
-          + this.props.selectedIdParts[1].label
-          + "~"
-          + this.props.selectedIdParts[2].label
-          + "$"
-        }
-        , function () {
-          this.fetchData();
-        }
-    );
+    this.fetchData();
   };
 
   /**
@@ -131,7 +134,15 @@ export class CompareDocs extends React.Component {
     this.setState({
       message: message
     });
-  }
+  };
+
+  evaluateNeedToFetch = () => {
+    if (this.state.lastQuery === this.state.query) {
+      // do nothing
+    } else {
+      this.fetchData();
+    }
+  };
 
   fetchData() {
     this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
@@ -158,6 +169,7 @@ export class CompareDocs extends React.Component {
           let selectedId = "";
           let selectedValue = "";
           let selectRow = this.state.selectRow;
+          let greekId = "";
           if (response.data.values) {
             // select the Greek value.  If not, if there is only one item, select it
             let theItem = response.data.values.find(o => o.id.startsWith("gr_"));
@@ -165,6 +177,7 @@ export class CompareDocs extends React.Component {
               selectedId = theItem.id;
               selectedValue = theItem.value;
               selectRow.selected = [selectedId];
+              greekId = selectedId;
             } else {
               if (response.data.values.length === 1) {
                 theItem = response.data.values[0];
@@ -177,12 +190,16 @@ export class CompareDocs extends React.Component {
           let values = response.data.values.filter((row) => {
             return row.value.length > 0;
           });
+          let libraries = values.map((row) => {
+            return {library: row.library , topic: row.topic, key: row.key, id: row.id} ;
+          });
           response.data.values = values;
           this.setState({
                 selectRow: selectRow
                 , selectedId: selectedId
                 , selectedValue: selectedValue
                 , data: response.data
+                , lastQuery: this.state.query
               }
           );
           let message = "No docs found...";
@@ -198,8 +215,11 @@ export class CompareDocs extends React.Component {
                 message: message
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
+                , greekId: greekId
+                , libraries: libraries
               }
-          );
+              , this.sendLibrariesInfo
+        );
         })
         .catch((error) => {
           let message = error.message;
@@ -207,12 +227,30 @@ export class CompareDocs extends React.Component {
           if (error && error.response && error.response.status === 404) {
             message = "no docs found";
             messageIcon = this.messageIcons.warning;
-            this.setState({data: message, message: message, messageIcon: messageIcon});
+            this.setState({
+              data: message
+              , message: message
+              , messageIcon: messageIcon
+              , dataFetched: true
+              , lastQuery: this.state.query
+            });
           }
         });
-  }
+  };
+
+  sendLibrariesInfo = () => {
+      if (this.props.librariesInfoCallback && this.state.libraries) {
+        this.props.librariesInfoCallback(
+            this.props.docType
+            , this.state.greekId
+            , this.state.libraries
+        );
+      }
+  };
 
   handleRowSelect = (row) => {
+    console.log(`CompareDocs.handleRowSelect=`);
+    console.log(row);
     let selectRow = this.state.selectRow;
     selectRow.selected = [row["id"]];
     let idParts = row["id"].split("~");
@@ -228,9 +266,10 @@ export class CompareDocs extends React.Component {
       , selectedSeq: row["seq"]
     });
     if (this.props.handleRowSelect) {
-      this.props.handleRowSelect(row, isSelected, e);
+      console.log("calling this.props.handleRowSelect");
+      this.props.handleRowSelect(row);
     }
-  }
+  };
 
   getTable = () => {
     if (this.state.showSearchResults) {
@@ -292,6 +331,7 @@ CompareDocs.propTypes = {
   , selectedIdParts: PropTypes.array.isRequired
   , labels: PropTypes.object.isRequired
   , instructions: PropTypes.string
+  , librariesInfoCallback: PropTypes.func
 };
 
 CompareDocs.defaultProps = {
