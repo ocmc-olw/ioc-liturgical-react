@@ -48,9 +48,8 @@ class GrammarSitePanel extends React.Component {
     const TheLinks = () => (
         <div>
           {this.props.lemmas.map(lemma => (
-              <div>
+              <div key={this.props.title + lemma}>
                   <a
-                      key={this.props.title + lemma}
                       target="_blank"
                       href={this.props.url + lemma}
                       rel={"noopener noreferrer"}
@@ -67,7 +66,7 @@ class GrammarSitePanel extends React.Component {
                   header={this.props.title}
                   collapsible
               >
-                <TheLinks/>
+                <TheLinks key={this.props.title}/>
               </Panel>
             </div>
         )

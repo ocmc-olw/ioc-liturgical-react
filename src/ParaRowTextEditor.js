@@ -16,6 +16,7 @@ import Labels from './Labels';
 import NotesLister from './NotesLister';
 import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
+import TextNotesLister from './TextNotesLister';
 import ViewReferences from './ViewReferences';
 
 /**
@@ -409,6 +410,20 @@ export class ParaRowTextEditor extends React.Component {
                   }
                   type={"*"}
                   value={this.state.greekSourceValue}
+              />
+            </Panel>
+            <Panel
+                className="App-user-notes-textual-panel "
+                header={
+                  this.state.labels.thisClass.textualNotesPanelTitle
+                }
+                eventKey="textnotesExplorer"
+                collapsible
+            >
+              <TextNotesLister
+                  session={this.props.session}
+                  topicId={this.state.currentId}
+                  topicText={this.props.value}
               />
             </Panel>
             <Panel

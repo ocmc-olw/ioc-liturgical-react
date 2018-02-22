@@ -10,6 +10,7 @@ import DownloadUserRecords from './helpers/DownloadUserRecords';
 import Dropdowns from './classes/Dropdowns';
 import EditableSelector from './modules/EditableSelector';
 import Flag from './Flag';
+import FormattedTextNote from './FormattedTextNote';
 import HelpSearch from './HelpSearch';
 import Labels from './Labels';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
@@ -29,6 +30,7 @@ import Session from './classes/Session';
 import Spinner from './helpers/Spinner';
 import TemplateEditor from './TemplateEditor';
 import TextNoteEditor from './TextNoteEditor';
+import TextNotesLister from './TextNotesLister';
 import TopicsSelector from './modules/TopicsSelector';
 import UiSchemas from './classes/UiSchemas';
 import ViewReferences from './ViewReferences';
@@ -51,6 +53,7 @@ export {
   , Dropdowns
   , EditableSelector
   , Flag
+  , FormattedTextNote
   , HelpSearch
   , Labels
 //  , LifeCycleDemo
@@ -72,6 +75,7 @@ export {
   , TemplateEditor
   , TemplateForTable
   , TextNoteEditor
+  , TextNotesLister
   , TopicsSelector
   , UiSchemas
   , User

@@ -20,6 +20,7 @@ class BibleRefSelector extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
       , selectedBook: ""
+      , citeBook: ""
       , selectedChapter: ""
       , selectedVerse: ""
       , selectedRef: ""
@@ -66,13 +67,27 @@ class BibleRefSelector extends React.Component {
         this.state.selectedBook
         , this.state.selectedChapter
         , this.state.selectedVerse
+        , this.state.citeBook
+          +" "
+          + this.state.citeChapter
+          + ":"
+          + this.state.citeVerse
     );
   };
 
   handleBookChange = (selection) => {
     let book = selection["value"];
+    let bookLabel = selection["label"];
+    let citeBook = "";
+    try {
+      let parts = bookLabel.split(" - ");
+      citeBook = parts[0];
+    } catch (err) {
+      citeBook = book;
+    }
     this.setState({
       selectedBook: book
+      , citeBook: citeBook
       , selectedRef: book + "~" + this.state.selectedChapter + "~" + this.state.selectedVerse
     }, this.handleCallback);
   };
@@ -80,8 +95,15 @@ class BibleRefSelector extends React.Component {
   handleChapterChange = (selection) => {
     if (selection && selection["value"]) {
       let chapter = selection["value"];
+      let citeChapter = chapter.substring(1,chapter.length);
+      try {
+        citeChapter = parseInt(citeChapter);
+      } catch (err) {
+        citeChapter = selection["value"];
+      }
       this.setState({
         selectedChapter: chapter
+        , citeChapter: citeChapter
         , selectedRef: this.state.selectedBook + "~" + chapter + "~" + this.state.selectedVerse
       }, this.handleCallback);
     }
@@ -90,8 +112,16 @@ class BibleRefSelector extends React.Component {
   handleVerseChange = (selection) => {
     if (selection && selection["value"]) {
       let verse = selection["value"];
+      let citeVerse = verse;
+      try {
+        citeVerse = parseInt(verse);
+      } catch (err) {
+        citeVerse = verse;
+      };
+
       this.setState({
         selectedVerse: selection["value"]
+        , citeVerse: citeVerse
         , selectedRef: this.state.selectedBook + "~" + this.state.selectedChapter + "~" + verse
       }, this.handleCallback);
     }

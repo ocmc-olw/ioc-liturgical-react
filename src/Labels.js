@@ -17,6 +17,9 @@ const   labels = {
       , submit: "Submit"
       , update: "Update"
     }
+    , schemaBasedAddButton: {
+
+    }
     , TextNoteEditor: {
       type: "Type"
       , bibleRef: "Bible Ref"
@@ -43,6 +46,7 @@ const   labels = {
       , viewFormattedNote: "Formatted"
       , tags: "Tags"
       , workflow: "Workflow"
+      , requiredMsg: "The note and fields in the settings tab are required."
     }
     , WorkflowForm: {
       visibility: "Visibility"
@@ -650,7 +654,11 @@ const   labels = {
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
+      , textualNotesPanelTitle: "Textual Notes"
       , userNotesPanelTitle: "Your Notes on this Text"
+    }
+    , FormattedTextNote: {
+
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -789,6 +797,7 @@ const   labels = {
     }
     , messages: {
       initial: "Important messages will appear here..."
+      , requiredNotCompleted: "You have not completed required fields"
       , status: "Status"
       , retrieving: "retrieving..."
       , searching: "searching..."
@@ -957,6 +966,9 @@ const   labels = {
       , submit: "Να Στέιλει"
       , update: "Να Ανανεώσει"
     }
+    , schemaBasedAddButton: {
+
+    }
     , TextNoteEditor: {
       type: "Type"
       , bibleRef: "Bible Ref"
@@ -983,6 +995,7 @@ const   labels = {
       , viewFormattedNote: "Formatted"
       , tags: "Tags"
       , workflow: "Workflow"
+      , requiredMsg: "The note and fields in the settings tab are required."
     }
     , WorkflowForm: {
       visibility: "Visibility"
@@ -1581,11 +1594,15 @@ const   labels = {
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , grammarPanelTitle: "Grammar Explorer for the Greek Text"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
-      , userNotesPanelTitle: "Your Notes on this Text"
+      , textualNotesPanelTitle: "Textual Notes"
+      , userNotesPanelTitle: "Personal Notes"
 }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
       , instructions: "Use the Text Topic Selector to select the Topic you want."
+    }
+    , FormattedTextNote: {
+
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -1721,6 +1738,7 @@ const   labels = {
     }
     , messages: {
       initial: "Important messages will appear here..."
+      , requiredNotCompleted: "You have not completed required fields"
       , status: "Status: "
       , retrieving: "retrieving..."
       , searching: "searching..."
@@ -1919,6 +1937,7 @@ module.exports = {
   , getAgesEditorLabels: (code) => { return labels[code].AgesEditor;}
   , getAgesViewerLabels: (code) => { return labels[code].AgesViewer;}
   , getBibleRefSelectorLabels: (code) => { return labels[code].BibleRefSelector;}
+  , getFormattedTextNoteLabels: (code) => { return labels[code].FormattedTextNote;}
   , getOntologyRefSelectorLabels: (code) => { return labels[code].OntologyRefSelector;}
   , getNewEntryFormLabels: (code) => { return labels[code].NewEntryForm;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
@@ -1929,6 +1948,8 @@ module.exports = {
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
+
+  , getSchemaBasedAddButtonLabels: (code) => { return labels[code].schemaBasedAddButton;}
   , getSearchLabels: (code) => { return labels[code].search;}
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
   , getSearchNotesLabels: (code) => { return labels[code].searchNotes;}

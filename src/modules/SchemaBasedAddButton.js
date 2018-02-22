@@ -15,8 +15,8 @@ class SchemaBasedAddButton extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels: { // TODO: replace getViewReferencesLabels with method for this class
-        thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
+      labels: {
+        thisClass: Labels.getSchemaBasedAddButtonLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
         , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
@@ -65,7 +65,7 @@ class SchemaBasedAddButton extends React.Component {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getViewReferencesLabels(nextProps.session.languageCode)
+            thisClass: Labels.getSchemaBasedAddButtonLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(nextProps.session.languageCode)
             , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)

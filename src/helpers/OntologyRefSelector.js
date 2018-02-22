@@ -10,8 +10,6 @@ class OntologyRefSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    console.log(`onto type=${props.type}`);
-
     let languageCode = props.session.languageCode;
     this.state = {
       labels: { //
@@ -27,7 +25,8 @@ class OntologyRefSelector extends React.Component {
       , selectedEntityLabel: ""
       , fetching: false
       , data: []
-    }
+      , lastType: props.type
+    };
 
     this.handleEntityChange = this.handleEntityChange.bind(this);
     this.handleCallback = this.handleCallback.bind(this);
@@ -57,9 +56,15 @@ class OntologyRefSelector extends React.Component {
           , fetching: false
           , data: []
         }
-      }, this.fetchData());
+      });
     }
-  }
+    if (nextProps.type !== this.state.lastType) {
+      this.setState(
+          {lastType: nextProps.type}
+          , this.fetchData
+      );
+    };
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
@@ -74,7 +79,6 @@ class OntologyRefSelector extends React.Component {
   };
 
   handleEntityChange = (selection) => {
-    console.log(selection);
     this.setState({
       selectedEntityValue: selection["value"]
       , selectedEntityLabel: selection["label"]
@@ -82,7 +86,6 @@ class OntologyRefSelector extends React.Component {
   };
 
   fetchData = () => {
-    console.log("fetching data");
     let parms =
         "t=" + encodeURIComponent(this.props.type)
     ;

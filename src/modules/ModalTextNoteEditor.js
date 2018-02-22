@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import {Button, ControlLabel, Modal, Well} from 'react-bootstrap';
 
 import Labels from '../Labels';
-import NewEntryForm from './NewEntryForm';
+import TextNoteEditor from '../TextNoteEditor';
 import MessageIcons from '../helpers/MessageIcons';
 
 /**
  * Display modal content.
  */
-export class ModalNewEntryForm extends React.Component {
+export class ModalTextNoteEditor extends React.Component {
 
   constructor(props) {
     super(props);
@@ -54,7 +54,7 @@ export class ModalNewEntryForm extends React.Component {
     if (this.props.onSubmit) {
       this.props.onSubmit(formData);
     }
-  };;
+  };
 
   close() {
     this.setState({showModal: false});
@@ -91,13 +91,12 @@ export class ModalNewEntryForm extends React.Component {
               }
             </Modal.Header>
             <Modal.Body>
-              <NewEntryForm
-                session={this.props.session}
-                path={this.props.restPath}
-                schema={this.props.schema}
-                uiSchema={this.props.uiSchema}
-                formData={this.props.formData}
-                onSubmit={this.onSubmit}
+              <TextNoteEditor
+                  session={this.props.session}
+                  idLibrary={this.props.library}
+                  idTopic={this.props.topic}
+                  idKey={this.props.key}
+                  onEditorChange={this.handleTextNoteContentChange }
               />
             </Modal.Body>
             <Modal.Footer>
@@ -109,26 +108,18 @@ export class ModalNewEntryForm extends React.Component {
   }
 }
 
-ModalNewEntryForm.propTypes = {
+ModalTextNoteEditor.propTypes = {
   session: PropTypes.object.isRequired
   , restPath: PropTypes.string.isRequired
-  , schema: PropTypes.object.isRequired
-  , uiSchema: PropTypes.object.isRequired
-  , formData: PropTypes.object.isRequired
-  , title: PropTypes.string.isRequired
-  , title: PropTypes.string.isRequired
-  , fromTitle: PropTypes.string
-  , fromId: PropTypes.string
-  , fromText: PropTypes.string
-  , toTitle: PropTypes.string
-  , toId: PropTypes.string
-  , toText: PropTypes.string
+  , library: PropTypes.string.isRequired
+  , topic: PropTypes.string.isRequired
+  , key: PropTypes.string.isRequired
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
 };
-ModalNewEntryForm.defaultProps = {
+ModalTextNoteEditor.defaultProps = {
   canUpdate: true
 };
 
-export default ModalNewEntryForm;
+export default ModalTextNoteEditor;
 

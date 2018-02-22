@@ -740,7 +740,6 @@ class TokenTagger extends React.Component {
                 </div>
               </div>
               <FormGroup
-                  controlId="AppTreeNodeBuilder"
               >
                 <div className="container">
                   <div>
@@ -760,6 +759,7 @@ class TokenTagger extends React.Component {
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
                         <div className="resourceSelectorPrompt">{this.state.labels.thisClass.lemma}</div>
                         <FormControl
+                            id="AppTreeNodeBuilder-Lemma"
                             className="App App-TokenTagger-Lemma"
                             type="text"
                             value={this.state.lemma}
@@ -770,6 +770,7 @@ class TokenTagger extends React.Component {
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
                         <div className="resourceSelectorPrompt">{this.state.labels.thisClass.gloss}</div>
                         <FormControl
+                            id="AppTreeNodeBuilder-Gloss"
                             className="App App-TokenTagger-Gloss"
                             type="text"
                             value={this.state.gloss}
