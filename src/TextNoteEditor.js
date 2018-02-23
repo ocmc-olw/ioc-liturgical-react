@@ -100,9 +100,10 @@ class TextNoteEditor extends React.Component {
         visibility: "PERSONAL"
         , status: "EDITING"
         , assignedTo: props.session.userInfo.username
+        , statusIcon: "edit"
+        , visibilityIcon: "lock"
       }
       , selectedNoteLibrary: props.session.userInfo.domain
-      , buttonSaveAsDraftDisabled: false
       , buttonSubmitDisabled: true
       , selectedTag: ""
       , tags: []
@@ -168,7 +169,6 @@ class TextNoteEditor extends React.Component {
     this.handleLiturgicalGreekLibraryChange = this.handleLiturgicalGreekLibraryChange.bind(this);
     this.handleLiturgicalTranslationLibraryChange = this.handleLiturgicalTranslationLibraryChange.bind(this);
 
-    this.onSaveAsDraft = this.onSaveAsDraft.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
 
     this.getForm = this.getForm.bind(this);
@@ -255,7 +255,7 @@ class TextNoteEditor extends React.Component {
     let noteValid = this.state.note.length > 0;
     if (this.settingsValid() && noteValid) {
       formIsValid = true;
-      message = "";
+      message = this.state.labels.messages.ok;
       messageIcon = MessageIcons.getMessageIcons().info;
     }
     this.setState({
@@ -325,12 +325,6 @@ class TextNoteEditor extends React.Component {
     return form;
   };
 
-  onSaveAsDraft = () => {
-    this.setState(
-        {form: this.getForm()}
-    );
-  };
-
   onSubmit = () => {
     this.setState(
         {form: this.getForm()}
@@ -358,30 +352,42 @@ class TextNoteEditor extends React.Component {
   };
 
   handleWorkflowCallback = ( visibility, status, assignedTo ) => {
-    let buttonSaveAsDraftDisabled = true;
+    let statusIcon = "check";
+    let visibilityIcon = "globe";
 
-    switch (status) {
-      case ("EDITING"): {
-        buttonSaveAsDraftDisabled = false;
+    switch (visibility) {
+      case ("PERSONAL"): {
+        visibilityIcon = "lock"; // user-secret
         break;
       }
-      case ("REVIEWING"): {
-        buttonSaveAsDraftDisabled = false;
+      case ("PRIVATE"): {
+        visibilityIcon = "share-alt";
         break;
       }
       default: {
       }
     }
-    let buttonSubmitDisabled = ! buttonSaveAsDraftDisabled;
+    switch (status) {
+      case ("EDITING"): {
+        statusIcon = "edit";
+        break;
+      }
+      case ("REVIEWING"): {
+        statusIcon = "eye-open";
+        break;
+      }
+      default: {
+      }
+    }
     this.setState(
         {
           workflow: {
             visibility: visibility
             , status: status
             , assignedTo: assignedTo
+            , visibilityIcon: visibilityIcon
+            , statusIcon: statusIcon
           }
-          , buttonSubmitDisabled: buttonSubmitDisabled
-          , buttonSaveAsDraftDisabled: buttonSaveAsDraftDisabled
         }
     );
   };
@@ -940,31 +946,14 @@ class TextNoteEditor extends React.Component {
   };
 
   getButtonRow = () => {
-    let draftButtonDisabled = true;
     let submitButtonDisabled = true;
 
     if (this.state.formIsValid) {
-      if (this.state.buttonSaveAsDraftDisabled) {
-        // ignore
-      } else {
-        draftButtonDisabled = false;
-      }
-      if (this.state.buttonSubmitDisabled) {
-        // ignore
-      } else {
         submitButtonDisabled = false;
-      }
     }
     return (
         <Row className="show-grid App-Text-Note-Editor-Button-Row">
-          <Col xs={12} md={8}>
-              <Button
-                  className="App App-Button"
-                  disabled={draftButtonDisabled}
-                  onClick={this.onSaveAsDraft}
-              >
-                {this.state.labels.buttons.saveAsDraft}
-              </Button>
+          <Col xs={12} md={12}>
               <Button
                   className="App App-Button"
                   bsStyle="primary"
@@ -973,6 +962,12 @@ class TextNoteEditor extends React.Component {
               >
                 {this.state.labels.buttons.submit}
               </Button>
+            <span className="App-Text-Editor-Workflow-Glyph">
+              <Glyphicon
+                  glyph={this.state.workflow.statusIcon}/>
+              <FontAwesome
+                  name={this.state.workflow.visibilityIcon}/>
+            </span>
           </Col>
         </Row>
     );
@@ -1083,7 +1078,7 @@ class TextNoteEditor extends React.Component {
 getTabs = () => {
     return (
         <Well>
-          <Tabs id="App-Text-Node-Editor-Tabs" defaultActiveKey={1} animation={false}>
+          <Tabs id="App-Text-Node-Editor-Tabs" defaultActiveKey={"heading"} animation={false}>
             <Tab eventKey={"heading"} title={this.state.labels.thisClass.settings}>
               {this.getHeaderWell()}
             </Tab>
@@ -1137,9 +1132,9 @@ getTabs = () => {
                 </HelpBlock>
               </Grid>
               </Well>
-              {this.getTabs()}
             </FormGroup>
           </form>
+          {this.getTabs()}
         </div>
     )
   }

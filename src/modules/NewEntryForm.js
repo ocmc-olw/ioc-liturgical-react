@@ -97,7 +97,7 @@ class NewEntryForm extends React.Component {
           var messageIcon = this.state.messageIcons.error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });
-  }
+  };
 
   render() {
     return (

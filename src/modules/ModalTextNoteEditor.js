@@ -97,6 +97,7 @@ export class ModalTextNoteEditor extends React.Component {
                   idTopic={this.props.topic}
                   idKey={this.props.key}
                   onEditorChange={this.handleTextNoteContentChange }
+                  form={this.props.form}
               />
             </Modal.Body>
             <Modal.Footer>
@@ -116,6 +117,7 @@ ModalTextNoteEditor.propTypes = {
   , key: PropTypes.string.isRequired
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
+  , form: PropTypes.object
 };
 ModalTextNoteEditor.defaultProps = {
   canUpdate: true

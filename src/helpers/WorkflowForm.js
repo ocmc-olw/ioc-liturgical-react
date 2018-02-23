@@ -1,7 +1,8 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import FontAwesome from 'react-fontawesome';
 import Select from 'react-select';
-import {Col, ControlLabel, Grid, Row, Well } from 'react-bootstrap';
+import {Col, ControlLabel, Glyphicon, Grid, Row, Well } from 'react-bootstrap';
 import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
 import server from "./Server";
@@ -10,9 +11,10 @@ class WorkflowForm extends React.Component {
   constructor(props) {
     super(props);
     let languageCode = props.session.languageCode;
+    let thisClassLabels = Labels.getWorkflowFormLabels(languageCode);
     this.state = {
       labels: { //
-        thisClass: Labels.getWorkflowFormLabels(languageCode)
+        thisClass: thisClassLabels
         , buttons: Labels.getButtonLabels(languageCode)
         , messages: Labels.getMessageLabels(languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
@@ -21,8 +23,10 @@ class WorkflowForm extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
       , library: props.library
-      , selectedStatus: "EDITING"
-      , selectedVisibility: "PERSONAL"
+      , selectedStatus: props.status
+      , selectedStatusIcon: "edit"
+      , selectedVisibility: props.visibility
+      , selectedVisibilityIcon: "lock"
       , selectedUser: props.session.userInfo.username
       , workflow: {
         userRolesForLibrary: {
@@ -31,8 +35,16 @@ class WorkflowForm extends React.Component {
           , readers: []
           , reviewers: []
         }
-        , statusDropdown: []
-        , visibilityDropdown: []
+        , statusDropdown: [
+          {value: "EDITING", label: thisClassLabels.statusTypes.edit}
+          , {value: "REVIEWING", label: thisClassLabels.statusTypes.review}
+          , {value: "FINALIZED", label: thisClassLabels.statusTypes.final}
+        ]
+        , visibilityDropdown: [
+          {value: "PERSONAL", label: thisClassLabels.visibilityTypes.personal}
+          , {value: "PRIVATE", label: thisClassLabels.visibilityTypes.private}
+          , {value: "PUBLIC", label: thisClassLabels.visibilityTypes.public}
+        ]
         , isPublic: false
         , stateEnabled: false
         , workflowEnabled: false
@@ -71,6 +83,8 @@ class WorkflowForm extends React.Component {
             , library: props.library
           }
           , message: Labels.getMessageLabels(languageCode).initial
+          , selectedStatus: nextProps.status
+          , selectedVisibility: nextProps.visibility
         }
       }, function () { return this.fetchData(currentLibrary)});
     }
@@ -95,6 +109,11 @@ class WorkflowForm extends React.Component {
     }
   };
 
+
+  // use these (below) in the handleFetchCallback if want dropdowns from the web service
+// , statusDropdown: restCallResult.data.values[1].statusDropdown
+// , visibilityDropdown: restCallResult.data.values[2].visibilityDropdown
+
   handleFetchCallback = (restCallResult) => {
     if (restCallResult
         && restCallResult.data.values
@@ -105,18 +124,17 @@ class WorkflowForm extends React.Component {
       this.setState({
         workflow: {
           userRolesForLibrary: restCallResult.data.values[0]
-          , statusDropdown: restCallResult.data.values[1].statusDropdown
-          , visibilityDropdown: restCallResult.data.values[2].visibilityDropdown
           , isPublic: config.isPublic
           , stateEnabled: config.stateEnabled
           , workflowEnabled: config.workflowEnabled
           , defaultStatusAfterEdit: config.defaultStatusAfterEdit
           , defaultStatusAfterFinalization: config.defaultStatusAfterFinalization
+          , statusDropdown: this.state.workflow.statusDropdown
+          , visibilityDropdown: this.state.workflow.visibilityDropdown
         }
       });
     }
-  }
-
+  };
 
   handleCallback = () => {
     this.props.callback(
@@ -127,14 +145,48 @@ class WorkflowForm extends React.Component {
   };
 
   handleStatusChange = (selection) => {
+    let icon = "edit";
+    let value = selection["value"];
+    switch(value) {
+      case ("EDITING"): {
+        icon = "edit";
+        break;
+      }
+      case ("REVIEWING"): {
+        icon = "eye-open";
+        break;
+      }
+      case ("FINALIZED"): {
+        icon = "check";
+        break;
+      }
+    }
     this.setState({
-      selectedStatus: selection["value"]
+      selectedStatus: value
+      , selectedStatusIcon: icon
     }, this.handleCallback);
   };
 
   handleVisibilityChange = (selection) => {
+    let icon = "edit";
+    let value = selection["value"];
+    switch(value) {
+      case ("PERSONAL"): {
+        icon = "lock";
+        break;
+      }
+      case ("PRIVATE"): {
+        icon = "share-alt";
+        break;
+      }
+      case ("PUBLIC"): {
+        icon = "globe";
+        break;
+      }
+    }
     this.setState({
-      selectedVisibility: selection["value"]
+      selectedVisibility: value
+      , selectedVisibilityIcon: icon
     }, this.handleCallback);
   };
 
@@ -144,13 +196,42 @@ class WorkflowForm extends React.Component {
     }, this.handleCallback);
   };
 
+  getUserRow = () => {
+    if (this.props.assignable) {
+      return (
+          <Row  className="show-grid App App-Workflow-Selector-Row">
+            <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
+              <ControlLabel>Assigned To:</ControlLabel>
+            </Col>
+            <Col className="App-Workflow-Selector-Dropdown" xs={10} md={10}>
+              <Select
+                  name="App-Workflow-Selector-User"
+                  className="App App-Workflow-Selector-User"
+                  value={this.state.selectedUser}
+                  options={this.state.workflow.userRolesForLibrary.readers}
+                  onChange={this.handleUserChange}
+                  multi={false}
+                  autosize={true}
+                  clearable
+              />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App-no-display"></span>);
+    }
+  };
+
   render() {
+    console.log(this.state.workflow.visibilityDropdown);
     return (
       <Well>
         <Grid>
           <Row  className="show-grid App App-Workflow-Selector-Row">
             <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
-              <ControlLabel>Visibility:</ControlLabel>
+              <ControlLabel><FontAwesome  className="App-Workflow-Selector-icon"
+                  name={this.state.selectedVisibilityIcon}/>Visibility:
+              </ControlLabel>
             </Col>
             <Col className="App-Workflow-Selector-Dropdown" xs={10} md={10}>
               <Select
@@ -167,7 +248,12 @@ class WorkflowForm extends React.Component {
           </Row>
         <Row  className="show-grid App App-Workflow-Selector-Row">
           <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
-            <ControlLabel>Status:</ControlLabel>
+            <ControlLabel>
+              <Glyphicon
+                  className="App-Workflow-Selector-icon"
+                  glyph={this.state.selectedStatusIcon}/>
+              Status:
+            </ControlLabel>
           </Col>
           <Col className="App-Workflow-Selector-Dropdown" xs={10} md={10}>
             <Select
@@ -176,23 +262,6 @@ class WorkflowForm extends React.Component {
                 value={this.state.selectedStatus}
                 options={this.state.workflow.statusDropdown}
                 onChange={this.handleStatusChange}
-                multi={false}
-                autosize={true}
-                clearable
-            />
-          </Col>
-        </Row>
-        <Row  className="show-grid App App-Workflow-Selector-Row">
-          <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
-            <ControlLabel>Assigned To:</ControlLabel>
-          </Col>
-          <Col className="App-Workflow-Selector-Dropdown" xs={10} md={10}>
-            <Select
-                name="App-Workflow-Selector-User"
-                className="App App-Workflow-Selector-User"
-                value={this.state.selectedUser}
-                options={this.state.workflow.userRolesForLibrary.readers}
-                onChange={this.handleUserChange}
                 multi={false}
                 autosize={true}
                 clearable
@@ -209,11 +278,17 @@ WorkflowForm.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func.isRequired
   , library: PropTypes.string.isRequired
+  , status: PropTypes.string
+  , visibility: PropTypes.string
+  , assignable: PropTypes.bool
 };
 
 // set default values for props here
 WorkflowForm.defaultProps = {
   languageCode: "en"
+  , status: "EDITING"
+  , visibility: "PERSONAL"
+  , assignable: false
 };
 
 export default WorkflowForm;

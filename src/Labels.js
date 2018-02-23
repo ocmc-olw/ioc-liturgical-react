@@ -52,6 +52,16 @@ const   labels = {
       visibility: "Visibility"
       , status: "Status"
       , AssignedTo: "Assigned to"
+      , statusTypes: {
+        edit: "Edit"
+        , review: "Review"
+        , final: "Final"
+      }
+      , visibilityTypes: {
+        personal: "Personal - only the library owner can see/edit it"
+        , private: "Private - only those granted access can see/edit it"
+        , public: "Public - anyone can see it, but not edit it"
+      }
     }
     , BibleRefSelector: {
       book: "Book"
@@ -812,6 +822,7 @@ const   labels = {
       , filter: "You can use the box(es) below to filter the results."
       , click: "Click the radio button of the row you are interested in."
       , readOnly: "You do can view this, but not edit it."
+      , ok: "OK"
     }
     , grammarTerms: {
       case: {
@@ -1001,6 +1012,16 @@ const   labels = {
       visibility: "Visibility"
       , status: "Status"
       , AssignedTo: "Assigned to"
+      , statusTypes: {
+        edit: "Edit"
+        , review: "Review"
+        , final: "Final"
+      }
+      , visibilityTypes: {
+        personal: "Personal - only the library owner can see/edit it"
+        , private: "Private - only those granted access can see/edit it"
+        , public: "Public - anyone can see it, but not edit it"
+      }
     }
     , BibleRefSelector: {
         book: "το βιβλίο"
@@ -1753,6 +1774,7 @@ const   labels = {
       , filter: "You can use the box(es) below to filter the results."
       , click: "Click the radio button of the row you are interested in."
       , readOnly: "Μπορείτε να το δείτε αλλά να μην το επεξεργαστείτε"
+      , ok: "Εντάξει"
     }
     , grammarTerms: {
       case: {

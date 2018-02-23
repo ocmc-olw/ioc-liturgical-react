@@ -669,3 +669,15 @@ path.link {
 .Select-control {
     margin-bottom: 10px;
 }
+
+.App-Text-Note-Editor-Button-Row {
+}
+.App-Text-Editor-Workflow-Glyph {
+    color: #5bc0de;
+}
+.App-Workflow-Selector-icon {
+    margin: 0px;
+    padding-left: 0px;
+    padding-right: 10px;
+    display: inline;
+}
