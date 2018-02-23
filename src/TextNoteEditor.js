@@ -33,6 +33,7 @@ import OntologyRefSelector from './helpers/OntologyRefSelector';
 import WorkflowForm from './helpers/WorkflowForm';
 
 import CompareDocs from './modules/CompareDocs';
+import axios from "axios/index";
 
 class TextNoteEditor extends React.Component {
   constructor(props) {
@@ -175,6 +176,9 @@ class TextNoteEditor extends React.Component {
 
     this.settingsValid = this.settingsValid.bind(this);
     this.validateForm = this.validateForm.bind(this);
+
+    this.submitPost = this.submitPost.bind(this);
+    this.submitPut = this.submitPut.bind(this);
 
   };
 
@@ -329,6 +333,46 @@ class TextNoteEditor extends React.Component {
     this.setState(
         {form: this.getForm()}
     );
+  };
+
+  submitPost = () => {
+    this.setState({
+      message: this.state.labels.search.creating
+      , messageIcon: this.state.messageIcons.info
+    });
+
+    let config = {
+      auth: {
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
+      }
+    };
+    let path = this.props.session.restServer
+        + this.props.path
+    ;
+    axios.post(
+        path
+        , formData
+        , config
+    )
+        .then(response => {
+          this.setState({
+            message: this.state.labels.search.created,
+            formData: formData
+          });
+          if (this.props.onSubmit) {
+            this.props.onSubmit(formData);
+          }
+        })
+        .catch( (error) => {
+          var message = Labels.getHttpMessage(
+              this.props.session.languageCode
+              , error.response.status
+              , error.response.statusText
+          );
+          var messageIcon = this.state.messageIcons.error;
+          this.setState( { data: message, message: message, messageIcon: messageIcon });
+        });
   };
 
   fetchBibleText = () => {
