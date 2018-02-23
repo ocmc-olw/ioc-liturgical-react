@@ -223,7 +223,6 @@ class WorkflowForm extends React.Component {
   };
 
   render() {
-    console.log(this.state.workflow.visibilityDropdown);
     return (
       <Well>
         <Grid>

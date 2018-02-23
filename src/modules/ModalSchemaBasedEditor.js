@@ -114,7 +114,7 @@ export class ModalSchemaBasedEditor extends React.Component {
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
         });
-  }
+  };
 
 
   close() {

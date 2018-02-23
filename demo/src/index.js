@@ -1585,9 +1585,7 @@ class Demo extends React.Component {
                   <div>
                     <TextNoteEditor
                         session={this.state.session}
-                        idLibrary={"gr_gr_cog"}
-                        idTopic={"he.h.m2"}
-                        idKey={"VythouAnekalypse.text"}
+                        textId={"gr_gr_cog~he.h.m2~VythouAnekalypse.text"}
                         onEditorChange={this.handleTextNoteContentChange }
                     />
                   </div>

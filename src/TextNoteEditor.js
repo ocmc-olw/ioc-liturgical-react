@@ -28,6 +28,7 @@ import MessageIcons from './helpers/MessageIcons';
 import ResourceSelector from './modules/ReactSelector';
 import EditableSelector from './modules/EditableSelector';
 import FormattedTextNote from './FormattedTextNote';
+import IdManager from './helpers/IdManager';
 import BibleRefSelector from './helpers/BibleRefSelector';
 import OntologyRefSelector from './helpers/OntologyRefSelector';
 import WorkflowForm from './helpers/WorkflowForm';
@@ -38,18 +39,14 @@ import axios from "axios/index";
 class TextNoteEditor extends React.Component {
   constructor(props) {
     super(props);
+
     let languageCode = props.session.languageCode;
     let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
     let initialMessage = thisClassLabels.requiredMsg;
-    let form = {};
-    if (props.form) {
-      form = props.form;
-    } else {
-      form = props.session.uiSchemas.forms["TextualNote:1.1"];
-    }
+    let textIdParts = IdManager.getParts(props.textId);
 
     this.state = {
-      labels: { //
+      labels: {
         thisClass: thisClassLabels
         , buttons: Labels.getButtonLabels(languageCode)
         , messages: Labels.getMessageLabels(languageCode)
@@ -59,10 +56,10 @@ class TextNoteEditor extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: initialMessage
-      , form: form
+      , textIdParts: textIdParts
       , editor: null
       , scopeBiblical: ""
-      , scopeLiturgical: props.idKey
+      , scopeLiturgical: textIdParts.key
       , lemmaBiblical: ""
       , lemmaLiturgical: ""
       , title: ""
@@ -84,8 +81,8 @@ class TextNoteEditor extends React.Component {
       , note: ""
       , selectedLiturgicalIdParts: [
         {key: "domain", label: "*"},
-        {key: "topic", label: props.idTopic},
-        {key: "key", label: props.idKey}
+        {key: "topic", label: textIdParts.topic},
+        {key: "key", label: textIdParts.key}
       ]
       , selectedBiblicalIdParts: [
         {key: "domain", label: "*"},
@@ -208,7 +205,7 @@ class TextNoteEditor extends React.Component {
       let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
       let message = thisClassLabels.requiredMsg;
 
-      this.setState((prevState, props) => {
+    this.setState((prevState, props) => {
         return {
           labels: {
             thisClass: thisClassLabels
@@ -292,17 +289,22 @@ class TextNoteEditor extends React.Component {
   };
 
   getForm = () => {
-    let form = this.state.form;
+    let form = {};
+    if (this.props.form && this.props.form.noteType) {
+      form = this.props.form;
+    } else {
+      form = this.props.session.uiSchemas.getForm("TextualNote:1.1");
+    }
     let tags = this.state.tags.map(function(item) {
       return item['label'];
     });
-    let topic = this.props.idLibrary + "~" + this.props.idTopic + "~" + this.props.idKey;
+    let topic = this.props.textId;
     let key = this.getTimestamp();
 
     form.noteType = this.state.selectedType;
     form.status = this.state.workflow.status;
     form.tags = tags;
-    form.title = this.state.title;
+    form.noteTitle = this.state.title;
     form.valueFormatted = this.state.note;
     form.visibility = this.state.workflow.visibility;
     form.assignedToUser = this.state.workflow.assignedTo;
@@ -324,18 +326,20 @@ class TextNoteEditor extends React.Component {
 
     form.ontologicalEntityId = this.state.ontologyRefEntityId;
 
-    console.log("form=");
-    console.log(form);
     return form;
   };
 
   onSubmit = () => {
-    this.setState(
-        {form: this.getForm()}
-    );
+    if (this.props.form && this.props.form.noteType) {
+      this.submitPut();
+    } else {
+      this.submitPost();
+    }
   };
 
   submitPost = () => {
+
+    let formData = this.getForm();
     this.setState({
       message: this.state.labels.search.creating
       , messageIcon: this.state.messageIcons.info
@@ -348,7 +352,7 @@ class TextNoteEditor extends React.Component {
       }
     };
     let path = this.props.session.restServer
-        + this.props.path
+        + Server.getDbServerNotesApi()
     ;
     axios.post(
         path
@@ -357,8 +361,49 @@ class TextNoteEditor extends React.Component {
     )
         .then(response => {
           this.setState({
-            message: this.state.labels.search.created,
-            formData: formData
+            message: this.state.labels.search.created
+            , form: formData
+          });
+          if (this.props.onSubmit) {
+            this.props.onSubmit(formData);
+          }
+        })
+        .catch( (error) => {
+          var message = Labels.getHttpMessage(
+              this.props.session.languageCode
+              , error.response.status
+              , error.response.statusText
+          );
+          var messageIcon = this.state.messageIcons.error;
+          this.setState( { data: message, message: message, messageIcon: messageIcon });
+        });
+  };
+
+  submitPut = () => {
+    let formData = this.getForm();
+    this.setState({
+      message: this.state.labels.search.creating
+      , messageIcon: this.state.messageIcons.info
+    });
+
+    let config = {
+      auth: {
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
+      }
+    };
+    let path = this.props.session.restServer
+        + Server.getDbServerNotesApi()
+    ;
+    axios.put(
+        path
+        , formData
+        , config
+    )
+        .then(response => {
+          this.setState({
+            message: this.state.labels.search.updated
+            , form: formData
           });
           if (this.props.onSubmit) {
             this.props.onSubmit(formData);
@@ -396,44 +441,46 @@ class TextNoteEditor extends React.Component {
   };
 
   handleWorkflowCallback = ( visibility, status, assignedTo ) => {
-    let statusIcon = "check";
-    let visibilityIcon = "globe";
+    if (visibility && status) {
+      let statusIcon = "check";
+      let visibilityIcon = "globe";
 
-    switch (visibility) {
-      case ("PERSONAL"): {
-        visibilityIcon = "lock"; // user-secret
-        break;
-      }
-      case ("PRIVATE"): {
-        visibilityIcon = "share-alt";
-        break;
-      }
-      default: {
-      }
-    }
-    switch (status) {
-      case ("EDITING"): {
-        statusIcon = "edit";
-        break;
-      }
-      case ("REVIEWING"): {
-        statusIcon = "eye-open";
-        break;
-      }
-      default: {
-      }
-    }
-    this.setState(
-        {
-          workflow: {
-            visibility: visibility
-            , status: status
-            , assignedTo: assignedTo
-            , visibilityIcon: visibilityIcon
-            , statusIcon: statusIcon
-          }
+      switch (visibility) {
+        case ("PERSONAL"): {
+          visibilityIcon = "lock"; // user-secret
+          break;
         }
-    );
+        case ("PRIVATE"): {
+          visibilityIcon = "share-alt";
+          break;
+        }
+        default: {
+        }
+      }
+      switch (status) {
+        case ("EDITING"): {
+          statusIcon = "edit";
+          break;
+        }
+        case ("REVIEWING"): {
+          statusIcon = "eye-open";
+          break;
+        }
+        default: {
+        }
+      }
+      this.setState(
+          {
+            workflow: {
+              visibility: visibility
+              , status: status
+              , assignedTo: assignedTo
+              , visibilityIcon: visibilityIcon
+              , statusIcon: statusIcon
+            }
+          }
+      );
+    }
   };
 
   handleFetchBibleTextCallback = (restCallResult) => {
@@ -484,11 +531,6 @@ class TextNoteEditor extends React.Component {
       , lemmaBiblical: ""
       , scopeBiblical: ""
       , selectedBiblicalTranslationId: ""
-      , selectedLiturgicalIdParts: [
-        {key: "domain", label: "*"},
-        {key: "topic", label: this.props.idTopic},
-        {key: "key", label: this.props.idKey}
-      ]
       , selectedBiblicalIdParts: [
         {key: "domain", label: "*"},
         {key: "topic", label: ""},
@@ -1187,16 +1229,13 @@ getTabs = () => {
 TextNoteEditor.propTypes = {
   session: PropTypes.object.isRequired
   , onEditorChange: PropTypes.func.isRequired
-  , idLibrary: PropTypes.string.isRequired
-  , idTopic: PropTypes.string.isRequired
-  , idKey: PropTypes.string.isRequired
+  , textId: PropTypes.string.isRequired
   , form: PropTypes.object
 };
 
 // set default values for props here
 TextNoteEditor.defaultProps = {
   id: "tinymceeditor"
-  , form: {}
 };
 
 export default TextNoteEditor;

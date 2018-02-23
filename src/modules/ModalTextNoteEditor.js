@@ -5,6 +5,9 @@ import {Button, ControlLabel, Modal, Well} from 'react-bootstrap';
 import Labels from '../Labels';
 import TextNoteEditor from '../TextNoteEditor';
 import MessageIcons from '../helpers/MessageIcons';
+import Spinner from '../helpers/Spinner';
+import axios from "axios/index";
+import IdManager from "../helpers/IdManager";
 
 /**
  * Display modal content.
@@ -13,6 +16,8 @@ export class ModalTextNoteEditor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let textId = IdManager.getParts(props.noteIdTopic);
 
     this.state = {
       labels: {
@@ -24,14 +29,19 @@ export class ModalTextNoteEditor extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(props.session.languageCode).initial
       , showModal: true
+      , textId: textId
     };
 
     this.close = this.close.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
+    this.fetchData = this.fetchData.bind(this);
   };
 
-  componentWillMount = () => {
+  componentDidMount = () => {
+    if (this.props.noteIdLibrary && this.props.noteIdKey) {
+      this.fetchData();
+    }
   };
 
   componentWillReceiveProps = (nextProps) => {
@@ -50,6 +60,57 @@ export class ModalTextNoteEditor extends React.Component {
     });
   };
 
+
+  fetchData() {
+    this.setState({
+      message: this.state.labels.messages.searching
+      , messageIcon: MessageIcons.getMessageIcons().info
+    });
+    let config = {
+      auth: {
+        username: this.props.session.userInfo.username
+        , password: this.props.session.userInfo.password
+      }
+    };
+
+    let path = this.props.session.restServer
+        + this.props.restPath
+        + "/"
+        + this.props.idLibrary
+        + "/"
+        + this.props.idTopic
+        + "/"
+        + this.props.idKey
+    ;
+    axios.get(path, config)
+        .then(response => {
+          if (response.data.valueCount && response.data.valueCount > 0) {
+            let data = response.data.values[0];
+            let schemaId = data._valueSchemaId;
+            let dataSchema = response.data.valueSchemas[schemaId].schema;
+            let dataUiSchema = response.data.valueSchemas[schemaId].uiSchema;
+            this.setState({
+                  schema:dataSchema
+                  , uiSchema:dataUiSchema
+                  , formData: data
+                  , showForm: true
+                  , message: this.state.labels.messages.found
+                  , messageIcon: MessageIcons.getMessageIcons().info
+                }
+            );
+          }
+        })
+        .catch((error) => {
+          let message = error.message;
+          let messageIcon = MessageIcons.getMessageIcons().error;
+          if (error && error.response && error.response.status === 404) {
+            message = "not found";
+            messageIcon = MessageIcons.getMessageIcons().warning;
+            this.setState({data: message, message: message, messageIcon: messageIcon});
+          }
+        });
+  };
+
   onSubmit = ({formData}) => {
     if (this.props.onSubmit) {
       this.props.onSubmit(formData);
@@ -60,6 +121,21 @@ export class ModalTextNoteEditor extends React.Component {
     this.setState({showModal: false});
     if (this.props.onClose) {
       this.props.onClose(this.state.formData);
+    }
+  };
+
+  getEditor = () => {
+    if (true) {
+      <TextNoteEditor
+          session={this.props.session}
+          textId={this.state.textId}
+          onEditorChange={this.handleTextNoteContentChange }
+          form={this.state.form}
+      />
+    } else {
+      return (
+          <Spinner message={this.state.labels.messages.retrieving}/>
+      );
     }
   };
 
@@ -91,14 +167,7 @@ export class ModalTextNoteEditor extends React.Component {
               }
             </Modal.Header>
             <Modal.Body>
-              <TextNoteEditor
-                  session={this.props.session}
-                  idLibrary={this.props.library}
-                  idTopic={this.props.topic}
-                  idKey={this.props.key}
-                  onEditorChange={this.handleTextNoteContentChange }
-                  form={this.props.form}
-              />
+              {this.getEditor()}
             </Modal.Body>
             <Modal.Footer>
               <Button onClick={this.close}>{this.state.labels.button.close}</Button>
@@ -112,12 +181,12 @@ export class ModalTextNoteEditor extends React.Component {
 ModalTextNoteEditor.propTypes = {
   session: PropTypes.object.isRequired
   , restPath: PropTypes.string.isRequired
-  , library: PropTypes.string.isRequired
-  , topic: PropTypes.string.isRequired
-  , key: PropTypes.string.isRequired
+  , noteIdLibrary: PropTypes.string
+  , noteIdTopic: PropTypes.string.isRequired
+  , noteIdKey: PropTypes.string
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
-  , form: PropTypes.object
+  , canUpdate: PropTypes.bool
 };
 ModalTextNoteEditor.defaultProps = {
   canUpdate: true

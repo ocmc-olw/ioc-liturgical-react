@@ -16,7 +16,7 @@ class NoteSearchOptions extends React.Component {
 
     this.state = {
       selectedType: initialType
-      , selectedProperty: "*"
+      , selectedProperty: "value"
       , selectedMatcher: "c"
       , value: ""
       , selectedTagOperator: "any"
