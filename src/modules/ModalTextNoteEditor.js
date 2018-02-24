@@ -36,6 +36,7 @@ export class ModalTextNoteEditor extends React.Component {
     this.setMessage = this.setMessage.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.handleTextNoteContentChange = this.handleTextNoteContentChange.bind(this);
   };
 
   componentDidMount = () => {
@@ -76,11 +77,11 @@ export class ModalTextNoteEditor extends React.Component {
     let path = this.props.session.restServer
         + this.props.restPath
         + "/"
-        + this.props.idLibrary
+        + this.props.noteIdLibrary
         + "/"
-        + this.props.idTopic
+        + this.props.noteIdTopic
         + "/"
-        + this.props.idKey
+        + this.props.noteIdKey
     ;
     axios.get(path, config)
         .then(response => {
@@ -111,6 +112,9 @@ export class ModalTextNoteEditor extends React.Component {
         });
   };
 
+  handleTextNoteContentChange = () => {
+  };
+
   onSubmit = ({formData}) => {
     if (this.props.onSubmit) {
       this.props.onSubmit(formData);
@@ -125,13 +129,16 @@ export class ModalTextNoteEditor extends React.Component {
   };
 
   getEditor = () => {
-    if (true) {
-      <TextNoteEditor
-          session={this.props.session}
-          textId={this.state.textId}
-          onEditorChange={this.handleTextNoteContentChange }
-          form={this.state.form}
-      />
+    if (this.state.showForm) {
+      return (
+          <TextNoteEditor
+              session={this.props.session}
+              textId={this.props.noteIdTopic}
+              onEditorChange={this.handleTextNoteContentChange}
+              form={this.state.formData}
+              id={"tinymiceeditor" + this.props.noteIdTopic}
+          />
+          );
     } else {
       return (
           <Spinner message={this.state.labels.messages.retrieving}/>

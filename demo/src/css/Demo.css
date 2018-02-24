@@ -681,3 +681,6 @@ path.link {
     padding-right: 10px;
     display: inline;
 }
+.App-search-text-input {
+    margin-bottom: 8px;
+}

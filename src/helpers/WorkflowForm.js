@@ -80,7 +80,7 @@ class WorkflowForm extends React.Component {
             , buttons: Labels.getButtonLabels(languageCode)
             , messages: Labels.getMessageLabels(languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-            , library: props.library
+            , library: nextProps.library
           }
           , message: Labels.getMessageLabels(languageCode).initial
           , selectedStatus: nextProps.status
@@ -99,11 +99,15 @@ class WorkflowForm extends React.Component {
     if (library && library === this.state.library) {
       // ignore.  No need to call the web service
     } else {
+      let library = this.props.library;
+      if (library === "" || library === " ") {
+        library = this.props.session.userInfo.domain;
+      }
       server.getDropdownUsersForLibrary(
           this.props.session.restServer
           , this.props.session.userInfo.username
           , this.props.session.userInfo.password
-          , this.props.library
+          , library
           , this.handleFetchCallback
       );
     }

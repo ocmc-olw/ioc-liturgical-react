@@ -24,7 +24,6 @@ import {
 } from 'react-bootstrap';
 import Labels from './Labels';
 import Server from './helpers/Server';
-import Spinner from './helpers/Spinner';
 import MessageIcons from './helpers/MessageIcons';
 import ResourceSelector from './modules/ReactSelector';
 import EditableSelector from './modules/EditableSelector';
@@ -46,7 +45,6 @@ class TextNoteEditor extends React.Component {
     let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
     let initialMessage = thisClassLabels.requiredMsg;
     let textIdParts = IdManager.getParts(props.textId);
-    let editorId = "tinymce-" + (new Date).getTime();
     this.state = {
       labels: {
         thisClass: thisClassLabels
@@ -60,8 +58,6 @@ class TextNoteEditor extends React.Component {
       , message: initialMessage
       , textIdParts: textIdParts
       , editor: null
-      , editorId: editorId
-      , note: ""
       , scopeBiblical: ""
       , scopeLiturgical: textIdParts.key
       , lemmaBiblical: ""
@@ -82,6 +78,7 @@ class TextNoteEditor extends React.Component {
       , selectedLiturgicalGreekId: ""
       , selectedLiturgicalTranslationId: ""
       , greekBibleId: ""
+      , note: ""
       , selectedLiturgicalIdParts: [
         {key: "domain", label: "*"},
         {key: "topic", label: textIdParts.topic},
@@ -174,6 +171,8 @@ class TextNoteEditor extends React.Component {
 
     this.onSubmit = this.onSubmit.bind(this);
 
+    this.getForm = this.getForm.bind(this);
+
     this.settingsValid = this.settingsValid.bind(this);
     this.validateForm = this.validateForm.bind(this);
 
@@ -189,7 +188,7 @@ class TextNoteEditor extends React.Component {
   componentDidMount = () => {
     console.log("componentDidMount");
     tinymce.init({
-      selector: `#${this.state.editorId}`,
+      selector: `#${this.props.id}`,
       plugins: 'lists, wordcount',
       setup: editor => {
         this.setState({ editor });
@@ -236,27 +235,27 @@ class TextNoteEditor extends React.Component {
 
   settingsValid = () => {
     let valid = false;
-    if (this.state.form.noteType) {
-      if (this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.selectedType) {
+      if (this.state.selectedType === "REF_TO_BIBLE") {
         valid = (
-            this.state.form.liturgicalScope.length > 0
-            && this.state.form.liturgicalLemma.length > 0
-            && this.state.form.noteTitle.length > 0
-            && this.state.form.biblicalScope.length > 0
-            && this.state.form.biblicalLemma.length > 0
+            this.state.scopeLiturgical.length > 0
+            && this.state.lemmaLiturgical.length > 0
+            && this.state.title.length > 0
+            && this.state.scopeBiblical.length > 0
+            && this.state.lemmaBiblical.length > 0
             && this.state.bibleRef.length > 0
         );
-      }  else if (this.state.form.noteType.startsWith("REF_TO")) {
+      }  else if (this.state.selectedType.startsWith("REF_TO")) {
         valid = (
-            this.state.form.liturgicalScope.length > 0
-            && this.state.form.liturgicalLemma.length > 0
-            && this.state.form.ontologicalEntityId.length > 0
+            this.state.scopeLiturgical.length > 0
+            && this.state.lemmaLiturgical.length > 0
+            && this.state.ontologyRefEntityId.length > 0
         );
       } else {
         valid = (
-            this.state.form.liturgicalScope.length > 0
-            && this.state.form.liturgicalLemma.length > 0
-            && this.state.form.noteTitle.length > 0
+            this.state.scopeLiturgical.length > 0
+            && this.state.lemmaLiturgical.length > 0
+            && this.state.title.length > 0
         );
       }
     }
@@ -267,7 +266,7 @@ class TextNoteEditor extends React.Component {
     let message = this.state.labels.thisClass.requiredMsg;
     let messageIcon = MessageIcons.getMessageIcons().warning;
     let formIsValid = false;
-    let noteValid = this.state.form.valueFormatted.length > 0;
+    let noteValid = this.state.note.length > 0;
     if (this.settingsValid() && noteValid) {
       formIsValid = true;
       message = this.state.labels.messages.ok;
@@ -312,6 +311,42 @@ class TextNoteEditor extends React.Component {
     this.setState({form: form});
   };
 
+  getForm = () => {
+    let form = this.state.form;
+    let tags = this.state.tags.map(function(item) {
+      return item['label'];
+    });
+    let topic = this.props.textId;
+    let key = this.getTimestamp();
+
+    form.noteType = this.state.selectedType;
+    form.status = this.state.workflow.status;
+    form.tags = tags;
+    form.noteTitle = this.state.title;
+    form.valueFormatted = this.state.note;
+    form.visibility = this.state.workflow.visibility;
+    form.assignedToUser = this.state.workflow.assignedTo;
+
+    form.biblicalGreekId = this.state.selectedBiblicalGreekId;
+    form.biblicalLemma = this.state.lemmaBiblical;
+    form.biblicalScope = this.state.scopeBiblical;
+    form.biblicalTranslationId = this.state.selectedBiblicalTranslationId;
+
+    form.library = this.state.selectedNoteLibrary;
+    form.topic = topic;
+    form.key = key;
+    form.id = this.state.selectedNoteLibrary + "~" + topic + "~" + key;
+
+    form.liturgicalGreekId = this.state.selectedLiturgicalGreekId;
+    form.liturgicalLemma = this.state.lemmaLiturgical;
+    form.liturgicalScope = this.state.scopeLiturgical;
+    form.liturgicalTranslationId = this.state.selectedBiblicalTranslationId;
+
+    form.ontologicalEntityId = this.state.ontologyRefEntityId;
+
+    return form;
+  };
+
   onSubmit = () => {
     if (this.props.form && this.props.form.noteType) {
       this.submitPut();
@@ -321,11 +356,8 @@ class TextNoteEditor extends React.Component {
   };
 
   submitPost = () => {
-    let formData = this.state.form;
-    let key = this.getTimestamp();
-    formData.key = key;
-    formData.id = form.library + "~" + formData.topic + "~" + key;
 
+    let formData = this.getForm();
     this.setState({
       message: this.state.labels.search.creating
       , messageIcon: this.state.messageIcons.info
@@ -366,7 +398,7 @@ class TextNoteEditor extends React.Component {
   };
 
   submitPut = () => {
-    let formData = this.state.form;
+    let formData = this.getForm();
     this.setState({
       message: this.state.labels.search.creating
       , messageIcon: this.state.messageIcons.info
@@ -455,15 +487,12 @@ class TextNoteEditor extends React.Component {
         default: {
         }
       }
-      let form = this.state.form;
-      form.status = status;
-      form.visibility = visibility;
-      form.assignedToUser = assignedTo;
-
       this.setState(
           {
             workflow: {
-              form: form
+              visibility: visibility
+              , status: status
+              , assignedTo: assignedTo
               , visibilityIcon: visibilityIcon
               , statusIcon: statusIcon
             }
@@ -497,45 +526,29 @@ class TextNoteEditor extends React.Component {
   };
 
   handleEditableListCallback = (value, values) => {
-    let form = this.state.form;
-    form.tags = values.map(function(item) {
-      return item['label'];
-    });
-    this.setState({form: form, selectedTag: value, tags: values});
+    this.setState({selectedTag: value, tags: values});
   };
 
   handleEditorChange = (content) => {
-    console.log(content);
-    let form = this.state.form;
-    form.valueFormatted = content;
-    form.value = content;
-    this.setState({note: content, form: form}, this.validateForm);
+    this.setState({note: content}, this.validateForm);
   };
 
   handleBiblicalScopeChange = (e) => {
-    let form = this.state.form;
-    form.biblicalScope = e.target.value;
-    this.setState({form: form}, this.validateForm);
+    this.setState({scopeBiblical: e.target.value}, this.validateForm);
   };
 
   handleLiturgicalScopeChange = (e) => {
-    let form = this.state.form;
-    form.liturgicalScope = e.target.value;
-    this.setState({form: form}, this.validateForm);
+    this.setState({scopeLiturgical: e.target.value}, this.validateForm);
   };
 
   handleNoteTypeChange = (selection) => {
-    let form = this.state.form;
-    form.noteType = selection["value"];
-    form.biblicalGreekId = "";
-    form.biblicalLemma = "";
-    form.biblicalScope = "";
-    form.biblicalTranslationId = "";
-    form.ontologicalEntityId = "";
-
     this.setState({
-      form
+      selectedType: selection["value"]
       , selectedTypeLabel: selection["label"]
+      , selectedBiblicalGreekId: ""
+      , lemmaBiblical: ""
+      , scopeBiblical: ""
+      , selectedBiblicalTranslationId: ""
       , selectedBiblicalIdParts: [
         {key: "domain", label: "*"},
         {key: "topic", label: ""},
@@ -543,6 +556,7 @@ class TextNoteEditor extends React.Component {
       ]
       , showBibleView: false
       , ontologyRefType: ""
+      , ontologyRefEntityId: ""
       , ontologyRefName: ""
       , showOntologyView: false
     }, this.validateForm);
@@ -581,11 +595,9 @@ class TextNoteEditor extends React.Component {
     if (entityId.length > 0) {
       showOntologyView = true;
     }
-    let form = this.state.form;
-    form.ontologicalEntityId = entityId;
     this.setState(
         {
-          form: form
+          ontologyRefEntityId: entityId
           , ontologyRefEntityName: entityName
           , showOntologyView: showOntologyView
           , title: entityName
@@ -594,25 +606,19 @@ class TextNoteEditor extends React.Component {
   };
 
   handleBiblicalLemmaChange = (e) => {
-    let form = this.state.form;
-    form.biblicalLemma = e.target.value;
-    this.setState({form: form}, this.validateForm);
+    this.setState({lemmaBiblical: e.target.value}, this.validateForm);
   };
 
   handleLiturgicalLemmaChange = (e) => {
-    let form = this.state.form;
-    form.liturgicalLemma = e.target.value;
-    this.setState({form: form}, this.validateForm);
+    this.setState({lemmaLiturgical: e.target.value}, this.validateForm);
   };
 
   handleTitleChange = (e) => {
-    let form = this.state.form;
-    form.noteTitle = e.target.value;
-    this.setState({form: form}, this.validateForm);
+    this.setState({title: e.target.value}, this.validateForm);
   };
 
   getBibleRefRow = () => {
-    if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
           <BibleRefSelector
               session={this.props.session}
@@ -625,11 +631,11 @@ class TextNoteEditor extends React.Component {
   };
 
   getOntologyRefRow = () => {
-    if (this.state.form.noteType
-        && this.state.form.noteType.startsWith("REF_TO")
-        && (this.state.form.noteType !== ("REF_TO_BIBLE"))
+    if (this.state.selectedType
+        && this.state.selectedType.startsWith("REF_TO")
+        && (this.state.selectedType !== ("REF_TO_BIBLE"))
     ) {
-      let type = this.getOntologyLabel(this.state.form.noteType);
+      let type = this.getOntologyLabel(this.state.selectedType);
       return (
           <Row className="show-grid App-Ontology-Ref-Selector-Row">
             <Col xs={2} md={2}>
@@ -689,13 +695,9 @@ class TextNoteEditor extends React.Component {
 
   handleBiblicalIdSelection = (row) => {
     let id = row["id"];
-    let form = this.state.form;
-
     if (id.startsWith("gr_")) {
-      form.biblicalGreekId = id;
       this.setState({ selectedBiblicalGreekId: id })
     } else {
-      form.biblicalTranslationId = id;
       this.setState({ selectedBiblicalTranslationId: id })
     }
   };
@@ -774,7 +776,7 @@ class TextNoteEditor extends React.Component {
                 id={"fxLiturgicalScope"}
                 className={"App App-Text-Note-Editor-Scope"}
                 type="text"
-                value={this.state.form.liturgicalScope}
+                value={this.state.scopeLiturgical}
                 placeholder="scope"
                 onChange={this.handleLiturgicalScopeChange}
             />
@@ -794,7 +796,7 @@ class TextNoteEditor extends React.Component {
                 id={"fcLiturgicalLemma"}
                 className={"App App-Text-Note-Editor-Lemma"}
                 type="text"
-                value={this.state.form.liturgicalLemma}
+                value={this.state.lemmaLiturgical}
                 placeholder="liturgical lemma"
                 onChange={this.handleLiturgicalLemmaChange}
             />
@@ -805,17 +807,11 @@ class TextNoteEditor extends React.Component {
 
 
   handleNoteLibraryChange = ( selection ) => {
-    let form = this.state.form;
-    form.library = selection["value"];
-    this.setState({form: form}, this.validateForm);
+    this.setState( { selectedNoteLibrary: selection["value"] } );
   };
 
   getNoteLibraryRow = () => {
-    if (
-        this.props.session.userInfo.domains.author
-        && this.state.form && this.state.form.library
-        && this.state.form.library.length < 1
-    ) {
+    if (this.props.session.userInfo.domains.author) {
       return (
           <Row className="show-grid  App-Text-Note-Editor-Library-Row">
             <Col xs={2} md={2}>
@@ -824,7 +820,7 @@ class TextNoteEditor extends React.Component {
             <Col xs={10} md={10}>
               <ResourceSelector
                   title={""}
-                  initialValue={this.props.session.userInfo.domain}
+                  initialValue={this.state.selectedNoteLibrary}
                   resources={this.props.session.userInfo.domains.author}
                   changeHandler={this.handleNoteLibraryChange}
                   multiSelect={false}
@@ -838,14 +834,12 @@ class TextNoteEditor extends React.Component {
   };
 
   handleBiblicalTranslationLibraryChange = ( selection ) => {
-    let form = this.state.form;
-    form.biblicalTranslationId = selection["value"];
-    this.setState({form: form}, this.validateForm);
+    this.setState( { selectedBiblicalTranslationId: selection["value"] } );
   };
 
   getBiblicalTranslationLibraryRow = () => {
-    if (this.state.form.noteType
-        && this.state.form.noteType === "REF_TO_BIBLE"
+    if (this.state.selectedType
+        && this.state.selectedType === "REF_TO_BIBLE"
         && this.state.biblicalLibraries
     ) {
       return (
@@ -856,7 +850,7 @@ class TextNoteEditor extends React.Component {
             <Col xs={10} md={10}>
               <ResourceSelector
                   title={""}
-                  initialValue={this.state.form.biblicalTranslationId}
+                  initialValue={this.state.selectedBiblicalTranslationId}
                   resources={this.state.biblicalLibraries.translationDropdown}
                   changeHandler={this.handleBiblicalTranslationLibraryChange}
                   multiSelect={false}
@@ -870,9 +864,7 @@ class TextNoteEditor extends React.Component {
   };
 
   handleLiturgicalGreekLibraryChange = ( selection ) => {
-    let form = this.state.form;
-    form.liturgicalGreekId = selection["value"];
-    this.setState({form: form}, this.validateForm);
+    this.setState( { selectedLiturgicalGreekId: selection["value"] } );
   };
 
   getLiturgicalGreekLibraryRow = () => {
@@ -885,7 +877,7 @@ class TextNoteEditor extends React.Component {
             <Col xs={10} md={10}>
               <ResourceSelector
                   title={""}
-                  initialValue={this.state.form.liturgicalGreekId}
+                  initialValue={this.state.selectedLiturgicalGreekId}
                   resources={this.state.liturgicalLibraries.greekDropdown}
                   changeHandler={this.handleLiturgicalGreekLibraryChange}
                   multiSelect={false}
@@ -899,15 +891,13 @@ class TextNoteEditor extends React.Component {
   };
 
   handleBiblicalGreekLibraryChange = ( selection ) => {
-    let form = this.state.form;
-    form.biblicalGreekId = selection["value"];
-    this.setState({form: form}, this.validateForm);
+    this.setState( { selectedBiblicalGreekId: selection["value"] } );
   };
 
 
   getBiblicalGreekLibraryRow = () => {
-    if (this.state.form.noteType
-        && this.state.form.noteType === "REF_TO_BIBLE"
+    if (this.state.selectedType
+        && this.state.selectedType === "REF_TO_BIBLE"
         && this.state.biblicalLibraries
     ) {
       return (
@@ -918,7 +908,7 @@ class TextNoteEditor extends React.Component {
             <Col xs={10} md={10}>
               <ResourceSelector
                   title={""}
-                  initialValue={this.state.form.biblicalGreekId}
+                  initialValue={this.state.selectedBiblicalGreekId}
                   resources={this.state.biblicalLibraries.greekDropdown}
                   changeHandler={this.handleBiblicalGreekLibraryChange}
                   multiSelect={false}
@@ -932,10 +922,9 @@ class TextNoteEditor extends React.Component {
   };
 
   handleLiturgicalTranslationLibraryChange = ( selection ) => {
-    let form = this.state.form;
-    form.liturgicalTranslationId = selection["value"];
-    this.setState({form: form}, this.validateForm);
+    this.setState( { selectedLiturgicalTranslationId: selection["value"] } );
   };
+
 
   getLiturgicalTranslationLibraryRow = () => {
     if (this.state.liturgicalLibraries && this.state.liturgicalLibraries.translationDropdown) {
@@ -947,7 +936,7 @@ class TextNoteEditor extends React.Component {
             <Col xs={10} md={10}>
               <ResourceSelector
                   title={""}
-                  initialValue={this.state.form.liturgicalTranslationId}
+                  initialValue={this.state.selectedLiturgicalTranslationId}
                   resources={this.state.liturgicalLibraries.translationDropdown}
                   changeHandler={this.handleLiturgicalTranslationLibraryChange}
                   multiSelect={false}
@@ -961,9 +950,9 @@ class TextNoteEditor extends React.Component {
   };
 
   getTitleRow = () => {
-    if (this.state.form.noteType
-        && this.state.form.noteType.startsWith("REF_TO")
-        && (this.state.form.noteType !== ("REF_TO_BIBLE"))
+    if (this.state.selectedType
+        && this.state.selectedType.startsWith("REF_TO")
+        && (this.state.selectedType !== ("REF_TO_BIBLE"))
     ) {
       return (<span className="App-no-display"></span>);
     } else {
@@ -977,7 +966,7 @@ class TextNoteEditor extends React.Component {
                   id={"fxEditorTitle"}
                   className={"App App-Text-Note-Editor-Title"}
                   type="text"
-                  value={this.state.form.noteTitle}
+                  value={this.state.title}
                   placeholder="title"
                   onChange={this.handleTitleChange}
               />
@@ -988,7 +977,7 @@ class TextNoteEditor extends React.Component {
   };
 
   getBiblicalScopeRow = () => {
-    if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
           <Row className="show-grid  App-Text-Note-Editor-Scope-Biblical-Row">
             <Col xs={2} md={2}>
@@ -999,7 +988,7 @@ class TextNoteEditor extends React.Component {
                   id={"fxEditorBiblicalScope"}
                   className={"App App-Text-Note-Editor-Scope"}
                   type="text"
-                  value={this.state.form.biblicalScope}
+                  value={this.state.scopeBiblical}
                   placeholder="scope"
                   onChange={this.handleBiblicalScopeChange}
               />
@@ -1013,7 +1002,7 @@ class TextNoteEditor extends React.Component {
   };
 
   getBiblicalLemmaRow = () => {
-    if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.selectedType && this.state.selectedType === "REF_TO_BIBLE") {
       return (
 
 
@@ -1026,7 +1015,7 @@ class TextNoteEditor extends React.Component {
                   id={"fcBibLemma"}
                   className={"App App-Text-Note-Editor-Lemma"}
                   type="text"
-                  value={this.state.form.biblicalLemma}
+                  value={this.state.lemmaBiblical}
                   placeholder="biblical lemma"
                   onChange={this.handleBiblicalLemmaChange}
               />
@@ -1117,7 +1106,7 @@ class TextNoteEditor extends React.Component {
         <WorkflowForm
             session={this.props.session}
             callback={this.handleWorkflowCallback}
-            library={this.state.form.library}
+            library={this.state.selectedNoteLibrary}
         />
     );
 
@@ -1142,20 +1131,20 @@ class TextNoteEditor extends React.Component {
     return (
         <FormattedTextNote
             session={this.props.session}
-            note={this.state.form.valueFormatted}
-            type={this.state.form.noteType}
-            title={this.state.form.noteTitle}
-            scopeLiturgical={this.state.form.liturgicalScope}
-            lemmaLiturgical={this.state.form.liturgicalLemma}
-            lemmaBiblical={this.state.form.biblicalLemma}
-            scopeBiblical={this.state.form.biblicalScope}
+            note={this.state.note}
+            type={this.state.selectedType}
+            title={this.state.title}
+            scopeLiturgical={this.state.scopeLiturgical}
+            lemmaLiturgical={this.state.lemmaLiturgical}
+            lemmaBiblical={this.state.lemmaBiblical}
+            scopeBiblical={this.state.scopeBiblical}
             ontologyRefEntityName={this.state.ontologyRefEntityName}
         />
     );
   };
 
   createMarkup() {
-    return {__html: this.state.form.valueFormatted};
+    return {__html: this.state.note};
   };
 
   getIdsWell = () => {
@@ -1191,38 +1180,30 @@ class TextNoteEditor extends React.Component {
   };
 
   getTabs = () => {
-    if (this.state.form) {
-      return (
-          <Well>
-            <Tabs id="App-Text-Node-Editor-Tabs" defaultActiveKey={"heading"} animation={false}>
-              <Tab eventKey={"heading"} title={this.state.labels.thisClass.settings}>
-                {this.getHeaderWell()}
-              </Tab>
-              <Tab eventKey={"formattedheading"} title={this.state.labels.thisClass.viewFormattedNote}>
-                {this.getFormattedHeaderRow()}
-              </Tab>
-              <Tab eventKey={"idsheading"} title={this.state.labels.thisClass.ids}>
-                {this.getIdsWell()}
-              </Tab>
-              <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
-                {this.getRevisionsPanel()}
-              </Tab>
-              <Tab eventKey={"tags"} title={this.state.labels.thisClass.tags}>
-                {this.getTagsRow()}
-              </Tab>
-              <Tab eventKey={"workflow"} title={this.state.labels.thisClass.workflow}>
-                {this.getWorkflowPanel()}
-              </Tab>
-            </Tabs>
-          </Well>
-      );
-    } else {
-      return (
-          <div>
-            <Spinner message={this.state.labels.messages.retrieving}/>
-          </div>
-      );
-    }
+    return (
+        <Well>
+          <Tabs id="App-Text-Node-Editor-Tabs" defaultActiveKey={"heading"} animation={false}>
+            <Tab eventKey={"heading"} title={this.state.labels.thisClass.settings}>
+              {this.getHeaderWell()}
+            </Tab>
+            <Tab eventKey={"formattedheading"} title={this.state.labels.thisClass.viewFormattedNote}>
+              {this.getFormattedHeaderRow()}
+            </Tab>
+            <Tab eventKey={"idsheading"} title={this.state.labels.thisClass.ids}>
+              {this.getIdsWell()}
+            </Tab>
+            <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
+              {this.getRevisionsPanel()}
+            </Tab>
+            <Tab eventKey={"tags"} title={this.state.labels.thisClass.tags}>
+              {this.getTagsRow()}
+            </Tab>
+            <Tab eventKey={"workflow"} title={this.state.labels.thisClass.workflow}>
+              {this.getWorkflowPanel()}
+            </Tab>
+          </Tabs>
+        </Well>
+    );
   };
 
   render() {
@@ -1244,7 +1225,7 @@ class TextNoteEditor extends React.Component {
                   </Row>
                   <Row className="show-grid  App-Text-Note-Editor-Row">
                     <Col xs={12} md={8}>
-                      <textarea id={this.state.editorId}/>
+                      <textarea id={this.props.id}/>
                     </Col>
                   </Row>
                   {this.getButtonRow()}
@@ -1272,7 +1253,7 @@ TextNoteEditor.propTypes = {
 
 // set default values for props here
 TextNoteEditor.defaultProps = {
+  id: "tinymceeditor"
 };
 
 export default TextNoteEditor;
-

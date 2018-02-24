@@ -20,6 +20,7 @@ import NotesLister from './NotesLister';
 import ParaColTextEditor from './ParaColTextEditor';
 import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchNotes from './SearchNotes';
+import SearchTextNotes from './SearchTextNotes';
 import SearchOntology from './SearchOntology';
 import SearchText from './SearchText';
 import SearchTemplates from './SearchTemplates';
@@ -64,6 +65,7 @@ export {
   , ParaColTextEditor
   , ParaRowTextEditor
   , SearchNotes
+  , SearchTextNotes
   , SearchOntology
   , SearchTemplates
   , SearchText

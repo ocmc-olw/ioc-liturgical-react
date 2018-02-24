@@ -52,6 +52,7 @@ import {
   , SearchOntology
   , SearchTemplates
   , SearchText
+  , SearchTextNotes
   , SearchTreebanks
   , SearchRelationships
   , Session
@@ -843,6 +844,9 @@ class Demo extends React.Component {
   handleSearchNotesCallback(id, value) {
     // TODO
   };
+  handleSearchTextNotesCallback(id, value) {
+    // TODO
+  };
   handleSearchOntologyCallback(id, value) {
     // TODO
   };
@@ -1276,6 +1280,15 @@ class Demo extends React.Component {
                       callback={this.handleSearchNotesCallback}
                       editor={true}
                       initialType={"NoteUser"}
+                      fixedType={false}
+                  />
+                </Panel> {/* Search Text Notes */}
+                <Panel header="Search Text Notes" eventKey="searchText Notes">
+                  <p>Use the Search Text Notes Component to search notes about texts.</p>
+                  <SearchTextNotes
+                      session={this.state.session}
+                      callback={this.handleSearchTextNotesCallback}
+                      editor={true}
                       fixedType={false}
                   />
                 </Panel> {/* Search Notes */}

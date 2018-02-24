@@ -2,6 +2,10 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import Select from 'react-select';
+import {
+  ControlLabel
+} from 'react-bootstrap';
+
 import 'react-select/dist/react-select.css';
 
 // TODO: switch to VirtualizedSelect, see TopicsSelector for example.  Much faster
@@ -30,7 +34,7 @@ export class ReactSelector extends React.Component {
   render () {
     return (
         <div className="resourceSelector">
-          <div className="resourceSelectorPrompt">{this.props.title}</div>
+          <ControlLabel className="resourceSelectorPrompt">{this.props.title}</ControlLabel>
           <Select
               name="form-field-name"
               value={this.state.value}

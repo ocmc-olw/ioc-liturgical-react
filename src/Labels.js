@@ -121,6 +121,7 @@ const   labels = {
       , headerText: "Text"
       , headerTo: "Refers To"
       , headerTopic: "Topic"
+      , headerType: "Type"
       , headerValue: "Value"
     }
     , linkSearchResultsTable: {
@@ -463,6 +464,7 @@ const   labels = {
       , submit: "Submit"
       , submitting: "Submitting..."
       , exists: "already exists..."
+      , textPrompt: "enter text to search for here"
     }
     , searchTemplates: {
       prompt: "enter a word or phrase"
@@ -1081,6 +1083,7 @@ const   labels = {
       , headerText: "Κείμενο"
       , headerTo: "Αναφέρεται Σε"
       , headerTopic: "Θέμα"
+      , headerType: "Τύπος"
       , headerValue: "Τιμή"
     }
     , linkSearchResultsTable: {
@@ -1421,6 +1424,7 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , textPrompt: "πληκτρολογήστε κείμενο για αναζήτηση εδώ"
     }
     , searchTemplates: {
       prompt: "Βρείτε κομμάτια"

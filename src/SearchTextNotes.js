@@ -1,15 +1,16 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import NoteSearchOptions from "./modules/NoteSearchOptions";
-import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
+import { get } from 'lodash';
+import TextNoteSearchOptions from "./modules/TextNoteSearchOptions";
+import ModalTextNoteEditor from './modules/ModalTextNoteEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Labels from './Labels';
 
-export class SearchNotes extends React.Component {
+export class SearchTextNotes extends React.Component {
 
   constructor(props) {
 
@@ -56,15 +57,14 @@ export class SearchNotes extends React.Component {
         .then(response => {
           // literals used as keys to get data from the response
           let valueKey = "dropdown";
-          let listKey = "typeList";
           let propsKey = "typeProps";
           let tagsKey = "typeTags";
           let tagOperatorsKey = "tagOperators";
-
+          let textNoteTypesKey = "textNoteTypes";
           let values = response.data.values[0][valueKey];
           this.setState({
                 dropdowns: {
-                  types: values[listKey]
+                  types: values[textNoteTypesKey]
                   , typeProps: values[propsKey]
                   , typeTags: values[tagsKey]
                   , tagOperators: values[tagOperatorsKey]
@@ -99,17 +99,10 @@ export class SearchNotes extends React.Component {
 
     let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
 
-    let selectedId = "";
-    if (docType) {
-      if (props.initialType === docType) {
-        selectedId = this.state.selectedId;
-      }
-    }
-
     return (
         {
           searchLabels: theSearchLabels
-          , docType: props.initialType
+          , docType: "NoteTextual"
           , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
@@ -166,9 +159,10 @@ export class SearchNotes extends React.Component {
             , onSelect: this.handleRowSelect
             , className: "App-row-select"
           }
+          , filter: { type: 'RegexFilter', delay: 100 }
           ,
           showSelectionButtons: false
-          , selectedId: selectedId
+          , selectedId: get(this.state, "selectedId", "" )
           , selectedLibrary: ""
           , selectedTopic: ""
           , selectedKey: ""
@@ -180,24 +174,28 @@ export class SearchNotes extends React.Component {
     )
   }
   getSearchForm() {
-    return (
-            <div>
-            {this.state.dropdowns ?
-                <NoteSearchOptions
-                    types={this.state.dropdowns.types}
-                    initialType={this.props.fixedType ? this.props.initialType : this.state.docType}
-                    properties={this.state.dropdowns.typeProps}
-                    matchers={this.getMatcherTypes()}
-                    tags={this.state.dropdowns.typeTags}
-                    tagOperators={this.state.dropdowns.tagOperators}
-                    handleSubmit={this.handleAdvancedSearchSubmit}
-                    labels={this.state.searchLabels}
-                />
-                : "Loading dropdowns for search..."
-            }
-            </div>
-    );
-  }
+    if (this.state.dropdowns) {
+      return (
+          <div>
+              <TextNoteSearchOptions
+                  session={this.props.session}
+                  types={this.state.dropdowns.types}
+                  initialType={this.props.initialType}
+                  properties={this.state.dropdowns.typeProps["NoteTextual"]}
+                  matchers={this.getMatcherTypes()}
+                  tags={this.state.dropdowns.typeTags["NoteTextual"]}
+                  tagOperators={this.state.dropdowns.tagOperators}
+                  handleSubmit={this.handleAdvancedSearchSubmit}
+                  labels={this.state.searchLabels}
+              />
+          </div>
+      );
+    } else {
+      return (
+          <span>Loading dropdowns for search...</span>
+      );
+    }
+  };
 
   getMatcherTypes () {
     return (
@@ -318,26 +316,22 @@ export class SearchNotes extends React.Component {
 
   getModalEditor = () => {
     return (
-        <ModalSchemaBasedEditor
+        <ModalTextNoteEditor
             session={this.props.session}
             restPath={Server.getDbServerDocsApi()}
-            showModal={this.state.showModalEditor}
-            title={this.state.title}
-            fromId={this.state.selectedTopic}
-            fromText={this.state.selectedText}
-            idLibrary={this.state.selectedLibrary}
-            idTopic={this.state.selectedTopic}
-            idKey={this.state.selectedKey}
+            noteIdTopic={this.state.selectedTopic}
+            noteIdLibrary={this.state.selectedLibrary}
+            noteIdKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
         />
     )
-  }
+  };
 
   onSizePerPageList = (sizePerPage) => {
     this.setState({
       options: {sizePerPage: sizePerPage}
     });
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -476,29 +470,34 @@ export class SearchNotes extends React.Component {
                 >ID
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='topic'
+                    dataField='text'
                     dataSort={ true }
                     export={ false }
-                    tdClassname="tdTopic"
-                    width={"10%"}
+                    tdClassname="tdText"
+                    width={"40%"}
                 >{this.state.resultsTableLabels.headerText}
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='key'
+                    dataField='type'
                     dataSort={ true }
-                    tdClassname="tdKey"
+                    tdClassname="tdType"
                     width={"10%"}
-                >{this.state.resultsTableLabels.headerDate}
+                    filter={this.state.filter}
+                >{this.state.resultsTableLabels.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='value'
                     dataSort={ true }
+                    width={"40%"}
+                    filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerNote}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
                     export={ false }
                     dataSort={ true }
+                    width={"10%"}
+                    filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerTags}
                 </TableHeaderColumn>
               </BootstrapTable>
@@ -510,12 +509,17 @@ export class SearchNotes extends React.Component {
   }
 }
 
-SearchNotes.propTypes = {
+SearchTextNotes.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func
   , editor: PropTypes.bool.isRequired
-  , initialType: PropTypes.string.isRequired
+  , initialType: PropTypes.string
   , fixedType: PropTypes.bool.isRequired
 };
 
-export default SearchNotes;
+SearchTextNotes.defaultProps = {
+  initialType: "*"
+};
+
+
+export default SearchTextNotes;
