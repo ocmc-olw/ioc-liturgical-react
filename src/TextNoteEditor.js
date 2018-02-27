@@ -52,11 +52,28 @@ class TextNoteEditor extends React.Component {
     let editorId = "tinymce-" + (new Date).getTime();
     let tags = [];
     let selectedTag = "";
-    if (props.form && props.form.tags) {
-      selectedTag = props.form.tags[0];
-      let j = props.form.tags.length;
-      for (let i=0; i < j; i++) {
-        tags.push({value: props.form.tags[i], label: props.form.tags[i]});
+    let selectedBiblicalIdParts = [
+        {key: "domain", label: "*"},
+        {key: "topic", label: ""},
+        {key: "key", label: ""}
+        ]
+    ;
+    if (props.form) {
+      if (props.form.tags) {
+        selectedTag = props.form.tags[0];
+        let j = props.form.tags.length;
+        for (let i=0; i < j; i++) {
+          tags.push({value: props.form.tags[i], label: props.form.tags[i]});
+        }
+      }
+      if (props.form.biblicalGreekId) {
+        let biblicalIdParts = IdManager.getParts(props.form.biblicalGreekId);
+        selectedBiblicalIdParts = [
+              {key: "domain", label: "*"},
+              {key: "topic", label: biblicalIdParts.library},
+              {key: "key", label: biblicalIdParts.topic + ":" + biblicalIdParts.key}
+            ]
+        ;
       }
     }
     this.state = {
@@ -99,11 +116,7 @@ class TextNoteEditor extends React.Component {
         {key: "topic", label: textIdParts.topic},
         {key: "key", label: textIdParts.key}
       ]
-      , selectedBiblicalIdParts: [
-        {key: "domain", label: "*"},
-        {key: "topic", label: ""},
-        {key: "key", label: ""}
-      ]
+      , selectedBiblicalIdParts: selectedBiblicalIdParts
       , showBibleView: (props.form && props.form.biblicalGreekId)
       , ontologyRefType: ""
       , ontologyRefEntityId: ""
