@@ -1,15 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
-import RichTextEditor from 'react-rte';
-import tinymce from 'tinymce';
-import { Editor } from '@tinymce/tinymce-react';
+import RichEditor from './modules/RichEditor';
+import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { get } from 'lodash';
-import 'tinymce/themes/modern';
-import 'tinymce/plugins/wordcount';
-import 'tinymce/plugins/lists';
-import './skins/lightgray/skin.min.css'
-import './skins/lightgray/content.min.css'
 import {
   Accordion
   , Button
@@ -135,7 +129,6 @@ class TextNoteEditor extends React.Component {
       , selectedTag: selectedTag
       , tags: tags
       , formIsValid: true
-      , editorText: RichTextEditor.createEmptyValue()
     };
 
     this.createMarkup = this.createMarkup.bind(this);
@@ -158,8 +151,6 @@ class TextNoteEditor extends React.Component {
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
 
     this.handleEditorChange = this.handleEditorChange.bind(this);
-    this.handleRichTextChange = this.handleRichTextChange.bind(this);
-    this.getRichTextEditor = this.getRichTextEditor.bind(this);
 
     this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
     this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
@@ -336,20 +327,13 @@ class TextNoteEditor extends React.Component {
     return timestamp;
   };
 
-  handleRichTextChange = (value) => {
-//    this.setState({editorText: value});
+  handleEditorChange = (plain, html) => {
+    let form = this.state.form;
+    form.value = plain;
+    form.valueFormatted = html;
+    this.setState({form: form}, this.validateForm);
   };
 
-  getRichTextEditor = () => {
-    return (
-        <div>
-        <RichTextEditor
-            value={this.state.editorText}
-            onChange={this.handleRichTextChange}
-        />
-        </div>
-    );
-  };
 
   onSubmit = () => {
     if (this.props.form && this.props.form.noteType) {
@@ -545,13 +529,6 @@ class TextNoteEditor extends React.Component {
       return item['label'];
     });
     this.setState({form: form, selectedTag: value, tags: values});
-  };
-
-  handleEditorChange = (content) => {
-    let form = this.state.form;
-    form.valueFormatted = content;
-    form.value = content;
-    this.setState({note: content, form: form}, this.validateForm);
   };
 
   handleBiblicalScopeChange = (e) => {
@@ -1302,17 +1279,9 @@ class TextNoteEditor extends React.Component {
   getEditor = () => {
     if (this.state.form) {
       return (
-          <Editor
-              apiKey={this.state.editorId}
-              init={{
-                menubar: false
-                , branding: false
-                , browser_spellcheck: true
-                , entity_encoding: "raw"
-              }}
-              plugins={'lists, wordcount'}
-              value={this.state.form.valueFormatted}
-              onEditorChange={this.handleEditorChange}
+          <RichEditor
+              session={this.props.session}
+              handleEditorChange={this.handleEditorChange}
           />
       );
     } else {
@@ -1344,7 +1313,6 @@ class TextNoteEditor extends React.Component {
                   <Row className="show-grid  App-Text-Note-Editor-Row">
                     <Col xs={12} md={8}>
                       {this.getEditor()}
-                      {this.getRichTextEditor()}
                     </Col>
                   </Row>
                   {this.getButtonRow()}

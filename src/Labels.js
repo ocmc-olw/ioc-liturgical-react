@@ -807,6 +807,9 @@ const   labels = {
       }
       , submit: "Set status and assigned user"
     }
+    , RichEditor: {
+
+    }
     , messages: {
       initial: "Important messages will appear here..."
       , creating: "Creating..."
@@ -1763,6 +1766,9 @@ const   labels = {
       }
       , submit: "Submit"
     }
+    , RichEditor: {
+
+    }
     , messages: {
       initial: "Important messages will appear here..."
       , creating: "Creating"
@@ -1978,7 +1984,7 @@ module.exports = {
   , getWorkflowAssignmentLabels: (code) => { return labels[code].WorkflowAssignment;}
   , getPageAboutLabels: (code) => { return labels[code].pageAbout;}
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
-
+  , getRichEditorLabels: (code) => { return labels[code].RichEditor;}
   , getSchemaBasedAddButtonLabels: (code) => { return labels[code].schemaBasedAddButton;}
   , getSearchLabels: (code) => { return labels[code].search;}
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}

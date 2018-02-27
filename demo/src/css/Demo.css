@@ -687,3 +687,50 @@ path.link {
 .App-spinner {
     color: black;
 }
+.rdw-editor-main {
+    background-color: white;
+}
+span {
+ padding-left: 0px !important;
+}
+
+.DraftEditor-root {
+    background: #fff;
+    border: 1px solid #ddd;
+    font-family: 'Georgia', serif;
+    font-size: 14px;
+    padding: 15px;
+}
+
+.RichEditor-editor {
+    border-top: 1px solid #ddd;
+    cursor: text;
+    font-size: 16px;
+    margin-top: 10px;
+}
+.rdw-editor-wrapper {
+    border-style: solid;
+    border-width: thin;
+    border-color: lightgrey;
+}
+.rdw-inline-wrapper {
+    border-right-style: solid;
+    border-right-width: thin;
+    border-right-color: lightgrey;
+}
+.rdw-list-wrapper {
+    border-left-style: solid;
+    border-left-width: thin;
+    border-left-color: lightgrey;
+}
+.rdw-link-wrapper {
+    border-left-style: solid;
+    border-left-width: thin;
+    border-left-color: lightgrey;
+}
+.rdw-history-wrapper {
+    border-left-style: solid;
+    border-left-width: thin;
+    border-left-color: lightgrey;
+}
+
