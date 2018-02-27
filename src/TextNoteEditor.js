@@ -48,13 +48,7 @@ class TextNoteEditor extends React.Component {
     let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
     let messages = Labels.getMessageLabels(languageCode);
     let initialMessage = messages.initial;
-    // let textIdParts = IdManager.getParts(props.textId);
-    // let biblicalIdParts = undefined;
-    // if (props.form && props.form.biblicalGreekId) {
-    //   biblicalIdParts = IdManager.getParts(props.biblicalGreekId);
-    //   console.log("biblicalIdParts=");
-    //   console.log(biblicalIdParts);
-    // }
+    let textIdParts = IdManager.getParts(props.textId);
     let editorId = "tinymce-" + (new Date).getTime();
     let tags = [];
     let selectedTag = "";
@@ -110,7 +104,7 @@ class TextNoteEditor extends React.Component {
         {key: "topic", label: ""},
         {key: "key", label: ""}
       ]
-      , showBibleView: false
+      , showBibleView: (props.form && props.form.biblicalGreekId)
       , ontologyRefType: ""
       , ontologyRefEntityId: ""
       , ontologyRefEntityName: ""
