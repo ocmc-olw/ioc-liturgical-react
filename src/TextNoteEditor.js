@@ -1282,6 +1282,7 @@ class TextNoteEditor extends React.Component {
           <RichEditor
               session={this.props.session}
               handleEditorChange={this.handleEditorChange}
+              content={this.state.form.valueFormatted}
           />
       );
     } else {
