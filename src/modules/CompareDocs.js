@@ -249,8 +249,6 @@ export class CompareDocs extends React.Component {
   };
 
   handleRowSelect = (row) => {
-    console.log(`CompareDocs.handleRowSelect=`);
-    console.log(row);
     let selectRow = this.state.selectRow;
     selectRow.selected = [row["id"]];
     let idParts = row["id"].split("~");
@@ -266,7 +264,6 @@ export class CompareDocs extends React.Component {
       , selectedSeq: row["seq"]
     });
     if (this.props.handleRowSelect) {
-      console.log("calling this.props.handleRowSelect");
       this.props.handleRowSelect(row);
     }
   };

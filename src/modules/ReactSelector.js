@@ -15,16 +15,16 @@ export class ReactSelector extends React.Component {
     super(props);
 
     this.state = {
-      value: this.props.initialValue
+      value: props.initialValue
     };
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
 
     this.setState({
       value: nextProps.initialValue
     });
-  }
+  };
 
   handleChange = (selection) => {
     this.props.changeHandler(selection, true);
@@ -47,7 +47,7 @@ export class ReactSelector extends React.Component {
         </div>
     )
   }
-}
+};
 
 ReactSelector.propTypes = {
   initialValue: PropTypes.string

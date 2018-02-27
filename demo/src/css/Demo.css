@@ -684,3 +684,6 @@ path.link {
 .App-search-text-input {
     margin-bottom: 8px;
 }
+.App-spinner {
+    color: black;
+}

@@ -2,10 +2,8 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
-import '../../node_modules/tinymce/skins/lightgray/skin.min.css'
-import '../../node_modules/tinymce/skins/lightgray/content.min.css'
-import './skins/lightgray/skin.min.css';
-import './skins/lightgray/content.min.css';
+//import '../../node_modules/tinymce/skins/lightgray/skin.min.css'
+//import '../../node_modules/tinymce/skins/lightgray/content.min.css'
 import './css/alwb.css';
 import './css/Demo.css'; // important that you load this as the last css
 import RestServer from './helpers/restServer'

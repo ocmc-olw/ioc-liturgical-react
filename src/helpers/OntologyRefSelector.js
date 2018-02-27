@@ -21,7 +21,7 @@ class OntologyRefSelector extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
-      , selectedEntityValue: "*"
+      , selectedEntityValue: props.initialValue
       , selectedEntityLabel: ""
       , fetching: false
       , data: []
@@ -165,11 +165,13 @@ OntologyRefSelector.propTypes = {
   session: PropTypes.object.isRequired
   , type: PropTypes.string.isRequired
   , callback: PropTypes.func.isRequired
+  , initialValue: PropTypes.string
 };
 
 // set default values for props here
 OntologyRefSelector.defaultProps = {
   languageCode: "en"
+  , initialValue: "*"
 };
 
 export default OntologyRefSelector;

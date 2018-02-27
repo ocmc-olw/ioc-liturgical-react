@@ -809,6 +809,8 @@ const   labels = {
     }
     , messages: {
       initial: "Important messages will appear here..."
+      , creating: "Creating..."
+      , created: "Created..."
       , requiredNotCompleted: "You have not completed required fields"
       , status: "Status"
       , retrieving: "retrieving..."
@@ -1763,6 +1765,8 @@ const   labels = {
     }
     , messages: {
       initial: "Important messages will appear here..."
+      , creating: "Creating"
+      , created: "Created"
       , requiredNotCompleted: "You have not completed required fields"
       , status: "Status: "
       , retrieving: "retrieving..."

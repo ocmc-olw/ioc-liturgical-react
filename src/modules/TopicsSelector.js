@@ -21,17 +21,17 @@ class TopicsSelector extends React.Component {
     this.handleSelection = this.handleSelection.bind(this);
   }
 
-  componentWillMount = () => {
+  componentDidMount = () => {
     this.fetchData(this.props.library);
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     let nextLibrary = nextProps.library;
     if (this.state.library && this.state.library !== nextLibrary) {
-      this.fetchData(nextLibrary);
+     this.fetchData(nextLibrary);
     }
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let dataFetched = false;
@@ -71,7 +71,7 @@ class TopicsSelector extends React.Component {
           , this.props.session.userInfo.password
           , this.handleFetchCallback
       );
-  }
+  };
 
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
@@ -80,14 +80,14 @@ class TopicsSelector extends React.Component {
         , data: restCallResult.data.values[0].items
       });
     }
-  }
+  };
 
   handleSelection = (selection) => {
     this.setState({
       selectedItem: selection["value"]
     });
     this.props.callBack(selection["value"]);
-  }
+  };
 
   render() {
         return (
