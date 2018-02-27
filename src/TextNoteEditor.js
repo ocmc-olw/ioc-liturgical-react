@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
+import RichTextEditor from 'react-rte';
 import tinymce from 'tinymce';
 import { Editor } from '@tinymce/tinymce-react';
 import { get } from 'lodash';
@@ -134,6 +135,7 @@ class TextNoteEditor extends React.Component {
       , selectedTag: selectedTag
       , tags: tags
       , formIsValid: true
+      , editorText: RichTextEditor.createEmptyValue()
     };
 
     this.createMarkup = this.createMarkup.bind(this);
@@ -154,7 +156,11 @@ class TextNoteEditor extends React.Component {
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
+
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleRichTextChange = this.handleRichTextChange.bind(this);
+    this.getRichTextEditor = this.getRichTextEditor.bind(this);
+
     this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
     this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
 
@@ -328,6 +334,21 @@ class TextNoteEditor extends React.Component {
         + second
     ;
     return timestamp;
+  };
+
+  handleRichTextChange = (value) => {
+//    this.setState({editorText: value});
+  };
+
+  getRichTextEditor = () => {
+    return (
+        <div>
+        <RichTextEditor
+            value={this.state.editorText}
+            onChange={this.handleRichTextChange}
+        />
+        </div>
+    );
   };
 
   onSubmit = () => {
@@ -1323,6 +1344,7 @@ class TextNoteEditor extends React.Component {
                   <Row className="show-grid  App-Text-Note-Editor-Row">
                     <Col xs={12} md={8}>
                       {this.getEditor()}
+                      {this.getRichTextEditor()}
                     </Col>
                   </Row>
                   {this.getButtonRow()}
