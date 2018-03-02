@@ -53,6 +53,9 @@ class TextNoteEditor extends React.Component {
         {key: "key", label: ""}
         ]
     ;
+
+    let selectedTypeLabel = "";
+
     if (props.form) {
       if (props.form.tags) {
         selectedTag = props.form.tags[0];
@@ -69,6 +72,9 @@ class TextNoteEditor extends React.Component {
               {key: "key", label: biblicalIdParts.topic + ":" + biblicalIdParts.key}
             ]
         ;
+      }
+      if (props.form.noteType) {
+        selectedTypeLabel = this.getLabel(props.form.noteType);
       }
     }
     this.state = {
@@ -97,6 +103,7 @@ class TextNoteEditor extends React.Component {
       , biblicalLibraries: undefined
       , selectedNoteLibrary: props.session.userInfo.domain
       , selectedType: ""
+      , selectedTypeLabel: selectedTypeLabel
       , selectedBibleBook: ""
       , selectedBibleChapter: ""
       , selectedBibleVerse: ""
@@ -133,75 +140,61 @@ class TextNoteEditor extends React.Component {
 
     this.createMarkup = this.createMarkup.bind(this);
     this.fetchBibleText = this.fetchBibleText.bind(this);
-    this.handleFetchBibleTextCallback = this.handleFetchBibleTextCallback.bind(this);
-
-    this.handleBiblicalIdSelection = this.handleBiblicalIdSelection.bind(this);
-    this.handleBibleRefChange = this.handleBibleRefChange.bind(this);
-    this.handleBiblicalLemmaChange = this.handleBiblicalLemmaChange.bind(this);
-    this.handleBiblicalScopeChange = this.handleBiblicalScopeChange.bind(this);
-
-    this.handleLiturgicalLemmaChange = this.handleLiturgicalLemmaChange.bind(this);
-    this.handleLiturgicalScopeChange = this.handleLiturgicalScopeChange.bind(this);
-    this.handleLiturgicalIdSelection = this.handleLiturgicalIdSelection.bind(this);
-
-    this.handleStateChange = this.handleStateChange.bind(this);
-    this.handleNoteLibraryChange = this.handleNoteLibraryChange.bind(this);
-    this.handleTitleChange = this.handleTitleChange.bind(this);
-    this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
-    this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
-
-    this.handleEditorChange = this.handleEditorChange.bind(this);
-
-    this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
-    this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
-
+    this.getBibleRefRow = this.getBibleRefRow.bind(this);
+    this.getBiblicalGreekLibraryRow = this.getBiblicalGreekLibraryRow.bind(this);
+    this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
+    this.getBiblicalScopeRow = this.getBiblicalScopeRow.bind(this);
+    this.getBiblicalTranslationLibraryRow = this.getBiblicalTranslationLibraryRow.bind(this);
+    this.getButtonRow = this.getButtonRow.bind(this);
     this.getEditor = this.getEditor.bind(this);
+    this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
     this.getFormattedView = this.getFormattedView.bind(this);
     this.getHeaderWell = this.getHeaderWell.bind(this);
-    this.handleLibrariesCallback = this.handleLibrariesCallback.bind(this);
-    this.getBibleRefRow = this.getBibleRefRow.bind(this);
+    this.getIdsWell = this.getIdsWell.bind(this);
+    this.getLabel = this.getLabel.bind(this);
+    this.getLiturgicalGreekLibraryRow = this.getLiturgicalGreekLibraryRow.bind(this);
+    this.getLiturgicalLemmaRow = this.getLiturgicalLemmaRow.bind(this);
+    this.getLiturgicalScopeRow = this.getLiturgicalScopeRow.bind(this);
+    this.getLiturgicalTranslationLibraryRow = this.getLiturgicalTranslationLibraryRow.bind(this);
+    this.getLiturgicalView = this.getLiturgicalView.bind(this);
+    this.getNoteLibraryRow = this.getNoteLibraryRow.bind(this);
+    this.getNoteTypeRow = this.getNoteTypeRow.bind(this);
+    this.getOntologyLabel = this.getOntologyLabel.bind(this);
     this.getOntologyRefRow = this.getOntologyRefRow.bind(this);
+    this.getRevisionsPanel = this.getRevisionsPanel.bind(this);
+    this.getTabs = this.getTabs.bind(this);
+    this.getTagsRow = this.getTagsRow.bind(this);
     this.getTimestamp = this.getTimestamp.bind(this);
     this.getTitleRow = this.getTitleRow.bind(this);
-    this.getNoteLibraryRow = this.getNoteLibraryRow.bind(this);
-
-    this.getBiblicalScopeRow = this.getBiblicalScopeRow.bind(this);
-    this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
-    this.getBiblicalGreekLibraryRow = this.getBiblicalGreekLibraryRow.bind(this);
-    this.getBiblicalTranslationLibraryRow = this.getBiblicalTranslationLibraryRow.bind(this);
-
-    this.getLiturgicalView = this.getLiturgicalView.bind(this);
-    this.getLiturgicalScopeRow = this.getLiturgicalScopeRow.bind(this);
-    this.getLiturgicalLemmaRow = this.getLiturgicalLemmaRow.bind(this);
-    this.getLiturgicalGreekLibraryRow = this.getLiturgicalGreekLibraryRow.bind(this);
-    this.getLiturgicalTranslationLibraryRow = this.getLiturgicalTranslationLibraryRow.bind(this);
-
-    this.getNoteTypeRow = this.getNoteTypeRow.bind(this);
-    this.getButtonRow = this.getButtonRow.bind(this);
-    this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
-    this.getOntologyLabel = this.getOntologyLabel.bind(this);
-    this.getRevisionsPanel = this.getRevisionsPanel.bind(this);
-    this.getTagsRow = this.getTagsRow.bind(this);
     this.getWorkflowPanel = this.getWorkflowPanel.bind(this);
-    this.getTabs = this.getTabs.bind(this);
-
-    this.getIdsWell = this.getIdsWell.bind(this);
-
+    this.handleBibleRefChange = this.handleBibleRefChange.bind(this);
     this.handleBiblicalGreekLibraryChange = this.handleBiblicalGreekLibraryChange.bind(this);
+    this.handleBiblicalIdSelection = this.handleBiblicalIdSelection.bind(this);
+    this.handleBiblicalLemmaChange = this.handleBiblicalLemmaChange.bind(this);
+    this.handleBiblicalScopeChange = this.handleBiblicalScopeChange.bind(this);
     this.handleBiblicalTranslationLibraryChange = this.handleBiblicalTranslationLibraryChange.bind(this);
-
+    this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
+    this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleFetchBibleTextCallback = this.handleFetchBibleTextCallback.bind(this);
+    this.handleLibrariesCallback = this.handleLibrariesCallback.bind(this);
     this.handleLiturgicalGreekLibraryChange = this.handleLiturgicalGreekLibraryChange.bind(this);
+    this.handleLiturgicalIdSelection = this.handleLiturgicalIdSelection.bind(this);
+    this.handleLiturgicalLemmaChange = this.handleLiturgicalLemmaChange.bind(this);
+    this.handleLiturgicalScopeChange = this.handleLiturgicalScopeChange.bind(this);
     this.handleLiturgicalTranslationLibraryChange = this.handleLiturgicalTranslationLibraryChange.bind(this);
-
+    this.handleNoteLibraryChange = this.handleNoteLibraryChange.bind(this);
+    this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
+    this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
+    this.handleStateChange = this.handleStateChange.bind(this);
+    this.handleTitleChange = this.handleTitleChange.bind(this);
+    this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
     this.mapTagsToObjectList = this.mapTagsToObjectList.bind(this);
-
     this.onSubmit = this.onSubmit.bind(this);
-
     this.settingsValid = this.settingsValid.bind(this);
-    this.validateForm = this.validateForm.bind(this);
-
     this.submitPost = this.submitPost.bind(this);
     this.submitPut = this.submitPut.bind(this);
+    this.validateForm = this.validateForm.bind(this);
+
   };
 
   componentWillMount = () => {
@@ -219,8 +212,11 @@ class TextNoteEditor extends React.Component {
     let form = {};
     let tags = [];
     let selectedTag = "";
+    let selectedTypeLabel = get(this.state, "selectedTypeLabel", "");
     if (nextProps.form && nextProps.form.noteType) {
+      console.log("componentWillReceiveProps...setting selectedTypeLabel");
       form = nextProps.form;
+      selectedTypeLabel = this.getLabel(form.noteType);
     } else {
       form = nextProps.session.uiSchemas.getForm("TextualNote:1.1");
       form.liturgicalScope = textIdParts.key;
@@ -237,7 +233,6 @@ class TextNoteEditor extends React.Component {
         tags.push({value: form.tags[i], label: form.tags[i]});
       }
     }
-    let selectedTypeLabel = form.noteType;
 
     this.setState((prevState, props) => {
       return {
@@ -638,7 +633,7 @@ class TextNoteEditor extends React.Component {
           />
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
@@ -649,7 +644,7 @@ class TextNoteEditor extends React.Component {
     ) {
       let type = this.getOntologyLabel(this.state.form.noteType);
       return (
-          <Row className="show-grid App-Ontology-Ref-Selector-Row">
+          <Row className="App show-grid App-Ontology-Ref-Selector-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.refersTo}:</ControlLabel>
             </Col>
@@ -666,7 +661,7 @@ class TextNoteEditor extends React.Component {
           </Row>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
@@ -780,14 +775,14 @@ class TextNoteEditor extends React.Component {
           </Accordion>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
 
   getLiturgicalScopeRow = () => {
     return (
-        <Row className="show-grid  App-Text-Note-Editor-Scope-Row">
+        <Row className="App show-grid  App-Text-Note-Editor-Scope-Row">
           <Col xs={2} md={2}>
             <ControlLabel>{this.state.labels.thisClass.liturgicalScope}:</ControlLabel>
           </Col>
@@ -807,7 +802,7 @@ class TextNoteEditor extends React.Component {
 
   getLiturgicalLemmaRow = () => {
     return (
-        <Row className="show-grid  App-Text-Note-Editor-Lemma-Row">
+        <Row className="App show-grid  App-Text-Note-Editor-Lemma-Row">
           <Col xs={2} md={2}>
             <ControlLabel>{this.state.labels.thisClass.liturgicalLemma}:</ControlLabel>
           </Col>
@@ -839,7 +834,7 @@ class TextNoteEditor extends React.Component {
         && this.state.form.library.length < 1
     ) {
       return (
-          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+          <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.noteLibrary}:</ControlLabel>
             </Col>
@@ -855,7 +850,7 @@ class TextNoteEditor extends React.Component {
           </Row>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
@@ -871,7 +866,7 @@ class TextNoteEditor extends React.Component {
         && this.state.biblicalLibraries
     ) {
       return (
-          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+          <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.biblicalTranslationLibrary}:</ControlLabel>
             </Col>
@@ -887,7 +882,7 @@ class TextNoteEditor extends React.Component {
           </Row>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
@@ -905,7 +900,7 @@ class TextNoteEditor extends React.Component {
   getLiturgicalGreekLibraryRow = () => {
     if (this.state.liturgicalLibraries) {
       return (
-          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+          <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.liturgicalGreekLibrary}:</ControlLabel>
             </Col>
@@ -944,7 +939,7 @@ class TextNoteEditor extends React.Component {
         && this.state.form.noteType === "REF_TO_BIBLE") {
       if (this.state.biblicalLibraries) {
         return (
-            <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+            <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
               <Col xs={2} md={2}>
                 <ControlLabel>{this.state.labels.thisClass.biblicalGreekLibrary}:</ControlLabel>
               </Col>
@@ -967,7 +962,7 @@ class TextNoteEditor extends React.Component {
         );
       }
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
 
   };
@@ -981,7 +976,7 @@ class TextNoteEditor extends React.Component {
   getLiturgicalTranslationLibraryRow = () => {
     if (this.state.liturgicalLibraries && this.state.liturgicalLibraries.translationDropdown) {
       return (
-          <Row className="show-grid  App-Text-Note-Editor-Library-Row">
+          <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.liturgicalTranslationLibrary}:</ControlLabel>
             </Col>
@@ -997,7 +992,7 @@ class TextNoteEditor extends React.Component {
           </Row>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
@@ -1006,10 +1001,10 @@ class TextNoteEditor extends React.Component {
         && this.state.form.noteType.startsWith("REF_TO")
         && (this.state.form.noteType !== ("REF_TO_BIBLE"))
     ) {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     } else {
       return (
-          <Row className="show-grid App-Text-Note-Editor-Title-Row">
+          <Row className="App show-grid App-Text-Note-Editor-Title-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.title}:</ControlLabel>
             </Col>
@@ -1031,7 +1026,7 @@ class TextNoteEditor extends React.Component {
   getBiblicalScopeRow = () => {
     if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
       return (
-          <Row className="show-grid  App-Text-Note-Editor-Scope-Biblical-Row">
+          <Row className="App show-grid  App-Text-Note-Editor-Scope-Biblical-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.biblicalScope}:</ControlLabel>
             </Col>
@@ -1048,7 +1043,7 @@ class TextNoteEditor extends React.Component {
           </Row>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
 
   };
@@ -1058,7 +1053,7 @@ class TextNoteEditor extends React.Component {
       return (
 
 
-          <Row className="show-grid  App-Text-Note-Editor-Lemma-Row">
+          <Row className="App show-grid  App-Text-Note-Editor-Lemma-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.biblicalLemma}:</ControlLabel>
             </Col>
@@ -1075,13 +1070,13 @@ class TextNoteEditor extends React.Component {
           </Row>
       );
     } else {
-      return (<span className="App-no-display"></span>);
+      return (<span className="App App-no-display"></span>);
     }
   };
 
   getNoteTypeRow = () => {
     return (
-        <Row className="show-grid App-Text-Note-Editor-Type-Row">
+        <Row className="App show-grid App-Text-Note-Editor-Type-Row">
           <Col xs={2} md={2}>
             <ControlLabel>{this.state.labels.thisClass.type}:</ControlLabel>
           </Col>
@@ -1108,7 +1103,7 @@ class TextNoteEditor extends React.Component {
       submitButtonDisabled = false;
     }
     return (
-        <Row className="show-grid App-Text-Note-Editor-Button-Row">
+        <Row className="App show-grid App-Text-Note-Editor-Button-Row">
           <Col xs={12} md={12}>
             <Button
                 className="App App-Button"
@@ -1118,11 +1113,9 @@ class TextNoteEditor extends React.Component {
             >
               {this.state.labels.buttons.submit}
             </Button>
-            <span className="App-Text-Editor-Workflow-Glyph">
-              <Glyphicon
-                  glyph={this.state.workflow.statusIcon}/>
-              <FontAwesome
-                  name={this.state.workflow.visibilityIcon}/>
+            <span className="App App-Text-Editor-Workflow-Glyph">
+              <Glyphicon glyph={this.state.workflow.statusIcon}/>
+              <FontAwesome name={this.state.workflow.visibilityIcon}/>
             </span>
           </Col>
         </Row>
@@ -1142,7 +1135,7 @@ class TextNoteEditor extends React.Component {
 
   getTagsRow = () => {
     return (
-        <Well className="App-Text-Note-Editor-Button-Row">
+        <Well className="App App-Text-Note-Editor-Button-Row">
           <EditableSelector
               session={this.props.session}
               initialValue={this.state.selectedTag}
@@ -1174,14 +1167,39 @@ class TextNoteEditor extends React.Component {
 
   };
 
+  getLabel = (type) => {
+     console.log(`getLabel.type=${type}`);
+    let label = "";
+    let targetValue = type;
+    if (
+        this.props.session
+        && this.props.session.dropdowns
+    ) {
+      console.log(`noteType=${this.props.form.noteType}`);
+      if (! type) {
+        targetValue = this.props.form.noteType;
+      }
+      let j = this.props.session.dropdowns.noteTypesDropdown.length;
+      for (let i=0; i < j; i++) {
+        let o = this.props.session.dropdowns.noteTypesDropdown[i];
+        if (o.value === targetValue) {
+          label = o.label;
+          break;
+        }
+      }
+    }
+    console.log(`label=${label}`);
+    return label;
+  };
+
   getFormattedHeaderRow = () => {
     return (
         <Well>
           <div className="App App-Text-Note-formatted">
-            <div className="App-Text-Note-Type">
-              <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
-              <span className="App-Text-Note-Type-As-Heading">{this.state.selectedTypeLabel}</span>
-              <Glyphicon className="App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+            <div className="App App-Text-Note-Type">
+              <Glyphicon className="App App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
+              <span className="App App-Text-Note-Type-As-Heading">{this.state.selectedTypeLabel}</span>
+              <Glyphicon className="App App-Text-Note-Type-Glyph" glyph={"screenshot"}/>
             </div>
             {this.getFormattedView()}
           </div>
@@ -1246,7 +1264,8 @@ class TextNoteEditor extends React.Component {
       return (
           <Well>
             <Tabs id="App-Text-Node-Editor-Tabs" defaultActiveKey={"heading"} animation={false}>
-              <Tab eventKey={"heading"} title={this.state.labels.thisClass.settings}>
+              <Tab eventKey={"heading"} title={
+                this.state.labels.thisClass.settings}>
                 {this.getHeaderWell()}
               </Tab>
               <Tab eventKey={"formattedheading"} title={this.state.labels.thisClass.viewFormattedNote}>
@@ -1296,7 +1315,7 @@ class TextNoteEditor extends React.Component {
 
   render() {
     return (
-        <div className="App-Text-Note-Editor">
+        <div className="App App-Text-Note-Editor">
           {this.getLiturgicalView()}
           {this.getBiblicalView()}
           <form>
@@ -1304,21 +1323,21 @@ class TextNoteEditor extends React.Component {
             >
               <Well>
                 <Grid>
-                  <Row className="show-grid">
+                  <Row className="App show-grid">
                     <Col xs={12} md={8}>
                       <ControlLabel>
                         {this.state.labels.thisClass.note}: {this.state.selectedTypeLabel}
                       </ControlLabel>
                     </Col>
                   </Row>
-                  <Row className="show-grid  App-Text-Note-Editor-Row">
+                  <Row className="App show-grid  App-Text-Note-Editor-Row">
                     <Col xs={12} md={8}>
                       {this.getEditor()}
                     </Col>
                   </Row>
                   {this.getButtonRow()}
                   <HelpBlock>
-                    <div><span className="App-message"><FontAwesome
+                    <div><span className="App App-message"><FontAwesome
                         name={this.state.messageIcon}/> {this.state.message}</span>
                     </div>
                   </HelpBlock>
