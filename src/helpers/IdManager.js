@@ -6,20 +6,30 @@ const delimiter = "~";
 
 module.exports = {
   // splits the id into an object with its three parts: library, topic, key
+  // if the key contains a colon, it is chapter:verse.  These will also become properties
   getParts: (id) => {
     let IdParts = {}
     let parts = id.split(delimiter);
     if (parts.length === 3) {
-      IdParts = {
-        library: parts[0]
-        , topic: parts[1]
-        , key: parts[2]
-      };
+      let book = "";
+      let chapter = "";
+      let verse = "";
       let chapVerse = parts[2].split(":");
       if (chapVerse.length === 2) {
-        IdParts.book = parts[1];
-        IdParts.chapter = chapVerse[0];
-        IdParts.verse = chapVerse[1];
+        IdParts = {
+          library: parts[0]
+          , topic: parts[1]
+          , key: parts[2]
+          , book: parts[1]
+          , chapter: chapVerse[0]
+          , verse: chapVerse[1]
+        };
+      } else {
+        IdParts = {
+          library: parts[0]
+          , topic: parts[1]
+          , key: parts[2]
+        };
       }
     } else {
       IdParts = undefined;

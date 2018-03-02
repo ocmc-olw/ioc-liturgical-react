@@ -110,9 +110,6 @@ div.container {
 .App-font-awesome-spinner {
     color: red;
 }
-.panel-title {
-    cursor: pointer;
-}
 .Navbar.Collapse {
     position: fixed;
     top: 6px;
@@ -127,10 +124,10 @@ div.container {
 }
 
 .panel-title {
+    cursor: pointer;
     color: #007eff;
-    font-weight: bolder;
+    font-weight: bolder !important;
 }
-
 .label-warning {
     display: inherit;
 }

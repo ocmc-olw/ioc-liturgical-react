@@ -1,5 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import { get } from 'lodash';
 import Select from 'react-select';
 import {Col, ControlLabel, Grid, Row } from 'react-bootstrap';
 import Labels from '../Labels';
@@ -9,6 +10,26 @@ class BibleRefSelector extends React.Component {
   constructor(props) {
     super(props);
     let languageCode = props.session.languageCode;
+    let citeBook = "";
+    let citeChapter = "";
+    let citeVerse = "";
+
+    if (props.book) {
+      citeBook = props.book;
+      citeChapter = props.chapter.substring(1,props.chapter.length);
+      try {
+        citeChapter = parseInt(citeChapter);
+      } catch (err) {
+        citeChapter = props.chapter;
+      }
+      citeVerse = 0;
+      try {
+        citeVerse = parseInt(props.verse);
+      } catch (err) {
+        citeVerse = props.verse;
+      };
+    }
+
     this.state = {
       labels: { //
         thisClass: Labels.getBibleRefSelectorLabels(languageCode)
@@ -19,12 +40,14 @@ class BibleRefSelector extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(languageCode).initial
-      , selectedBook: ""
-      , citeBook: ""
-      , selectedChapter: ""
-      , selectedVerse: ""
+      , selectedBook: props.book
+      , selectedChapter: props.chapter
+      , selectedVerse: props.verse
       , selectedRef: ""
-    }
+      , citeBook: citeBook
+      , citeChapter: citeChapter
+      , citeVerse: citeVerse
+    };
 
     this.handleBookChange = this.handleBookChange.bind(this);
     this.handleChapterChange = this.handleChapterChange.bind(this);
@@ -34,11 +57,11 @@ class BibleRefSelector extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     // make any initial function calls here...
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
@@ -52,10 +75,14 @@ class BibleRefSelector extends React.Component {
             , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
           }
           , message: Labels.getMessageLabels(languageCode).initial
+          , selectedBook: get(this.state, "selectedBook", nextProps.book)
+          , selectedChapter: get(this.state, "selectedChapter", nextProps.chapter)
+          , selectedVerse: get(this.state, "selectedVerse", nextProps.verse)
+
         }
       }, function () { return this.handleStateChange("place holder")});
     }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
@@ -173,11 +200,17 @@ class BibleRefSelector extends React.Component {
 BibleRefSelector.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func.isRequired
+  , book: PropTypes.string
+  , chapter: PropTypes.string
+  , verse: PropTypes.string
 };
 
 // set default values for props here
 BibleRefSelector.defaultProps = {
   languageCode: "en"
+  , book: ""
+  , chapter: ""
+  , verse: ""
 };
 
 export default BibleRefSelector;

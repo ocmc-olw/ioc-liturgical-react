@@ -55,6 +55,12 @@ class TextNoteEditor extends React.Component {
     ;
 
     let selectedTypeLabel = "";
+    let selectedBiblicalGreekId = "";
+    let selectedBiblicalLibrary = "";
+    let selectedBiblicalBook = "";
+    let selectedBiblicalChapter = "";
+    let selectedBiblicalVerse = "";
+    let citeBible = "";
 
     if (props.form) {
       if (props.form.tags) {
@@ -68,10 +74,28 @@ class TextNoteEditor extends React.Component {
         let biblicalIdParts = IdManager.getParts(props.form.biblicalGreekId);
         selectedBiblicalIdParts = [
               {key: "domain", label: "*"},
-              {key: "topic", label: biblicalIdParts.library},
-              {key: "key", label: biblicalIdParts.topic + ":" + biblicalIdParts.key}
-            ]
-        ;
+              {key: "topic", label: biblicalIdParts.topic},
+              {key: "key", label: biblicalIdParts.key}
+            ];
+        selectedBiblicalGreekId = props.form.biblicalGreekId;
+        selectedBiblicalLibrary = biblicalIdParts.library;
+        selectedBiblicalBook = biblicalIdParts.book;
+        selectedBiblicalChapter = biblicalIdParts.chapter;
+        selectedBiblicalVerse = biblicalIdParts.verse;
+        let citeBook = biblicalIdParts.book;
+        let citeChapter = biblicalIdParts.chapter.substring(1,biblicalIdParts.chapter.length);
+        try {
+          citeChapter = parseInt(citeChapter);
+        } catch (err) {
+          citeChapter = biblicalIdParts.chapter;
+        }
+        let citeVerse = 0;
+        try {
+          citeVerse = parseInt(biblicalIdParts.verse);
+        } catch (err) {
+          citeVerse = biblicalIdParts.verse;
+        };
+        citeBible = citeBook + " " + citeChapter + ":" + citeVerse;
       }
       if (props.form.noteType) {
         selectedTypeLabel = this.getLabel(props.form.noteType);
@@ -104,11 +128,14 @@ class TextNoteEditor extends React.Component {
       , selectedNoteLibrary: props.session.userInfo.domain
       , selectedType: ""
       , selectedTypeLabel: selectedTypeLabel
-      , selectedBibleBook: ""
-      , selectedBibleChapter: ""
-      , selectedBibleVerse: ""
       , bibleRef: ""
-      , selectedBiblicalGreekId: ""
+      , selectedBiblicalGreekId: selectedBiblicalGreekId
+      , selectedBiblicalIdParts: selectedBiblicalIdParts
+      , selectedBiblicalLibrary: selectedBiblicalLibrary
+      , selectedBiblicalBook: selectedBiblicalBook
+      , selectedBiblicalChapter: selectedBiblicalChapter
+      , selectedBiblicalVerse: selectedBiblicalVerse
+      , citeBible: citeBible
       , selectedBiblicalTranslationId: ""
       , selectedLiturgicalGreekId: ""
       , selectedLiturgicalTranslationId: ""
@@ -118,8 +145,7 @@ class TextNoteEditor extends React.Component {
         {key: "topic", label: textIdParts.topic},
         {key: "key", label: textIdParts.key}
       ]
-      , selectedBiblicalIdParts: selectedBiblicalIdParts
-      , showBibleView: (props.form && props.form.biblicalGreekId)
+      , showBibleView: (props.form && props.form.biblicalGreekId) ? true : false
       , ontologyRefType: ""
       , ontologyRefEntityId: ""
       , ontologyRefEntityName: ""
@@ -149,7 +175,7 @@ class TextNoteEditor extends React.Component {
     this.getEditor = this.getEditor.bind(this);
     this.getFormattedHeaderRow = this.getFormattedHeaderRow.bind(this);
     this.getFormattedView = this.getFormattedView.bind(this);
-    this.getHeaderWell = this.getHeaderWell.bind(this);
+    this.getSettingsWell = this.getSettingsWell.bind(this);
     this.getIdsWell = this.getIdsWell.bind(this);
     this.getLabel = this.getLabel.bind(this);
     this.getLiturgicalGreekLibraryRow = this.getLiturgicalGreekLibraryRow.bind(this);
@@ -213,8 +239,12 @@ class TextNoteEditor extends React.Component {
     let tags = [];
     let selectedTag = "";
     let selectedTypeLabel = get(this.state, "selectedTypeLabel", "");
+    // let selectedBiblicalLibrary = "";
+    // let selectedBiblicalBook = "";
+    // let selectedBiblicalChapter = "";
+    // let selectedBiblicalVerse = "";
+
     if (nextProps.form && nextProps.form.noteType) {
-      console.log("componentWillReceiveProps...setting selectedTypeLabel");
       form = nextProps.form;
       selectedTypeLabel = this.getLabel(form.noteType);
     } else {
@@ -568,12 +598,17 @@ class TextNoteEditor extends React.Component {
   };
 
   handleBibleRefChange = (book, chapter, verse, citeBible) => {
+    console.log(`handleBibleRefChange.citeBible= ${citeBible}`);
     let form = this.state.form;
     let showBibleView = false;
     if (book.length > 0 && chapter.length > 0 && verse.length > 0) {
       showBibleView = true;
       form.biblicalScope = citeBible;
-      form.biblicalGreekId = book + "~" + chapter + "~" + verse;
+      let library = "";
+      if (this.state.selectedBiblicalLibrary) {
+        library = this.state.selectedBiblicalLibrary;
+      }
+      form.biblicalGreekId = library + "~" + book + "~" + chapter + ":" + verse;
     }
     this.setState(
         {
@@ -584,6 +619,10 @@ class TextNoteEditor extends React.Component {
           ]
           , showBibleView
           , form: form
+          , selectedBiblicalBook: book
+          , selectedBiblicalChapter: chapter
+          , selectedBiblicalVerse: verse
+          , citeBible: citeBible
         }, this.validateForm
     );
   };
@@ -630,6 +669,9 @@ class TextNoteEditor extends React.Component {
           <BibleRefSelector
               session={this.props.session}
               callback={this.handleBibleRefChange}
+              book={this.state.selectedBiblicalBook}
+              chapter={this.state.selectedBiblicalChapter}
+              verse={this.state.selectedBiblicalVerse}
           />
       );
     } else {
@@ -707,10 +749,15 @@ class TextNoteEditor extends React.Component {
   handleBiblicalIdSelection = (row) => {
     let id = row["id"];
     let form = this.state.form;
+    let biblicalIdParts = IdManager.getParts(id);
 
     if (id.startsWith("gr_")) {
       form.biblicalGreekId = id;
-      this.setState({ form: form, selectedBiblicalGreekId: id })
+      this.setState({
+        form: form
+        , selectedBiblicalGreekId: id
+        , selectedBiblicalLibrary: biblicalIdParts.library
+      })
     } else {
       form.biblicalTranslationId = id;
       this.setState({ form: form, selectedBiblicalTranslationId: id })
@@ -719,7 +766,7 @@ class TextNoteEditor extends React.Component {
 
   handleLibrariesCallback = ( type, id , libraries ) => {
     if (libraries) {
-
+      let form = this.state.form;
       let greekDropdown = libraries.filter((row) => {
         return row.library.startsWith("gr_");
       }).map((row) => {
@@ -733,19 +780,25 @@ class TextNoteEditor extends React.Component {
       });
 
       if (type === "Biblical") {
-        biblicalLibraries =
-            this.setState({
-              biblicalLibraries: {
-                greekBibleId: id
-                , libraries: libraries
-                , greekDropdown: greekDropdown
-                , translationDropdown: translationDropdown
-              }
-              , selectedBiblicalGreekId: id
-            });
-      } else {
+        let biblicalIdParts = IdManager.getParts(id);
+        let selectedBiblicalLibrary = biblicalIdParts.library;
+        form.biblicalGreekId = id;
         this.setState({
-          liturgicalLibraries: {
+          form: form
+          , biblicalLibraries: {
+            greekBibleId: id
+            , libraries: libraries
+            , greekDropdown: greekDropdown
+            , translationDropdown: translationDropdown
+          }
+          , selectedBiblicalGreekId: id
+          , selectedBiblicalLibrary: selectedBiblicalLibrary
+        });
+      } else {
+        form.liturgicalGreekId = id;
+        this.setState({
+          form: form
+          , liturgicalLibraries: {
             greekBibleId: id
             , libraries: libraries
             , greekDropdown: greekDropdown
@@ -761,7 +814,7 @@ class TextNoteEditor extends React.Component {
     if (this.state.showBibleView) {
       return (
           <Accordion>
-            <Panel header={this.state.labels.thisClass.viewBiblicalText + ": " + this.state.form.biblicalGreekId} eventKey="TextNoteEditor">
+            <Panel header={this.state.labels.thisClass.viewBiblicalText + ": " + this.state.citeBible} eventKey="TextNoteEditor">
               <CompareDocs
                   session={this.props.session}
                   handleRowSelect={this.handleBiblicalIdSelection}
@@ -1168,14 +1221,12 @@ class TextNoteEditor extends React.Component {
   };
 
   getLabel = (type) => {
-     console.log(`getLabel.type=${type}`);
     let label = "";
     let targetValue = type;
     if (
         this.props.session
         && this.props.session.dropdowns
     ) {
-      console.log(`noteType=${this.props.form.noteType}`);
       if (! type) {
         targetValue = this.props.form.noteType;
       }
@@ -1188,7 +1239,6 @@ class TextNoteEditor extends React.Component {
         }
       }
     }
-    console.log(`label=${label}`);
     return label;
   };
 
@@ -1242,7 +1292,7 @@ class TextNoteEditor extends React.Component {
     );
   };
 
-  getHeaderWell = () => {
+  getSettingsWell = () => {
     return (
         <Well>
           <Grid>
@@ -1266,7 +1316,7 @@ class TextNoteEditor extends React.Component {
             <Tabs id="App-Text-Node-Editor-Tabs" defaultActiveKey={"heading"} animation={false}>
               <Tab eventKey={"heading"} title={
                 this.state.labels.thisClass.settings}>
-                {this.getHeaderWell()}
+                {this.getSettingsWell()}
               </Tab>
               <Tab eventKey={"formattedheading"} title={this.state.labels.thisClass.viewFormattedNote}>
                 {this.getFormattedHeaderRow()}
