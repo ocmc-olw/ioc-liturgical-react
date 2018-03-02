@@ -607,6 +607,7 @@ path.link {
     font-weight: bold;
     text-justify: none;
     display: inline-block !important;
+    margin-left: 5px !important;
     margin-right: 8px;
 }
 
