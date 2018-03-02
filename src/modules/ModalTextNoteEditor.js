@@ -17,7 +17,12 @@ export class ModalTextNoteEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    console.log("ModalTextNoteEditor constructor");
     let textId = IdManager.getParts(props.noteIdTopic);
+    let showForm = true;
+    if (props.noteIdLibrary) {
+      showForm = false;
+    }
 
     this.state = {
       labels: {
@@ -29,6 +34,7 @@ export class ModalTextNoteEditor extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(props.session.languageCode).initial
       , showModal: true
+      , showForm: showForm
       , textId: textId
     };
 

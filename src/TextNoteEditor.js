@@ -38,7 +38,7 @@ import axios from "axios/index";
 class TextNoteEditor extends React.Component {
   constructor(props) {
     super(props);
-
+console.log("TextNodeEditor constructor");
     let languageCode = props.session.languageCode;
     let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
     let messages = Labels.getMessageLabels(languageCode);
@@ -1215,6 +1215,8 @@ class TextNoteEditor extends React.Component {
             session={this.props.session}
             callback={this.handleWorkflowCallback}
             library={this.state.form.library}
+            status={this.state.form.status}
+            visibility={this.state.form.visibility}
         />
     );
 

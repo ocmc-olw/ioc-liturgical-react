@@ -132,7 +132,7 @@ class SchemaBasedAddButton extends React.Component {
       idSelected: idSelected
       , showModal: true
     });
-  }
+  };
 
   handleIdBuilderClose = () => {
     let idSelected = (this.state.idKey && this.state.idKey.length > 0);

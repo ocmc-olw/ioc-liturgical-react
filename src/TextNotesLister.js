@@ -24,22 +24,22 @@ export class TextNotesLister extends React.Component {
 
     this.state = this.setTheState(props, "");
 
-    this.fetchData = this.fetchData.bind(this);
-    this.onSizePerPageList = this.onSizePerPageList.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.handleCancelRequest = this.handleCancelRequest.bind(this);
-    this.handleDoneRequest = this.handleDoneRequest.bind(this);
-    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
-    this.showRowComparison = this.showRowComparison.bind(this);
-    this.getModalEditor = this.getModalEditor.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
-    this.handleAddClose = this.handleAddClose.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.getAddButton = this.getAddButton.bind(this);
-    this.verifyTextId = this.verifyTextId.bind(this);
+    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
+    this.getModalEditor = this.getModalEditor.bind(this);
+    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
+    this.handleAddClose = this.handleAddClose.bind(this);
+    this.handleCancelRequest = this.handleCancelRequest.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.handleGetForIdCallback = this.handleGetForIdCallback.bind(this);
-  }
+    this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.onSizePerPageList = this.onSizePerPageList.bind(this);
+    this.setTheState = this.setTheState.bind(this);
+    this.showRowComparison = this.showRowComparison.bind(this);
+    this.verifyTextId = this.verifyTextId.bind(this);  }
 
   componentWillMount = () => {
     this.fetchData();
@@ -128,7 +128,7 @@ export class TextNotesLister extends React.Component {
           showSelectionButtons: false
           , selectedId: selectedId
           , selectedLibrary: ""
-          , selectedTopic: ""
+          , selectedTopic: props.topicId
           , selectedKey: ""
           , title: ""
           , selectedText: ""
@@ -180,9 +180,11 @@ export class TextNotesLister extends React.Component {
   };
 
   deselectAllRows = () => {
-    this.refs.theTable.setState({
-      selectedRowKeys: []
-    });
+    if (this.refs && this.refs.theTable) {
+      this.refs.theTable.setState({
+        selectedRowKeys: []
+      });
+    }
   };
 
   handleRowSelect = (row, isSelected, e) => {
@@ -223,16 +225,12 @@ export class TextNotesLister extends React.Component {
 
   getModalEditor = () => {
     return (
-        <ModalSchemaBasedEditor
+        <ModalTextNoteEditor
             session={this.props.session}
             restPath={Server.getDbServerDocsApi()}
-            showModal={this.state.showModalEditor}
-            title={this.state.title}
-            fromId={this.state.selectedTopic}
-            fromText={this.state.selectedText}
-            idLibrary={this.state.selectedLibrary}
-            idTopic={this.state.selectedTopic}
-            idKey={this.state.selectedKey}
+            noteIdLibrary={this.state.selectedLibrary}
+            noteIdTopic={this.state.selectedTopic}
+            noteIdKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
         />
     )
@@ -334,52 +332,35 @@ export class TextNotesLister extends React.Component {
   }
 
   handleAddClose = () => {
-    this.fetchData();
+    this.setState({
+      showModalEditor: false
+    }
+    , this.fetchData
+    );
   };
 
+  handleAddButtonClick = () => {
+    this.setState({
+      showModalEditor: true
+    });
+  };
 
   getAddButton = () => {
-    if (this.state.enableAdd) {
-      let id = "UserNoteCreateForm:1.1";
-      let library = this.props.session.userInfo.domain;
-      let date = new Date();
-      let month = (date.getMonth()+1).toString().padStart(2,"0");
-      let day = date.getDate().toString().padStart(2,"0");
-      let hour = date.getHours().toString().padStart(2,"0");
-      let minute = date.getMinutes().toString().padStart(2,"0");
-      let second = date.getSeconds().toString().padStart(2,"0");
-      let key = date.getFullYear()
-          + "."
-          + month
-          + "."
-          + day
-          + ".T"
-          + hour
-          + "."
-          + minute
-          + "."
-          + second
-      ;
+//    if (this.state.enableAdd) {
       return (
-          <SchemaBasedAddButton
-              session={this.props.session}
-              restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
-              uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
-              schema={this.props.session.uiSchemas.getSchema(id)}
-              formData={this.props.session.uiSchemas.getForm(id)}
-              idLibrary={library}
-              idTopic={this.props.topicId}
-              idKey={key}
-              seq={IdManager.toId(library, this.props.topicId, key)
-              }
-              onClose={this.handleAddClose}
-              fromId={this.props.topicId}
-              fromText={this.props.topicText}
-          />
+        <Button
+            className="Schema-Based-Add-Button"
+            bsStyle="primary"
+            bsSize={"xsmall"}
+            onClick={this.handleAddButtonClick}>
+          <FontAwesome
+              className="App-Add-ico"
+              name="plus"/>
+        </Button>
       )
-    } else {
-      return (<span/>)
-    }
+//    } else {
+//      return (<span/>)
+//    }
   };
 
   handleGetForIdCallback = (restCallResult) => {
