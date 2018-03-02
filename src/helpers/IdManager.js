@@ -15,6 +15,12 @@ module.exports = {
         , topic: parts[1]
         , key: parts[2]
       };
+      let chapVerse = parts[2].split(":");
+      if (chapVerse.length === 2) {
+        IdParts.book = parts[1];
+        IdParts.chapter = chapVerse[0];
+        IdParts.verse = chapVerse[1];
+      }
     } else {
       IdParts = undefined;
     }
