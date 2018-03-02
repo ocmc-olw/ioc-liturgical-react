@@ -552,8 +552,8 @@ path.link {
     visibility: hidden !important;
 }
 .App-Text-Note-Header-Scope-Glyph {
-    padding-left: 10px;
-    padding-right: 8px;
+    padding-left: 8px !important;
+    padding-right: 8px !important;
 }
 .App-Text-Note-Type-As-Heading {
     margins: 0px;
@@ -562,8 +562,7 @@ path.link {
     font-size: larger;
 }
 .App-Text-Note-Type-Glyph {
-    padding-left: 10px;
-    margins: 0px;
+    margin-left: 10px !important;
 }
 .App-Text-Note-Type {
     text-align: center;
@@ -601,12 +600,14 @@ path.link {
     font-style: italic;
     text-justify: none;
     display: inline-block;
+    margin-left: 5px !important;
 }
 
 .App-Text-Note-Header-Title {
     font-weight: bold;
     text-justify: none;
-    display: inline-block;
+    display: inline-block !important;
+    margin-right: 8px;
 }
 
 .App-Text-Note-Header-Note > p {
@@ -630,12 +631,10 @@ path.link {
 .App-Bible-Ref-Selector-Book .Select-control{
     float: left;
     width: 30ch;
-    margin-right: 10px;
 }
 .App-Bible-Ref-Selector-Chapter .Select-control{
     float: left;
     width: 12ch;
-    margin-right: 10px;
 }
 .App-Bible-Ref-Selector-Verse .Select-control{
     float: left;
@@ -648,7 +647,6 @@ path.link {
 .App-Ontology-Ref-Selector-Type .Select-control{
     float: left;
     width: 30ch;
-    margin-right: 10px;
 }
 .App-Ontology-Ref-Selector-Entity{
     width: 100%;
@@ -733,4 +731,6 @@ span {
     border-left-width: thin;
     border-left-color: lightgrey;
 }
-
+span.App {
+    margin-left: 0px;
+}

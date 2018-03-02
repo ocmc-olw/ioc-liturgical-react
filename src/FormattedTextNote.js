@@ -64,57 +64,57 @@ class FormattedTextNote extends React.Component {
   getFormattedDiv = () => {
     if (this.props.type === "REF_TO_BIBLE") {
       return (
-          <div className="App-Text-Note-formatted">
-              <span className="App-Text-Note-Header-Scope">
+          <div className="App App-Text-Note-formatted">
+              <span className="App App-Text-Note-Header-Scope">
                 {this.props.scopeLiturgical}
               </span>
-            <span className="App-Text-Note-Header-Lemma">
+            <span className="App App-Text-Note-Header-Lemma">
                   {this.props.lemmaLiturgical}
                 </span>
-            <Glyphicon className="App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
-            <span className="App-Text-Note-Header-Scope-Biblical">
+            <Glyphicon className="App App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
+            <span className="App App-Text-Note-Header-Scope-Biblical">
                 {this.props.scopeBiblical}
               </span>
-            <span className="App-Text-Note-Header-Lemma">
+            <span className="App App-Text-Note-Header-Lemma">
                   {this.props.lemmaBiblical}
                 </span>
-            <span className="App-Text-Note-Header-Title">
+            <span className="App App-Text-Note-Header-Title">
                   {this.props.title}
                 </span>
-            <span className="App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
+            <span className="App App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
                 </span>
           </div>
       );
     } else if (this.props.type.startsWith("REF_TO")) {
       return (
-          <div className="App-Text-Note-formatted">
-              <span className="App-Text-Note-Header-Scope">
+          <div className="App App-Text-Note-formatted">
+              <span className="App App-Text-Note-Header-Scope">
                 {this.props.scopeLiturgical}
               </span>
-            <span className="App-Text-Note-Header-Lemma">
+            <span className="App App-Text-Note-Header-Lemma">
                   {this.props.lemmaLiturgical}
                 </span>
-            <Glyphicon className="App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
-            <span className="App-Text-Note-Header-Title">
+            <Glyphicon className="App App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
+            <span className="App App-Text-Note-Header-Title">
                   {this.props.title}
                 </span>
-            <span className="App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
+            <span className="App App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
                 </span>
           </div>
       );
     } else {
       return (
-          <div className="App-Text-Note-formatted">
-              <span className="App-Text-Note-Header-Scope">
+          <div className="App App-Text-Note-formatted">
+              <span className="App App-Text-Note-Header-Scope">
                 {this.props.scopeLiturgical}
               </span>
-            <span className="App-Text-Note-Header-Lemma">
+            <span className="App App-Text-Note-Header-Lemma">
                   {this.props.lemmaLiturgical}
                 </span>
-            <span className="App-Text-Note-Header-Title">
+            <span className="App App-Text-Note-Header-Title">
                   {this.props.title}
                 </span>
-            <span className="App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
+            <span className="App App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
                 </span>
           </div>
       );
@@ -124,7 +124,7 @@ class FormattedTextNote extends React.Component {
   // TODO: add the content for the render function
   render() {
     return (
-        <div className="App-Formatted-Text-Note">
+        <div className="App App-Formatted-Text-Note">
           {this.getFormattedDiv()}
         </div>
     )

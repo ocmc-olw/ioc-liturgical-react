@@ -7,6 +7,7 @@ module.exports = {
     return   {
       advancedSearch: "bars"
       , arrowRight: "long-arrow-right"
+      , cog: "cog"
       , error: "exclamation-triangle"
       , idPatternSearch: "key"
       , info: "info-circle"
