@@ -731,10 +731,16 @@ span {
     border-left-color: lightgrey;
 }
 span.App {
-    margin-left: 0px;
+    margin-left: 2px;
 }
 .Text-Note-Add-Button {
     margin-left: 10px;
     padding: 1px;
 }
-
+.App-Window-Launch {
+    cursor: pointer;
+    font-style: italic;
+}
+.active {
+    color: inherit !important;
+}

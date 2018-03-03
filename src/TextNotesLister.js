@@ -9,6 +9,7 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Labels from './Labels';
 import IdManager from './helpers/IdManager';
+import FormattedTextNote from './FormattedTextNote';
 
 /**
  *
@@ -125,8 +126,8 @@ export class TextNotesLister extends React.Component {
             , onSelect: this.handleRowSelect
             , className: "App-row-select"
           }
-          ,
-          showSelectionButtons: false
+          , filter: { type: 'RegexFilter', delay: 100 }
+          , showSelectionButtons: false
           , selectedId: selectedId
           , selectedLibrary: ""
           , selectedTopic: props.topicId
@@ -397,7 +398,6 @@ export class TextNotesLister extends React.Component {
   };
 
   noteFormatter = (cell, row, formatExtraData) => {
-    return function (cell, row, formatExtraData) {
       return (
           <FormattedTextNote
               session={formatExtraData}
@@ -410,7 +410,6 @@ export class TextNotesLister extends React.Component {
               lemmaBiblical={row["biblicalLemma"]}
           />
       );
-    }
   };
 
   render() {
@@ -433,8 +432,6 @@ export class TextNotesLister extends React.Component {
                   data={this.state.data.values}
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
-                  search
-                  searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -450,30 +447,20 @@ export class TextNotesLister extends React.Component {
                 >ID
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='topic'
+                    dataField='type'
                     dataSort={ true }
-                    export={ false }
-                    tdClassname="tdTopic"
-                    width={"10%"}
-                >{this.state.resultsTableLabels.headerText}
+                    tdClassname="tdType"
+                    width={"15%"}
+                    filter={this.state.filter}
+                >{this.state.resultsTableLabels.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='key'
+                    dataField='valueFormatted'
                     dataSort={ true }
-                    tdClassname="tdKey"
-                    width={"10%"}
-                >{this.state.resultsTableLabels.headerDate}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='tags'
-                    export={ false }
-                    dataSort={ true }
-                    width={"10%"}
-                >{this.state.resultsTableLabels.headerTags}
-                </TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='value'
-                    dataSort={ true }
+                    width={"85%"}
+                    filter={this.state.filter}
+                    dataFormat={ this.noteFormatter }
+                    formatExtraData={this.props.session}
                 >{this.state.resultsTableLabels.headerNote}
                 </TableHeaderColumn>
               </BootstrapTable>

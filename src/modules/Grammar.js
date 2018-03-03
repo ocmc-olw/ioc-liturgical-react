@@ -7,7 +7,6 @@ import {
   , PanelGroup
   , Well
 } from 'react-bootstrap';
-import Iframe from 'react-iframe';
 import Labels from '../Labels';
 import IdManager from '../helpers/IdManager';
 import MessageIcons from '../helpers/MessageIcons';

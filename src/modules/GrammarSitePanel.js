@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import {
   Panel
 } from 'react-bootstrap';
-import Iframe from 'react-iframe';
 
 /**
  * Use this as an example starting point for new React components
@@ -11,39 +10,21 @@ import Iframe from 'react-iframe';
 class GrammarSitePanel extends React.Component {
   constructor(props) {
     super(props);
-  }
+    this.showWindow = this.showWindow.bind(this);
+  };
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
-  }
+  };
+
+  // not used, but this is an alternative.  But sometimes browsers block popups
+  showWindow = (url) => {
+    window.open(url, "", "fullscreen=no");
+  };
 
   render() {
-    const ThePanels = () => (
-        <div>
-          {this.props.lemmas.map(lemma => (
-              <div key={this.props.title + lemma}>
-                <Panel
-                    className="App-Grammar-Site-panel "
-                    header={this.props.title + ": " + lemma}
-                    eventKey={this.props.title + lemma}
-                    collapsible
-                >
-                  <div className="App-iframe-wrapper">
-                    <Iframe
-                        position="relative"
-                        height="1000px"
-                        url={this.props.url
-                        + lemma
-                        }
-                    />
-                  </div>
-                </Panel>
-              </div>
-          ))}
-        </div>
-    );
 
     const TheLinks = () => (
         <div>

@@ -4,12 +4,9 @@ import {
   Button
   , FormControl
   , FormGroup
-  , Panel
-  , Well
 } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import { get } from 'lodash';
-import Iframe from 'react-iframe';
 
 import Labels from '../Labels';
 
@@ -19,7 +16,6 @@ import LabelSelector from '../helpers/LabelSelector';
 import MessageIcons from '../helpers/MessageIcons';
 import Server from '../helpers/Server';
 import Spinner from '../helpers/Spinner';
-import SearchTreebanks from "../SearchTreebanks";
 
 /**
  * Provides a means for the user to set the tags for a token.

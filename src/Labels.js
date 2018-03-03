@@ -664,10 +664,10 @@ const   labels = {
       , valueFor: "Value for"
       , submit: "Submit"
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
-      , grammarPanelTitle: "Grammar Explorer for the Greek Text"
+      , grammarPanelTitle: "Grammar Explorer"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
       , textualNotesPanelTitle: "Textual Notes"
-      , userNotesPanelTitle: "Your Notes on this Text"
+      , userNotesPanelTitle: "Personal Notes"
     }
     , FormattedTextNote: {
 
@@ -1622,11 +1622,11 @@ const   labels = {
       , valueFor: "Value for"
       , submit: "Submit"
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
-      , grammarPanelTitle: "Grammar Explorer for the Greek Text"
+      , grammarPanelTitle: "Grammar Explorer"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
       , textualNotesPanelTitle: "Textual Notes"
       , userNotesPanelTitle: "Personal Notes"
-}
+    }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
       , instructions: "Use the Text Topic Selector to select the Topic you want."

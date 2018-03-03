@@ -437,15 +437,15 @@ export class TreeNode extends React.Component {
 
       nodeText = (
           <span  onClick={this.toggleSelected} style={treeviewSpanStyle}>
-            <span className={"App-DependencyDiagram-Node-Key"}>{key}</span>
+            <span className={"App App-DependencyDiagram-Node-Key"}>{key}</span>
             { node.refersTo &&
-            <span className={"App-DependencyDiagram-Node-RefersTo"}>&#8594;{refersTo}</span>
+            <span className={"App App-DependencyDiagram-Node-RefersTo"}>&#8594;{refersTo}</span>
             }
-            <span className={"App-DependencyDiagram-Node-Label"}>{node.label}</span>
-            <span className={"App-DependencyDiagram-Node-Token"}>{node.token}</span>
-            <span className={"App-DependencyDiagram-Node-Gloss"}>{node.gloss}</span>
-            <span className={"App-DependencyDiagram-Node-Grammar"}>{node.grammar}</span>
-            <span className={"App-DependencyDiagram-Node-Lemma"}>{node.lemma}</span>
+            <span className={"App App-DependencyDiagram-Node-Label"}>{node.label}</span>
+            <span className={"App App-DependencyDiagram-Node-Token"}>{node.token}</span>
+            <span className={"App App-DependencyDiagram-Node-Gloss"}>{node.gloss}</span>
+            <span className={"App App-DependencyDiagram-Node-Grammar"}>{node.grammar}</span>
+            <span className={"App App-DependencyDiagram-Node-Lemma"}>{node.lemma}</span>
           </span>
       )
     }

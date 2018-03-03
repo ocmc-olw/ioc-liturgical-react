@@ -7016,10 +7016,6 @@ react-google-charts@^1.5.5:
     react "^15.3.2"
     react-dom "^15.3.2"
 
-react-iframe@^1.0.7:
-  version "1.1.0"
-  resolved "https://registry.yarnpkg.com/react-iframe/-/react-iframe-1.1.0.tgz#fe0ac2eee934750ddd3fce1993fc97a967711d69"
-
 react-input-autosize@^2.1.2:
   version "2.2.1"
   resolved "https://registry.yarnpkg.com/react-input-autosize/-/react-input-autosize-2.2.1.tgz#ec428fa15b1592994fb5f9aa15bb1eb6baf420f8"

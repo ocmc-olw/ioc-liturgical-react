@@ -5,6 +5,8 @@ import {
   , Button
   , ControlLabel
   , Panel
+  , Tab
+  , Tabs
   , Well
 } from 'react-bootstrap';
 
@@ -85,13 +87,14 @@ export class ParaRowTextEditor extends React.Component {
 
 
     this.fetchData = this.fetchData.bind(this);
-    this.setMessage = this.setMessage.bind(this);
+    this.getParaRows = this.getParaRows.bind(this);
+    this.getTabs = this.getTabs.bind(this);
+    this.getTextArea = this.getTextArea.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handlePropsChange = this.handlePropsChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
-    this.handlePropsChange = this.handlePropsChange.bind(this);
-    this.getTextArea = this.getTextArea.bind(this);
-    this.getParaRows = this.getParaRows.bind(this);
+    this.setMessage = this.setMessage.bind(this);
   };
 
   componentWillMount = () => {
@@ -230,59 +233,83 @@ export class ParaRowTextEditor extends React.Component {
   getTextArea = () => {
     if (this.props.canChange) {
       return (
-        <div className="row">
-          <div>
-          <ControlLabel>
-            {this.state.labels.thisClass.yourTranslation
-            + " (" + this.props.idLibrary + ")"}
-          </ControlLabel>
-          </div>
-          <textarea
-              className="App-Modal-Editor-TextArea"
-              rows="4"
-              cols="100"
-              spellCheck="true"
-              value={this.state.editorValue}
-              onChange={this.handleEditorChange}
-          >
-          </textarea>
-          <div>
-            <Button
-                type="submit"
-                bsStyle="primary"
-                disabled={this.state.editorValue === this.props.value}
-                onClick={this.handleSubmit}
-            >
-              {this.state.labels.thisClass.submit}
-            </Button>
-            <span className="App-message"><FontAwesome
-                name={this.state.messageIcon}/>
-              {this.state.message}
-            </span>
-          </div>
-        </div>
+          <Well>
+            <div className="row">
+              <div>
+              <ControlLabel>
+                {this.state.labels.thisClass.yourTranslation
+                + " (" + this.props.idLibrary + ")"}
+              </ControlLabel>
+              </div>
+              <textarea
+                  className="App-Modal-Editor-TextArea"
+                  rows="4"
+                  cols="100"
+                  spellCheck="true"
+                  value={this.state.editorValue}
+                  onChange={this.handleEditorChange}
+              >
+              </textarea>
+              <div>
+                <Button
+                    type="submit"
+                    bsStyle="primary"
+                    disabled={this.state.editorValue === this.props.value}
+                    onClick={this.handleSubmit}
+                >
+                  {this.state.labels.thisClass.submit}
+                </Button>
+                <span className="App-message"><FontAwesome
+                    name={this.state.messageIcon}/>
+                  {this.state.message}
+                </span>
+              </div>
+            </div>
+        </Well>
       )
     } else {
-      return (
-        <div>
-          <div>
-          <ControlLabel>
-            {this.state.labels.thisClass.valueFor
-            +" " + this.props.idLibrary }
-          </ControlLabel>
-          </div>
-          <textarea
-              className="App-Modal-Editor-TextArea"
-              rows="4"
-              cols="100"
-              value={this.state.editorValue}
-              readOnly
-          >
-          </textarea>
-        </div>
-      )
+      return (<span className="App App-no-display"></span>);
     }
-  }
+  };
+
+  getTabs = () => {
+      return (
+          <Well>
+            <Tabs id="App-Text-Node-Editor-Tabs" animation={false}>
+              <Tab eventKey={"textnotes"} title={
+                this.state.labels.thisClass.textualNotesPanelTitle}>
+                <Well>
+                  <TextNotesLister
+                      session={this.props.session}
+                      topicId={this.state.currentId}
+                      topicText={this.props.value}
+                  />
+                </Well>
+              </Tab>
+              <Tab eventKey={"grammar"} title={
+                this.state.labels.thisClass.grammarPanelTitle}>
+                <Grammar
+                    session={this.props.session}
+                    idTopic={this.props.idTopic}
+                    idKey={this.props.idKey}
+                />
+              </Tab>
+              <Tab eventKey={"usernote"} title={
+                this.state.labels.thisClass.userNotesPanelTitle}>
+                <Well>
+                <NotesLister
+                    session={this.props.session}
+                    type={"NoteUser"}
+                    topicId={this.state.currentId}
+                    topicText={this.props.value}
+                />
+                </Well>
+              </Tab>
+            </Tabs>
+          </Well>
+      );
+  };
+
 
   handleEditorChange = (event) => {
     this.setState({
@@ -345,103 +372,102 @@ export class ParaRowTextEditor extends React.Component {
   }
   render() {
     return (
-        <div>
+        <div className="App App-Text-Note-Editor">
           {(! this.state.showSearchResults) ? <Spinner message={this.state.labels.messages.retrieving}/>
               :
               <div className="App-ParaRow-Text-Editor">
                 {this.getParaRows()}
                 <div>
-                  <Well>
-                    {this.getTextArea()}
-                  </Well>
+                {this.getTextArea()}
                 </div>
               </div>
               }
-          <Accordion>
-            <Panel
-                className="App-biblial-links-panel "
-                header={
-                  this.state.labels.thisClass.grammarPanelTitle
-                }
-                eventKey="grammarPanelTitle"
-                collapsible
-            >
-              <Grammar
-                  session={this.props.session}
-                  idTopic={this.props.idTopic}
-                  idKey={this.props.idKey}
-              />
-            </Panel>
-            <Panel
-                className="App-biblial-links-panel "
-                header={
-                  this.state.labels.thisClass.biblicalLinksPanelTitle
-                }
-                eventKey="biblicalLinksExplorer"
-                collapsible
-            >
-              <ViewReferences
-                  session={this.props.session}
-                  id={
-                    "gr_gr_cog~"
-                    + this.props.idTopic
-                    + "~"
-                    + this.props.idKey
-                  }
-                  type={"REFERS_TO_BIBLICAL_TEXT"}
-                  value={this.state.greekSourceValue}
-              />
-            </Panel>
-            <Panel
-                className="App-ontology-links-panel "
-                header={
-                  this.state.labels.thisClass.ontologyLinksPanelTitle
-                }
-                eventKey="linksExplorer"
-                collapsible
-            >
-              <ViewReferences
-                  session={this.props.session}
-                  id={
-                    "gr_gr_cog~"
-                    + this.props.idTopic
-                    + "~"
-                    + this.props.idKey
-                  }
-                  type={"*"}
-                  value={this.state.greekSourceValue}
-              />
-            </Panel>
-            <Panel
-                className="App-user-notes-textual-panel "
-                header={
-                  this.state.labels.thisClass.textualNotesPanelTitle
-                }
-                eventKey="textnotesExplorer"
-                collapsible
-            >
-              <TextNotesLister
-                  session={this.props.session}
-                  topicId={this.state.currentId}
-                  topicText={this.props.value}
-              />
-            </Panel>
-            <Panel
-                className="App-user-notes-panel "
-                header={
-                  this.state.labels.thisClass.userNotesPanelTitle
-                }
-                eventKey="usernotesExplorer"
-                collapsible
-            >
-              <NotesLister
-                  session={this.props.session}
-                  type={"NoteUser"}
-                  topicId={this.state.currentId}
-                  topicText={this.props.value}
-              />
-            </Panel>
-          </Accordion>
+          {this.getTabs()}
+          {/*<Accordion>*/}
+            {/*<Panel*/}
+                {/*className="App-biblical-links-panel "*/}
+                {/*header={*/}
+                  {/*this.state.labels.thisClass.grammarPanelTitle*/}
+                {/*}*/}
+                {/*eventKey="grammarPanelTitle"*/}
+                {/*collapsible*/}
+            {/*>*/}
+              {/*<Grammar*/}
+                  {/*session={this.props.session}*/}
+                  {/*idTopic={this.props.idTopic}*/}
+                  {/*idKey={this.props.idKey}*/}
+              {/*/>*/}
+            {/*</Panel>*/}
+            {/*<Panel*/}
+                {/*className="App-biblial-links-panel "*/}
+                {/*header={*/}
+                  {/*this.state.labels.thisClass.biblicalLinksPanelTitle*/}
+                {/*}*/}
+                {/*eventKey="biblicalLinksExplorer"*/}
+                {/*collapsible*/}
+            {/*>*/}
+              {/*<ViewReferences*/}
+                  {/*session={this.props.session}*/}
+                  {/*id={*/}
+                    {/*"gr_gr_cog~"*/}
+                    {/*+ this.props.idTopic*/}
+                    {/*+ "~"*/}
+                    {/*+ this.props.idKey*/}
+                  {/*}*/}
+                  {/*type={"REFERS_TO_BIBLICAL_TEXT"}*/}
+                  {/*value={this.state.greekSourceValue}*/}
+              {/*/>*/}
+            {/*</Panel>*/}
+            {/*<Panel*/}
+                {/*className="App-ontology-links-panel "*/}
+                {/*header={*/}
+                  {/*this.state.labels.thisClass.ontologyLinksPanelTitle*/}
+                {/*}*/}
+                {/*eventKey="linksExplorer"*/}
+                {/*collapsible*/}
+            {/*>*/}
+              {/*<ViewReferences*/}
+                  {/*session={this.props.session}*/}
+                  {/*id={*/}
+                    {/*"gr_gr_cog~"*/}
+                    {/*+ this.props.idTopic*/}
+                    {/*+ "~"*/}
+                    {/*+ this.props.idKey*/}
+                  {/*}*/}
+                  {/*type={"*"}*/}
+                  {/*value={this.state.greekSourceValue}*/}
+              {/*/>*/}
+            {/*</Panel>*/}
+            {/*<Panel*/}
+                {/*className="App-user-notes-textual-panel "*/}
+                {/*header={*/}
+                  {/*this.state.labels.thisClass.textualNotesPanelTitle*/}
+                {/*}*/}
+                {/*eventKey="textnotesExplorer"*/}
+                {/*collapsible*/}
+            {/*>*/}
+              {/*<TextNotesLister*/}
+                  {/*session={this.props.session}*/}
+                  {/*topicId={this.state.currentId}*/}
+                  {/*topicText={this.props.value}*/}
+              {/*/>*/}
+            {/*</Panel>*/}
+            {/*<Panel*/}
+                {/*className="App-user-notes-panel "*/}
+                {/*header={*/}
+                  {/*this.state.labels.thisClass.userNotesPanelTitle*/}
+                {/*}*/}
+                {/*eventKey="usernotesExplorer"*/}
+                {/*collapsible*/}
+            {/*>*/}
+              {/*<NotesLister*/}
+                  {/*session={this.props.session}*/}
+                  {/*type={"NoteUser"}*/}
+                  {/*topicId={this.state.currentId}*/}
+                  {/*topicText={this.props.value}*/}
+              {/*/>*/}
+            {/*</Panel>*/}
+          {/*</Accordion>*/}
         </div>
     );
   }
