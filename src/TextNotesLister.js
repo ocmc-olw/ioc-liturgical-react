@@ -8,7 +8,6 @@ import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelG
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Labels from './Labels';
-import SchemaBasedAddButton from "./modules/SchemaBasedAddButton";
 import IdManager from './helpers/IdManager';
 
 /**
@@ -277,18 +276,19 @@ export class TextNotesLister extends React.Component {
       }
     };
 
+    let idParts = IdManager.getParts(this.props.topicId);
+
     let parms =
-            "?t=" + encodeURIComponent("NoteTextual")
-            + "&q=" + encodeURIComponent(this.props.session.userInfo.domain + "~" + this.props.topicId)
-            + "&p=id"
-            + "&m=sw"
+            "?t=" + encodeURIComponent("*")
+            + "&q=" + encodeURIComponent(idParts.topic + "~" + idParts.key)
+            + "&p=topic"
+            + "&m=ew"
             + "&l="
             + "&o=any"
         ;
     let path = this.props.session.restServer + Server.getDbServerNotesApi() + parms;
     axios.get(path, config)
         .then(response => {
-          // response.data will contain: "id, library, topic, key, value, tags, text"
           let resultCount = 0;
           let data = [];
           let message = "No docs found...";
@@ -349,7 +349,7 @@ export class TextNotesLister extends React.Component {
 //    if (this.state.enableAdd) {
       return (
         <Button
-            className="Schema-Based-Add-Button"
+            className="Text-Note-Add-Button"
             bsStyle="primary"
             bsSize={"xsmall"}
             onClick={this.handleAddButtonClick}>

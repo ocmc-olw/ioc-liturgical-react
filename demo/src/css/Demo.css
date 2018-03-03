@@ -145,6 +145,7 @@ a.collapsed {
     margin-top: 0px !important;
 }
 .Schema-Based-Add-Button {
+    margin-left: 10px;
     padding: 1px;
 }
 .App-Add-ico {
@@ -732,3 +733,8 @@ span {
 span.App {
     margin-left: 0px;
 }
+.Text-Note-Add-Button {
+    margin-left: 10px;
+    padding: 1px;
+}
+

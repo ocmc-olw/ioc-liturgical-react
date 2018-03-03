@@ -9,6 +9,7 @@ import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelG
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Labels from './Labels';
+import FormattedTextNote from './FormattedTextNote';
 
 export class SearchTextNotes extends React.Component {
 
@@ -18,20 +19,21 @@ export class SearchTextNotes extends React.Component {
 
     this.state = this.setTheState(props, "");
 
-    this.fetchData = this.fetchData.bind(this);
-    this.onSizePerPageList = this.onSizePerPageList.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
-    this.getSearchForm = this.getSearchForm.bind(this);
-    this.handleCancelRequest = this.handleCancelRequest.bind(this);
-    this.handleDoneRequest = this.handleDoneRequest.bind(this);
-    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
-    this.showRowComparison = this.showRowComparison.bind(this);
-    this.getModalEditor = this.getModalEditor.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.getMatcherTypes = this.getMatcherTypes.bind(this);
-    this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.getMatcherTypes = this.getMatcherTypes.bind(this);
+    this.getModalEditor = this.getModalEditor.bind(this);
+    this.getSearchForm = this.getSearchForm.bind(this);
+    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
+    this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
+    this.handleCancelRequest = this.handleCancelRequest.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleDoneRequest = this.handleDoneRequest.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.noteFormatter = this.noteFormatter();
+    this.onSizePerPageList = this.onSizePerPageList.bind(this);
+    this.setTheState = this.setTheState.bind(this);
+    this.showRowComparison = this.showRowComparison.bind(this);
   }
 
   componentWillMount = () => {
@@ -423,6 +425,21 @@ export class SearchTextNotes extends React.Component {
         });
   }
 
+  noteFormatter = (cell, row, formatExtraData) => {
+    return function (cell, row, formatExtraData) {
+     return (
+         <FormattedTextNote
+             session={formatExtraData}
+             note={row["valueFormatted"]}
+             type={row["type"]}
+             title={row["title"]}
+             scopeLiturgical={row["liturgicalScope"]}
+             lemmaLiturgical={row["liturgicalLemma"]}
+         />
+     );
+    }
+  };
+
   render() {
     return (
         <div className="App-page App-search">
@@ -486,10 +503,12 @@ export class SearchTextNotes extends React.Component {
                 >{this.state.resultsTableLabels.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
-                    dataField='value'
+                    dataField='valueFormatted'
                     dataSort={ true }
                     width={"40%"}
                     filter={this.state.filter}
+                    dataFormat={ this.noteFormatter }
+                    formatExtraData={this.props.session}
                 >{this.state.resultsTableLabels.headerNote}
                 </TableHeaderColumn>
                 <TableHeaderColumn
@@ -499,6 +518,36 @@ export class SearchTextNotes extends React.Component {
                     width={"10%"}
                     filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerTags}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='noteTitle'
+                    export={ true }
+                    hidden
+                >Title
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='liturgicalScope'
+                    export={ true }
+                    hidden
+                >Liturgical Scope
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='liturgicalLemma'
+                    export={ true }
+                    hidden
+                >Liturgical Lemma
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='biblicalScope'
+                    export={ true }
+                    hidden
+                >Liturgical Scope
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='biblicalLemma'
+                    export={ true }
+                    hidden
+                >Liturgical Lemma
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>
