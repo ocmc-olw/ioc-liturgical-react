@@ -6,7 +6,6 @@ import MessageIcons from '../helpers/MessageIcons';
 import {
   EditorState
   , ContentState
-  , convertFromHTML
   , convertToRaw
 } from 'draft-js';
 import { Editor } from 'react-draft-wysiwyg';

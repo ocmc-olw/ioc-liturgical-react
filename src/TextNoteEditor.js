@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import RichEditor from './modules/RichEditor';
-import '../node_modules/react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
+import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { get } from 'lodash';
 import {
   Accordion
@@ -38,7 +38,6 @@ import axios from "axios/index";
 class TextNoteEditor extends React.Component {
   constructor(props) {
     super(props);
-console.log("TextNodeEditor constructor");
     let languageCode = props.session.languageCode;
     let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
     let messages = Labels.getMessageLabels(languageCode);
@@ -598,7 +597,6 @@ console.log("TextNodeEditor constructor");
   };
 
   handleBibleRefChange = (book, chapter, verse, citeBible) => {
-    console.log(`handleBibleRefChange.citeBible= ${citeBible}`);
     let form = this.state.form;
     let showBibleView = false;
     if (book.length > 0 && chapter.length > 0 && verse.length > 0) {
