@@ -26,19 +26,21 @@ export class TextNotesLister extends React.Component {
     this.deselectAllRows = this.deselectAllRows.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.getAddButton = this.getAddButton.bind(this);
-    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
     this.getModalEditor = this.getModalEditor.bind(this);
     this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
+    this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
     this.handleAddClose = this.handleAddClose.bind(this);
     this.handleCancelRequest = this.handleCancelRequest.bind(this);
     this.handleCloseModal = this.handleCloseModal.bind(this);
     this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.handleGetForIdCallback = this.handleGetForIdCallback.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.noteFormatter = this.noteFormatter.bind(this);
     this.onSizePerPageList = this.onSizePerPageList.bind(this);
     this.setTheState = this.setTheState.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
-    this.verifyTextId = this.verifyTextId.bind(this);  }
+    this.verifyTextId = this.verifyTextId.bind(this);
+  }
 
   componentWillMount = () => {
     this.fetchData();
@@ -394,6 +396,23 @@ export class TextNotesLister extends React.Component {
     }
   };
 
+  noteFormatter = (cell, row, formatExtraData) => {
+    return function (cell, row, formatExtraData) {
+      return (
+          <FormattedTextNote
+              session={formatExtraData}
+              note={row["valueFormatted"]}
+              type={row["type"]}
+              title={row["title"]}
+              scopeLiturgical={row["liturgicalScope"]}
+              lemmaLiturgical={row["liturgicalLemma"]}
+              scopeBiblical={row["biblicalScope"]}
+              lemmaBiblical={row["biblicalLemma"]}
+          />
+      );
+    }
+  };
+
   render() {
     return (
         <div className="App-page App-Notes-Lister">
@@ -464,7 +483,7 @@ export class TextNotesLister extends React.Component {
         </div>
     )
   }
-}
+};
 
 TextNotesLister.propTypes = {
   session: PropTypes.object.isRequired
