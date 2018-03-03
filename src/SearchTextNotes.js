@@ -435,6 +435,8 @@ export class SearchTextNotes extends React.Component {
              title={row["title"]}
              scopeLiturgical={row["liturgicalScope"]}
              lemmaLiturgical={row["liturgicalLemma"]}
+             scopeBiblical={row["biblicalScope"]}
+             lemmaBiblical={row["biblicalLemma"]}
          />
      );
     }
@@ -470,8 +472,6 @@ export class SearchTextNotes extends React.Component {
                   data={this.state.data.values}
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
-                  search
-                  searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -491,7 +491,8 @@ export class SearchTextNotes extends React.Component {
                     dataSort={ true }
                     export={ false }
                     tdClassname="tdText"
-                    width={"40%"}
+                    width={"30%"}
+                    filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerText}
                 </TableHeaderColumn>
                 <TableHeaderColumn
@@ -505,7 +506,7 @@ export class SearchTextNotes extends React.Component {
                 <TableHeaderColumn
                     dataField='valueFormatted'
                     dataSort={ true }
-                    width={"40%"}
+                    width={"50%"}
                     filter={this.state.filter}
                     dataFormat={ this.noteFormatter }
                     formatExtraData={this.props.session}
