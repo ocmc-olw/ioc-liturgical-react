@@ -37,6 +37,7 @@ class AgesViewer extends React.Component {
     this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
     this.showServiceSelector = this.showServiceSelector.bind(this);
     this.handleServiceSelection = this.handleServiceSelection.bind(this);
+    this.handleServiceSelectionClose = this.handleServiceSelectionClose.bind(this);
     this.handleFirstLibrarySelection = this.handleFirstLibrarySelection.bind(this);
     this.handleFirstLibraryFallbackSelection = this.handleFirstLibraryFallbackSelection.bind(this);
     this.handleSecondLibrarySelection = this.handleSecondLibrarySelection.bind(this);
@@ -321,7 +322,14 @@ class AgesViewer extends React.Component {
         , selectedFirstLibraryFallback: selectedFirstLibraryFallback
       });
     }
-  }
+  };
+
+  handleServiceSelectionClose = () => {
+    this.setState({
+      showModalServiceSelector: false
+    });
+  };
+
 
   handleFirstLibraryFallbackSelection = (selection) => {
     if (selection == null) {
@@ -494,6 +502,7 @@ class AgesViewer extends React.Component {
         <ModalAgesServiceSelector
             languageCode={this.props.session.languageCode}
             callBack={this.handleServiceSelection}
+            onClose={this.handleServiceSelectionClose}
             values={this.state.agesIndexValues}
         />
       )

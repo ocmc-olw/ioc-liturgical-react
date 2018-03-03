@@ -37,6 +37,7 @@ class AgesEditor extends React.Component {
     this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
     this.showServiceSelector = this.showServiceSelector.bind(this);
     this.handleServiceSelection = this.handleServiceSelection.bind(this);
+    this.handleServiceSelectionClose = this.handleServiceSelectionClose.bind(this);
     this.handleLibrarySelection = this.handleLibrarySelection.bind(this);
     this.getAgesTableRow = this.getAgesTableRow.bind(this);
     this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
@@ -360,14 +361,21 @@ class AgesEditor extends React.Component {
       , serviceType: serviceType
       , selectedService: selectedService
     });
-  }
+  };
 
+  handleServiceSelectionClose = () => {
+    this.setState({
+      showModalServiceSelector: false
+    });
+  };
+  
   getServiceSelectorPanel = () => {
     if (this.state.showModalServiceSelector) {
       return (
         <ModalAgesServiceSelector
             languageCode={this.props.session.languageCode}
             callBack={this.handleServiceSelection}
+            onClose={this.handleServiceSelectionClose}
             values={this.state.agesIndexValues}
         />
       )

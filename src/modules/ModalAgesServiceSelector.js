@@ -58,7 +58,7 @@ export class ModalAgesServiceSelector extends React.Component {
   }
 
   close = () => {
-    this.setState({showModal: false});
+    this.setState({showModal: false}, this.props.onClose);
   };
 
   open = () => {
@@ -150,6 +150,7 @@ export class ModalAgesServiceSelector extends React.Component {
 ModalAgesServiceSelector.propTypes = {
   languageCode: PropTypes.string.isRequired
   , callBack: PropTypes.func.isRequired
+  , onClose: PropTypes.func.isRequired
   , values: PropTypes.array.isRequired
 };
 export default ModalAgesServiceSelector;
