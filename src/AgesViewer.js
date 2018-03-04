@@ -494,7 +494,7 @@ class AgesViewer extends React.Component {
       , serviceType: serviceType
       , selectedService: selectedService
     });
-  }
+  };
 
   getServiceSelectorPanel = () => {
     if (this.state.showModalServiceSelector) {
