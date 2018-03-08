@@ -865,7 +865,7 @@ export class Search extends React.Component {
             </div>
           </div>
 
-          <div>{this.props.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
+          <div>{this.props.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.props.searchLabels.msg3} {this.state.resultCount} {this.props.searchLabels.msg4} </span>
           </div>
           {this.showResultsStatus()}

@@ -233,7 +233,7 @@ console.log(path);
               {this.props.hasCallback &&
               <div className="control-label">{this.props.labels.selectVersion}</div>
               }
-              <div>{this.props.labels.resultLabel}: <span className="App-message"><FontAwesome
+              <div>{this.props.labels.resultLabel}: <span className="App App-message"><FontAwesome
                   name={this.state.messageIcon}/>{this.state.message}</span>
               </div>
               <CompareDocs

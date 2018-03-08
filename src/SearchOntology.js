@@ -471,7 +471,7 @@ export class SearchOntology extends React.Component {
             </div>
           </div>
 
-          <div>{this.state.labels.search.resultLabel}: <span className="App-message">
+          <div>{this.state.labels.search.resultLabel}: <span className="App App-message">
             <FontAwesome name={this.state.messageIcon}/>{this.state.labels.search.msg3} {this.state.resultCount} {this.state.labels.search.msg4} </span>
           </div>
           {this.state.showSearchResults &&

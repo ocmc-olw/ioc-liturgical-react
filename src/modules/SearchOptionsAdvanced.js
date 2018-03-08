@@ -390,6 +390,7 @@ class SearchOptions extends React.Component {
     } else {
       if (this.state.docType === "Biblical") {
         show = true;
+        console.log(this.state.dropdowns.Biblical);
         source = this.state.dropdowns.Biblical.topics[domain];
       } else if (this.state.docType === "Liturgical") {
         show = true;

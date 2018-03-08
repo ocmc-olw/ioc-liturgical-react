@@ -528,7 +528,7 @@ export class SearchTreebanks extends React.Component {
       );
     } else if (this.state.showSearchResults) {
         return (
-            <div>{this.state.labels.thisClass.resultLabel}: <span className="App-message"><FontAwesome
+            <div>{this.state.labels.thisClass.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.thisClass.searchResultsType} </span>
               <div>
                 {this.state.labels.thisClass.msg5} {this.state.labels.thisClass.msg6}

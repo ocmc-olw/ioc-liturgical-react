@@ -40,6 +40,7 @@ class AboutDatabase extends React.Component {
         <p>{this.props.labels.ackPara03s1} <a href="http://ebible.org/find/show.php?id=eng-webbe" target="_blank">{this.props.labels.website}</a>.</p>
         <p/>
         <p>{this.props.labels.ackPara04s1} <a href="http://ebible.org/eng-lxx2012/" target="_blank">{this.props.labels.website}</a>.</p>
+        <p>{this.props.labels.ackHebrew} <a href="http://www.tanach.us/Tanach.xml" target="_blank">{this.props.labels.website}</a>.</p>
       </div>
     </div>
   }

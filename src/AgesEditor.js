@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Well} from 'react-bootstrap';
-
+import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Table, Well} from 'react-bootstrap';
 import Labels from './Labels';
 import ModalParaRowEditor from './ModalParaRowEditor';
 
@@ -20,36 +19,37 @@ class AgesEditor extends React.Component {
     super(props);
 
     this.state = this.setTheState(props, this.state);
-    this.fetchData = this.fetchData.bind(this);
-    this.handleFetchCallback = this.handleFetchCallback.bind(this);
-    this.fetchAgesIndex = this.fetchAgesIndex.bind(this);
-    this.handleFetchAgesIndexCallback = this.handleFetchAgesIndexCallback.bind(this);
 
     this.edit = this.edit.bind(this);
-    this.setTable = this.setTable.bind(this);
-    this.renderHtml = this.renderHtml.bind(this);
+    this.editable = this.editable.bind(this);
+    this.fetchAgesIndex = this.fetchAgesIndex.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
+    this.getAgesTableRow = this.getAgesTableRow.bind(this);
+    this.getModalEditor = this.getModalEditor.bind(this);
+    this.getSelectedService = this.getSelectedService.bind(this);
+    this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
+    this.handleFetchAgesIndexCallback = this.handleFetchAgesIndexCallback.bind(this);
+    this.handleFetchCallback = this.handleFetchCallback.bind(this);
+    this.handleLibrarySelection = this.handleLibrarySelection.bind(this);
     this.handleParaTextEditorClose = this.handleParaTextEditorClose.bind(this);
     this.handleParaTextEditorSubmit = this.handleParaTextEditorSubmit.bind(this);
-    this.getModalEditor = this.getModalEditor.bind(this);
-    this.updateTemplateValues = this.updateTemplateValues.bind(this);
-    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
-    this.editable = this.editable.bind(this);
-    this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
-    this.showServiceSelector = this.showServiceSelector.bind(this);
     this.handleServiceSelection = this.handleServiceSelection.bind(this);
     this.handleServiceSelectionClose = this.handleServiceSelectionClose.bind(this);
-    this.handleLibrarySelection = this.handleLibrarySelection.bind(this);
-    this.getAgesTableRow = this.getAgesTableRow.bind(this);
-    this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
-  }
+    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
+    this.renderHtml = this.renderHtml.bind(this);
+    this.setTable = this.setTable.bind(this);
+    this.showServiceSelector = this.showServiceSelector.bind(this);
+    this.updateTemplateValues = this.updateTemplateValues.bind(this);
+  };
 
   componentWillMount = () => {
     this.fetchAgesIndex();
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let url = undefined;
@@ -108,9 +108,10 @@ class AgesEditor extends React.Component {
           , agesIndexFetched: agesIndexFetched
           , agesIndexValues: agesIndexValues
           , fetchingData: false
+          , iconCount: 0
         }
     )
-  }
+  };
 
   // if we did not receive table values as a prop, fetch them
   fetchAgesIndex = () => {
@@ -131,7 +132,7 @@ class AgesEditor extends React.Component {
           )
       );
     }
-  }
+  };
 
   handleFetchAgesIndexCallback = (restCallResult) => {
     if (restCallResult && restCallResult.data && restCallResult.data.values) {
@@ -143,7 +144,7 @@ class AgesEditor extends React.Component {
         });
       }
     }
-  }
+  };
 
   fetchData = () => {
     let parms =
@@ -164,14 +165,14 @@ class AgesEditor extends React.Component {
         )
     );
 
-  }
+  };
 
   handleFetchCallback = (restCallResult) => {
     if (restCallResult && restCallResult.data && restCallResult.data.values) {
       let data = restCallResult.data.values[0];
       let values = data.values;
       let topicKeys = data.topicKeys;
-      let topElement = data.topElement;
+      let topElement = data.topElement.children[0].children[0]; // tbody
       this.setState({
         dataFetched: true
         , fetchingData: false
@@ -180,19 +181,19 @@ class AgesEditor extends React.Component {
         , topElement: topElement
       }, this.setTable);
     }
-  }
+  };
 
   handleParaTextEditorClose = () => {
     this.setState({
       showModalEditor: false
     });
-  }
+  };
 
   handleLibrarySelection = (selection) => {
     this.setState({
       selectedLibrary: selection["value"]
     });
-  }
+  };
 
   handleParaTextEditorSubmit = (value) => {
     // only update if the value changed
@@ -237,7 +238,7 @@ class AgesEditor extends React.Component {
         , messageIcon: restCallResult.messageIcon
       }, this.setTableData);
     }
-  }
+  };
 
   /**
    * Does the user have permission to edit records in this library?
@@ -254,7 +255,7 @@ class AgesEditor extends React.Component {
       }
     }
     return canEdit;
-  }
+  };
 
   getModalEditor = () => {
     return (
@@ -268,7 +269,7 @@ class AgesEditor extends React.Component {
             canChange={this.editable(this.state.selectedId)}
         />
     )
-  }
+  };
 
   edit = (id) => {
     this.setState({
@@ -276,13 +277,13 @@ class AgesEditor extends React.Component {
       , selectedId: id
       , selectedValue: this.state.values[id]
     });
-  }
+  };
 
   setTable = () => {
     this.setState({
       renderedTable: this.renderHtml(this.state.topElement)
     });
-  }
+  };
 
   updateTemplateValues = () => {
     if (this.state.changedText) {
@@ -294,29 +295,32 @@ class AgesEditor extends React.Component {
           , this.setTable
       );
     }
-  }
+  };
 
   renderHtml = (element) => {
     let props = {};
     let children = [];
 
+    let tag = element.tag;
+
     if (element.key) {
       props["key"] = element.key;
     }
     if (element.className) {
-      props["className"] = element.className;
+      props["className"] = element.className + " ages-table-element";
     } else {
-      if (element.tag === "table"
-          || element.tag === "tbody"
-          || element.tag === "tr"
+      if (tag === "table"
+          || tag === "tbody"
+          || tag === "tr"
       ) {
-        props["className"] = "ages";
+          props["className"] = "ages";
       }
     }
     if (element.dataKey) {
       props["data-key"] = element.dataKey;
       props["onDoubleClick"] = this.edit.bind(null,element.dataKey);
-      children.push(this.state.values[element.dataKey]);
+      let value = this.state.values[element.dataKey];
+      children.push(value);
     }
     if (element.topicKey) {
       props["data-topicKey"] = element.topicKey;
@@ -329,18 +333,18 @@ class AgesEditor extends React.Component {
     }
     return (
         React.createElement(
-            element.tag
+            tag
             , props
             , children
         )
     );
-  }
+  };
 
   showServiceSelector = () => {
     this.setState({
       showModalServiceSelector: true
     });
-  }
+  };
 
   handleServiceSelection = (url, serviceType, serviceDate, serviceDow) => {
     let selectedService = serviceType;
@@ -395,7 +399,7 @@ class AgesEditor extends React.Component {
         );
       }
     }
-  }
+  };
 
   getAgesTableInfo = () => {
     if (this.state.dataFetched) {
@@ -447,40 +451,52 @@ class AgesEditor extends React.Component {
     } else {
       return (<div></div>);
     }
-  }
+  };
   getAgesTableRow = () => {
-    if (this.state.dataFetched) {
+    if (this.state.fetchingData) {
       return (
-          <div>
-            <Row className="App-Info-Row">
-              <Col xs={12} md={12}>
-                {this.getAgesTableInfo()}
-              </Col>
-            </Row>
-            <Row className="App-Ages-Table-Row">
-                <Col xs={12} md={12}>
-                {this.state.dataFetched &&
-                <div>
-                  {this.state.renderedTable}
-                  {this.state.showModalEditor && this.getModalEditor()}
-                </div>
-                }
-              </Col>
-          </Row>
-        </div>
-      )
-    } else {
-      if (this.state.fetchingData) {
+          <Spinner message={this.state.labels.messages.retrieving}/>
+      );
+    } else if (this.state.dataFetched) {
         return (
-            <Spinner message={this.state.labels.messages.retrieving}/>
-        );
-      } else {
+            <div>
+              <Row className="App-Info-Row">
+                <Col xs={12} md={12}>
+                  {this.getAgesTableInfo()}
+                </Col>
+              </Row>
+              <Row className="App App-Ages-Table-Row">
+                <Col xs={12} md={12}>
+                  {this.state.dataFetched &&
+                  <div className="ages-content">
+                    <Table responsive>
+                      {this.state.renderedTable}
+                    </Table>
+                    {this.state.showModalEditor && this.getModalEditor()}
+                  </div>
+                  }
+                </Col>
+              </Row>
+            </div>
+        )
+    } else {
         return (
             <div></div>
         )
-      }
     }
-  }
+  };
+
+  getSelectedService = () => {
+    if (this.state.selectedService) {
+      return (
+          <div>
+          <ControlLabel>{this.state.labels.thisClass.selected}</ControlLabel>
+          <span>{this.state.selectedService}</span>
+          </div>
+      );
+    }
+  };
+
   render() {
     return (
         <div className="App App-ParaColTextEditor">
@@ -494,22 +510,20 @@ class AgesEditor extends React.Component {
               </Col>
             </Row>
             <Row className="App-Selection-Row">
-              <Col xs={4} md={4}>
+              <Col xs={12}>
                 {this.getServiceSelectorPanel()}
-              </Col>
-              <Col xs={8} md={8}>
-                { this.state.agesIndexFetched &&
-                this.state.selectedService
-                }
               </Col>
             </Row>
             <Row className="App-Selection-Row">
-              <Col xs={4} md={4}>
+              <Col xs={12}>
+                {this.getSelectedService()}
+              </Col>
+            </Row>
+            <Row className="App-Selection-Row">
+              <Col xs={12} md={12}>
                 <ControlLabel>
                   {this.state.labels.thisClass.selectLibrary}
                   </ControlLabel>
-              </Col>
-              <Col xs={8} md={8}>
                 <ReactSelector
                     initialValue={this.state.selectedLibrary}
                     resources={this.props.session.userInfo.domains.author}

@@ -290,7 +290,7 @@ class TemplateForTable extends React.Component {
     return (
         <div className="App-page App-search">
           <h3>{this.state.labels.thisClass.pageTitle}</h3>
-          <div>{this.state.labels.messages.resultLabel}: <span className="App-message"><FontAwesome
+          <div>{this.state.labels.messages.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.messages.docs} </span>
           </div>
           {this.state.showSearchResults &&

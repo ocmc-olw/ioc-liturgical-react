@@ -213,6 +213,7 @@ a.collapsed {
     word-wrap: break-word;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
+    word-break: break-all;
 }
 
 .fa {
@@ -686,10 +687,6 @@ path.link {
 .rdw-editor-main {
     background-color: white;
 }
-span {
- padding-left: 0px !important;
-}
-
 .DraftEditor-root {
     background: #fff;
     border: 1px solid #ddd;
@@ -742,4 +739,13 @@ span.App {
 }
 .active {
     color: inherit !important;
+}
+
+.App {
+    word-wrap: break-word;
+    white-space: normal;
+}
+.btn {
+  padding-left: 5px;
+  padding-right: 5px;
 }

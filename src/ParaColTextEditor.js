@@ -434,7 +434,7 @@ class ParaColTextEditor extends React.Component {
                                 >
                                   {this.state.labels.messages.submit}
                                 </Button>
-                                <div>{this.state.labels.messages.status}: <span className="App-message"><FontAwesome
+                                <div>{this.state.labels.messages.status}: <span className="App App-message"><FontAwesome
                                     name={this.state.messageIcon}/>{this.state.message} </span>
                                 </div>
                               </Col>

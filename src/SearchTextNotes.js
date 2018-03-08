@@ -455,7 +455,7 @@ export class SearchTextNotes extends React.Component {
             </div>
           </div>
 
-          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome
+          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} </span>
           </div>
           {this.state.showSearchResults &&

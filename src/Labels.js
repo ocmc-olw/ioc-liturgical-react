@@ -168,6 +168,7 @@ const   labels = {
       , ackPara02s1: "Greek LXX texts are from the University of Pennsylvania (UP), Center for Computer Analysis of Texts (CCAT)."
       , ackPara03s1: "The World English Bible British Edition with Deuterocanon (webbe) is public domain."
       , ackPara04s1: "The Septuagint in American English 2012 (lxx2012) is public domain."
+      , ackHebrew: "The Hebrew Old Testament (heb_il_wlc) is public domain.  It is the text as found in the Westminster Leningrad Codex (wlc). It was made available by the J. Alan Groves Center for Advanced Biblical Research."
       , website: "Website"
     }
     , pageLogin: {
@@ -677,7 +678,7 @@ const   labels = {
       , msg1: "Select a Sacrament or Dated Service by clicking the radio-button in the first column of that row. "
       , msg2: "Click the up and down triangles to sort a column. "
       , msg3: "Enter part or all of a word or use a Regular Expression to filter the rows. "
-      , msg4: "Type 'any' into the Date or Day of Week filter to view available Sacraments."
+      , msg4: "Type 'any' into the Date or Day of Week filter to view available Sacraments.  Type 'daily' into the Type filter to view daily readings for each month. Type 'Menaion', 'Triodion', 'Pentecostarion', or 'Synaxarion' to view those books."
       , type: "Type"
       , date: "Date"
       , dayOfWeek: "Day of Week"
@@ -712,6 +713,7 @@ const   labels = {
       , select: "Select the Service or Sacrament"
       , selectLibrary: "Select your translation library..."
       , fetch: "Fetch the Service or Sacrament"
+      , selected: "The selected service is: "
     }
     , AgesViewer: {
       panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
@@ -727,6 +729,7 @@ const   labels = {
       , selectThirdLibrary: "Select library for column 3..."
       , selectThirdLibraryFallback: "Select fallback library for column 3..."
       , fetch: "Fetch the Service or Sacrament"
+      , selected: "The selected service is: "
     }
     , ModalParaRowEditor: {
       panelTitle: "Text Editor"
@@ -1131,6 +1134,7 @@ const   labels = {
       , ackPara02s1: "Τα ελληνικα LXX κείμενα είναι από το Πανεπιστήμιο της Πενσυλβάνια (UP), Κέντρο ανάλυσης υπολογιστών για τα κείμενα (CCAT)."
       , ackPara03s1: "Η παγκόσμια αγγλική έκδοση της Βίβλου με το Deuterocanon (webbe) είναι δημόσιος τομέας."
       , ackPara04s1: "Η μετάφραση των Εβδομήκοντα σε αμερικάνικα αγγλικά 2012 (lxx2012) είναι δημόσιος τομέας."
+      , ackHebrew: "The Hebrew Old Testament (heb_il_wlc) is public domain.  It is the text as found in the Westminster Leningrad Codex (wlc). It was made available by the J. Alan Groves Center for Advanced Biblical Research."
       , website: "Ιστοσελίδα"
     }
     , pageLogin: {
@@ -1639,7 +1643,7 @@ const   labels = {
       , msg1: "Select a Sacrament or Dated Service by clicking the radio-button in the first column of that row. "
       , msg2: "Click the up and down triangles to sort a column. "
       , msg3: "Enter part or all of a word or use a Regular Expression to filter the rows. "
-      , msg4: "Type 'any' into the Date or Day of Week filter to view available Sacraments."
+      , msg4: "Type 'any' into the Date or Day of Week filter to view available Sacraments.  Type 'daily' into the Type filter to view daily readings for each month. Type 'Menaion', 'Triodion', 'Pentecostarion', or 'Synaxarion' to view those books."
       , type: "Type"
       , date: "Date"
       , dayOfWeek: "Day of Week"
@@ -1674,6 +1678,7 @@ const   labels = {
       , select: "Select the Service or Sacrament"
       , selectLibrary: "Select your translation library..."
       , fetch: "Fetch the Service or Sacrament"
+      , selected: "The selected service is: "
     }
     , AgesViewer: {
       panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
@@ -1689,6 +1694,7 @@ const   labels = {
       , selectThirdLibrary: "Select library for column 3..."
       , selectThirdLibraryFallback: "Select fallback library for column 3..."
       , fetch: "Fetch the Service or Sacrament"
+      , selected: "The selected service is: "
     }
     , ModalParaRowEditor: {
       panelTitle: "Text Editor"

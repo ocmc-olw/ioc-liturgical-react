@@ -158,7 +158,7 @@ class WorkflowAssignment extends React.Component {
                       type="submit"
                       onClick={this.handleCallback}
                   >{this.state.labels.thisClass.submit}</Button>
-                  <span className="App-message"><FontAwesome
+                  <span className="App App-message"><FontAwesome
                       name={this.state.messageIcon}/>
                     {this.state.message}
                     </span>

@@ -207,7 +207,7 @@ export class ModalSchemaBasedEditor extends React.Component {
                     >
                       {this.state.labels.button.submit}
                     </Button>
-                    <span className="App-message"><FontAwesome
+                    <span className="App App-message"><FontAwesome
                       name={this.state.messageIcon}/>
                     {this.state.message}
                     </span>

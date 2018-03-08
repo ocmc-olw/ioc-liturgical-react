@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Well} from 'react-bootstrap';
-import fileDownload from 'react-file-download';
+import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Table, Well} from 'react-bootstrap';
 
 import Labels from './Labels';
 
@@ -27,28 +26,30 @@ class AgesViewer extends React.Component {
     super(props);
 
     this.state = this.setTheState(props, this.state);
-    this.fetchData = this.fetchData.bind(this);
-    this.handleFetchCallback = this.handleFetchCallback.bind(this);
-    this.fetchAgesIndex = this.fetchAgesIndex.bind(this);
-    this.handleFetchAgesIndexCallback = this.handleFetchAgesIndexCallback.bind(this);
+
     this.disableFetchButton = this.disableFetchButton.bind(this);
-    this.setTable = this.setTable.bind(this);
-    this.renderHtml = this.renderHtml.bind(this);
+    this.downloadPdf = this.downloadPdf.bind(this);
+    this.fetchAgesIndex = this.fetchAgesIndex.bind(this);
+    this.fetchData = this.fetchData.bind(this);
+    this.fetchPdf = this.fetchPdf.bind(this);
+    this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
+    this.getAgesTableRow = this.getAgesTableRow.bind(this);
+    this.getFetchingAgesTableRow = this.getFetchingAgesTableRow.bind(this);
+    this.getSelectedService = this.getSelectedService.bind(this);
     this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
-    this.showServiceSelector = this.showServiceSelector.bind(this);
+    this.handleFetchAgesIndexCallback = this.handleFetchAgesIndexCallback.bind(this);
+    this.handleFetchCallback = this.handleFetchCallback.bind(this);
+    this.handleFirstLibraryFallbackSelection = this.handleFirstLibraryFallbackSelection.bind(this);
+    this.handleFirstLibrarySelection = this.handleFirstLibrarySelection.bind(this);
+    this.handleSecondLibraryFallbackSelection = this.handleSecondLibraryFallbackSelection.bind(this);
+    this.handleSecondLibrarySelection = this.handleSecondLibrarySelection.bind(this);
     this.handleServiceSelection = this.handleServiceSelection.bind(this);
     this.handleServiceSelectionClose = this.handleServiceSelectionClose.bind(this);
-    this.handleFirstLibrarySelection = this.handleFirstLibrarySelection.bind(this);
-    this.handleFirstLibraryFallbackSelection = this.handleFirstLibraryFallbackSelection.bind(this);
-    this.handleSecondLibrarySelection = this.handleSecondLibrarySelection.bind(this);
-    this.handleSecondLibraryFallbackSelection = this.handleSecondLibraryFallbackSelection.bind(this);
-    this.handleThirdLibrarySelection = this.handleThirdLibrarySelection.bind(this);
     this.handleThirdLibraryFallbackSelection = this.handleThirdLibraryFallbackSelection.bind(this);
-    this.getAgesTableRow = this.getAgesTableRow.bind(this);
-    this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
-    this.getFetchingAgesTableRow = this.getFetchingAgesTableRow.bind(this);
-    this.fetchPdf = this.fetchPdf.bind(this);
-    this.downloadPdf = this.downloadPdf.bind(this);
+    this.handleThirdLibrarySelection = this.handleThirdLibrarySelection.bind(this);
+    this.renderHtml = this.renderHtml.bind(this);
+    this.setTable = this.setTable.bind(this);
+    this.showServiceSelector = this.showServiceSelector.bind(this);
   }
 
   componentWillMount = () => {
@@ -281,7 +282,7 @@ class AgesViewer extends React.Component {
       let data = restCallResult.data.values[0];
       let values = data.values;
       let topicKeys = data.topicKeys;
-      let topElement = data.topElement;
+      let topElement = data.topElement.children[0].children[0]; // tbody
       let pdfId = data.pdfId;
       let pdfFilename = data.pdfFilename;
       this.setState({
@@ -422,23 +423,24 @@ class AgesViewer extends React.Component {
         selectedThirdLibraryFallback: selection["value"]
       });
     }
-  }
+  };
 
   setTable = () => {
     this.setState({
       renderedTable: this.renderHtml(this.state.topElement)
     });
-  }
+  };
 
   renderHtml = (element) => {
     let props = {};
     let children = [];
+    let value = "";
 
     if (element.key) {
       props["key"] = element.key;
     }
     if (element.className) {
-      props["className"] = element.className;
+      props["className"] = element.className + " ages-table-element";
     } else {
       if (element.tag === "table"
           || element.tag === "tbody"
@@ -449,7 +451,8 @@ class AgesViewer extends React.Component {
     }
     if (element.dataKey) {
       props["data-key"] = element.dataKey;
-      children.push(this.state.values[element.dataKey]);
+      value = this.state.values[element.dataKey];
+      children.push(value);
     }
     if (element.topicKey) {
       props["data-topicKey"] = element.topicKey;
@@ -460,20 +463,24 @@ class AgesViewer extends React.Component {
         children.push(this.renderHtml(element.children[i]));
       }
     }
-    return (
-        React.createElement(
-            element.tag
-            , props
-            , children
-        )
-    );
-  }
+    if (element.dataKey && value && value.trim().length === 0) {
+      return (<span className="app-no-show"></span>);
+    } else {
+      return (
+          React.createElement(
+              element.tag
+              , props
+              , children
+          )
+      );
+    }
+  };
 
   showServiceSelector = () => {
     this.setState({
       showModalServiceSelector: true
     });
-  }
+  };
 
   handleServiceSelection = (url, serviceType, serviceDate, serviceDow) => {
     let selectedService = serviceType;
@@ -579,18 +586,32 @@ class AgesViewer extends React.Component {
                 {this.getAgesTableInfo()}
               </Col>
             </Row>
-            <Row className="App-Ages-Table-Row">
+            <Row className="App App-Ages-Table-Row">
               <Col xs={12} md={12}>
                 {this.state.dataFetched &&
-                <div>
-                  {this.state.renderedTable}
+                <div className="ages-content">
+                  <Table responsive>
+                    {this.state.renderedTable}
+                  </Table>
                 </div>
                 }
               </Col>
             </Row>
           </div>
       )
-  }
+  };
+
+  getSelectedService = () => {
+    if (this.state.selectedService) {
+      return (
+          <div>
+            <ControlLabel>{this.state.labels.thisClass.selected}</ControlLabel>
+            <span>{this.state.selectedService}</span>
+          </div>
+      );
+    }
+  };
+
 
   render() {
     return (
@@ -608,13 +629,13 @@ class AgesViewer extends React.Component {
               </Col>
             </Row>
             <Row className="App-Selection-Row">
-              <Col xs={4} md={4}>
+              <Col xs={12} md={12}>
                 {this.getServiceSelectorPanel()}
               </Col>
-              <Col xs={8} md={8}>
-                { this.state.agesIndexFetched &&
-                this.state.selectedService
-                }
+            </Row>
+            <Row className="App-Selection-Row">
+              <Col xs={12}>
+                {this.getSelectedService()}
               </Col>
             </Row>
             <Row className="App-Selection-Row">

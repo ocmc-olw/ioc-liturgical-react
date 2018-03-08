@@ -376,7 +376,7 @@ class Administrator extends React.Component {
                 <Col sm={3} md={3}>
                 </Col>
                 <Col sm={6} md={6}>
-                  <div className="App-message"><FontAwesome name={this.state.messageIcon} />{this.state.message}</div>
+                  <div className="App App-message"><FontAwesome name={this.state.messageIcon} />{this.state.message}</div>
                 </Col>
                 <Col sm={3} md={3}></Col>
               </Row>

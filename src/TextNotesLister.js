@@ -416,7 +416,7 @@ export class TextNotesLister extends React.Component {
     return (
         <div className="App-page App-Notes-Lister">
           {this.props.title && <h3>{this.props.title}</h3>}
-          <div>{this.state.searchLabels.resultLabel}: <span className="App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.getAddButton()}</span>
+          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>

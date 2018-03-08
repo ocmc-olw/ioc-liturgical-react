@@ -1,4 +1,4 @@
-div.content {
+div.ages-content {
     font-family: "Arimo", sans-serif;
     font-size: 12pt;
     background-color: #FBF0D9;
@@ -14,8 +14,12 @@ p {
     padding-left: -50px;
     margin-bottom: 0em; /* to control spacing after para */
 }
+.ages-table-element {
+    word-break: inherit;
+    white-space: normal;
+}
 span {
-    padding-left: 4px;
+    padding-left: 4px !important;
 }
 
 span.media-icon {
@@ -295,7 +299,7 @@ p.source0 {
     text-align:left;
     height:0;
     position:relative;
-    top:-2.5em;
+    top:0em;
 }
 p.source1 {
     margin-top: 0px;
@@ -306,7 +310,7 @@ p.source1 {
     text-align:left;
     height:0;
     position:relative;
-    top:-6em;
+    top:0em;
 }
 p.titlezero {
     text-align:center;
@@ -444,28 +448,30 @@ table.ages {
     padding: 0;
     border-collapse: collapse;
     border-spacing:0 5px;
-    display: inline;
+    display: block;
 }
 tr.ages {
     border-spacing:0 5px;
+    max-width: 50vw !important;
+    width: 100px;
 }
 td.leftCell {
     vertical-align: top;
-    width: 33%;
+    max-width: 25% !important;
     padding-left: 8px;
     padding-right: 8px;
     border-right: thin solid silver;
 }
 td.centerCell {
     vertical-align: top;
-    width: 33%;
+    max-width: 25% !important;
     padding-left: 8px;
     padding-right: 8px;
     border-right: thin solid silver;
 }
 td.rightCell {
     vertical-align: top;
-    width: 33%;
+    max-width: 25% !important;
     padding-left: 8px;
     padding-right: 8px;
 }
@@ -487,17 +493,29 @@ td.cellOneOfOne {
     padding-left: 8px;
     padding-right: 8px;
 }
+td.cellOneOfOne > p.ages-table-element {
+    max-width: 100vw;
+}
 td.cellOneOfTwo {
     vertical-align: top;
     width: 50%;
     padding-left: 8px;
     padding-right: 8px;
+    border-right: thin solid silver;
 }
+td.cellOneOfTwo > p.ages-table-element {
+    max-width: 50vw;
+}
+
 td.cellOneOfThree {
     vertical-align: top;
-    width: 33%;
+    width: 30vw;
     padding-left: 8px;
     padding-right: 8px;
+    border-right: thin solid silver;
+}
+td.cellOneOfThree > p.ages-table-element {
+    max-width: 30vw;
 }
 td.cellTwoOfTwo {
     vertical-align: top;
@@ -505,15 +523,34 @@ td.cellTwoOfTwo {
     padding-left: 8px;
     padding-right: 8px;
 }
+td.cellTwoOfTwo > p.ages-table-element {
+    max-width: 50vw;
+}
 td.cellTwoOfThree {
     vertical-align: top;
-    width: 33%;
+    width: 30vw;
     padding-left: 8px;
     padding-right: 8px;
+    border-right: thin solid silver;
+}
+td.cellTwoOfThree > p.ages-table-element {
+    max-width: 25vw;
 }
 td.cellThreeOfThree {
     vertical-align: top;
-    width: 33%;
+    width: 30vw;
     padding-left: 8px;
     padding-right: 8px;
+}
+td.cellThreeOfThree > p.ages-table-element {
+    width: 25vw;
+}
+tr.ages > td {
+    border-top-width: 0px !important;
+}
+tr.ages > td > p > span.app-no-show {
+    display: none;
+}
+tr:empty {
+    display: none;
 }

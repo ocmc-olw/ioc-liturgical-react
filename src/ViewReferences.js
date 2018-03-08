@@ -408,7 +408,7 @@ class ViewReferences extends React.Component {
           <h3>{this.state.labels.thisClass.pageTitle}</h3>
           {this.getSelector()}
           <ControlLabel>{this.props.type === "*" ? this.state.labels.thisClass.ontologyRef : this.state.labels.thisClass.biblicalRef} {this.state.labels.thisClass.panelTitle} {this.props.id} {this.state.labels.thisClass.library} {this.state.selectedDomain}</ControlLabel>
-          <div>{this.state.labels.messages.resultLabel}: <span className="App-message"><FontAwesome
+          <div>{this.state.labels.messages.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.messages.docs}  {this.getEntityAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
