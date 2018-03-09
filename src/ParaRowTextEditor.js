@@ -207,7 +207,7 @@ export class ParaRowTextEditor extends React.Component {
           if (response.data.valueCount && response.data.valueCount > 0) {
             message = this.state.labels.search.msg3
                 + " "
-                + response.data.valueCount
+                + values.length
                 + " "
                 + this.state.labels.search.msg4
                 + "."

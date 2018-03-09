@@ -53,6 +53,7 @@ class TextNoteEditor extends React.Component {
         ]
     ;
 
+    let selectedType = "";
     let selectedTypeLabel = "";
     let selectedBiblicalGreekId = "";
     let selectedBiblicalLibrary = "";
@@ -62,6 +63,7 @@ class TextNoteEditor extends React.Component {
     let citeBible = "";
 
     if (props.form) {
+      selectedTypeLabel = props.form.noteType;
       if (props.form.tags) {
         selectedTag = props.form.tags[0];
         let j = props.form.tags.length;
@@ -97,6 +99,7 @@ class TextNoteEditor extends React.Component {
         citeBible = citeBook + " " + citeChapter + ":" + citeVerse;
       }
       if (props.form.noteType) {
+        selectedType = props.form.noteType;
         selectedTypeLabel = this.getLabel(props.form.noteType);
       }
     }
@@ -125,7 +128,7 @@ class TextNoteEditor extends React.Component {
       , liturgicalLibraries: undefined
       , biblicalLibraries: undefined
       , selectedNoteLibrary: props.session.userInfo.domain
-      , selectedType: ""
+      , selectedType: selectedType
       , selectedTypeLabel: selectedTypeLabel
       , bibleRef: ""
       , selectedBiblicalGreekId: selectedBiblicalGreekId
@@ -237,6 +240,7 @@ class TextNoteEditor extends React.Component {
     let form = {};
     let tags = [];
     let selectedTag = "";
+    let selectedType = get(this.state, "selectedType", "");
     let selectedTypeLabel = get(this.state, "selectedTypeLabel", "");
     // let selectedBiblicalLibrary = "";
     // let selectedBiblicalBook = "";
@@ -245,6 +249,7 @@ class TextNoteEditor extends React.Component {
 
     if (nextProps.form && nextProps.form.noteType) {
       form = nextProps.form;
+      selectedType = form.noteType;
       selectedTypeLabel = this.getLabel(form.noteType);
     } else {
       form = nextProps.session.uiSchemas.getForm("TextualNote:1.1");
@@ -257,6 +262,8 @@ class TextNoteEditor extends React.Component {
       form.liturgicalGreekId = form.topic;
       formIsValid = true;
       selectedTag = form.tags[0];
+      selectedType = form.noteType;
+      selectedTypeLabel = this.getLabel(form.noteType);
       let j = form.tags.length;
       for (let i=0; i < j; i++) {
         tags.push({value: form.tags[i], label: form.tags[i]});
