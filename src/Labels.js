@@ -9,6 +9,7 @@ const   labels = {
     button: {
       cancel: "Cancel"
       , close: "Close"
+      , downloadAsPdf: "Download as PDF"
       , remove: "Remove"
       , removeAll: "Remove All"
       , saveAsDraft: "Save as Draft"
@@ -979,6 +980,7 @@ const   labels = {
     button: {
       cancel: "Ματαίωσε"
       , close: "Κλείστε"
+      , downloadAsPdf: "Διαβίβαζε ως PDF"
       , remove: "Βγάλε"
       , removeAll: "Βγάλε όλων"
       , saveAsDraft: "Αποθηκεύσετε ως πρόχειρο"

@@ -35,6 +35,7 @@ class AgesViewer extends React.Component {
     this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
     this.getAgesTableRow = this.getAgesTableRow.bind(this);
     this.getFetchingAgesTableRow = this.getFetchingAgesTableRow.bind(this);
+    this.getPdfButton = this.getPdfButton.bind(this);
     this.getSelectedService = this.getSelectedService.bind(this);
     this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
     this.handleFetchAgesIndexCallback = this.handleFetchAgesIndexCallback.bind(this);
@@ -47,18 +48,20 @@ class AgesViewer extends React.Component {
     this.handleServiceSelectionClose = this.handleServiceSelectionClose.bind(this);
     this.handleThirdLibraryFallbackSelection = this.handleThirdLibraryFallbackSelection.bind(this);
     this.handleThirdLibrarySelection = this.handleThirdLibrarySelection.bind(this);
+    this.handleTimeout = this.handleTimeout.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.setTable = this.setTable.bind(this);
+    this.setTimer = this.setTimer.bind(this);
     this.showServiceSelector = this.showServiceSelector.bind(this);
   }
 
   componentWillMount = () => {
     this.fetchAgesIndex();
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let url = undefined;
@@ -124,6 +127,7 @@ class AgesViewer extends React.Component {
         {
           labels: {
             thisClass: Labels.getAgesViewerLabels(this.props.session.languageCode)
+            , buttons: Labels.getButtonLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
             , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
           }
@@ -184,7 +188,7 @@ class AgesViewer extends React.Component {
           )
       );
     }
-  }
+  };
 
   handleFetchAgesIndexCallback = (restCallResult) => {
     if (restCallResult) {
@@ -194,10 +198,10 @@ class AgesViewer extends React.Component {
         , agesIndexValues: values.tableData
       });
     }
-  }
+  };
 
   downloadPdf = () => {
-  }
+  };
 
   fetchPdf = () => {
 
@@ -248,7 +252,7 @@ class AgesViewer extends React.Component {
               })
         })
     ;
-  }
+  };
 
   fetchData = () => {
     let parms =
@@ -265,6 +269,7 @@ class AgesViewer extends React.Component {
           message: this.state.labels.messages.retrieving
           , fetchingData: true
           , dataFetched: false
+          , showPdfButton: false
         },
         server.getAgesReadOnlyTemplate(
             this.props.session.restServer
@@ -275,7 +280,11 @@ class AgesViewer extends React.Component {
         )
     );
 
-  }
+  };
+
+  handleTimeout = () => {
+    this.setState({showPdfButton: true});
+  };
 
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
@@ -285,6 +294,9 @@ class AgesViewer extends React.Component {
       let topElement = data.topElement.children[0].children[0]; // tbody
       let pdfId = data.pdfId;
       let pdfFilename = data.pdfFilename;
+      if (! pdfFilename.endsWith(".pdf")) {
+        pdfFilename = pdfFilename + ".pdf";
+      }
       this.setState({
         dataFetched: true
         , fetchingData: false
@@ -295,7 +307,7 @@ class AgesViewer extends React.Component {
         , pdfFilename: pdfFilename
       }, this.setTable);
     }
-  }
+  };
 
   handleFirstLibrarySelection = (selection) => {
     if (selection == null) {
@@ -347,7 +359,7 @@ class AgesViewer extends React.Component {
         selectedFirstLibraryFallback: selection["value"]
       });
     }
-  }
+  };
 
   handleSecondLibrarySelection = (selection) => {
     if (selection == null) {
@@ -373,7 +385,7 @@ class AgesViewer extends React.Component {
         , selectedThirdLibraryFallback: ""
       });
     }
-  }
+  };
 
   handleSecondLibraryFallbackSelection = (selection) => {
     if (selection == null) {
@@ -386,7 +398,7 @@ class AgesViewer extends React.Component {
         selectedSecondLibraryFallback: selection["value"]
       });
     }
-  }
+  };
 
   handleThirdLibrarySelection = (selection) => {
     if (selection == null) {
@@ -410,7 +422,7 @@ class AgesViewer extends React.Component {
         , selectedThirdLibraryFallback: selectedThirdLibraryFallback
       });
     }
-  }
+  };
 
   handleThirdLibraryFallbackSelection = (selection) => {
     if (selection == null) {
@@ -425,10 +437,14 @@ class AgesViewer extends React.Component {
     }
   };
 
+  setTimer = () => {
+    window.setTimeout(this.handleTimeout, 15000);
+  };
+
   setTable = () => {
     this.setState({
       renderedTable: this.renderHtml(this.state.topElement)
-    });
+    }, this.setTimer);
   };
 
   renderHtml = (element) => {
@@ -529,7 +545,7 @@ class AgesViewer extends React.Component {
         );
       }
     }
-  }
+  };
 
   getAgesTableInfo = () => {
     if (this.state.dataFetched) {
@@ -570,13 +586,13 @@ class AgesViewer extends React.Component {
     } else {
       return (<div></div>);
     }
-  }
+  };
 
   getFetchingAgesTableRow = () => {
     return (
         <Spinner message={this.state.labels.messages.retrieving}/>
     );
-  }
+  };
 
   getAgesTableRow = () => {
       return (
@@ -599,6 +615,22 @@ class AgesViewer extends React.Component {
             </Row>
           </div>
       )
+  };
+
+  getPdfButton = () => {
+    if (this.state.dataFetched && this.state.showPdfButton) {
+      return (
+        <Button bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
+      );
+    } else {
+      if (this.state.dataFetched) {
+        return (
+            <Button disabled={true} bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
+        );
+      } else {
+        return (<span></span>);
+      }
+    }
   };
 
   getSelectedService = () => {
@@ -647,7 +679,7 @@ class AgesViewer extends React.Component {
               <Col xs={8} md={8}>
                 <ReactSelector
                     initialValue={this.state.selectedFirstLibrary}
-                    resources={this.props.session.userInfo.domains.author}
+                    resources={this.props.session.userInfo.domains.reader}
                     changeHandler={this.handleFirstLibrarySelection}
                     multiSelect={false}
                 />
@@ -679,7 +711,7 @@ class AgesViewer extends React.Component {
                     <Col xs={8} md={8}>
                       <ReactSelector
                           initialValue={this.state.selectedSecondLibrary}
-                          resources={this.props.session.userInfo.domains.author}
+                          resources={this.props.session.userInfo.domains.reader}
                           changeHandler={this.handleSecondLibrarySelection}
                           multiSelect={false}
                       />
@@ -713,7 +745,7 @@ class AgesViewer extends React.Component {
                     <Col xs={8} md={8}>
                       <ReactSelector
                           initialValue={this.state.selectedThirdLibrary}
-                          resources={this.props.session.userInfo.domains.author}
+                          resources={this.props.session.userInfo.domains.reader}
                           changeHandler={this.handleThirdLibrarySelection}
                           multiSelect={false}
                       />
@@ -747,8 +779,8 @@ class AgesViewer extends React.Component {
                 </Button>
               </Col>
               <Col xs={8} md={8}>
-                {this.state.dataFetched && <Button bsStyle="primary" onClick={this.fetchPdf}>Download as PDF</Button>}
-                {this.state.fetchingPdf && <Spinner message={this.state.labels.messages.retrieving}/>}
+                {this.getPdfButton()}
+                {this.state.fetchingPdf && <Spinner className="App-spinner" message={this.state.labels.messages.retrieving}/>}
               </Col>
             </Row>
             {this.state.dataFetched && this.getAgesTableRow()}

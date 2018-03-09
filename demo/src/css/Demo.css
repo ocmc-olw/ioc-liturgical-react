@@ -682,7 +682,8 @@ path.link {
     margin-bottom: 8px;
 }
 .App-spinner {
-    color: black;
+    color: red;
+    margin-left: 20px;
 }
 .rdw-editor-main {
     background-color: white;
