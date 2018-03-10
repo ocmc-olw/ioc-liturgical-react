@@ -37,6 +37,8 @@ class AgesEditor extends React.Component {
     this.handleServiceSelection = this.handleServiceSelection.bind(this);
     this.handleServiceSelectionClose = this.handleServiceSelectionClose.bind(this);
     this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
+    this.isTouchDevice = this.isTouchDevice.bind(this);
+//    this.renderTouchEdit = this.renderTouchEdit.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.setTable = this.setTable.bind(this);
     this.showServiceSelector = this.showServiceSelector.bind(this);
@@ -111,6 +113,10 @@ class AgesEditor extends React.Component {
           , iconCount: 0
         }
     )
+  };
+
+  isTouchDevice = () => {
+    return 'ontouchstart' in document.documentElement;
   };
 
   // if we did not receive table values as a prop, fetch them
@@ -297,6 +303,10 @@ class AgesEditor extends React.Component {
     }
   };
 
+  // renderTouchEdit = (text) => {
+  //   return (<span>{text} <Glyphicon glyph="pencil"/></span>);
+  // };
+
   renderHtml = (element) => {
     let props = {};
     let children = [];
@@ -318,7 +328,11 @@ class AgesEditor extends React.Component {
     }
     if (element.dataKey) {
       props["data-key"] = element.dataKey;
-      props["onDoubleClick"] = this.edit.bind(null,element.dataKey);
+      if (this.isTouchDevice()) {
+        props["onClick"] = this.edit.bind(null,element.dataKey);
+      } else {
+        props["onDoubleClick"] = this.edit.bind(null,element.dataKey);
+      }
       let value = this.state.values[element.dataKey];
       children.push(value);
     }
