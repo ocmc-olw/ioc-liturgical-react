@@ -1,10 +1,9 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {
-  Accordion
-  , Button
+  Button
   , ControlLabel
-  , Panel
+  , Grid
   , Tab
   , Tabs
   , Well
@@ -19,7 +18,6 @@ import NotesLister from './NotesLister';
 import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
 import TextNotesLister from './TextNotesLister';
-import ViewReferences from './ViewReferences';
 
 /**
  * Display a text to edit, with source and models as rows.
@@ -233,8 +231,8 @@ export class ParaRowTextEditor extends React.Component {
   getTextArea = () => {
     if (this.props.canChange) {
       return (
+          <div className="row">
           <Well>
-            <div className="row">
               <div>
               <ControlLabel>
                 {this.state.labels.thisClass.yourTranslation
@@ -264,8 +262,8 @@ export class ParaRowTextEditor extends React.Component {
                   {this.state.message}
                 </span>
               </div>
+              </Well>
             </div>
-        </Well>
       )
     } else {
       return (<span className="App App-no-display"></span>);
@@ -274,6 +272,7 @@ export class ParaRowTextEditor extends React.Component {
 
   getTabs = () => {
       return (
+          <div className="row">
           <Well>
             <Tabs id="App-Text-Node-Editor-Tabs" animation={false}>
               <Tab eventKey={"textnotes"} title={
@@ -307,6 +306,7 @@ export class ParaRowTextEditor extends React.Component {
               </Tab>
             </Tabs>
           </Well>
+          </div>
       );
   };
 
@@ -331,11 +331,10 @@ export class ParaRowTextEditor extends React.Component {
   getParaRows = () => {
     if (this.state.showSearchResults) {
       return (
-          <div>
-            <ControlLabel>
-              {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
-            </ControlLabel>
             <div className="row">
+              <ControlLabel>
+                {this.state.labels.thisClass.showingMatchesFor + " " + this.props.idTopic + "~" + this.props.idKey}
+              </ControlLabel>
               <Well>
                 <BootstrapTable
                     data={this.state.data.values}
@@ -362,7 +361,6 @@ export class ParaRowTextEditor extends React.Component {
                 </BootstrapTable>
               </Well>
             </div>
-          </div>
       )
     } else {
       return (
@@ -376,13 +374,13 @@ export class ParaRowTextEditor extends React.Component {
           {(! this.state.showSearchResults) ? <Spinner message={this.state.labels.messages.retrieving}/>
               :
               <div className="App-ParaRow-Text-Editor">
+                <Grid>
                 {this.getParaRows()}
-                <div>
                 {this.getTextArea()}
-                </div>
+                {this.getTabs()}
+                </Grid>
               </div>
               }
-          {this.getTabs()}
           {/*<Accordion>*/}
             {/*<Panel*/}
                 {/*className="App-biblical-links-panel "*/}
