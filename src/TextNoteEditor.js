@@ -1381,14 +1381,14 @@ class TextNoteEditor extends React.Component {
               <Well>
                 <Grid>
                   <Row className="App show-grid">
-                    <Col xs={12} md={8}>
+                    <Col xs={12} md={12}>
                       <ControlLabel>
                         {this.state.labels.thisClass.note}: {this.state.selectedTypeLabel}
                       </ControlLabel>
                     </Col>
                   </Row>
                   <Row className="App show-grid  App-Text-Note-Editor-Row">
-                    <Col xs={12} md={8}>
+                    <Col xs={12} md={12}>
                       {this.getEditor()}
                     </Col>
                   </Row>
