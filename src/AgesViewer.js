@@ -294,9 +294,6 @@ class AgesViewer extends React.Component {
       let topElement = data.topElement.children[0].children[0]; // tbody
       let pdfId = data.pdfId;
       let pdfFilename = data.pdfFilename;
-      if (! pdfFilename.endsWith(".pdf")) {
-        pdfFilename = pdfFilename + ".pdf";
-      }
       this.setState({
         dataFetched: true
         , fetchingData: false

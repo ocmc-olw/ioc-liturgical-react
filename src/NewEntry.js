@@ -11,16 +11,61 @@ import NewEntryForm from './modules/NewEntryForm';
 import ParaRowTextEditor from './ParaRowTextEditor';
 import { Panel, Well } from 'react-bootstrap'
 
+/**
+ * This allows addition of a new entry. The forms are only 'pure ontology'
+ * and are hard coded. They should use the web service dropdown
+ * this.props.session.uiSchemas.formsDropdown
+ */
 export class NewEntry extends React.Component {
 
   constructor(props) {
     super(props);
+
+    const formsDropdown = [
+      {label: "Animal", value: "AnimalCreateForm:1.1"}
+      ,{label: "Being", value: "BeingCreateForm:1.1"}
+//      ,{label: "Biblical Text (Source)", value: "TextBiblicalSourceCreateForm:1.1"}
+//      ,{label: "Biblical Text (Translation)", value: "TextBiblicalTranslationCreateForm:1.1"}
+      ,{label: "Concept", value: "ConceptCreateForm:1.1"}
+//      ,{label: "Concordance Line", value: "ConcordanceLine:1.1"}
+      ,{label: "Event", value: "EventCreateForm:1.1"}
+      ,{label: "Group", value: "GroupCreateForm:1.1"}
+      ,{label: "Human", value: "HumanCreateForm:1.1"}
+ //     ,{label: "Liturgical Text (Source)", value: "TextLiturgicalSourceCreateForm:1.1"}
+//      ,{label: "Liturgical Text (Translation)", value: "TextLiturgicalTranslationCreateForm:1.1"}
+      ,{label: "Mystery", value: "MysteryCreateForm:1.1"}
+      ,{label: "Object", value: "ObjectCreateForm:1.1"}
+      ,{label: "Place", value: "PlaceCreateForm:1.1"}
+      ,{label: "Plant", value: "PlantCreateForm:1.1"}
+//      ,{label: "Reference to Animal", value: "LinkRefersToAnimalCreateForm:1.1"}
+//      ,{label: "Reference to Being", value: "LinkRefersToBeingCreateForm:1.1"}
+//      ,{label: "Reference to Biblical Text", value: "LinkRefersToBiblicalTextCreateForm:1.1"}
+//      ,{label: "Reference to Concept", value: "LinkRefersToConceptCreateForm:1.1"}
+//      ,{label: "Reference to Event", value: "LinkRefersToEventCreateForm:1.1"}
+//      ,{label: "Reference to God", value: "LinkRefersToGodCreateForm:1.1"}
+//      ,{label: "Reference to Group", value: "LinkRefersToGroupCreateForm:1.1"}
+//      ,{label: "Reference to Human", value: "LinkRefersToHumanCreateForm:1.1"}
+//      ,{label: "Reference to Mystery", value: "LinkRefersToMysteryCreateForm:1.1"}
+//      ,{label: "Reference to Object", value: "LinkRefersToObjectCreateForm:1.1"}
+//      ,{label: "Reference to Place", value: "LinkRefersToPlaceCreateForm:1.1"}
+//      ,{label: "Reference to Plant", value: "LinkRefersToPlantCreateForm:1.1"}
+//      ,{label: "Reference to Role", value: "LinkRefersToRoleCreateForm:1.1"}
+      ,{label: "Role", value: "RoleCreateForm:1.1"}
+//      ,{label: "Section", value: "Section:1.1"}
+//      ,{label: "Template", value: "Template:1.1"}
+//      ,{label: "Text Note ", value: "TextualNote:1.1"}
+//      ,{label: "Tree Node", value: "TokenAnalysisCreateForm:1.1"}
+//      ,{label: "User Note (Private)", value: "UserNoteCreateForm:1.1"}
+//      ,{label: "Word Analysis", value: "WordAnalysis:1.1"}
+    ];
+
     this.state = {
       labels: {
         thisClass: Labels.getComponentNewEntryLabels(this.props.session.languageCode)
         , search: Labels.getSearchLabels(this.props.session.languageCode)
         , paraRowEditor: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
       }
+      , formsDropdown: formsDropdown
       , idBuilt: false
       , message: Labels.getSearchLabels(this.props.session.languageCode).msg1
       , messageIcon: this.messageIcons.info
@@ -109,7 +154,7 @@ export class NewEntry extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
 
   handleStatusChange = (item) => {
@@ -307,13 +352,17 @@ export class NewEntry extends React.Component {
         && restCallResult.data.values
         && restCallResult.data.values.length > 0
     ) {
-      let config = restCallResult.data.values[2].config;
+      let config = restCallResult.data.values[3].config;
+      let isPublic = true;
+      if (config.isPublic) {
+        isPublic = config.isPublic;
+      }
 
       this.setState({
         workflow: {
           userRolesForLibrary: restCallResult.data.values[0]
           , statusDropdown: restCallResult.data.values[1].statusDropdown
-          , isPublic: config.isPublic
+          , isPublic: isPublic
           , stateEnabled: config.stateEnabled
           , workflowEnabled: config.workflowEnabled
           , defaultStatusAfterEdit: config.defaultStatusAfterEdit
@@ -338,14 +387,14 @@ export class NewEntry extends React.Component {
           , this.setLibraryWorkflowInfo
       );
     }
-  }
+  };
 
   handleIdTopicSelection = (topic, value) => {
     this.setState({
       IdTopic: topic
       , IdTopicValue: value
     });
-  }
+  };
 
   handleIdSelection = (
       IdLibrary
@@ -487,16 +536,20 @@ export class NewEntry extends React.Component {
           }
         }
     );
-  }
+  };
+
+  // in the ResourceSelector, use this to get all forms:
+  //               resources={this.props.session.uiSchemas.formsDropdown}
 
   render () {
+
     return (
         <div className="App-new-entry">
           <Well>
           <ResourceSelector
               title={this.state.labels.thisClass.formSelector}
               initialValue={this.state.selectedForm}
-              resources={this.props.session.uiSchemas.formsDropdown}
+              resources={this.state.formsDropdown}
               changeHandler={this.handleFormSelection}
               multiSelect={false}
           />

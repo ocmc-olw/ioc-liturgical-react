@@ -164,11 +164,12 @@ const restGetPdf = (
 
     axios.get(path, config)
         .then(response => {
-          var blob = new Blob([response.data], {type: 'application/octet-stream'});
+//          var blob = new Blob([response.data], {type: 'application/octet-stream'});
+          var blob = new Blob([response.data], {type: 'application/pdf'});
             FileSaver.saveAs(blob, filename);
-            result.userMessage = "ok"
-            result.developerMessage = "ok"
-            result.code = "200"
+            result.userMessage = "ok";
+            result.developerMessage = "ok";
+            result.code = "200";
             result.data = response.data;
           resolve(result);
         })
