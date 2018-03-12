@@ -614,15 +614,21 @@ class AgesViewer extends React.Component {
       )
   };
 
+// <Button bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
+//            <Button disabled={true} bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
+
   getPdfButton = () => {
     if (this.state.dataFetched && this.state.showPdfButton) {
       return (
-        <Button bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
+          <div>
+          <a href={"http://localhost:4567/" + this.state.pdfId + ".pdf"} target={"_blank"}>{this.state.labels.buttons.downloadAsPdf}</a>
+          <span className="App-HREF"><a href={"http://localhost:4567/" + this.state.pdfId + ".tex"} target={"_blank"}>{this.state.labels.buttons.downloadAsTex}</a></span>
+          </div>
       );
     } else {
       if (this.state.dataFetched) {
         return (
-            <Button disabled={true} bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
+            <span>Creating PDF file...please wait...</span>
         );
       } else {
         return (<span></span>);
