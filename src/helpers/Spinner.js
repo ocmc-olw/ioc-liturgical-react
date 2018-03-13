@@ -22,17 +22,16 @@ class Spinner extends React.Component {
         {
         }
     )
-  }
+  };
 
   render() {
         return (
-              <span className="App-spinner">
+              <span className="App-spinner-span">
               <FontAwesome
                   className="App-font-awesome-spinner"
                   name={MessageIcons.getMessageIcons().spinner}
                   spin
-              />
-              {this.props.message}
+              /> {this.props.message}
               </span>
         )
   }

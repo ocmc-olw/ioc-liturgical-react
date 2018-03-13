@@ -16,8 +16,6 @@ export class ModalTextNoteEditor extends React.Component {
 
   constructor(props) {
     super(props);
-
-    console.log("ModalTextNoteEditor constructor");
     let textId = IdManager.getParts(props.noteIdTopic);
     let showForm = true;
     if (props.noteIdLibrary) {

@@ -13,6 +13,7 @@ export class CompareDocs extends React.Component {
 
   constructor(props) {
     super(props);
+    this._isMounted = false;
 
     let topic = props.selectedIdParts[1].label;
     let key = props.selectedIdParts[2].label;
@@ -75,6 +76,7 @@ export class CompareDocs extends React.Component {
       , selectedChapter: "*"
       , docProp: "id"
       , matcher: "rx"
+      , unmounted: false
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -97,20 +99,25 @@ export class CompareDocs extends React.Component {
         + "~"
         + key
         + "$";
-
-    this.setState({
-          showModal: nextProps.showModal
-          , query: query
-          , lastQuery: lastQuery
-        }
-        , function () {
-          this.evaluateNeedToFetch();
-        }
-    );
+      this.setState({
+            showModal: nextProps.showModal
+            , query: query
+            , lastQuery: lastQuery
+            , unmounted: false
+          }
+          , function () {
+            this.evaluateNeedToFetch();
+          }
+      );
   };
 
   componentDidMount = () => {
+    this._isMounted = true;
     this.fetchData();
+  };
+
+  componentWillUnmount = () => {
+    this._isMounted = false;
   };
 
   /**
@@ -131,111 +138,119 @@ export class CompareDocs extends React.Component {
   }
 
   setMessage(message) {
-    this.setState({
-      message: message
-    });
+      this.setState({
+        message: message
+      });
   };
 
   evaluateNeedToFetch = () => {
-    if (this.state.lastQuery === this.state.query) {
-      // do nothing
-    } else {
-      this.fetchData();
-    }
+      if (this.state.lastQuery === this.state.query) {
+        // do nothing
+      } else {
+        this.fetchData();
+      }
   };
 
   fetchData() {
-    this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
-    let config = {
-      auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
-      }
-    };
+    if (this._isMounted) {
+      this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
+      let config = {
+        auth: {
+          username: this.props.session.userInfo.username
+          , password: this.props.session.userInfo.password
+        }
+      };
 
-    let parms =
-            "?t=" + encodeURIComponent(this.props.docType)
-            + "&d=" + encodeURIComponent(this.state.domain)
-            + "&b=" + encodeURIComponent(this.state.selectedBook)
-            + "&c=" + encodeURIComponent(this.state.selectedChapter)
-            + "&q=" + encodeURIComponent(this.state.query)
-            + "&p=" + encodeURIComponent(this.state.docProp)
-            + "&m=" + encodeURIComponent(this.state.matcher)
-        ;
-    let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
-    axios.get(path, config)
-        .then(response => {
-          // if one of the values is greek, then make it the selected row
-          let selectedId = "";
-          let selectedValue = "";
-          let selectRow = this.state.selectRow;
-          let greekId = "";
-          if (response.data.values) {
-            // select the Greek value.  If not, if there is only one item, select it
-            let theItem = response.data.values.find(o => o.id.startsWith("gr_"));
-            if (theItem) {
-              selectedId = theItem.id;
-              selectedValue = theItem.value;
-              selectRow.selected = [selectedId];
-              greekId = selectedId;
-            } else {
-              if (response.data.values.length === 1) {
-                theItem = response.data.values[0];
+      let parms =
+          "?t=" + encodeURIComponent(this.props.docType)
+          + "&d=" + encodeURIComponent(this.state.domain)
+          + "&b=" + encodeURIComponent(this.state.selectedBook)
+          + "&c=" + encodeURIComponent(this.state.selectedChapter)
+          + "&q=" + encodeURIComponent(this.state.query)
+          + "&p=" + encodeURIComponent(this.state.docProp)
+          + "&m=" + encodeURIComponent(this.state.matcher)
+      ;
+      let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
+      axios.get(path, config)
+          .then(response => {
+            // if one of the values is greek, then make it the selected row
+            let selectedId = "";
+            let selectedValue = "";
+            let selectRow = this.state.selectRow;
+            let greekId = "";
+            if (response.data.values) {
+              // select the Greek value.  If not, if there is only one item, select it
+              let theItem = response.data.values.find(o => o.id.startsWith("gr_"));
+              if (theItem) {
                 selectedId = theItem.id;
                 selectedValue = theItem.value;
                 selectRow.selected = [selectedId];
+                greekId = selectedId;
+              } else {
+                if (response.data.values.length === 1) {
+                  theItem = response.data.values[0];
+                  selectedId = theItem.id;
+                  selectedValue = theItem.value;
+                  selectRow.selected = [selectedId];
+                }
               }
             }
-          }
-          let values = response.data.values.filter((row) => {
-            return row.value.length > 0;
-          });
-          let libraries = values.map((row) => {
-            return {library: row.library , topic: row.topic, key: row.key, id: row.id} ;
-          });
-          response.data.values = values;
-          this.setState({
-                selectRow: selectRow
-                , selectedId: selectedId
-                , selectedValue: selectedValue
-                , data: response.data
-                , lastQuery: this.state.query
-              }
-          );
-          let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
-            message = this.props.labels.msg3
-                + " "
-                + response.data.valueCount
-                + " "
-                + this.props.labels.msg4
-                + "."
-          }
-          this.setState({
-                message: message
-                , messageIcon: this.messageIcons.info
-                , showSearchResults: true
-                , greekId: greekId
-                , libraries: libraries
-              }
-              , this.sendLibrariesInfo
-        );
-        })
-        .catch((error) => {
-          let message = error.message;
-          let messageIcon = this.messageIcons.error;
-          if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
-            messageIcon = this.messageIcons.warning;
-            this.setState({
-              data: message
-              , message: message
-              , messageIcon: messageIcon
-              , dataFetched: true
-              , lastQuery: this.state.query
+            let values = response.data.values.filter((row) => {
+              return row.value.length > 0;
             });
-          }
-        });
+            let libraries = values.map((row) => {
+              return {library: row.library , topic: row.topic, key: row.key, id: row.id} ;
+            });
+            response.data.values = values;
+            if (this._isMounted) {
+                this.setState({
+                      selectRow: selectRow
+                      , selectedId: selectedId
+                      , selectedValue: selectedValue
+                      , data: response.data
+                      , lastQuery: this.state.query
+                    }
+                );
+            }
+            let message = "No docs found...";
+            if (response.data.valueCount && response.data.valueCount > 0) {
+              message = this.props.labels.msg3
+                  + " "
+                  + response.data.valueCount
+                  + " "
+                  + this.props.labels.msg4
+                  + "."
+            }
+            if (this._isMounted) {
+              this.setState({
+                    message: message
+                    , messageIcon: this.messageIcons.info
+                    , showSearchResults: true
+                    , greekId: greekId
+                    , libraries: libraries
+                  }
+                  , this.sendLibrariesInfo
+              );
+            }
+          })
+          .catch((error) => {
+            let message = error.message;
+            let messageIcon = this.messageIcons.error;
+            if (error && error.response && error.response.status === 404) {
+              message = "no docs found";
+              messageIcon = this.messageIcons.warning;
+              if (this._isMounted) {
+                this.setState({
+                  data: message
+                  , message: message
+                  , messageIcon: messageIcon
+                  , dataFetched: true
+                  , lastQuery: this.state.query
+                });
+              }
+            }
+          });
+    }
   };
 
   sendLibrariesInfo = () => {
@@ -309,7 +324,7 @@ export class CompareDocs extends React.Component {
           <Spinner message={this.state.labels.messages.retrieving}/>
       )
     }
-  }
+  };
 
   render() {
     return (

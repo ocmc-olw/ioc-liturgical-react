@@ -107,9 +107,6 @@ div.container {
 .App-iframe-wrapper {
     resize: vertical;
 }
-.App-font-awesome-spinner {
-    color: red;
-}
 .Navbar.Collapse {
     position: fixed;
     top: 6px;
@@ -681,9 +678,13 @@ path.link {
 .App-search-text-input {
     margin-bottom: 8px;
 }
-.App-spinner {
+.App-spinner-span {
+    color: black;
+    margin-left: 30px;
+}
+.App-font-awesome-spinner {
+    margin-left: 30px;
     color: red;
-    margin-left: 20px;
 }
 .rdw-editor-main {
     background-color: white;

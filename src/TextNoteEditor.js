@@ -242,17 +242,13 @@ class TextNoteEditor extends React.Component {
     let selectedTag = "";
     let selectedType = get(this.state, "selectedType", "");
     let selectedTypeLabel = get(this.state, "selectedTypeLabel", "");
-    // let selectedBiblicalLibrary = "";
-    // let selectedBiblicalBook = "";
-    // let selectedBiblicalChapter = "";
-    // let selectedBiblicalVerse = "";
 
     if (nextProps.form && nextProps.form.noteType) {
       form = nextProps.form;
       selectedType = form.noteType;
       selectedTypeLabel = this.getLabel(form.noteType);
     } else {
-      form = nextProps.session.uiSchemas.getForm("TextualNote:1.1");
+      form = JSON.parse(JSON.stringify(nextProps.session.uiSchemas.getForm("TextualNote:1.1")));
       form.liturgicalScope = textIdParts.key;
       form.library = nextProps.session.userInfo.domain;
       form.topic = nextProps.textId;
@@ -269,7 +265,6 @@ class TextNoteEditor extends React.Component {
         tags.push({value: form.tags[i], label: form.tags[i]});
       }
     }
-
     this.setState((prevState, props) => {
       return {
         labels: {

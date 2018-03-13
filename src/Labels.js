@@ -835,6 +835,7 @@ const   labels = {
       , click: "Click the radio button of the row you are interested in."
       , readOnly: "You do can view this, but not edit it."
       , ok: "OK"
+      , preparingPdf: "Preparing the PDF"
     }
     , grammarTerms: {
       case: {
@@ -1799,6 +1800,7 @@ const   labels = {
       , click: "Click the radio button of the row you are interested in."
       , readOnly: "Μπορείτε να το δείτε αλλά να μην το επεξεργαστείτε"
       , ok: "Εντάξει"
+      , preparingPdf: "Preparing the PDF"
     }
     , grammarTerms: {
       case: {

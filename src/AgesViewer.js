@@ -636,7 +636,7 @@ class AgesViewer extends React.Component {
     } else {
       if (this.state.dataFetched) {
         return (
-            <span>Creating PDF file...please wait...</span>
+            <Spinner message={this.state.labels.messages.preparingPdf}/>
         );
       } else {
         return (<span></span>);
