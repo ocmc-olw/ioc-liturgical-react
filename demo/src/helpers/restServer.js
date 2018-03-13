@@ -8,8 +8,8 @@ var getWsServer = () => {
   } else {
     return "https://ioc-liturgical-ws.net";
   }
-}
+};
 
 module.exports = {
   getWsServer: () => { return getWsServer();}
-}
+};

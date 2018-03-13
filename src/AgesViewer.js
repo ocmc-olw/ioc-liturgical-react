@@ -619,7 +619,14 @@ class AgesViewer extends React.Component {
 
   getPdfButton = () => {
     if (this.state.dataFetched && this.state.showPdfButton) {
-      let url = this.props.session.restServer + "/" + this.state.pdfId;
+      let url = "";
+      if (document.location.hostname === "localhost") {
+        url = this.props.session.restServer + "/" + this.state.pdfId;
+      } else {
+        url = "data/" + this.state.pdfId;
+      }
+      console.log(document.location.hostname);
+      console.log(url);
       return (
           <div>
           <a href={url + ".pdf"} target={"_blank"}>{this.state.labels.buttons.downloadAsPdf}</a>

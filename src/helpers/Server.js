@@ -52,7 +52,6 @@ const ldp = "ldp";
 const messageIcons = MessageIcons.getMessageIcons();
 
 const getTimestamp = () => {
-  console.log("in timestamp");
   let date = new Date();
   let month = (date.getMonth()+1).toString().padStart(2,"0");
   let day = date.getDate().toString().padStart(2,"0");
@@ -71,7 +70,6 @@ const getTimestamp = () => {
       + "."
       + second
   ;
-  console.log(`return=${idKey}`);
   return idKey;
 };
 
