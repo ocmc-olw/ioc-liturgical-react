@@ -715,7 +715,7 @@ const   labels = {
       , select: "Select the Service or Sacrament"
       , selectLibrary: "Select your translation library..."
       , fetch: "Fetch the Service or Sacrament"
-      , selected: "The selected service is: "
+      , selected: "You selected: "
     }
     , AgesViewer: {
       panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
@@ -731,7 +731,7 @@ const   labels = {
       , selectThirdLibrary: "Select library for column 3..."
       , selectThirdLibraryFallback: "Select fallback library for column 3..."
       , fetch: "Fetch the Service or Sacrament"
-      , selected: "The selected service is: "
+      , selected: "You selected: "
     }
     , ModalParaRowEditor: {
       panelTitle: "Text Editor"

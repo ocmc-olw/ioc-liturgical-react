@@ -599,6 +599,7 @@ class AgesViewer extends React.Component {
                 {this.getAgesTableInfo()}
               </Col>
             </Row>
+            {this.getPdfButton()}
             <Row className="App App-Ages-Table-Row">
               <Col xs={12} md={12}>
                 {this.state.dataFetched &&
@@ -625,13 +626,15 @@ class AgesViewer extends React.Component {
       } else {
         url = "data/" + this.state.pdfId;
       }
-      console.log(document.location.hostname);
-      console.log(url);
       return (
-          <div>
-          <a href={url + ".pdf"} target={"_blank"}>{this.state.labels.buttons.downloadAsPdf}</a>
-          <span className="App-HREF"><a href={url + ".tex"} target={"_blank"}>{this.state.labels.buttons.downloadAsTex}</a></span>
-          </div>
+          <Row className="App-Download-Row">
+            <Col className="App-Download-Col" xs={6} md={6}>
+              <a href={url + ".pdf"} target={"_blank"}>{this.state.labels.buttons.downloadAsPdf}</a>
+            </Col>
+            <Col className="App-Download-Col" xs={6} md={6}>
+              <a href={url + ".tex"} target={"_blank"}>{this.state.labels.buttons.downloadAsTex}</a>
+            </Col>
+          </Row>
       );
     } else {
       if (this.state.dataFetched) {
@@ -780,7 +783,7 @@ class AgesViewer extends React.Component {
                 </div>
             }
             <Row className="App-Selection-Row">
-              <Col xs={4} md={4}>
+              <Col xs={12} md={12}>
                 <Button
                     bsStyle="primary"
                     onClick={this.fetchData}
@@ -788,10 +791,6 @@ class AgesViewer extends React.Component {
                 >
                   {this.state.labels.thisClass.fetch}
                 </Button>
-              </Col>
-              <Col xs={8} md={8}>
-                {this.getPdfButton()}
-                {this.state.fetchingPdf && <Spinner className="App-spinner" message={this.state.labels.messages.retrieving}/>}
               </Col>
             </Row>
             {this.state.dataFetched && this.getAgesTableRow()}

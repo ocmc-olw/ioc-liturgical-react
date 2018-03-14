@@ -751,6 +751,9 @@ span.App {
   padding-left: 5px;
   padding-right: 5px;
 }
-.App-HREF {
-    margin-left: 20px;
+.App-Download-Row {
+    text-align: center;
+}
+.App-Download-Col {
+    text-align: center;
 }
