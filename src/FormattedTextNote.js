@@ -95,6 +95,9 @@ class FormattedTextNote extends React.Component {
                   {this.props.lemmaLiturgical}
                 </span>
             <Glyphicon className="App App-Text-Note-Header-Scope-Glyph" glyph={"arrow-right"}/>
+            <span className="App App-Text-Note-Header-Title">
+                  {this.props.title}
+                </span>
             <span className="App App-Text-Note-Header-Note" dangerouslySetInnerHTML={this.createMarkup()}>
                 </span>
           </div>

@@ -602,7 +602,7 @@ path.link {
     font-weight: bold;
     text-justify: none;
     display: inline-block !important;
-    margin-left: 5px !important;
+    margin-left: 0px !important;
     margin-right: 8px;
 }
 
@@ -727,6 +727,9 @@ path.link {
     border-left-style: solid;
     border-left-width: thin;
     border-left-color: lightgrey;
+}
+span {
+    padding-left: 0px !important;
 }
 span.App {
     margin-left: 2px;
