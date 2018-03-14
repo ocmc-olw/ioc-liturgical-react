@@ -577,6 +577,11 @@ class TextNoteEditor extends React.Component {
     form.biblicalScope = "";
     form.biblicalTranslationId = "";
     form.ontologicalEntityId = "";
+    if (form.noteType !== "REF_TO_BIBLE") { // title is user input for REF TO BIBLE
+      if (form.noteType.startsWith("REF_TO")) { // but automatically set for other REF_TO
+        form.noteTitle = "Refers To";
+      }
+    }
 
     this.setState({
       form

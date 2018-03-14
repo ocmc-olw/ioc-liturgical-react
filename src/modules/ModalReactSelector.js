@@ -43,8 +43,6 @@ export class ModalReactSelector extends React.Component {
   };
 
   handleSelectionChange = (selection) => {
-    console.log(`modal selector value=`);
-    console.log(selection);
     let value = selection["value"];
     this.setState({
       selectedValue: value

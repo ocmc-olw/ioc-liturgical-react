@@ -377,7 +377,9 @@ class SearchOptions extends React.Component {
         }
       });
     } catch (error) {
-      console.log(error.message);
+      this.setState({
+          msg: error.message
+      });
     }
   }; // end of method
 

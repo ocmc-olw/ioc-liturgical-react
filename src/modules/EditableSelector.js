@@ -47,7 +47,6 @@ export class EditableSelector extends React.Component {
   onRemoveClick = () => {
     let value = this.state.value;
     let options = [];
-    console.log(`value=${value}`);
     options = this.state.options.filter(function(el) {
       return el.value !== value;
     });

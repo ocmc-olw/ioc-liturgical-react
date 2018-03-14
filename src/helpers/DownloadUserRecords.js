@@ -70,7 +70,6 @@ class DownloadUserRecords extends React.Component {
           );
         })
         .catch( error => {
-          console.log(error);
           this.setState(
               {
                 userMessage: error.userMessage

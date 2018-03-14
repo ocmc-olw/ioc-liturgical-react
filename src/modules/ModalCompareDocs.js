@@ -112,8 +112,6 @@ export class ModalCompareDocs extends React.Component {
   }
 
   fetchData() {
-    console.log("ModalCompareDocs.fetchData");
-    console.log(`query=${this.state.query}`);
     this.setState({message: this.props.labels.msg2, messageIcon: this.messageIcons.info});
     let config = {
       auth: {

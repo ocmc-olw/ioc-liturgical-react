@@ -121,7 +121,6 @@ class TemplateEditor extends React.Component {
 
   getNodeEditor = () => {
     if (this.state.showModalEditor) {
-      console.log("getNodeEditor");
       return (
           <ModalTemplateNodeEditor
               session={this.props.session}
@@ -172,8 +171,6 @@ class TemplateEditor extends React.Component {
     });
     let formData = this.props.formData;
     formData.node = JSON.stringify(this.state.treeData[0]);
-    console.log("treeData:");
-    console.log(this.state.treeData);
     let config = {
       auth: {
         username: this.props.session.userInfo.username

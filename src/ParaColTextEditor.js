@@ -235,17 +235,14 @@ class ParaColTextEditor extends React.Component {
       topic: topic
     });
     ;
-  }
+  };
 
   handleRowSelect = (row, isSelected, e) => {
     // row["id"], etc.
-    console.log(row);
-    console.log(isSelected);
-    console.log(e);
-  }
+  };
 
   onBeforeSaveCell = (row, cellName, cellValue) => {
-  }
+  };
 
   /**
    *

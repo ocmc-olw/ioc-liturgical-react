@@ -73,8 +73,6 @@ export class ModalTemplateNodeEditor extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    console.log("ModalTemplateNodeEditor willReceiveProps");
-    console.log(`nextProps.showModal=${nextProps.showModal}`);
     this.setState((prevState, nextProps) => {
       return {
         labels: {
@@ -230,7 +228,6 @@ export class ModalTemplateNodeEditor extends React.Component {
   handleSelectionChange = () => {
     switch (this.state.selectedNodeType) {
       case ("INSERT_SECTION"): {
-        console.log("invoke section search");
         break;
       }
       case ("RID"): {
@@ -283,7 +280,6 @@ export class ModalTemplateNodeEditor extends React.Component {
 
   handleTextLookupCallback = (id, value) => {
     if (id && id.length > 0) {
-      console.log(id);
       this.setState({
         showModalTextSearch: false
         , selectedId: id
