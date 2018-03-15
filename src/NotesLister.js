@@ -30,21 +30,21 @@ export class NotesLister extends React.Component {
 
     this.state = this.setTheState(props, "");
 
-    this.fetchData = this.fetchData.bind(this);
-    this.onSizePerPageList = this.onSizePerPageList.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.handleCancelRequest = this.handleCancelRequest.bind(this);
-    this.handleDoneRequest = this.handleDoneRequest.bind(this);
-    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
-    this.showRowComparison = this.showRowComparison.bind(this);
-    this.getModalEditor = this.getModalEditor.bind(this);
-    this.handleCloseModal = this.handleCloseModal.bind(this);
-    this.setTheState = this.setTheState.bind(this);
     this.deselectAllRows = this.deselectAllRows.bind(this);
-    this.handleAddClose = this.handleAddClose.bind(this);
+    this.fetchData = this.fetchData.bind(this);
     this.getAddButton = this.getAddButton.bind(this);
-    this.verifyTextId = this.verifyTextId.bind(this);
+    this.getModalEditor = this.getModalEditor.bind(this);
+    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
+    this.handleAddClose = this.handleAddClose.bind(this);
+    this.handleCancelRequest = this.handleCancelRequest.bind(this);
+    this.handleCloseModal = this.handleCloseModal.bind(this);
+    this.handleDoneRequest = this.handleDoneRequest.bind(this);
     this.handleGetForIdCallback = this.handleGetForIdCallback.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.onSizePerPageList = this.onSizePerPageList.bind(this);
+    this.setTheState = this.setTheState.bind(this);
+    this.showRowComparison = this.showRowComparison.bind(this);
+    this.verifyTextId = this.verifyTextId.bind(this);
   }
 
   componentWillMount = () => {
@@ -54,7 +54,7 @@ export class NotesLister extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state.docType);
     this.verifyTextId(this.props.topicId, nextProps.topicId);
-  }
+  };
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
@@ -67,6 +67,10 @@ export class NotesLister extends React.Component {
         selectedId = this.state.selectedId;
       }
     }
+
+    let textIdParts = IdManager.getParts(this.props.topicId);
+    let topicId = "gr_gr_cog" + "~" + textIdParts.topic + "~" + textIdParts.key;
+
 
     return (
         {
@@ -142,9 +146,10 @@ export class NotesLister extends React.Component {
           , idColumnSize: "80px"
           , enableAdd: get(this.state, "enableAdd", false)
           , data: get(this.state,"data",[])
+          , topicId: topicId
         }
     )
-  }
+  };
 
   handleCancelRequest() {
     if (this.props.callback) {
@@ -156,7 +161,7 @@ export class NotesLister extends React.Component {
     if (this.props.callback) {
       this.props.callback(this.state.selectedId, this.state.selectedValue);
     }
-  }
+  };
 
   getSelectedDocOptions() {
     return (
@@ -183,13 +188,13 @@ export class NotesLister extends React.Component {
           </FormGroup>
         </Panel>
     )
-  }
+  };
 
   deselectAllRows = () => {
     this.refs.theTable.setState({
       selectedRowKeys: []
     });
-  }
+  };
 
   handleRowSelect = (row, isSelected, e) => {
     this.setState({
@@ -202,14 +207,14 @@ export class NotesLister extends React.Component {
       , showIdPartSelector: true
       , showModalEditor: true
     });
-  }
+  };
 
   showRowComparison = (id) => {
       this.setState({
         showModalEditor: true
         , selectedId: id
       })
-  }
+  };
 
   handleCloseModal = (id, value) => {
     if (id && id.length > 0) {
@@ -225,7 +230,7 @@ export class NotesLister extends React.Component {
     }
     this.deselectAllRows();
     this.fetchData();
-  }
+  };
 
   getModalEditor = () => {
     return (
@@ -242,13 +247,13 @@ export class NotesLister extends React.Component {
             onClose={this.handleCloseModal}
         />
     )
-  }
+  };
 
   onSizePerPageList = (sizePerPage) => {
     this.setState({
       options: {sizePerPage: sizePerPage}
     });
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -265,7 +270,7 @@ export class NotesLister extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
   setMessage(message) {
     this.setState({
@@ -287,7 +292,7 @@ export class NotesLister extends React.Component {
 
     let parms =
             "?t=" + encodeURIComponent(this.props.type)
-            + "&q=" + encodeURIComponent(this.props.session.userInfo.domain + "~" + this.props.topicId)
+            + "&q=" + encodeURIComponent(this.props.session.userInfo.domain + "~" + this.state.topicId)
             + "&p=id"
             + "&m=sw"
             + "&l="
@@ -317,14 +322,14 @@ export class NotesLister extends React.Component {
                 + this.state.searchLabels.msg4
                 + "."
           }
-          let enableAdd = resultCount > 0;
+//          let enableAdd = resultCount > 0;
           this.setState({
                 message: message
                 , data: data
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: showSearchResults
-                , enableAdd: enableAdd
+                , enableAdd: true
               }
           );
         })
@@ -347,6 +352,8 @@ export class NotesLister extends React.Component {
   getAddButton = () => {
     if (this.state.enableAdd) {
       let id = "UserNoteCreateForm:1.1";
+      let textIdParts = IdManager.getParts(this.props.topicId);
+      let topicId = "gr_gr_cog" + "~" + textIdParts.topic + "~" + textIdParts.key;
       let library = this.props.session.userInfo.domain;
       let date = new Date();
       let month = (date.getMonth()+1).toString().padStart(2,"0");
@@ -374,7 +381,7 @@ export class NotesLister extends React.Component {
               schema={this.props.session.uiSchemas.getSchema(id)}
               formData={this.props.session.uiSchemas.getForm(id)}
               idLibrary={library}
-              idTopic={this.props.topicId}
+              idTopic={topicId}
               idKey={key}
               seq={IdManager.toId(library, this.props.topicId, key)
               }
