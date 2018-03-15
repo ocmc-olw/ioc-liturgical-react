@@ -602,7 +602,7 @@ path.link {
     font-weight: bold;
     text-justify: none;
     display: inline-block !important;
-    margin-left: 0px !important;
+    margin-left: 3px !important;
     margin-right: 8px;
 }
 

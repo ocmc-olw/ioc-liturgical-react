@@ -349,7 +349,6 @@ export class TextNotesLister extends React.Component {
   };
 
   getAddButton = () => {
-//    if (this.state.enableAdd) {
       return (
         <Button
             className="Text-Note-Add-Button"
@@ -361,9 +360,6 @@ export class TextNotesLister extends React.Component {
               name="plus"/>
         </Button>
       )
-//    } else {
-//      return (<span/>)
-//    }
   };
 
   handleGetForIdCallback = (restCallResult) => {

@@ -251,9 +251,9 @@ class TextNoteEditor extends React.Component {
       form = JSON.parse(JSON.stringify(nextProps.session.uiSchemas.getForm("TextualNote:1.1")));
       form.liturgicalScope = textIdParts.key;
       form.library = nextProps.session.userInfo.domain;
-      form.topic = nextProps.textId;
       let key = this.getTimestamp();
       form.key = key;
+      form.topic = "gr_gr_cog" + "~" + textIdParts.topic + "~" + textIdParts.key;
       form.id = form.library + "~" + form.topic + "~" + key;
       form.liturgicalGreekId = form.topic;
       formIsValid = true;
@@ -281,6 +281,7 @@ class TextNoteEditor extends React.Component {
         , selectedTypeLabel: selectedTypeLabel
         , tags: tags
         , selectedTag: selectedTag
+        , selectedType: selectedType
       }
     }, function () { return this.handleStateChange("place holder")});
   };
@@ -578,6 +579,15 @@ class TextNoteEditor extends React.Component {
     form.biblicalTranslationId = "";
     form.ontologicalEntityId = "";
 
+    // For all note types, we use gr_gr_cog as the library of the form.topic ID.
+    // But, a translator's note is for a specific translation.  So we will use the
+    // library from the translation.
+    if (selection["value"] === "TRANSLATORS_NOTE") {
+      let textIdParts = IdManager.getParts(this.props.textId);
+      form.topic = textIdParts.library + "~" + textIdParts.topic + "~" + textIdParts.key;
+      form.id = form.library + "~" + form.topic + "~" + form.key;
+      form.liturgicalGreekId = form.topic;
+    }
     this.setState({
       form
       , selectedTypeLabel: selection["label"]
