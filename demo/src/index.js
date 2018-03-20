@@ -801,6 +801,7 @@ class Demo extends React.Component {
         , forms.templateWhenMonthNameCasesDropdown
         , forms.liturgicalBooksDropdown
         , forms.noteTypesDropdown
+        , forms.noteTypesBilDropdown
   );
     session.dropdowns = dropdowns;
     console.log(session);

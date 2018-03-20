@@ -169,6 +169,7 @@ export class ModalSchemaBasedEditor extends React.Component {
     return (
         <div>
           <Modal
+              backdrop={"static"}
               dialogClassName="App-Modal-Para-Row-Editor"
               show={this.state.showModal}
               onHide={this.close}

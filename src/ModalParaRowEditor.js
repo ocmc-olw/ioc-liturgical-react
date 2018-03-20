@@ -99,7 +99,7 @@ export class ModalParaRowEditor extends React.Component {
   render() {
     return (
         <div>
-          <Modal dialogClassName="App-Modal-Para-Row-Editor" show={this.state.showModal} onHide={this.close}>
+          <Modal backdrop={"static"} dialogClassName="App-Modal-Para-Row-Editor" show={this.state.showModal} onHide={this.close}>
             <Modal.Header closeButton>
               <Modal.Title>{this.state.labels.thisClass.panelTitle}</Modal.Title>
             </Modal.Header>

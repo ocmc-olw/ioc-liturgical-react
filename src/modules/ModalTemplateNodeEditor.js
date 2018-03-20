@@ -418,7 +418,7 @@ export class ModalTemplateNodeEditor extends React.Component {
         <div>
           {this.state.showModalSchemaEditor && this.getModalSchemaEditor()}
           {this.state.showModalTextSearch && this.getModalTextSearch()}
-          <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal  backdrop={"static"} show={this.state.showModal} onHide={this.close}>
             <Modal.Header closeButton>
               <Modal.Title>{this.state.labels.thisClass.panelTitle}</Modal.Title>
             </Modal.Header>

@@ -223,7 +223,7 @@ console.log(path);
   render() {
     return (
         <div>
-          <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal  backdrop={"static"} show={this.state.showModal} onHide={this.close}>
             <Modal.Header closeButton>
               <Modal.Title>{this.props.title}</Modal.Title>
             </Modal.Header>

@@ -304,6 +304,11 @@ class TextNoteEditor extends React.Component {
             && this.state.form.liturgicalLemma.length > 0
             && this.state.form.ontologicalEntityId.length > 0
         );
+      }  else if (this.state.form.noteType === "UNIT") {
+        valid = (
+            this.state.form.liturgicalScope.length > 0
+            && this.state.form.noteTitle.length > 0
+        );
       } else {
         valid = (
             this.state.form.liturgicalScope.length > 0
@@ -866,23 +871,27 @@ class TextNoteEditor extends React.Component {
   };
 
   getLiturgicalLemmaRow = () => {
-    return (
-        <Row className="App show-grid  App-Text-Note-Editor-Lemma-Row">
-          <Col xs={2} md={2}>
-            <ControlLabel>{this.state.labels.thisClass.liturgicalLemma}:</ControlLabel>
-          </Col>
-          <Col xs={10} md={10}>
-            <FormControl
-                id={"fcLiturgicalLemma"}
-                className={"App App-Text-Note-Editor-Lemma"}
-                type="text"
-                value={this.state.form.liturgicalLemma}
-                placeholder="liturgical lemma"
-                onChange={this.handleLiturgicalLemmaChange}
-            />
-          </Col>
-        </Row>
-    );
+    if (this.state.form.noteType === "UNIT") {
+      return (<span className="App App-no-display"></span>);
+    } else {
+      return (
+          <Row className="App show-grid  App-Text-Note-Editor-Lemma-Row">
+            <Col xs={2} md={2}>
+              <ControlLabel>{this.state.labels.thisClass.liturgicalLemma}:</ControlLabel>
+            </Col>
+            <Col xs={10} md={10}>
+              <FormControl
+                  id={"fcLiturgicalLemma"}
+                  className={"App App-Text-Note-Editor-Lemma"}
+                  type="text"
+                  value={this.state.form.liturgicalLemma}
+                  placeholder="liturgical lemma"
+                  onChange={this.handleLiturgicalLemmaChange}
+              />
+            </Col>
+          </Row>
+      );
+    }
   };
 
 
@@ -1140,6 +1149,12 @@ class TextNoteEditor extends React.Component {
   };
 
   getNoteTypeRow = () => {
+
+    let dropdowns = this.props.session.dropdowns.noteTypesDropdown;
+
+    if (this.props.session.userInfo.domain === "en_us_epentiuc") {
+      dropdowns = this.props.session.dropdowns.noteTypesBilDropdown;
+    }
     return (
         <Row className="App show-grid App-Text-Note-Editor-Type-Row">
           <Col xs={2} md={2}>
@@ -1150,7 +1165,7 @@ class TextNoteEditor extends React.Component {
               <ResourceSelector
                   title={""}
                   initialValue={this.state.form.noteType}
-                  resources={this.props.session.dropdowns.noteTypesDropdown}
+                  resources={dropdowns}
                   changeHandler={this.handleNoteTypeChange}
                   multiSelect={false}
               />

@@ -154,6 +154,7 @@ export class ModalTextNoteEditor extends React.Component {
     return (
         <div>
           <Modal
+              backdrop={"static"}
               dialogClassName="App-Modal-New-Entry-Form"
               show={this.state.showModal}
               onHide={this.close}

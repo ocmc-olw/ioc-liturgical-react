@@ -59,6 +59,7 @@ export class ModalIdBuilder extends React.Component {
       return (
           <div>
             <Modal
+                backdrop={"static"}
                 dialogClassName="App-Modal-Id-Builder"
                 show={this.state.showModal}
                 onHide={this.handleClose}

@@ -52,7 +52,7 @@ export class ModalReactSelector extends React.Component {
   render() {
     return (
         <div>
-          <Modal show={this.state.showModal} onHide={this.close}>
+          <Modal  backdrop={"static"} show={this.state.showModal} onHide={this.close}>
             <Modal.Header closeButton>
               <Modal.Title>{this.state.labels.thisClass.panelTitle}</Modal.Title>
             </Modal.Header>

@@ -70,6 +70,7 @@ export class ModalSearchOntologyWithCallback extends React.Component {
     return (
         <div>
           <Modal
+              backdrop={"static"}
               dialogClassName="App-Modal-Search-Text-With-Callback"
               show={this.state.showModal}
               onHide={this.close}
