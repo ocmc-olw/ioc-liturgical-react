@@ -250,7 +250,7 @@ class TextNoteSearchOptions extends React.Component {
             <div className={"App App-Text-Note-Tag-Selector"}>
               <ResourceSelector
                   title={this.props.labels.has}
-                  initialValue="any"
+                  initialValue={this.state.selectedTagOperator}
                   resources={this.props.tagOperators}
                   changeHandler={this.handleTagOperatorChange}
                   multiSelect={false}
