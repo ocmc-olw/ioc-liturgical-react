@@ -76,11 +76,11 @@ export class ParaRowTextEditor extends React.Component {
           , selectedBook: "*"
           , selectedChapter: "*"
           , docProp: "id"
-          , matcher: "rx"
-          , query: ".*"
-        + props.idTopic
-        + "~.*"
-        + props.idKey
+          , matcher: "ew"
+          , query: "~"
+            + props.idTopic
+            + "~"
+            + props.idKey
     };
 
 
@@ -97,7 +97,7 @@ export class ParaRowTextEditor extends React.Component {
 
   componentWillMount = () => {
     this.fetchData();
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
@@ -114,12 +114,12 @@ export class ParaRowTextEditor extends React.Component {
         }
       }, function () { return this.handleStateChange("place holder")});
     }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     this.handlePropsChange();
-  }
+  };
 
   /**
    * Because we are passing back the value each time it changes,
@@ -135,7 +135,7 @@ export class ParaRowTextEditor extends React.Component {
     ) {
       this.fetchData();
     }
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -152,13 +152,13 @@ export class ParaRowTextEditor extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
   setMessage(message) {
     this.setState({
       message: message
     });
-  }
+  };
 
   fetchData() {
     this.setState({

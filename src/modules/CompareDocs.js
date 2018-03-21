@@ -17,11 +17,16 @@ export class CompareDocs extends React.Component {
 
     let topic = props.selectedIdParts[1].label;
     let key = props.selectedIdParts[2].label;
-    let query = ".*~"
+    let query = "~"
         + topic
         + "~"
-        + key
-        + "$";
+        + key;
+
+    // let query = ".*~"
+    //     + topic
+    //     + "~"
+    //     + key
+    //     + "$";
 
     this.state = {
       labels: {
@@ -75,7 +80,7 @@ export class CompareDocs extends React.Component {
       , selectedBook: "*"
       , selectedChapter: "*"
       , docProp: "id"
-      , matcher: "rx"
+      , matcher: "ew"
       , unmounted: false
     };
 
@@ -94,11 +99,15 @@ export class CompareDocs extends React.Component {
     }
     let topic = nextProps.selectedIdParts[1].label;
     let key = nextProps.selectedIdParts[2].label;
-    let query = ".*~"
+    let query = "~"
         + topic
         + "~"
-        + key
-        + "$";
+        + key;
+    // let query = ".*~"
+    //     + topic
+    //     + "~"
+    //     + key
+    //     + "$";
       this.setState({
             showModal: nextProps.showModal
             , query: query

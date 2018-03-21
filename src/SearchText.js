@@ -613,7 +613,7 @@ export class Search extends React.Component {
       , showIdPartSelector: true
       , showModalWindow: true
     }, this.showRowComparison(row["id"], row["value"]));
-  }
+  };
 
   showRowComparison = (id, value) => {
     this.setState({
@@ -621,7 +621,7 @@ export class Search extends React.Component {
       , selectedId: id
       , selectedValue: value
     })
-  }
+  };
 
   deselectAllRows = () => {
     this.refs.theTable.setState({
