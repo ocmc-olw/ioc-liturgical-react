@@ -1298,13 +1298,20 @@ class Demo extends React.Component {
                   />
                 </Panel> {/* Search Text Notes */}
                 <Panel header="Search Text Notes" eventKey="searchText Notes">
-                  <p>Use the Search Text Notes Component to search notes about texts.</p>
-                  <SearchTextNotes
-                      session={this.state.session}
-                      callback={this.handleSearchTextNotesCallback}
-                      editor={true}
-                      fixedType={false}
-                  />
+                  {(this.state.authenticated && this.state.session.userInfo) ?
+                      <div>
+                        <p>Use the Search Text Notes Component to search notes about texts.</p>
+                        <SearchTextNotes
+                            session={this.state.session}
+                            callback={this.handleSearchTextNotesCallback}
+                            editor={true}
+                            fixedType={false}
+                        />
+                      </div>
+                      :
+                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
+                  }
+
                 </Panel> {/* Search Notes */}
                 <Panel header="Search Ontology Instances" eventKey="searchOntology">
                   <p>Use the Search Ontology Component to search for instances of Ontology entries.</p>

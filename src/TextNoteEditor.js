@@ -558,7 +558,7 @@ class TextNoteEditor extends React.Component {
   handleEditableListCallback = (value, values) => {
     let form = this.state.form;
     form.tags = values.map(function(item) {
-      return item['label'];
+      return item['label'].trim();
     });
     this.setState({form: form, selectedTag: value, tags: values});
   };
