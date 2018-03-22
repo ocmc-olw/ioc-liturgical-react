@@ -146,6 +146,7 @@ const   labels = {
       , login: "Login"
       , logout: "Logout"
       , search: "Search"
+      , password: "Password"
     }
     , pageAbout: {
       DbServer: "DB server at"
@@ -1115,6 +1116,7 @@ const   labels = {
       , login: "Σύνδεση"
       , logout: "Αποσύνδεση"
       , search: "Αναζήτηση"
+      , password: "Κωδικός χρήστη"
     }
     , pageAbout: {
       DbServer: "Βάση Δεδομένων διακομιστής στο"
