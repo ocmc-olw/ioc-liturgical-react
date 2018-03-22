@@ -3,6 +3,7 @@ import AgesEditor from './AgesEditor';
 import AgesViewer from './AgesViewer';
 import AboutDatabase from './AboutDatabase';
 import BibleRefSelector from './helpers/BibleRefSelector';
+import ChangePassword from './ChangePassword';
 import Configuration from './Configuration';
 import DependencyDiagram from './modules/DependencyDiagram';
 import DomainSelector from './DomainSelector';
@@ -47,6 +48,7 @@ export {
   , AgesViewer
   , AboutDatabase
   , BibleRefSelector
+  , ChangePassword
   , Configuration
   , DependencyDiagram
   , DomainSelector

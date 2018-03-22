@@ -22,6 +22,10 @@ const   labels = {
     , schemaBasedAddButton: {
 
     }
+    , ChangePasswordPage: {
+      doNotMatch: "The new password and reentered password do not match."
+      , changed: "Your password was sucessfully changed."
+    }
     , TextNoteEditor: {
       type: "Type"
       , bibleRef: "Bible Ref"
@@ -996,6 +1000,10 @@ const   labels = {
     , schemaBasedAddButton: {
 
     }
+    , ChangePasswordPage: {
+      doNotMatch: "The new password and reentered password do not match."
+      , changed: "Your password was sucessfully changed."
+    }
     , TextNoteEditor: {
       type: "Type"
       , bibleRef: "Bible Ref"
@@ -1956,6 +1964,7 @@ module.exports = {
   , getAllLabelsAppended: (code, localEng, local) => {
     return labels[code];
   }
+  , getChangePasswordPageLabels: (code) => { return labels[code].ChangePasswordPage }
   , getMessageLabels: (code) => { return labels[code].messages }
   , getButtonLabels: (code) => { return labels[code].button }
   , getResultsTableLabels: (code) => { return labels[code].resultsTable;}

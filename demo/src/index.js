@@ -32,6 +32,7 @@ import {
   , AboutDatabase
   , AgesEditor
   , AgesViewer
+  , ChangePassword
   , Configuration
   , BibleRefSelector
   , DependencyDiagram
@@ -1121,6 +1122,20 @@ class Demo extends React.Component {
                 </Panel>
               </Accordion>
             </Panel> {/* Login */}
+            <Panel header="Change Password" eventKey="changePassword">
+              {(this.state.authenticated && this.state.session.userInfo) ?
+                  <div>
+                    <ChangePassword
+                        session={this.state.session}
+                        callback={this.handleLoginCallback}
+                        formPrompt={this.state.language.labels.pageLogin.prompt}
+                        formMsg={this.state.loginFormMsg}
+                    />
+                  </div>
+                  :
+                  <p>You won't see the example, below, unless you first login using the Login example above.</p>
+              }
+            </Panel>
             <Panel header="Domain Selector" eventKey="domainSelector">
               <p>The Domain Selector is a dropdown that allows the user to select a domain. A selected domain can be
                 used as a database search parameter since all docs in the database use the domain in the first part of

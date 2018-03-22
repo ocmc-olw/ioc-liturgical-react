@@ -12,6 +12,7 @@ import {Col, Grid, Row, Well} from 'react-bootstrap';
 import ResourceSelector from './modules/ReactSelector';
 import Form from "react-jsonschema-form";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import auth from './helpers/Auth'
 
 class Administrator extends React.Component {
 
@@ -118,13 +119,15 @@ class Administrator extends React.Component {
   }
 
   setPath(newPath, updateMessage) {
-    var path = (newPath.value ? newPath.value : newPath);
-    this.setState({
-      path: path
-      , centerDivVisible: false
-      , submitIsAPost: path.includes("new/forms")
-    });
-    this.fetchData(path, updateMessage);
+    if (newPath) {
+      var path = (newPath.value ? newPath.value : newPath);
+      this.setState({
+        path: path
+        , centerDivVisible: false
+        , submitIsAPost: path.includes("new/forms")
+      }, this.fetchData(path, updateMessage));
+      ;
+    }
   }
 
   setItemDetails(id, uiSchema, schema, value) {
@@ -240,6 +243,9 @@ class Administrator extends React.Component {
           message = "updated " + path;
           if (path.startsWith("misc/utilities")) {
             message = path + ": " + response.data.userMessage;
+          }
+          if (formData.formData && formData.formData.password) {
+            this.props.session.userInfo.password = formData.formData.password;
           }
           this.setState({
             message: message
