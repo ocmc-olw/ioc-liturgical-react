@@ -1288,14 +1288,20 @@ class Demo extends React.Component {
                   />
                 </Panel> {/* Search Relationships */}
                 <Panel header="Search Notes" eventKey="searchNotes">
-                  <p>Use the Search Notes Component to search your personal notes.</p>
-                  <SearchNotes
-                      session={this.state.session}
-                      callback={this.handleSearchNotesCallback}
-                      editor={true}
-                      initialType={"NoteUser"}
-                      fixedType={false}
-                  />
+                  {(this.state.authenticated && this.state.session.userInfo) ?
+                      <div>
+                        <p>Use the Search Notes Component to search your personal notes.</p>
+                        <SearchNotes
+                            session={this.state.session}
+                            callback={this.handleSearchNotesCallback}
+                            editor={true}
+                            initialType={"NoteUser"}
+                            fixedType={false}
+                        />
+                      </div>
+                      :
+                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
+                  }
                 </Panel> {/* Search Text Notes */}
                 <Panel header="Search Text Notes" eventKey="searchText Notes">
                   {(this.state.authenticated && this.state.session.userInfo) ?
@@ -1311,27 +1317,38 @@ class Demo extends React.Component {
                       :
                       <p>You won't see the example, below, unless you first login using the Login example above.</p>
                   }
-
                 </Panel> {/* Search Notes */}
                 <Panel header="Search Ontology Instances" eventKey="searchOntology">
-                  <p>Use the Search Ontology Component to search for instances of Ontology entries.</p>
-                  <SearchOntology
-                      session={this.state.session}
-                      callback={this.handleSearchOntologyCallback}
-                      editor={true}
-                      initialType={"Human"}
-                      fixedType={false}
-                  />
+                  {(this.state.authenticated && this.state.session.userInfo) ?
+                      <div>
+                        <p>Use the Search Ontology Component to search for instances of Ontology entries.</p>
+                        <SearchOntology
+                            session={this.state.session}
+                            callback={this.handleSearchOntologyCallback}
+                            editor={true}
+                            initialType={"Human"}
+                            fixedType={false}
+                        />
+                      </div>
+                      :
+                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
+                  }
                 </Panel> {/* Search Relationships */}
                 <Panel header="Search Templates" eventKey="searchTemplates">
-                  <p>Use the Search Templates Component to search components used for generation of books and services.</p>
-                  <SearchTemplates
-                      session={this.state.session}
-                      callback={this.handleSearchTemplatesCallback}
-                      editor={true}
-                      initialType={"Template"}
-                      fixedType={false}
-                  />
+                  {(this.state.authenticated && this.state.session.userInfo) ?
+                      <div>
+                        <p>Use the Search Templates Component to search components used for generation of books and services.</p>
+                        <SearchTemplates
+                            session={this.state.session}
+                            callback={this.handleSearchTemplatesCallback}
+                            editor={true}
+                            initialType={"Template"}
+                            fixedType={false}
+                        />
+                      </div>
+                      :
+                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
+                  }
                 </Panel> {/* Search Notes */}
                 <Panel header="Search Treebanks" eventKey="searchTreebanks">
                   <p>Use the Search Notes Component to search your personal notes.</p>

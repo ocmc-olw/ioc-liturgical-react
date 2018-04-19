@@ -35,7 +35,7 @@ export class ModalParaRowEditor extends React.Component {
   };
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
@@ -50,12 +50,12 @@ export class ModalParaRowEditor extends React.Component {
         }
       }, function () { return this.handleStateChange("place holder")});
     }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function is needed, e.g. if you need to call the rest server again
-  }
+  };
 
   close() {
     this.setState({showModal: false});
@@ -73,7 +73,7 @@ export class ModalParaRowEditor extends React.Component {
 
   onSubmit = (value) => {
     this.props.onSubmit(value);
-  }
+  };
 
   getModalInfo = () => {
     if (this.props.canChange) {
@@ -95,7 +95,8 @@ export class ModalParaRowEditor extends React.Component {
           </Alert>
       );
     }
-  }
+  };
+
   render() {
     return (
         <div>

@@ -494,7 +494,7 @@ class TokenTagger extends React.Component {
 
   getVerbNumberComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
-        || this.state.selectedPos.startsWith("PART")
+        || this.state.selectedPos.startsWith("PTCP")
     ){
       return (
           <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Number">
@@ -516,7 +516,7 @@ class TokenTagger extends React.Component {
         || this.state.selectedPos.startsWith("ART")
         || this.state.selectedPos.startsWith("PRON")
         || this.state.selectedPos.startsWith("NOUN")
-        || this.state.selectedPos.startsWith("PART")
+        || this.state.selectedPos.startsWith("PTCP")
     ){
       return (
           <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
@@ -537,7 +537,7 @@ class TokenTagger extends React.Component {
         || this.state.selectedPos.startsWith("ART")
         || this.state.selectedPos.startsWith("PRON")
         || this.state.selectedPos.startsWith("NOUN")
-        || this.state.selectedPos.startsWith("PART")
+        || this.state.selectedPos.startsWith("PTCP")
     ){
       return (
           <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Gender">
@@ -557,7 +557,7 @@ class TokenTagger extends React.Component {
   getTenseComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
         || this.state.selectedPos.startsWith("INF")
-        || this.state.selectedPos.startsWith("PART")
+        || this.state.selectedPos.startsWith("PTCP")
     ){
       return (
           <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
@@ -577,7 +577,7 @@ class TokenTagger extends React.Component {
   getVoiceComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
         || this.state.selectedPos.startsWith("INF")
-        || this.state.selectedPos.startsWith("PART")
+        || this.state.selectedPos.startsWith("PTCP")
     ){
       return (
           <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Voice">

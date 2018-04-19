@@ -289,6 +289,7 @@ class AgesViewer extends React.Component {
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
       let data = restCallResult.data.values[0];
+      console.log(data);
       let values = data.values;
       let topicKeys = data.topicKeys;
       let topElement = data.topElement.children[0].children[0]; // tbody

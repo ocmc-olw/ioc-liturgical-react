@@ -172,20 +172,22 @@ class Grammar extends React.Component {
   }
 
   setTextInfo = (restCallResult) => {
-    if (restCallResult) {
-      let nodeData = restCallResult.data.values[3].nodes;
-      let treeViewUtils = new TreeViewUtils(nodeData);
-      let nodeDependencies = treeViewUtils.nodeDependencies;
-      let treeNodeData = treeViewUtils.toTreeViewData("Root");
-      this.setState({
-        dropdownsLoaded: true
-        , data: restCallResult.data.values[0].text
-        , tokens: restCallResult.data.values[1].tokens
-        , analyses: restCallResult.data.values[2].analyses
-        , nodeData: nodeData
-        , nodeDependencies: nodeDependencies
-        , treeNodeData: treeNodeData
-      });
+    if (restCallResult && restCallResult.data && restCallResult.data.values) {
+      if (restCallResult.data.values.length > 3) {
+        let nodeData = restCallResult.data.values[3].nodes;
+        let treeViewUtils = new TreeViewUtils(nodeData);
+        let nodeDependencies = treeViewUtils.nodeDependencies;
+        let treeNodeData = treeViewUtils.toTreeViewData("Root");
+        this.setState({
+          dropdownsLoaded: true
+          , data: restCallResult.data.values[0].text
+          , tokens: restCallResult.data.values[1].tokens
+          , analyses: restCallResult.data.values[2].analyses
+          , nodeData: nodeData
+          , nodeDependencies: nodeDependencies
+          , treeNodeData: treeNodeData
+        });
+      }
     }
   };
 
@@ -196,7 +198,7 @@ class Grammar extends React.Component {
           ,this.state.tokens[parseInt(node.key)]
       );
     }
-  }
+  };
 
   handleNodeClick = (index) => {
     this.handleTokenClick(
