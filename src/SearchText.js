@@ -312,7 +312,7 @@ export class Search extends React.Component {
       };
     }
     return canEdit;
-  }
+  };
 
 
   toggleSearchForm = () => {
@@ -594,10 +594,10 @@ export class Search extends React.Component {
   };
 
   onRowClick = (row) => {
-  }
+  };
 
   onRowDoubleClick = (row) => {
-  }
+  };
 
   handleRowSelect = (row, isSelected, e) => {
     let idParts = row["id"].split("~");
@@ -673,7 +673,9 @@ export class Search extends React.Component {
 
   getDocComparison = () => {
     let debug = false;
-    if (this.state.docType === "Liturgical" && ! this.props.callback) {
+    if (this.props.session.userInfo.authenticated
+        && this.state.docType === "Liturgical"
+        && ! this.props.callback) {
       return (
           <ModalParaRowEditor
               session={this.props.session}
