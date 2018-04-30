@@ -151,6 +151,8 @@ class TokenTagger extends React.Component {
           let tag = tags[i];
           if (tag === "PRES") {
             tag = "PRS";
+          } else if (tag === "PART") {
+            tag = "PTCP";
           } else if (tag === "PERF") {
             tag = "PRF";
           } else if (tag === "INF") { // treat infinitive as a part of speech

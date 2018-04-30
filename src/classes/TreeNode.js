@@ -98,7 +98,7 @@ class TreeNode {
     }
   }
 
-  // e.g. PART.ACT.AOR.M.SG.NOM
+  // e.g. PTCP.ACT.AOR.M.SG.NOM
   getGrammarForParticiple = () => {
     return this.pos
         + "."
@@ -259,7 +259,7 @@ class TreeNode {
           result = this.hasGrammarForInfinitive();
           break;
         }
-        case ("PART"): {
+        case ("PTCP"): {
           result = this.hasGrammarForParticiple();
           break;
         }
@@ -352,7 +352,7 @@ class TreeNode {
       case ("INF"): {
         return this.getGrammarForInfinitive();
       }
-      case ("PART"): {
+      case ("PTCP"): {
         return this.getGrammarForParticiple();
       }
       case ("PRON"): {

@@ -878,6 +878,7 @@ const   labels = {
           , "PRED-CO": "predicate complement"
           , "ROOT" : "root of the dependency tree"
           , "SBJ": "subject"
+          , "SCAN": "scansion (metrical pattern marker)"
         }
       }
       , gender: {
@@ -933,7 +934,6 @@ const   labels = {
           , "NEG": "negation, negative"
           , "NOUN": "noun"
           , "NUM": "number"
-          , "PART": "particle"
           , "PM": "punctuation mark"
           , "PREP": "preposition"
           , "PRON": "pronoun"
@@ -1848,6 +1848,7 @@ const   labels = {
           , "PRED-CO": "predicate complement"
           , "ROOT" : "root of the dependency tree"
           , "SBJ": "subject"
+          , "SCAN": "scansion (metrical pattern marker)"
         }
       }
       , gender: {
@@ -1904,7 +1905,6 @@ const   labels = {
           , "NEG": "negation, negative"
           , "NOUN": "noun"
           , "NUM": "number"
-          , "PART": "particle"
           , "PM": "punctuation mark"
           , "PREP": "preposition"
           , "PRON": "αντωνυμία"

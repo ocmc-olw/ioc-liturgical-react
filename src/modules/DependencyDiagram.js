@@ -17,6 +17,7 @@ treeviewSpanIconStyle["marginRight"] = "1px"; // 5px
 
 /**
  * Modified from https://github.com/eliftech/treeview-react-bootstrap
+ * The Dependency Diagram formatting is done using the TreeNode class.
  */
 class DependencyDiagram extends React.Component {
 
