@@ -616,17 +616,16 @@ class AgesViewer extends React.Component {
       )
   };
 
-// <Button bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
-//            <Button disabled={true} bsStyle="primary" onClick={this.fetchPdf}>{this.state.labels.buttons.downloadAsPdf}</Button>
 
   getPdfButton = () => {
     if (this.state.dataFetched && this.state.showPdfButton) {
-      let url = "";
-      if (document.location.hostname === "localhost") {
-        url = this.props.session.restServer + "/" + this.state.pdfId;
-      } else {
-        url = "data/" + this.state.pdfId;
-      }
+      // let url = "";
+      // if (document.location.hostname === "localhost") {
+      //   url = this.props.session.restServer + "/" + this.state.pdfId;
+      // } else {
+      //   url = "data/" + this.state.pdfId;
+      // }
+      let url = "data/" + this.state.pdfId;
       return (
           <Row className="App-Download-Row">
             <Col className="App-Download-Col" xs={6} md={6}>
