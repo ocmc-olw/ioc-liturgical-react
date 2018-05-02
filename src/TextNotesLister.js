@@ -50,7 +50,7 @@ export class TextNotesLister extends React.Component {
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state.docType);
     this.verifyTextId(this.props.topicId, nextProps.topicId);
-  }
+  };
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
@@ -320,6 +320,11 @@ export class TextNotesLister extends React.Component {
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: showSearchResults
                 , enableAdd: enableAdd
+                , selectedId: ""
+                , selectedKey: ""
+                , selectedLibrary: ""
+                , selectedTopic: this.props.topicId
+                , selectedText: ""
               }
           );
         })
@@ -449,6 +454,22 @@ export class TextNotesLister extends React.Component {
                     width={"15%"}
                     filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerType}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='liturgicalLemma'
+                    dataSort={ true }
+                    tdClassname="tdType"
+                    width={"15%"}
+                    filter={this.state.filter}
+                >{this.state.resultsTableLabels.headerLemma}
+                  <TableHeaderColumn
+                      dataField='liturgicalScope'
+                      dataSort={ true }
+                      tdClassname="tdType"
+                      width={"15%"}
+                      filter={this.state.filter}
+                  >{this.state.resultsTableLabels.headerScope}
+                  </TableHeaderColumn>
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='valueFormatted'
