@@ -135,7 +135,7 @@ class TreeNode {
     } else {
       return false;
     }
-  }
+  };
 
   // e.g. INF.AOR.ACT
   hasGrammarForInfinitive = () => {
@@ -326,6 +326,13 @@ class TreeNode {
       }
     }
   }
+
+  /**
+   * On the server-side, the tags for grammar are set by LTKDbTokenAnalysis
+   * in the org.ocmc.ioc.liturgical.schemas.models.supers package.
+   * So, if changes are made here, you need to make
+   * them also in LTKDbTokenAnalysis.
+   */
   getGrammar = () => {
     switch (this.pos) {
       case ("ADJ"): {

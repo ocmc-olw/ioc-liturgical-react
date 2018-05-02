@@ -25,6 +25,9 @@ import Spinner from '../helpers/Spinner';
  * or if the user selects an analysis from an external source,
  * e.g. Perseus (displayed via the Grammar component),
  * the selected values are copied and become parms to the TokenTagger.
+ * The new values are saved back to the database.
+ *
+ * Note: the grammar tags are set by TreeNode.getGrammar()
  */
 class TokenTagger extends React.Component {
   constructor(props) {
