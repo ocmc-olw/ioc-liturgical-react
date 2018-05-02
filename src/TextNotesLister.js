@@ -462,6 +462,7 @@ export class TextNotesLister extends React.Component {
                     width={"15%"}
                     filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerLemma}
+                </TableHeaderColumn>
                   <TableHeaderColumn
                       dataField='liturgicalScope'
                       dataSort={ true }
@@ -469,7 +470,6 @@ export class TextNotesLister extends React.Component {
                       width={"15%"}
                       filter={this.state.filter}
                   >{this.state.resultsTableLabels.headerScope}
-                  </TableHeaderColumn>
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='valueFormatted'
