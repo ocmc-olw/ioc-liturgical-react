@@ -37,7 +37,8 @@ const valuePath = docs + "/value";
 const viewtemplate = docs + "/viewtemplate";
 const viewtopic = docs + "/viewtopic";
 const wordAnalysis = "nlp/word/analysis";
-const textAnalysis = nlp + "text/analysis"
+const textAnalysis = nlp + "text/analysis";
+const textDownloads = docs + "/textdownloads";
 const adminDomains = "misc/domains";
 const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownsSearchTemplates = "dropdowns/templates";
@@ -459,6 +460,28 @@ export default {
         + "/"
         + id
         , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getTextDownloads: (
+      restServer,
+      username
+      , password
+      , id
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + textDownloads
+        + "/"
+        + id
+        , parms
         , function (result) {
           callback(result);
         }

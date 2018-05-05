@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import Labels from '../Labels';
+import CitationButton from '../helpers/CitationButton';
 import MessageIcons from '../helpers/MessageIcons';
 import {
   EditorState
@@ -85,6 +86,7 @@ class RichEditor extends React.Component {
               wrapperClassName="RichEditor-root"
               editorClassName="RichEditor-editor"
               onEditorStateChange={this.onEditorStateChange}
+              toolbarCustomButtons={[<CitationButton />]}
               spellCheck={true}
               toolbar={{
                 options: [

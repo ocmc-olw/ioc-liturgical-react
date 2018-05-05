@@ -9,6 +9,7 @@ const   labels = {
     button: {
       cancel: "Cancel"
       , close: "Close"
+      , createFiles: "Create Files"
       , downloadAsPdf: "Download as PDF"
       , downloadAsTex: "Download as LaTeX"
       , remove: "Remove"
@@ -673,7 +674,9 @@ const   labels = {
       , yourTranslation: "Your Translation"
       , valueFor: "Value for"
       , submit: "Submit"
+      , includePersonalNotes: "Include personal notes?"
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
+      , downloadPanelTitle: "Download"
       , grammarPanelTitle: "Grammar Explorer"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
       , textualNotesPanelTitle: "Textual Notes"
@@ -714,20 +717,20 @@ const   labels = {
     , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Double-click on text to open an editor window."
-      , msg2: "Fetched: "
+      , msg2: "Got: "
       , agesGreek: "Below, the left column is Greek from AGES, "
       , agesEnglish: "and the right column is English from AGES."
       , yourTranslationA: "the center column is your translation ("
       , yourTranslationB: "), "
       , select: "Select the Service or Sacrament"
       , selectLibrary: "Select your translation library..."
-      , fetch: "Fetch the Service or Sacrament"
+      , fetch: "Get the Service or Sacrament"
       , selected: "You selected: "
     }
     , AgesViewer: {
       panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Select the service or sacrament that you want.  And, select one, two, or three libraries.  If a library does not have a translation for a particular text, it will fallback to Greek or English based on your fallback selection. After you have made your selections, click the Fetch button."
-      , msg2: "Fetched: "
+      , msg2: "Got: "
       , agesGreek: "AGES Greek"
       , agesEnglish: "AGES English Translations"
       , select: "Select the Service or Sacrament"
@@ -737,7 +740,7 @@ const   labels = {
       , selectSecondLibraryFallback: "Select fallback library for column 2..."
       , selectThirdLibrary: "Select library for column 3..."
       , selectThirdLibraryFallback: "Select fallback library for column 3..."
-      , fetch: "Fetch the Service or Sacrament"
+      , fetch: "Get the Service or Sacrament"
       , selected: "You selected: "
     }
     , ModalParaRowEditor: {
@@ -993,6 +996,7 @@ const   labels = {
     button: {
       cancel: "Ματαίωσε"
       , close: "Κλείστε"
+      , createFiles: "Δημιουργία αρχείων"
       , downloadAsPdf: "Διαβίβαζε ως PDF"
       , downloadAsTex: "Διαβίβαζε ως LaTeX"
       , remove: "Βγάλε"
@@ -1644,11 +1648,13 @@ const   labels = {
       panelTitle: "View Parallel Texts in Rows"
       , msg1: ""
       , msg2: ""
+      , includePersonalNotes: "Include personal notes?"
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
       , valueFor: "Value for"
       , submit: "Submit"
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
+      , downloadPanelTitle: "Να διαβιβάσει"
       , grammarPanelTitle: "Grammar Explorer"
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
       , textualNotesPanelTitle: "Textual Notes"
@@ -1693,20 +1699,20 @@ const   labels = {
     , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Double-click on text to open an editor window."
-      , msg2: "Fetched: "
+      , msg2: "Got: "
       , agesGreek: "Below, the left column is Greek from AGES, "
       , agesEnglish: "and the right column is English from AGES."
       , yourTranslationA: "the center column is your translation ("
       , yourTranslationB: "), "
       , select: "Select the Service or Sacrament"
       , selectLibrary: "Select your translation library..."
-      , fetch: "Fetch the Service or Sacrament"
+      , fetch: "Get the Service or Sacrament"
       , selected: "The selected service is: "
     }
     , AgesViewer: {
       panelTitle: "View a Service or Sacrament from the AGES Initiatives website"
       , msg1: " Select the service or sacrament that you want.  And, select one, two, or three libraries.  If a library does not have a translation for a particular text, it will fallback to Greek or English based on your fallback selection. After you have made your selections, click the Fetch button."
-      , msg2: "Fetched: "
+      , msg2: "Got: "
       , agesGreek: "AGES Greek"
       , agesEnglish: "AGES English Translations"
       , select: "Select the Service or Sacrament"
@@ -1716,7 +1722,7 @@ const   labels = {
       , selectSecondLibraryFallback: "Select fallback library for column 2..."
       , selectThirdLibrary: "Select library for column 3..."
       , selectThirdLibraryFallback: "Select fallback library for column 3..."
-      , fetch: "Fetch the Service or Sacrament"
+      , fetch: "Get the Service or Sacrament"
       , selected: "The selected service is: "
     }
     , ModalParaRowEditor: {
@@ -1724,6 +1730,7 @@ const   labels = {
       , msg1: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box for you to enter your translation. When you are ready, click the Submit button to update the database with your changes.  The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
       , msg2: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box with the current value of the translation of the selected library.  However, you do not have authority to edit it. The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
       , close: "Close"
+      , includePersonalNotes: "Include personal notes?"
     }
     , NewEntryForm: {
       title: "New Entry Form"

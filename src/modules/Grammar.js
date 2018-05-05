@@ -2,7 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Server from '../helpers/Server';
 import {
-  Label
+  Button
+  , Label
   , Panel
   , PanelGroup
   , Well
@@ -18,6 +19,7 @@ import GrammarSitePanel from './GrammarSitePanel';
 import SearchTreebanks from '../SearchTreebanks';
 
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import FileSaver from "file-saver";
 
 class Grammar extends React.Component {
   constructor(props) {
@@ -25,31 +27,33 @@ class Grammar extends React.Component {
 
     this.state = this.setTheState(props, "");
 
-    this.setTextInfo = this.setTextInfo.bind(this);
-    this.handleTokenClick = this.handleTokenClick.bind(this);
-    this.handleNodeClick = this.handleNodeClick.bind(this);
-    this.getPanels = this.getPanels.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.getBody = this.getBody.bind(this);
-    this.getLemmas = this.getLemmas.bind(this);
-    this.treeViewSelectCallback = this.treeViewSelectCallback.bind(this);
-    this.handleTaggerCallback = this.handleTaggerCallback.bind(this);
-    this.handleEnglishLexiconCallback = this.handleEnglishLexiconCallback.bind(this);
-    this.node = this.node.bind(this);
-    this.showModal = this.showModal.bind(this);
     this.closeModal = this.closeModal.bind(this);
+    this.getBody = this.getBody.bind(this);
+    this.getDependencyTreeAsLatex = this.getDependencyTreeAsLatex.bind(this);
     this.getDependencyTreeText = this.getDependencyTreeText.bind(this);
-    this.getPanelTokenTagger = this.getPanelTokenTagger.bind(this);
-    this.getPanelPotentialAnalyses = this.getPanelPotentialAnalyses.bind(this);
-    this.getPanelLogeion = this.getPanelLogeion.bind(this);
-    this.getPanelLexigram = this.getPanelLexigram.bind(this);
-    this.getPanelPerseusSite = this.getPanelPerseusSite.bind(this);
-    this.getPanelLaParola = this.getPanelLaParola.bind(this);
-    this.getPanelKriaras = this.getPanelKriaras.bind(this);
-    this.getPanelTriantafyllides = this.getPanelTriantafyllides.bind(this);
+    this.getLatexNode = this.getLatexNode.bind(this);
+    this.getLemmas = this.getLemmas.bind(this);
     this.getPanelBasicLexicon = this.getPanelBasicLexicon.bind(this);
+    this.getPanelKriaras = this.getPanelKriaras.bind(this);
+    this.getPanelLaParola = this.getPanelLaParola.bind(this);
+    this.getPanelLexigram = this.getPanelLexigram.bind(this);
+    this.getPanelLogeion = this.getPanelLogeion.bind(this);
+    this.getPanelPerseusSite = this.getPanelPerseusSite.bind(this);
+    this.getPanelPotentialAnalyses = this.getPanelPotentialAnalyses.bind(this);
+    this.getPanels = this.getPanels.bind(this);
     this.getPanelSearchTreebanks = this.getPanelSearchTreebanks.bind(this);
     this.getPanelSmythGrammar = this.getPanelSmythGrammar.bind(this);
+    this.getPanelTokenTagger = this.getPanelTokenTagger.bind(this);
+    this.getPanelTriantafyllides = this.getPanelTriantafyllides.bind(this);
+    this.handleEnglishLexiconCallback = this.handleEnglishLexiconCallback.bind(this);
+    this.handleNodeClick = this.handleNodeClick.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.handleTaggerCallback = this.handleTaggerCallback.bind(this);
+    this.handleTokenClick = this.handleTokenClick.bind(this);
+    this.node = this.node.bind(this);
+    this.setTextInfo = this.setTextInfo.bind(this);
+    this.showModal = this.showModal.bind(this);
+    this.treeViewSelectCallback = this.treeViewSelectCallback.bind(this);
   }
 
   componentWillMount = () => {
@@ -198,6 +202,59 @@ class Grammar extends React.Component {
           ,this.state.tokens[parseInt(node.key)]
       );
     }
+  };
+
+  getLatexNode = (node, latex, first) => {
+    latex = "\\begin{mdframed}";
+    if (first) {
+      latex += "[everyline=true,style=dependency]";
+    }
+    latex += "\n";
+    if (node.key === "Root") {
+      latex += "\\grNode{Root}{}{}{}{}{}\n";
+    } else {
+      let label = node.label;
+      if (label.endsWith("_CO")) {
+        label = label.replace("_", "\\textunderscore ");
+      }
+      let gloss = node.gloss;
+      gloss = gloss.replace(/\[/g, "{[}");
+      gloss = gloss.replace(/\]/g, "{]}");
+
+      latex += "\\grNode"
+          + "{"
+          + node.key
+          + "}"
+          + "{"
+          + label
+          + "}"
+          + "{"
+          + node.token
+          + "}"
+          + "{"
+          + gloss
+          + "}"
+          + "{"
+          + node.grammar
+          + "}"
+          + "{"
+          + node.lemma
+          + "}\n";
+    }
+    let _this = this;
+    if (node.nodes) {
+      latex += node.nodes.map(function(elem) {
+        return _this.getLatexNode(elem, latex, false);
+      }).join('');
+    }
+    latex += "\\end{mdframed}\n";
+    return latex;
+  };
+
+  getDependencyTreeAsLatex = () => {
+    let latex = this.getLatexNode(this.state.treeNodeData[0], "", true);
+    var blob = new Blob([latex], {type: 'text/plain;charset=utf-8'});
+    FileSaver.saveAs(blob, "test" + ".tex");
   };
 
   handleNodeClick = (index) => {
@@ -634,6 +691,7 @@ class Grammar extends React.Component {
                   highlightSelected={true}
                   offsetKey={true}
               />
+              <Button onClick={this.getDependencyTreeAsLatex}>Get Latex</Button>
             </Panel>
             }
             <Well>

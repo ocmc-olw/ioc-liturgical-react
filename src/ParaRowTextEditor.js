@@ -2,8 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {
   Button
+  , Checkbox
+  , Col
   , ControlLabel
   , Grid
+  , Row
   , Tab
   , Tabs
   , Well
@@ -32,12 +35,14 @@ export class ParaRowTextEditor extends React.Component {
           labels: {
             thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
             , messages: Labels.getMessageLabels(props.session.languageCode)
+            , buttons: Labels.getButtonLabels(props.session.languageCode)
             , search: Labels.getSearchLabels(props.session.languageCode)
           }
           , greekSourceValue: ""
           , greekSourceId: ""
           , showSearchResults: false
           , message: Labels.getSearchLabels(props.session.languageCode).msg1
+          , downloadMessage: ""
           ,
           messageIcon: this.messageIcons.info
           ,
@@ -81,14 +86,21 @@ export class ParaRowTextEditor extends React.Component {
             + props.idTopic
             + "~"
             + props.idKey
+          , pdfId: ""
+          , includePersonalNotes: false
+          , showDownloadLinks: false
+          , preparingDownloads: false
     };
 
-
     this.fetchData = this.fetchData.bind(this);
+    this.getDownloadLinks = this.getDownloadLinks.bind(this);
     this.getParaRows = this.getParaRows.bind(this);
     this.getTabs = this.getTabs.bind(this);
     this.getTextArea = this.getTextArea.bind(this);
+    this.handleDownloadRequest = this.handleDownloadRequest.bind(this);
+    this.handleDownloadCallback = this.handleDownloadCallback.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleIncludePersonalNotesChange = this.handleIncludePersonalNotesChange.bind(this);
     this.handlePropsChange = this.handlePropsChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -106,6 +118,7 @@ export class ParaRowTextEditor extends React.Component {
           labels: {
             thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
             , messages: Labels.getMessageLabels(props.session.languageCode)
+            , buttons: Labels.getButtonLabels(props.session.languageCode)
             , search: Labels.getSearchLabels(props.session.languageCode)
           }
           , message: Labels.getSearchLabels(props.session.languageCode).msg1
@@ -228,6 +241,147 @@ export class ParaRowTextEditor extends React.Component {
         });
   }
 
+  handleIncludePersonalNotesChange = (evt) => {
+    this.setState({ includePersonalNotes: evt.target.checked });
+  };
+
+  getDownloadLinks = () => {
+    if (this.state.showDownloadLinks) {
+      let url = "data/" + this.state.pdfId;
+      return (
+          <Row className="App-Download-Row">
+            <Col className="App-Download-Col" xs={6} md={6}>
+              <a href={url + ".pdf"} target={"_blank"}>{this.state.labels.buttons.downloadAsPdf}</a>
+            </Col>
+            <Col className="App-Download-Col" xs={6} md={6}>
+              <a href={url + ".tex"} target={"_blank"}>{this.state.labels.buttons.downloadAsTex}</a>
+            </Col>
+          </Row>
+      );
+    } else {
+      if (this.state.preparingDownloads) {
+        return (
+            <Row className="App-Download-Row">
+              <Col className="App-Download-Col" xs={6} md={6}>{ }</Col>
+              <Col className="App-Download-Col" xs={6} md={6}>
+                <Spinner message={this.state.labels.messages.preparingPdf}/>
+              </Col>
+              <Col className="App-Download-Col" xs={6} md={6}>
+              </Col>
+            </Row>
+        );
+      } else {
+        return (<span></span>);
+      }
+    }
+  };
+
+  handleDownloadRequest = () => {
+    this.setState({
+      preparingDownloads: true
+      , showDownloadLinks: false
+    });
+
+    let id = "gr_gr_cog~"
+        + this.props.idTopic
+        + "~"
+        + this.props.idKey
+    ;
+
+    let ip = "false";
+    if (this.state.includePersonalNotes) {
+      ip = "true";
+    }
+    let parms =
+        "id=" + encodeURIComponent(id)
+        + "&ip=" + encodeURIComponent(ip)
+    ;
+
+    Server.getTextDownloads(
+        this.props.session.restServer
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
+        , id
+        , parms
+        , this.handleDownloadCallback
+    );
+  };
+
+  getPdf = () => {
+    this.setState({
+      preparingDownloads: true
+      , showDownloadLinks: false
+    });
+
+    let parms =
+        "id=" + encodeURIComponent(id)
+        + "&ip=" + encodeURIComponent(this.state.includePersonalNotes)
+    ;
+
+    Server.restGetPdf(
+        this.props.session.restServer
+        , Server.getDbServerAgesPdfApi()
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
+        , parms
+        , this.state.pdfFilename
+    )
+        .then( response => {
+          this.setState(
+              {
+                data: response
+                , preparingDownloads: false
+                , showDownloadLinks: true
+              }
+          );
+        })
+        .catch( error => {
+          this.setState(
+              {
+                data: {
+                  values:
+                      [
+                        {
+                          "id": ""
+                          , "library": ""
+                          , "topic": ""
+                          , "key": ""
+                          , "value:": ""
+                        }
+                      ]
+                  , userMessage: error.userMessage
+                  , developerMessage: error.developerMessage
+                  , messageIcon: error.messageIcon
+                  , status: error.status
+                  , showSearchResults: false
+                  , resultCount: 0
+                  , fetching: false
+                }
+              })
+        })
+    ;
+  };
+
+  handleDownloadCallback = (restCallResult) => {
+    if (restCallResult) {
+    console.log("handleDownloadCallback=");
+    console.log(restCallResult);
+      let data = restCallResult.data.values[0];
+      let pdfId = data.pdfId;
+      let pdfFilename = data.pdfFilename;
+
+      this.setState(
+          {
+            pdfId: pdfId
+            , pdfFilename: pdfFilename
+            , preparingDownloads: false
+            , showDownloadLinks: true
+          }
+      );
+    }
+  };
+
+
   getTextArea = () => {
     if (this.props.canChange) {
       return (
@@ -302,6 +456,30 @@ export class ParaRowTextEditor extends React.Component {
                     topicId={this.state.currentId}
                     topicText={this.props.value}
                 />
+                </Well>
+              </Tab>
+              <Tab eventKey={"download"} title={
+                this.state.labels.thisClass.downloadPanelTitle}>
+                <Well>
+                  <Row  className="App-Info-Row">
+                  <Checkbox
+                      checked={this.includePersonalNotes}
+                      onChange={this.handleIncludePersonalNotesChange}
+                      inline={true}
+                  >
+                    {this.state.labels.thisClass.includePersonalNotes}
+                  </Checkbox>
+                  </Row>
+                  <Row  className="App-Info-Row">
+                  <Button
+                      type="submit"
+                      bsStyle="primary"
+                      onClick={this.handleDownloadRequest}
+                  >
+                    {this.state.labels.buttons.createFiles}
+                  </Button>
+                  </Row>
+                  {this.getDownloadLinks()}
                 </Well>
               </Tab>
             </Tabs>

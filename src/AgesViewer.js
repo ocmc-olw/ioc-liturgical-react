@@ -28,7 +28,6 @@ class AgesViewer extends React.Component {
     this.state = this.setTheState(props, this.state);
 
     this.disableFetchButton = this.disableFetchButton.bind(this);
-    this.downloadPdf = this.downloadPdf.bind(this);
     this.fetchAgesIndex = this.fetchAgesIndex.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.fetchPdf = this.fetchPdf.bind(this);
@@ -161,13 +160,13 @@ class AgesViewer extends React.Component {
           ]
         }
     )
-  }
+  };
 
   disableFetchButton = () => {
     return (
         ! (this.state.url)
     );
-  }
+  };
 
   // if we did not receive table values as a prop, fetch them
   fetchAgesIndex = () => {
@@ -200,9 +199,6 @@ class AgesViewer extends React.Component {
     }
   };
 
-  downloadPdf = () => {
-  };
-
   fetchPdf = () => {
 
     this.setState({fetchingPdf: true});
@@ -224,7 +220,7 @@ class AgesViewer extends React.Component {
               {
                 data: response
                 , fetchingPdf: false
-              }, this.downloadPdf
+              }
           );
         })
         .catch( error => {
@@ -289,7 +285,6 @@ class AgesViewer extends React.Component {
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
       let data = restCallResult.data.values[0];
-      console.log(data);
       let values = data.values;
       let topicKeys = data.topicKeys;
       let topElement = data.topElement.children[0].children[0]; // tbody
@@ -619,12 +614,6 @@ class AgesViewer extends React.Component {
 
   getPdfButton = () => {
     if (this.state.dataFetched && this.state.showPdfButton) {
-      // let url = "";
-      // if (document.location.hostname === "localhost") {
-      //   url = this.props.session.restServer + "/" + this.state.pdfId;
-      // } else {
-      //   url = "data/" + this.state.pdfId;
-      // }
       let url = "data/" + this.state.pdfId;
       return (
           <Row className="App-Download-Row">
