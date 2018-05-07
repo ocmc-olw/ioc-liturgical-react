@@ -4,9 +4,11 @@ import {
   Panel
   , Well
 } from 'react-bootstrap';
-import '../../node_modules/video-react/dist/video-react.css';
 import { Player } from 'video-react';
 
+/**
+ * The user of this component must import video-react.css
+ */
 class HelpPanel extends React.Component {
   constructor(props) {
     super(props);
