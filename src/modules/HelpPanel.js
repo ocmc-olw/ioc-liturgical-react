@@ -4,7 +4,7 @@ import {
   Panel
   , Well
 } from 'react-bootstrap';
-import { Player } from 'video-react';
+//import { Player } from 'video-react';
 
 /**
  * The user of this component must import video-react.css
@@ -32,9 +32,7 @@ class HelpPanel extends React.Component {
                 <Well>
                 <p>{this.props.text}</p>
                   {this.props.url ?
-                      <Player className="App-video-player">
-                        <source src={this.props.url} />
-                      </Player>
+                      <video className="App-video-player" width="320" height="240" controls> <source src={this.props.url}/></video>
                       : <span></span>
                   }
                 </Well>
