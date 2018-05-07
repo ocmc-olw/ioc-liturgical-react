@@ -13,6 +13,7 @@ import EditableSelector from './modules/EditableSelector';
 import Flag from './Flag';
 import FormattedTextNote from './FormattedTextNote';
 import HelpSearch from './HelpSearch';
+import HelpPanel from './modules/HelpPanel';
 import Labels from './Labels';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
 import Login from './Login';
@@ -58,6 +59,7 @@ export {
   , Flag
   , FormattedTextNote
   , HelpSearch
+  , HelpPanel
   , Labels
 //  , LifeCycleDemo
   , LiturgicalDayProperties

@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.3.5",
+  "version": "0.3.6",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -68,6 +68,7 @@
     "react-virtualized-select": "^3.1.0",
     "svgo": "^0.7.2",
     "url-loader": "^0.5.7"
+    , "video-react": "^0.10.4"
   },
   "peerDependencies": {},
   "author": {

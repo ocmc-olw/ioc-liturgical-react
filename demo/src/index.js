@@ -42,6 +42,7 @@ import {
   , EditableSelector
   , Flag
   , HelpSearch
+  , HelpPanel
   , Labels
   , LiturgicalDayProperties
   , Login
@@ -1449,6 +1450,11 @@ class Demo extends React.Component {
                   labels={this.state.language.labels.ldp}
               />
             </Panel> {/* LiturgicalDayProperties */}
+            <HelpPanel
+                title={"Help Panel"}
+                text={"This is the text of the help."}
+                url={"https://liml.org/static/video/olw-login.mp4"}
+            />
             <Panel header="Application Information" eventKey="info">
               <Configuration
                   appVersion={this.state.demoVersion}
