@@ -13,7 +13,7 @@ import EditableSelector from './modules/EditableSelector';
 import Flag from './Flag';
 import FormattedTextNote from './FormattedTextNote';
 import HelpSearch from './HelpSearch';
-import HelpPanel from './modules/HelpPanel';
+import Html5VideoPanel from './modules/Html5VideoPanel';
 import Labels from './Labels';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
 import Login from './Login';
@@ -39,6 +39,7 @@ import UiSchemas from './classes/UiSchemas';
 import ViewReferences from './ViewReferences';
 import User from './classes/User';
 import WorkflowForm from './helpers/WorkflowForm';
+import YoutubeVideoPanel from './modules/YoutubeVideoPanel';
 
 //import LifeCycleDemo from './helpers/LifeCycleDemo';
 import TemplateForTable from './templates/TemplateForTable';
@@ -59,7 +60,7 @@ export {
   , Flag
   , FormattedTextNote
   , HelpSearch
-  , HelpPanel
+  , Html5VideoPanel
   , Labels
 //  , LifeCycleDemo
   , LiturgicalDayProperties
@@ -87,4 +88,5 @@ export {
   , User
   , ViewReferences
   , WorkflowForm
+  , YoutubeVideoPanel
 }

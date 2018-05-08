@@ -4,12 +4,8 @@ import {
   Panel
   , Well
 } from 'react-bootstrap';
-//import { Player } from 'video-react';
 
-/**
- * The user of this component must import video-react.css
- */
-class HelpPanel extends React.Component {
+class Html5VideoPanel extends React.Component {
   constructor(props) {
     super(props);
   };
@@ -27,6 +23,7 @@ class HelpPanel extends React.Component {
               <Panel
                   className="App-Help-panel"
                   header={this.props.title}
+                  eventKey={this.props.eventKey}
                   collapsible
               >
                 <Well>
@@ -42,13 +39,14 @@ class HelpPanel extends React.Component {
   }
 }
 
-HelpPanel.propTypes = {
+Html5VideoPanel.propTypes = {
     url: PropTypes.string
     , title: PropTypes.string.isRequired
     , text: PropTypes.string.isRequired
+    , eventKey: PropTypes.string.isRequired
 };
 
-HelpPanel.defaultProps = {
+Html5VideoPanel.defaultProps = {
 };
 
-export default HelpPanel;
+export default Html5VideoPanel;

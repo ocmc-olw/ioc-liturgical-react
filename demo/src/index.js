@@ -42,7 +42,7 @@ import {
   , EditableSelector
   , Flag
   , HelpSearch
-  , HelpPanel
+  , Html5VideoPanel
   , Labels
   , LiturgicalDayProperties
   , Login
@@ -65,6 +65,7 @@ import {
   , User
   , ViewReferences
   , WorkflowForm
+  , YoutubeVideoPanel
 } from '../../src';
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
@@ -1450,10 +1451,17 @@ class Demo extends React.Component {
                   labels={this.state.language.labels.ldp}
               />
             </Panel> {/* LiturgicalDayProperties */}
-            <HelpPanel
-                title={"Help Panel"}
-                text={"This is the text of the help."}
+            <Html5VideoPanel
+                title={"Html5 Video Panel"}
+                text={"This is the text of the video panel."}
                 url={"https://liml.org/static/video/olw-login.mp4"}
+                eventKey={"html5video"}
+            />
+            <YoutubeVideoPanel
+                title={"YouTube Video Panel"}
+                text={"This is the text of the video panel."}
+                videoId={"dwtervZaeQo"}
+                eventKey={"youtubevideo"}
             />
             <Panel header="Application Information" eventKey="info">
               <Configuration
