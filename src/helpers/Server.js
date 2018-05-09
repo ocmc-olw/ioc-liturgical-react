@@ -40,6 +40,8 @@ const wordAnalysis = "nlp/word/analysis";
 const textAnalysis = nlp + "text/analysis";
 const textDownloads = docs + "/textdownloads";
 const adminDomains = "misc/domains";
+const dbDropdownsSearchAbbreviations = "dropdowns/abbreviations";
+const dbDropdownsSearchBibliography = "dropdowns/bibliography";
 const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownsSearchTemplates = "dropdowns/templates";
 const dbDropdownsSearchNotes = "dropdowns/notes";
@@ -408,6 +410,8 @@ export default {
   , getWsServerResourcesApi: () => { return dbApi + resources;}
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
   , getDbServerAgesPdfApi: () => {return dbApi + agesPdf;}
+  , getDbServerDropdownsSearchAbbreviationsApi: () => {return dbApi + dbDropdownsSearchAbbreviations;}
+  , getDbServerDropdownsSearchBibliographyApi: () => {return dbApi + dbDropdownsSearchBibliography;}
   , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
   , getDbServerDropdownsSearchTemplatesApi: () => {return dbApi + dbDropdownsSearchTemplates;}
   , getDbServerDropdownsSearchNotesApi: () => {return dbApi + dbDropdownsSearchNotes;}

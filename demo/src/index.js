@@ -51,6 +51,8 @@ import {
   , SearchNotes
   , SearchOntology
   , SearchTemplates
+  , SearchAbbreviations
+  , SearchBibliography
   , SearchText
   , SearchTextNotes
   , SearchTreebanks
@@ -1437,6 +1439,38 @@ class Demo extends React.Component {
                       codeText={searchCallbackSample}
                   />
                 </Panel>
+                <Panel header="Search Abbreviations" eventKey="searchNotes">
+                  {(this.state.authenticated && this.state.session.userInfo) ?
+                      <div>
+                        <p>Use the Search Abbreviation Component to search your personal abbreviations used when writing notes.</p>
+                        <SearchAbbreviations
+                            session={this.state.session}
+                            callback={this.handleSearchNotesCallback}
+                            editor={true}
+                            initialType={"NoteUser"}
+                            fixedType={false}
+                        />
+                      </div>
+                      :
+                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
+                  }
+                </Panel> {/* Search Abbreviations */}
+                <Panel header="Search Bibliography" eventKey="searchNotes">
+                  {(this.state.authenticated && this.state.session.userInfo) ?
+                      <div>
+                        <p>Use the Search Abbreviation Component to search your personal bibliography used when writing notes.</p>
+                        <SearchBibliography
+                            session={this.state.session}
+                            callback={this.handleSearchNotesCallback}
+                            editor={true}
+                            initialType={"NoteUser"}
+                            fixedType={false}
+                        />
+                      </div>
+                      :
+                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
+                  }
+                </Panel> {/* Search Abbreviations */}
               </Accordion>
             </Panel> {/* Search */}
             <Panel header="Liturgical Day Properties" eventKey="ldp">
