@@ -773,3 +773,12 @@ span.App {
 .App-Youtube-player {
     margin-top: 50px;
 }
+.rdw-suggestion-dropdown {
+    z-index:-1 !important;
+    position:relative !important;
+    border-top: 1px solid #eee;
+    background:  lightblue !important;
+}
+.rdw-mention-link {
+    cursor: pointer;
+}

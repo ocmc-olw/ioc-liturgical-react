@@ -34,11 +34,11 @@ class Administrator extends React.Component {
 
   componentWillMount = () => {
     this.getResources();
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let action = 'GET';
@@ -109,7 +109,7 @@ class Administrator extends React.Component {
         }
       }
     )
-  }
+  };
 
 
   setMessage(message) {
@@ -149,7 +149,7 @@ class Administrator extends React.Component {
         , this.state.data.valueSchemas[row._valueSchemaId].schema
         , row.value
     );
-  }
+  };
 
   fetchData(path, updateMessage) {
     var config = {
@@ -299,7 +299,7 @@ class Administrator extends React.Component {
             resources: []
           });
         });
-  }
+  };
 
   getResourceItems = () => {
     if (this.state.data) {
@@ -335,7 +335,7 @@ class Administrator extends React.Component {
           ""
       )
     }
-  }
+  };
   getAdminGrid = () => {
       return (
           <Grid>
@@ -372,7 +372,7 @@ class Administrator extends React.Component {
             </Row>
           </Grid>
       )
-  }
+  };
   getAdminContent = () => {
     if (this.state.resources) {
       return (
@@ -397,7 +397,7 @@ class Administrator extends React.Component {
           </div>
       );
     }
-  }
+  };
 
   render() {
     return (
