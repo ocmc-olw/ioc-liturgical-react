@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Glyphicon} from 'react-bootstrap';
 import { EditorState, Modifier } from 'draft-js';
 
 // see https://draftjs.org/docs/api-reference-modifier.html#content
@@ -14,7 +13,7 @@ export class CitationButton extends React.Component {
     const contentState = Modifier.replaceText(
         editorState.getCurrentContent()
         , editorState.getSelection()
-        ,'<>'
+        ,'@'
         , editorState.getCurrentInlineStyle()
     );
     onChange(EditorState.push(editorState, contentState, 'insert-characters'));
@@ -22,9 +21,9 @@ export class CitationButton extends React.Component {
 
   render() {
     return (
-        <div className="rdw-block-wrapper">
+        <div className="rdw-link-wrapper">
         <div className="rdw-option-wrapper" onClick={this.addCitation}>
-          <Glyphicon glyph={"user"}/>
+          @
         </div>
         </div>
     );

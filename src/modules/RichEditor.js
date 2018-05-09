@@ -34,6 +34,20 @@ class RichEditor extends React.Component {
       , message: Labels.getMessageLabels(languageCode).initial
       , editorState: editorState
       , content: ""
+      , suggestions: [
+        { text: 'Lexicon of the NT Based on Semantic Domains, Louw & Nida'
+          , value: 'LN:1989'
+          , url: 'cite'
+        }
+        ,{ text: 'Biblical Odes', value: 'Biblical Odes', url: 'abr' },
+          ,{ text: 'BANANA', value: 'banana', url: 'banana' },
+        { text: 'CHERRY', value: 'cherry', url: 'cherry' },
+        { text: 'DURIAN', value: 'durian', url: 'durian' },
+        { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
+        { text: 'FIG', value: 'fig', url: 'fig' },
+        { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
+        { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
+      ]
     };
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -91,9 +105,9 @@ class RichEditor extends React.Component {
               toolbar={{
                 options: [
                     'inline'
-                  , 'blockType'
-                  , 'fontSize'
-                  , 'list'
+                  // , 'blockType'
+                  // , 'fontSize'
+                  // , 'list'
                   , 'link'
                   , 'history'
                 ]
@@ -104,6 +118,11 @@ class RichEditor extends React.Component {
                     , 'underline'
                   ]
                 }
+              }}
+              mention={{
+                separator: ' ',
+                trigger: '@',
+                suggestions: this.state.suggestions
               }}
           />
     )
