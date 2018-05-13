@@ -828,13 +828,15 @@ export class SearchGeneric extends React.Component {
 SearchGeneric.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func
-  , editor: PropTypes.bool.isRequired
+  , editor: PropTypes.bool
   , initialType: PropTypes.string
-  , fixedType: PropTypes.bool.isRequired
+  , fixedType: PropTypes.bool
 };
 
 SearchGeneric.defaultProps = {
   initialType: "*"
+  , editor: true
+  , fixedType: true
 };
 
 

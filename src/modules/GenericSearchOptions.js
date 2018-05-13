@@ -211,11 +211,11 @@ class GenericSearchOptions extends React.Component {
 
   getTextRow = () => {
     return (
-        <Row className="show-grid App-Bibliography-Search-Options-Row">
+        <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
             <ControlLabel>{this.props.labels.propertyTextIs}</ControlLabel>
             <FormControl
-                id={"fxBibliographySearchText"}
+                id={"fxGenericSearchText"}
                 className={"App App-search-text-input"}
                 type="text"
                 value={this.state.value}
@@ -229,9 +229,9 @@ class GenericSearchOptions extends React.Component {
 
   getMatchLocationRow = () => {
     return (
-        <Row className="show-grid App-Bibliography-Search-Options-Row">
+        <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
-            <div className={"App App-Bibliography-Type-Selector"}>
+            <div className={"App App-Generic-Type-Selector"}>
               <ResourceSelector
                   title={this.props.labels.matcherIs}
                   initialValue={this.state.selectedMatcher}
@@ -247,9 +247,9 @@ class GenericSearchOptions extends React.Component {
 
   getHasTagRow = () => {
     return (
-        <Row className="show-grid App-Bibliography-Search-Options-Row">
+        <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
-            <div className={"App App-Bibliography-Tag-Selector"}>
+            <div className={"App App-Generic-Tag-Selector"}>
               <ResourceSelector
                   title={this.props.labels.has}
                   initialValue={this.state.selectedTagOperator}
@@ -265,9 +265,9 @@ class GenericSearchOptions extends React.Component {
 
   getTagRow = () => {
     return (
-        <Row className="show-grid App-Bibliography-Search-Options-Row">
+        <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
-            <div className={"App App-Bibliography-Tag-Selector"}>
+            <div className={"App App-Generic-Tag-Selector"}>
               <ResourceSelector
                   title={this.props.labels.tags}
                   initialValue={this.state.selectedTags}
@@ -290,9 +290,9 @@ class GenericSearchOptions extends React.Component {
       if (this.props.session.userInfo.domains.reader) {
         let resources = this.props.session.userInfo.domains.reader;
         return (
-            <Row className="show-grid App-Bibliography-Search-Options-Row">
+            <Row className="show-grid App-Generic-Search-Options-Row">
               <Col xs={12} md={12}>
-                <div className={"App App-Bibliography-Library-Selector"}>
+                <div className={"App App-Generic-Library-Selector"}>
                   <ResourceSelector
                       title={this.props.labels.domainIs}
                       initialValue={this.state.selectedLibrary}
@@ -310,9 +310,9 @@ class GenericSearchOptions extends React.Component {
 
   getButtonRow = () => {
     return (
-        <Row className="show-grid App-Bibliography-Search-Options-Row">
+        <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
-            <div className={"App App-Bibliography-Selector-Button"}>
+            <div className={"App App-Generic-Selector-Button"}>
               <ControlLabel>{this.props.labels.clickTheButton}</ControlLabel>
               <div>
               <Button

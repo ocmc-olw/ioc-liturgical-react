@@ -272,7 +272,7 @@ class SearchOptions extends React.Component {
         , this.state.value
     );
     event.preventDefault();
-  }
+  };
 
   handleDomainChange = (selection) => {
     this.setState({domain: selection["value"]}, this.setBookDropdown(selection["value"]));
@@ -294,7 +294,7 @@ class SearchOptions extends React.Component {
         , initialValue: selection["value"]
       }
     });
-  }
+  };
 
   setDomainDropdown = (docType) => {
     let msg = "";
@@ -352,7 +352,7 @@ class SearchOptions extends React.Component {
         , initialValue: "*"
       }
     });
-  }
+  };
 
   setGenericBookDropdown(type) {
     try {

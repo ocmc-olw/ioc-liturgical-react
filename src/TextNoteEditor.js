@@ -577,7 +577,7 @@ class TextNoteEditor extends React.Component {
         abbreviations = restCallResult.data.values[0]["abbreviations"];
       }
       let suggestAbr = abbreviations.map((o) => {
-        return {text: o.key + " - " + o.value , value: o.key, url: o.key} ;
+        return {text: o.key + " - " + o.value , value: 'Abbreviation~' + o.key, url: o.id} ;
       });
       let suggestBib = bibliography.map((o) => {
         let author = "";
@@ -600,7 +600,7 @@ class TextNoteEditor extends React.Component {
           result += " (" + date + "). ";
         }
         result += o.title;
-        return {text: result , value: o.key, url: o.key} ;
+        return {text: result , value:  'Citation~' + o.key, url: o.id} ;
       });
 
       this.setState({

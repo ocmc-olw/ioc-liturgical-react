@@ -1,3 +1,16 @@
+.App {
+    margin-right: 0px;
+    margin-left: 5px;
+    padding-left: 0px;
+    padding-right: 0px;
+    word-wrap: break-word;
+    white-space: normal;
+}
+.App-content-row {
+    padding-top: 30px;
+    padding-bottom: 30px;
+    padding-left: 4px;
+}
 div.container-fluid {
     margin-right: 0px;
     margin-left: 0px;
@@ -8,27 +21,82 @@ div.container-fluid {
 }
 div.container {
     margin-right: 0px;
-    margin-left: 0px;
+    margin-left: 2px;
     padding-left: 10px;
     padding-right: 10px;
     width: 100%;
 }
+div.well {
+    max-width: 95vw;
+}
+span {
+    padding-left: 0px !important;
+    margins: 0px;
+}
+span.App {
+    padding-left: 5px;
+    margin-left: 5px;
+}
+.kvp {
+    padding-right: 1rem;
+}
 .App-header {
-    z-index: -1;
+}
+.App-footer {
+    background-color: black;
+    color: gold;
+    backgroundColor: #F8F8F8;
+    borderTop: 1px solid #E7E7E7;
+    textAlign: center;
+    position: fixed;
+    padding-left: 10px;
+    padding-top: 10px;
+    left: 0px;
+    bottom: 0px;
+    height: 40px;
+    width: 100%;
+    display: block;
+}
+.App-anchor-ocmc {
+    color: red;
+}
+.App-footer-short {
+    display: none;
+}
+.App-footer-powered-by {
+
+}
+.App-footer-provided-by {
+    color: white;
+}
+.App-footer-provided-by-part-2 {
+    color: white;
+    margin-left: 5px;
+}
+.App-footer-app-name {
+    font-style: italic;
+}
+.App-grid {
 }
 .App-img-logo {
-    position: fixed;
-    top: 18px;
-    z-index: 2000;
+    margin-top: 7px;
+    margin-right: 8px;
 }
-.App-title {
-    z-index: 8999;
-    position: absolute;
-    top: 23px;
-    left: 110px;
+.App-img-logo-ocmc {
+    margin-top: 3px;
+}
+.App-page-about {
+}
+.App-nav-dropdown {
+    position: relative;
+    top: -5px;
+}
+.App-title-full {
     color: gold;
-    font-size: large;
     font-style: italic;
+}
+.App-title-short {
+    display: none;
 }
 .App-flag {
     height: 1em;
@@ -51,6 +119,9 @@ div.container {
 #basic-nav-dropdown {
     padding-top: 21px;
     padding-left: 22px;
+}
+.App-search {
+    margin: 10px;
 }
 .App-search-form {
     padding-top: 15px;
@@ -93,11 +164,13 @@ div.container {
 .App-HyperToken {
 }
 .App-HyperToken-Index {
+    padding-top: 5px;
     font-size: larger;
 }
 .App-HyperToken-Word {
     color: blue;
     cursor: pointer;
+    padding-left: 10px !important;
 }
 .App-HyperToken-Word-Selected {
     color: blue;
@@ -107,6 +180,18 @@ div.container {
 .App-iframe-wrapper {
     resize: vertical;
 }
+.App-font-awesome-spinner {
+    margin-left: 30px;
+    color: red;
+    font-size: 20px !important;
+}
+.App-spinner-span {
+    color: black;
+    margin-left: 30px;
+}
+.panel-title {
+    cursor: pointer;
+}
 .Navbar.Collapse {
     position: fixed;
     top: 6px;
@@ -115,16 +200,44 @@ div.container {
 }
 .navbar-brand {
     display: flex;
-    align-items: center;
+    position: relative;
+    top: -14px;
 }
 .navbar-brand>img {
 }
-
-.panel-title {
-    cursor: pointer;
-    color: #007eff;
-    font-weight: bolder !important;
+.navbar-header {
+    z-index: 2000;
 }
+.navbar-nav {
+    align-items: right !important;
+    font-size: 100%;
+}
+.modal-title {
+    font-size: smaller;
+    padding-bottom: 10px;
+    color: #5bc0de;
+}
+.App-Notes-Lister {
+    margin-top: 0px !important;
+}
+.Select {
+    max-width: 90vw;
+}
+.Schema-Based-Add-Button {
+    margin-left: 10px;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding: 0;
+}
+.App-Add-ico {
+    padding: 5px !important;
+}
+.panel-title {
+    color: #007eff !important;
+    font-weight: bolder;
+    cursor: pointer;
+}
+
 .label-warning {
     display: inherit;
 }
@@ -135,14 +248,15 @@ a.collapsed {
 .active {
     color: gold;
 }
+
 .control-label,  .resourceSelectorPrompt {
+    margin-right: 8px;
     color: #5bc0de;
 }
 .App-Notes-Lister {
     margin-top: 0px !important;
 }
 .Schema-Based-Add-Button {
-    margin-left: 10px;
     padding: 1px;
 }
 .App-Add-ico {
@@ -172,10 +286,13 @@ a.collapsed {
 .App-Search-Options-Text-Div {
 }
 .App-search-text-input {
+    color: black;
+    background-color: white;
     height: auto;
     padding-left: 12px;
     width: 80%;
     box-sizing: border-box;
+    resize: vertical;
 }
 .App-search-by-id-parts-icon {
     color: black;
@@ -187,19 +304,29 @@ a.collapsed {
     resize: vertical;
 }
 
-.App-search-results {
+.modal-dialog {
+    margin: 5vw !important;
+    width: 90vw !important;
+}
+.App-search-form {
     background-color: #eaeced;
 }
 
+.App-search-results {
+    margin: 10px;
+}
+
 .App-ParaRow-Text-Editor {
-    background-color: #eaeced;
 }
 .row {
     margin: 0px;
 }
-
 .App-search-checkbox {
     margin: 10px;
+}
+.react-bs-table-container {
+    margin-left: 20px;
+    margin-right: 20px;
 }
 .react-bs-table table tr {
     padding: 10px;
@@ -210,7 +337,6 @@ a.collapsed {
     word-wrap: break-word;
     white-space: pre-wrap;
     white-space: -moz-pre-wrap;
-    word-break: break-all;
 }
 
 .fa {
@@ -231,6 +357,13 @@ a.collapsed {
     color: red;
 }
 
+.App-header-ico {
+    margin: 0px;
+    padding: 0px;
+}
+.App-header-sub-item-ico {
+    padding-right: 10px;
+}
 .App-header-ico.fa-info-circle {
     color: inherit;
 }
@@ -250,16 +383,51 @@ div[class*='App-page'] {
     margin: 5vw !important;
     width: 90vw !important;
 }
-@media (max-width: 875px) {
-    .App-img-logo {
-        top: 9px;
+@media screen
+and (max-width: 820px)
+and (min-width: 200px) {
+    .App-content-row {
+        padding-top: 30px;
+        padding-bottom: 30px;
+        padding-left: 0px;
     }
-    .App-title {
-        top: 14px;
-        font-size: 15px;
+    .App-img-logo {
+        margin-top: -4px;
+        margin-right: 8px;
+    }
+    .App-title-full {
+        display: none;
+    }
+    .App-footer {
+        padding-left: 10px;
+        display: none;
+    }
+    .App-title-short {
+        display: inline;
+        color: gold;
+        font-style: italic;
+        margin-top: 10px;
+    }
+    .App-footer-short {
+        background-color: black;
+        color: gold;
+        backgroundColor: #F8F8F8;
+        borderTop: 1px solid #E7E7E7;
+        textAlign: center;
+        position: fixed;
+        left: -5px;
+        padding-top: 5px;
+        bottom: 0px;
+        height: 30px;
+        width: 100%;
+        display: block;
+    }
+    .navbar-brand {
+        display: flex;
+        position: relative;
+        top: -8px;
     }
     .navbar-header {
-        z-index: 2000;
         float: none;
     }
     .navbar-left,.navbar-right {
@@ -303,8 +471,8 @@ div.App-logo.navbar-header {
     margin-right: 0 !important;
 }
 .list-group-item {
-      padding-left: 0 !important;
-      margin: 0 !important;
+    padding-left: 0 !important;
+    margin: 0 !important;
 }
 .treeview {
     padding-left: 1px !important;
@@ -328,9 +496,16 @@ div.App-logo.navbar-header {
     margin-left: 20px;
     color: #5bc0de;
 }
+.App-Grammar-Well {
+    padding-top: 15px;
+    padding-bottom: 15px;
+}
+.App-Modal-Dependency-Diagram-Title {
+    color: blue;
+    font-weight: bold;
+}
 .App-Para-Col-Editor {
     padding-left: 15px;
-    max-width: 60vw;
 }
 .resourceSelector {
     max-width: 80%;
@@ -379,7 +554,7 @@ div.App-logo.navbar-header {
     width: 45ch;
 }
 .App-TokenTagger-Lemma {
- width: 45ch;
+    width: 45ch;
 }
 .App-TokenTagger-Gloss {
     width: 45ch;
@@ -416,6 +591,30 @@ path.link {
     stroke-width: 1.5px;
 }
 
+.AppDependencyNode {
+    cursor: pointer;
+}
+
+.AppDependencyNodeToken {
+    color: blue;
+    font-size: large;
+}
+.AppDependencyNodeLemma {
+    color: blue;
+    font-size: small;
+}
+.AppDependencySelectedNode {
+    background-color: #bfe6ff;
+}
+.AppDependencyNodeGloss {
+    font-size: small;
+}
+.AppDependencyNodeLabel {
+    text-align: center;
+    color: red;
+    font-style: italic;
+    font-size: xx-small;
+}
 .App-Modal-Para-Row-Editor {
     width: 90vw;
 }
@@ -435,7 +634,7 @@ path.link {
     margin-top: 10px;
 }
 .App-modal-alert {
-    margin: 10px;
+    margin: 20px;
 }
 .glyphicon {
     padding-right: 10px;
@@ -445,7 +644,7 @@ path.link {
     width: 100%;
 }
 .App-Ages-Table-Row {
-    margin-top: 10px;
+    margin: 10px;
 }
 .App-Info-Row {
     margin-top: 10px;
@@ -459,6 +658,15 @@ path.link {
 }
 .App-Modal-Editor-TextArea {
     width: 100%;
+}
+
+.App-page-home-welcome-title {
+    text-align: center;
+    color: blue;
+}
+
+.App-page-home-welcome-text {
+    padding-left: 20px;
 }
 .boxsizingBorder {
     -webkit-box-sizing: border-box;
@@ -496,10 +704,18 @@ path.link {
 .App-DependencyDiagram-Node-Lemma {
     padding-left: 4px;
 }
-
+.App-about-list-item {
+    font-size: larger;
+}
+.jumbotron {
+    padding: 10px;
+}
 .App-Text-Note-Text-Source {
     padding-left: 10px;
     font-size: smaller;
+}
+.App-Text-Note-Editor {
+    margin-left: 20px;
 }
 .App-Text-Note-Editor-Type-Row {
     margin-top: 0px;
@@ -602,8 +818,8 @@ path.link {
     font-weight: bold;
     text-justify: none;
     display: inline-block !important;
-    margin-left: 3px !important;
-    margin-right: 8px;
+    margin-left: 5px !important;
+    margin-right: 5px;
 }
 
 .App-Text-Note-Header-Note > p {
@@ -650,6 +866,7 @@ path.link {
 .App-Button {
     margin-top: 10px;
     margin-right: 5px;
+    width: 100px !important;
 }
 .App-Workflow-Selector-Row {
 
@@ -678,17 +895,10 @@ path.link {
 .App-search-text-input {
     margin-bottom: 8px;
 }
-.App-spinner-span {
-    color: black;
-    margin-left: 30px;
-}
-.App-font-awesome-spinner {
-    margin-left: 30px;
-    color: red;
-}
 .rdw-editor-main {
     background-color: white;
 }
+
 .DraftEditor-root {
     background: #fff;
     border: 1px solid #ddd;
@@ -728,12 +938,6 @@ path.link {
     border-left-width: thin;
     border-left-color: lightgrey;
 }
-span {
-    padding-right: 3px !important;
-}
-span.App {
-    margin-left: 2px;
-}
 .Text-Note-Add-Button {
     margin-left: 10px;
     padding: 1px;
@@ -746,13 +950,9 @@ span.App {
     color: inherit !important;
 }
 
-.App {
-    word-wrap: break-word;
-    white-space: normal;
-}
 .btn {
-  padding-left: 5px;
-  padding-right: 5px;
+    padding-left: 5px;
+    padding-right: 5px;
 }
 .App-Download-Row {
     text-align: center;
@@ -760,9 +960,11 @@ span.App {
 .App-Download-Col {
     text-align: center;
 }
-
 .App-video-player {
     margin-top: 50px;
+}
+.App-Help-panel {
+
 }
 .App-Youtube-panel {
 
@@ -773,6 +975,7 @@ span.App {
 .App-Youtube-player {
     margin-top: 50px;
 }
+
 .rdw-suggestion-dropdown {
     z-index:-1 !important;
     position:relative !important;
