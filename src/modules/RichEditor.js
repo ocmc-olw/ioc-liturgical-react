@@ -58,6 +58,14 @@ class RichEditor extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
       let languageCode = nextProps.session.languageCode;
+      let mention = undefined;
+      if (nextProps.suggestions) {
+        mention={
+          separator: ' ',
+          trigger: '@',
+          suggestions: nextProps.suggestions
+        };
+      }
       this.setState((prevState, props) => {
         return {
           labels: {
@@ -68,6 +76,7 @@ class RichEditor extends React.Component {
           }
           , message: Labels.getMessageLabels(languageCode).initial
           , somethingWeTrackIfChanged: get(this.state, "somethingWeTrackIfChanged", "" )
+          , mention: mention
         }
       }, function () { return this.handleStateChange("place holder")});
   };

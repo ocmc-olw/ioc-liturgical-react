@@ -31,7 +31,6 @@ import IdManager from './helpers/IdManager';
 import BibleRefSelector from './helpers/BibleRefSelector';
 import OntologyRefSelector from './helpers/OntologyRefSelector';
 import WorkflowForm from './helpers/WorkflowForm';
-import { SuperTypeTopics} from "./classes/ENUMS";
 
 import CompareDocs from './modules/CompareDocs';
 import axios from "axios/index";
@@ -223,7 +222,6 @@ class TextNoteEditor extends React.Component {
     this.handleNoteLibraryChange = this.handleNoteLibraryChange.bind(this);
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
-    this.handleStateChange = this.handleStateChange.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
     this.mapTagsToObjectList = this.mapTagsToObjectList.bind(this);
@@ -294,7 +292,7 @@ class TextNoteEditor extends React.Component {
         , selectedTag: selectedTag
         , selectedType: selectedType
       }
-    }, function () { return this.handleStateChange("place holder")});
+    });
   };
 
   settingsValid = () => {
@@ -692,10 +690,6 @@ class TextNoteEditor extends React.Component {
     }, this.validateForm);
   };
 
-  // if we need to do something after setState, do it here...
-  handleStateChange = (parm) => {
-    // call a function if needed
-  };
 
   handleBibleRefChange = (book, chapter, verse, citeBible) => {
     let form = this.state.form;
