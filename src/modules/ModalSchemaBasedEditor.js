@@ -34,7 +34,7 @@ export class ModalSchemaBasedEditor extends React.Component {
       , topicText: ""
       , keyText: ""
       , httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
-    }
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -52,13 +52,13 @@ export class ModalSchemaBasedEditor extends React.Component {
         }
     );
 
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.setState({
      httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
     });
-  }
+  };
 
   setMessage(message) {
     this.setState({
@@ -163,7 +163,7 @@ export class ModalSchemaBasedEditor extends React.Component {
           var messageIcon = MessageIcons.getMessageIcons().error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });
-  }
+  };
 
   render() {
     return (
@@ -193,26 +193,26 @@ export class ModalSchemaBasedEditor extends React.Component {
               <ControlLabel>{this.state.labels.references.infoBelow}</ControlLabel>
               }
               { this.props.canUpdate ? <div></div>: <ControlLabel>{this.state.labels.messages.readOnly}</ControlLabel>}
-            </Modal.Header>
+             </Modal.Header>
             <Modal.Body>
               <Form schema={this.state.schema}
                     uiSchema={this.state.uiSchema}
                     formData={this.state.formData}
                     onSubmit={this.onSubmit}
               >
-                <div>
-                    <Button
-                        bsStyle="primary"
-                        type="submit"
-                        disabled={! this.props.canUpdate}
-                    >
-                      {this.state.labels.button.submit}
-                    </Button>
-                    <span className="App App-message"><FontAwesome
-                      name={this.state.messageIcon}/>
-                    {this.state.message}
-                    </span>
-                </div>
+              <div>
+                  <Button
+                      bsStyle="primary"
+                      type="submit"
+                      disabled={! this.props.canUpdate}
+                  >
+                    {this.state.labels.button.submit}
+                  </Button>
+                  <span className="App App-message"><FontAwesome
+                    name={this.state.messageIcon}/>
+                  {this.state.message}
+                  </span>
+              </div>
               </Form>
             </Modal.Body>
             <Modal.Footer>

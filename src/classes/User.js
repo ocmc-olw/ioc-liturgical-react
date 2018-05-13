@@ -22,7 +22,7 @@ class User {
     this.lastname = (lastname ? lastname: "");
     this.title = (title ? title: "");
     this.authenticated = (authenticated ? authenticated : false);
-    this.domains = (domains ? domains : {});;
+    this.domains = (domains ? domains : {admin: {}, author: {}, reader: {}});;
   };
 
   /**
@@ -41,7 +41,7 @@ class User {
       }
     }
     return authorized;
-  }
+  };
 
   /**
    * Does the user have permission to author (create, update) records in this library?
@@ -63,7 +63,7 @@ class User {
       }
     }
     return authorized;
-  }
+  };
   /**
    * Does the user have permission to read records in this library?
    * @param library

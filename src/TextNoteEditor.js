@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import RichEditor from './modules/RichEditor';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
-import { get } from 'lodash';
+import { get, has } from 'lodash';
 import {
   Accordion
   , Button
@@ -31,6 +31,7 @@ import IdManager from './helpers/IdManager';
 import BibleRefSelector from './helpers/BibleRefSelector';
 import OntologyRefSelector from './helpers/OntologyRefSelector';
 import WorkflowForm from './helpers/WorkflowForm';
+import { SuperTypeTopics} from "./classes/ENUMS";
 
 import CompareDocs from './modules/CompareDocs';
 import axios from "axios/index";
@@ -164,10 +165,18 @@ class TextNoteEditor extends React.Component {
       , selectedTag: selectedTag
       , tags: tags
       , formIsValid: true
+      , suggestions:[{
+              text: 'No abbreviations or Suggestions entries available.'
+              , value: 'ignore'
+              , url: 'cite'
+            }
+        ,
+      ]
     };
 
     this.createMarkup = this.createMarkup.bind(this);
     this.fetchBibleText = this.fetchBibleText.bind(this);
+    this.fetchSuggestions = this.fetchSuggestions.bind(this);
     this.getBibleRefRow = this.getBibleRefRow.bind(this);
     this.getBiblicalGreekLibraryRow = this.getBiblicalGreekLibraryRow.bind(this);
     this.getBiblicalLemmaRow = this.getBiblicalLemmaRow.bind(this);
@@ -204,6 +213,7 @@ class TextNoteEditor extends React.Component {
     this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
     this.handleFetchBibleTextCallback = this.handleFetchBibleTextCallback.bind(this);
+    this.handleFetchSuggestionsCallback = this.handleFetchSuggestionsCallback.bind(this);
     this.handleLibrariesCallback = this.handleLibrariesCallback.bind(this);
     this.handleLiturgicalGreekLibraryChange = this.handleLiturgicalGreekLibraryChange.bind(this);
     this.handleLiturgicalIdSelection = this.handleLiturgicalIdSelection.bind(this);
@@ -226,6 +236,7 @@ class TextNoteEditor extends React.Component {
   };
 
   componentWillMount = () => {
+    this.fetchSuggestions();
   };
 
   componentDidMount = () => {
@@ -465,6 +476,33 @@ class TextNoteEditor extends React.Component {
         });
   };
 
+  fetchSuggestions = () => {
+    // Server.restGetForLibraryTopic(
+    //     this.props.session.restServer
+    //     , this.props.session.userInfo.username
+    //     , this.props.session.userInfo.password
+    //     , this.props.session.userInfo.domain
+    //     , SuperTypeTopics.Suggestions
+    //     , this.handleFetchSuggestionsCallback
+    // );
+    let parms =
+        "t=" + encodeURIComponent(this.state.topic)
+        + "&l=" + encodeURIComponent(this.state.libraries)
+    ;
+
+    this.setState({
+          message: this.state.labels.messages.retrieving
+        },
+        Server.restGetSuggestions(
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
+            , this.props.session.userInfo.domain
+            , this.handleFetchSuggestionsCallback
+        )
+    );
+  };
+
   fetchBibleText = () => {
     let parms =
         "t=" + encodeURIComponent(this.state.topic)
@@ -482,7 +520,6 @@ class TextNoteEditor extends React.Component {
             , this.handleFetchCallback
         )
     );
-
   };
 
   handleWorkflowCallback = ( visibility, status, assignedTo ) => {
@@ -528,6 +565,53 @@ class TextNoteEditor extends React.Component {
             }
           }
       );
+    }
+  };
+
+  handleFetchSuggestionsCallback = (restCallResult) => {
+    if (restCallResult) {
+      let abbreviations = [];
+      let bibliography = [];
+      if (restCallResult.data.values.length > 1) {
+        bibliography = restCallResult.data.values[1]["bibliography"];
+      }
+      if (restCallResult.data.values.length > 0) {
+        abbreviations = restCallResult.data.values[0]["abbreviations"];
+      }
+      let suggestAbr = abbreviations.map((o) => {
+        return {text: o.key + " - " + o.value , value: o.key, url: o.key} ;
+      });
+      let suggestBib = bibliography.map((o) => {
+        let author = "";
+        let date = "";
+        if (has(o, "author")) {
+          author = o.author;
+        } else if (has(o, "editor")) {
+          author = o.editor;
+        }
+        if (has(o, "date")) {
+          date = o.date;
+        } else if (has(o, "year")) {
+          date = o.year;
+        }
+        let result = o.key + " - ";
+        if (author.length > 0) {
+          result += author;
+        }
+        if (date.length > 0) {
+          result += " (" + date + "). ";
+        }
+        result += o.title;
+        return {text: result , value: o.key, url: o.key} ;
+      });
+
+      this.setState({
+        abbreviations: abbreviations
+        , bibliography: bibliography
+        , suggestAbbreviations: suggestAbr
+        , suggestBibliography: suggestBib
+        , suggestions: suggestBib
+      });
     }
   };
 
@@ -1381,6 +1465,7 @@ class TextNoteEditor extends React.Component {
               session={this.props.session}
               handleEditorChange={this.handleEditorChange}
               content={this.state.form.valueFormatted}
+              suggestions={this.state.suggestions}
           />
       );
     } else {

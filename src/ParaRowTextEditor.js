@@ -282,9 +282,9 @@ export class ParaRowTextEditor extends React.Component {
       , showDownloadLinks: false
     });
 
-    let id = "gr_gr_cog~"
+    let id = "gr_gr_cog/"
         + this.props.idTopic
-        + "~"
+        + "/"
         + this.props.idKey
     ;
 
@@ -292,10 +292,7 @@ export class ParaRowTextEditor extends React.Component {
     if (this.state.includePersonalNotes) {
       ip = "true";
     }
-    let parms =
-        "id=" + encodeURIComponent(id)
-        + "&ip=" + encodeURIComponent(ip)
-    ;
+    let parms = "ip=" + encodeURIComponent(ip);
 
     Server.getTextDownloads(
         this.props.session.restServer

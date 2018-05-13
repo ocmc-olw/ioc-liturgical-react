@@ -45,3 +45,12 @@ export const monthsArray = [
   , { name: "NOVEMBER"}
   , { name: "DECEMBER"}
 ];
+export const SuperTypes = Object.freeze({
+  GENERIC:   Symbol("generic"),
+  BIBLIOGRAPHY:  Symbol("bibliography"),
+  ONTOLOGY: Symbol("ontology")
+});
+export const SuperTypeTopics = Object.freeze({
+  ABBREVIATION: Symbol("abbreviation")
+  , BIBLIOGRAPHY:  Symbol("biblioentry")
+});

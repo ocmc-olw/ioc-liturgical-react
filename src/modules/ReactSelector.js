@@ -34,7 +34,7 @@ export class ReactSelector extends React.Component {
   render () {
     return (
         <div className="resourceSelector">
-          <ControlLabel className="resourceSelectorPrompt">{this.props.title}</ControlLabel>
+          {this.props.title ? <ControlLabel className="resourceSelectorPrompt">{this.props.title}</ControlLabel>: <span/>}
           <Select
               name="form-field-name"
               value={this.state.value}

@@ -3,13 +3,13 @@ import PropTypes from 'prop-types';
 import {Button, ControlLabel, Modal, Well} from 'react-bootstrap';
 
 import Labels from '../Labels';
-import NewEntryForm from './NewEntryForm';
+import GenericNewEntryForm from './GenericNewEntryForm';
 import MessageIcons from '../helpers/MessageIcons';
 
 /**
  * Display modal content.
  */
-export class ModalNewEntryForm extends React.Component {
+export class GenericModalNewEntryForm extends React.Component {
 
   constructor(props) {
     super(props);
@@ -40,6 +40,7 @@ export class ModalNewEntryForm extends React.Component {
         button: Labels.getButtonLabels(nextProps.session.languageCode)
         , messages: Labels.getMessageLabels(nextProps.session.languageCode)
         , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        , title: "Generic New Entry Form"
       }
     });
   };
@@ -74,31 +75,14 @@ export class ModalNewEntryForm extends React.Component {
               keyboard={true}
           >
             <Modal.Header closeButton>
-              <Modal.Title>{this.props.title}</Modal.Title>
-              {this.props.fromText && this.props.fromTitle &&
-              <div className={"App-Text-Refers-To"}>{this.props.fromTitle}</div>
-              }
-              {this.props.fromText && this.props.fromId &&
-              <Well className={"App-Well-From-Text"}><div className={"App-Modal-Text"}>{this.props.fromText}<span className={"control-label"}> ({this.props.fromId})</span></div></Well>
-              }
-              {this.props.fromText && this.props.toText && this.props.toTitle &&
-              <div className={"App-Text-Refers-To"}>{this.props.toTitle}</div>
-              }
-              {this.props.toText && this.props.toId &&
-              <Well className={"App-Well-To-Text"}><div className={"App-Modal-Text"}>{this.props.toText}<span className={"control-label"}> ({this.props.toId})</span></div></Well>
-              }
-              {this.props.toText &&
-              <ControlLabel>{this.state.labels.references.infoBelow}</ControlLabel>
-              }
+              <Modal.Title>{this.state.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
-              <NewEntryForm
+              <GenericNewEntryForm
                 session={this.props.session}
                 path={this.props.restPath}
-                schema={this.props.schema}
-                uiSchema={this.props.uiSchema}
-                formData={this.props.formData}
                 onSubmit={this.onSubmit}
+                schemaTypes={this.props.schemaTypes}
               />
             </Modal.Body>
             <Modal.Footer>
@@ -110,26 +94,16 @@ export class ModalNewEntryForm extends React.Component {
   }
 }
 
-ModalNewEntryForm.propTypes = {
+GenericModalNewEntryForm.propTypes = {
   session: PropTypes.object.isRequired
   , restPath: PropTypes.string.isRequired
-  , schema: PropTypes.object.isRequired
-  , uiSchema: PropTypes.object.isRequired
-  , formData: PropTypes.object.isRequired
-  , title: PropTypes.string.isRequired
-  , title: PropTypes.string.isRequired
-  , fromTitle: PropTypes.string
-  , fromId: PropTypes.string
-  , fromText: PropTypes.string
-  , toTitle: PropTypes.string
-  , toId: PropTypes.string
-  , toText: PropTypes.string
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
+  , schemaTypes: PropTypes.array
 };
-ModalNewEntryForm.defaultProps = {
+GenericModalNewEntryForm.defaultProps = {
   canUpdate: true
 };
 
-export default ModalNewEntryForm;
+export default GenericModalNewEntryForm;
 

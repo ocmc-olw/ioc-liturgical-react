@@ -20,6 +20,8 @@ const login = "login/form";
 const loginUser = "login/user";
 const links = "links";
 const docs = "docs";
+const generic = docs + "/generic";
+const genericExists = docs + "/genericexists";
 const notes = docs + "/notes";
 const userdocs = docs + "/userdocs";
 const treebanks = docs + "/treebanks";
@@ -30,8 +32,8 @@ const agesReactTemplate = docs + "/agesreacttemplate";
 const agesReadOnlyTemplate = docs + "/agesreadonlytemplate";
 const nlp = "nlp/"
 const ontology = "ontology/ontology";
-const tables = docs + "/tables";
-const tableLexiconOald = "id=en_sys_tables~LexiconTable~OALD";
+const tables = docs + "/tables/";
+const tableLexiconOald = "en_sys_tables/LexiconTable/OALD";
 const templates = docs + "/templates";
 const valuePath = docs + "/value";
 const viewtemplate = docs + "/viewtemplate";
@@ -41,7 +43,7 @@ const textAnalysis = nlp + "text/analysis";
 const textDownloads = docs + "/textdownloads";
 const adminDomains = "misc/domains";
 const dbDropdownsSearchAbbreviations = "dropdowns/abbreviations";
-const dbDropdownsSearchBibliography = "dropdowns/bibliography";
+const dbDropdownsSearchGeneric = "dropdowns/bibliography";
 const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownsSearchTemplates = "dropdowns/templates";
 const dbDropdownsSearchNotes = "dropdowns/notes";
@@ -128,7 +130,7 @@ const restGetPromise = (
           reject(result);
         });
   })
-}
+};
 
 const restGetPdf = (
     restServer
@@ -182,7 +184,7 @@ const restGetPdf = (
           reject(result);
         });
   })
-}
+};
 
 const restGetUserDocs = (
     restServer
@@ -230,6 +232,7 @@ const restGetUserDocs = (
         });
   })
 };
+
 const restGet = (
     restServer
     , username
@@ -249,9 +252,11 @@ const restGet = (
   let path = restServer
       + serverPath
   ;
-
+console.log(`server path`);
+console.log(path);
   if (parms && parms.length > 0) {
-    path = path + "/?" + parms
+    path = path + "?" + parms
+//    path = path + "/?" + parms
   }
 
   let result = {
@@ -411,7 +416,7 @@ export default {
   , getWsServerDomainsApi: () => {return adminApi + adminDomains;}
   , getDbServerAgesPdfApi: () => {return dbApi + agesPdf;}
   , getDbServerDropdownsSearchAbbreviationsApi: () => {return dbApi + dbDropdownsSearchAbbreviations;}
-  , getDbServerDropdownsSearchBibliographyApi: () => {return dbApi + dbDropdownsSearchBibliography;}
+  , getDbServerDropdownsSearchGenericApi: () => {return dbApi + dbDropdownsSearchGeneric;}
   , getDbServerDropdownsSearchTextApi: () => {return dbApi + dbDropdownsSearchText;}
   , getDbServerDropdownsSearchTemplatesApi: () => {return dbApi + dbDropdownsSearchTemplates;}
   , getDbServerDropdownsSearchNotesApi: () => {return dbApi + dbDropdownsSearchNotes;}
@@ -428,6 +433,48 @@ export default {
   , getDbServerTreebanksApi: () => {return dbApi + treebanks;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
   , getDbServerWordAnalysisApi: () => {return dbApi + wordAnalysis;}
+  , getGenericExistsResult: (
+      restServer,
+      username
+      , password
+      , library
+      , topic
+      , key
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + genericExists
+        , "d=" + encodeURIComponent(library)
+        + "&t=" + encodeURIComponent(topic)
+        + "&k=" + encodeURIComponent(key)
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getGenericSearchResult: (
+      restServer,
+      username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + generic
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getResources: (
       restServer,
       username
@@ -555,7 +602,7 @@ export default {
       restServer,
       username
       , password
-      , parms
+      , id
       , callback
   ) => {
     restGet(
@@ -564,7 +611,8 @@ export default {
         , password
         , dbApi
         + tables
-        , parms
+        + id
+        , undefined
         , function (result) {
           callback(result);
         }
@@ -796,6 +844,25 @@ export default {
         , password
         , path
         , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , restGetSuggestions: (
+      restServer
+      , username
+      , password
+      , library
+      , callback
+  ) => {
+    let path = dbApi + docs + "/suggestions";
+    return restGet(
+        restServer
+        , username
+        , password
+        , path
+        , "d=" + encodeURIComponent(library)
         , function (result) {
           callback(result);
         }

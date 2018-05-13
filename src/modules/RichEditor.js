@@ -22,6 +22,14 @@ class RichEditor extends React.Component {
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
     const editorState = EditorState.createWithContent(contentState);
 
+    let mention = undefined;
+    if (props.suggestions) {
+      mention={
+        separator: ' ',
+            trigger: '@',
+            suggestions: this.props.suggestions
+      };
+    }
     this.state = {
       labels: {
         thisClass: Labels.getRichEditorLabels(languageCode)
@@ -34,20 +42,7 @@ class RichEditor extends React.Component {
       , message: Labels.getMessageLabels(languageCode).initial
       , editorState: editorState
       , content: ""
-      , suggestions: [
-        { text: 'Lexicon of the NT Based on Semantic Domains, Louw & Nida'
-          , value: 'LN:1989'
-          , url: 'cite'
-        }
-        ,{ text: 'Biblical Odes', value: 'Biblical Odes', url: 'abr' },
-          ,{ text: 'BANANA', value: 'banana', url: 'banana' },
-        { text: 'CHERRY', value: 'cherry', url: 'cherry' },
-        { text: 'DURIAN', value: 'durian', url: 'durian' },
-        { text: 'EGGFRUIT', value: 'eggfruit', url: 'eggfruit' },
-        { text: 'FIG', value: 'fig', url: 'fig' },
-        { text: 'GRAPEFRUIT', value: 'grapefruit', url: 'grapefruit' },
-        { text: 'HONEYDEW', value: 'honeydew', url: 'honeydew' },
-      ]
+      , mention: mention
     };
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -119,11 +114,7 @@ class RichEditor extends React.Component {
                   ]
                 }
               }}
-              mention={{
-                separator: ' ',
-                trigger: '@',
-                suggestions: this.state.suggestions
-              }}
+              mention={this.state.mention}
           />
     )
   }
@@ -133,6 +124,7 @@ RichEditor.propTypes = {
   session: PropTypes.object.isRequired
   , handleEditorChange: PropTypes.func.isRequired
   , content: PropTypes.string
+  , suggestions: PropTypes.array
 };
 
 // set default values for props here

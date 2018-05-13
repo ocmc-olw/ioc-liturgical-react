@@ -20,6 +20,7 @@ class Dropdowns {
     , liturgicalBooksDropdown
     , noteTypesDropdown
     , noteTypesBilDropdown
+    , schemaEditorDropdown
     ) {
     this.liturgicalBooksDropdown = (liturgicalBooksDropdown ? liturgicalBooksDropdown : []);
     this.biblicalBooksDropdown = (biblicalBooksDropdown ? biblicalBooksDropdown : []);
@@ -37,6 +38,7 @@ class Dropdowns {
     this.templateWhenDayOfSeasonCasesDropdown = (templateWhenDayOfSeasonCasesDropdown ? templateWhenDayOfSeasonCasesDropdown : []);
     this.templateWhenModeOfWeekCasesDropdown = (templateWhenModeOfWeekCasesDropdown ? templateWhenModeOfWeekCasesDropdown : []);
     this.templateWhenMonthNameCasesDropdown = (templateWhenMonthNameCasesDropdown ? templateWhenMonthNameCasesDropdown : []);
+    this.schemaEditorDropdown = (schemaEditorDropdown ? schemaEditorDropdown : []);
   };
 }
 export default Dropdowns;

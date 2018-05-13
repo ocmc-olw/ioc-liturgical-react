@@ -51,8 +51,7 @@ import {
   , SearchNotes
   , SearchOntology
   , SearchTemplates
-  , SearchAbbreviations
-  , SearchBibliography
+  , SearchGeneric
   , SearchText
   , SearchTextNotes
   , SearchTreebanks
@@ -807,6 +806,7 @@ class Demo extends React.Component {
         , forms.liturgicalBooksDropdown
         , forms.noteTypesDropdown
         , forms.noteTypesBilDropdown
+        , forms.schemaEditorFormsDropdown
   );
     session.dropdowns = dropdowns;
     console.log(session);
@@ -815,7 +815,7 @@ class Demo extends React.Component {
       , formsLoaded: true
       , forms: forms.data
     });
-  }
+  };
 
   handleAgesIndexCallback = (response) => {
     if (response && response.data && response.data.values) {
@@ -827,7 +827,7 @@ class Demo extends React.Component {
         });
       }
     }
-  }
+  };
 
   handleSearchCallback(id, value) {
     if (id && id.length > 0) {
@@ -1439,38 +1439,22 @@ class Demo extends React.Component {
                       codeText={searchCallbackSample}
                   />
                 </Panel>
-                <Panel header="Search Abbreviations" eventKey="searchNotes">
+                <Panel header="Search Generic" eventKey="searchGeneric
+                ">
                   {(this.state.authenticated && this.state.session.userInfo) ?
                       <div>
-                        <p>Use the Search Abbreviation Component to search your personal abbreviations used when writing notes.</p>
-                        <SearchAbbreviations
+                        <p>Use the Search Generic Component to search a limited variety of types of records.</p>
+                        <SearchGeneric
                             session={this.state.session}
                             callback={this.handleSearchNotesCallback}
                             editor={true}
-                            initialType={"NoteUser"}
                             fixedType={false}
                         />
                       </div>
                       :
                       <p>You won't see the example, below, unless you first login using the Login example above.</p>
                   }
-                </Panel> {/* Search Abbreviations */}
-                <Panel header="Search Bibliography" eventKey="searchNotes">
-                  {(this.state.authenticated && this.state.session.userInfo) ?
-                      <div>
-                        <p>Use the Search Abbreviation Component to search your personal bibliography used when writing notes.</p>
-                        <SearchBibliography
-                            session={this.state.session}
-                            callback={this.handleSearchNotesCallback}
-                            editor={true}
-                            initialType={"NoteUser"}
-                            fixedType={false}
-                        />
-                      </div>
-                      :
-                      <p>You won't see the example, below, unless you first login using the Login example above.</p>
-                  }
-                </Panel> {/* Search Abbreviations */}
+                </Panel> {/* Search Generic */}
               </Accordion>
             </Panel> {/* Search */}
             <Panel header="Liturgical Day Properties" eventKey="ldp">
@@ -1686,7 +1670,7 @@ class Demo extends React.Component {
                         session={this.state.session}
                         textId={"gr_gr_cog~he.h.m2~VythouAnekalypse.text"}
                         onEditorChange={this.handleTextNoteContentChange }
-                    />
+                  />
                   </div>
                   :
                   <p>You must log in first in order to see and use this.</p>

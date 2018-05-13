@@ -779,6 +779,33 @@ span.App {
     border-top: 1px solid #eee;
     background:  lightblue !important;
 }
-.rdw-mention-link {
+a.rdw-mention-link {
     cursor: pointer;
+}
+.App-Add-Button {
+    margins: 0px !important;
+    padding: 0px !important;
+    position: relative !important;
+    top: 25px;
+}
+.App-Add-Library-Selector {
+    padding: 0px !important;
+    margins: 0px !important;
+    position: relative !important;
+    right: 0px;
+}
+.App-Add-Type-Selector {
+    padding: 0px !important;
+    margins: 0px !important;
+    position: relative !important;
+    right: 0px;
+}
+.App-Add-Key {
+    padding: 0px !important;
+    margins: 0px !important;
+    position: relative !important;
+    top: 20px;
+}
+.App-BibTex-Notice {
+    padding-top: 15px;
 }

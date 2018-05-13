@@ -21,8 +21,7 @@ import NewEntry from './NewEntry';
 import NotesLister from './NotesLister';
 import ParaColTextEditor from './ParaColTextEditor';
 import ParaRowTextEditor from './ParaRowTextEditor';
-import SearchAbbreviations from './SearchAbbreviations';
-import SearchBibliography from './SearchBibliography';
+import SearchGeneric from './SearchGeneric';
 import SearchNotes from './SearchNotes';
 import SearchTextNotes from './SearchTextNotes';
 import SearchOntology from './SearchOntology';
@@ -71,8 +70,7 @@ export {
   , NotesLister
   , ParaColTextEditor
   , ParaRowTextEditor
-  , SearchAbbreviations
-  , SearchBibliography
+  , SearchGeneric
   , SearchNotes
   , SearchTextNotes
   , SearchOntology

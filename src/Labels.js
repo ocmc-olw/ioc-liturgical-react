@@ -8,6 +8,7 @@ const   labels = {
   en: {
     button: {
       cancel: "Cancel"
+      , checkId: "Check the ID"
       , close: "Close"
       , createFiles: "Create Files"
       , downloadAsPdf: "Download as PDF"
@@ -20,42 +21,13 @@ const   labels = {
       , submit: "Submit"
       , update: "Update"
     }
-    , SearchAbbreviations: {
-      title: "Search, create or edit abbreviations."
+    , SearchGeneric: {
+      title: "Search, create or edit Records using the Schema Editor"
+      , instructions: "The Schema Editor provides a usable means to create and edit some types of records.  It is not a beautiful interface, but it gets the job done! You can use for Abbreviations, Bibliography Entries, and Ontology Entities."
       , prompt: "enter a word or phrase"
       , clickTheButton: "Click the button below to submit your search criteria..."
-      , propertyIs: "Where the property is..."
-      , propertyTextIs: "and has this text..."
-      , matcherIs: "that matches..."
-      , matchesAtTheStart: "at the beginning"
-      , matchesAtTheEnd: "at the end"
-      , matchesAnywhere: "anywhere"
-      , matchesRegEx: "as a regular expression"
-      , msg1: "Important messages will appear here..."
-      , msg2: "searching..."
-      , msg3: "Found"
-      , msg4: "Abbreviations"
-      , msg5: "You can use the box(es) below to filter the results."
-      , msg6: "To edit a link, click the radio button of the row you are interested in."
-      , pageTitle: "Add, Find, Edit Abbreviations"
-      , resultLabel: "Search Result"
-      , close: "Close"
-      , has: "and has"
-      , tags: "of the these tags"
-      , typeAll: "all"
-      , tagsAny: "any"
-      , creating: "Creating..."
-      , created: "Created"
-      , submit: "Submit"
-      , submitting: "Submitting..."
-      , exists: "already exists..."
-      , textPrompt: "enter text to search for here"
-    }
-    , SearchBibliography: {
-      title: "Search, create or edit Bibliographic Entries."
-      , prompt: "enter a word or phrase"
-      , clickTheButton: "Click the button below to submit your search criteria..."
-      , findWhereTypeIs: "Find where the note type is..."
+      , findWhereTypeIs: "Find where the type is..."
+      , domainIs: "and the domain is..."
       , propertyIs: "and the property is..."
       , propertyTextIs: "and has this text..."
       , matcherIs: "that matches..."
@@ -66,10 +38,10 @@ const   labels = {
       , msg1: "Important messages will appear here..."
       , msg2: "searching..."
       , msg3: "Found"
-      , msg4: "Abbreviations"
+      , msg4: "Records"
       , msg5: "You can use the box(es) below to filter the results."
       , msg6: "To edit a link, click the radio button of the row you are interested in."
-      , pageTitle: "Add, Find, Edit Abbreviations"
+      , pageTitle: "Add, Find, Edit Using the Schema Editor"
       , resultLabel: "Search Result"
       , close: "Close"
       , has: "and has"
@@ -195,6 +167,8 @@ const   labels = {
       , headerTopic: "Topic"
       , headerType: "Type"
       , headerValue: "Value"
+      , headerTitle: "Title"
+      , headerAuthor: "Auth/Ed"
     }
     , linkSearchResultsTable: {
       filterPrompt: "type here to filter search results..."
@@ -832,6 +806,17 @@ const   labels = {
       panelTitle: "Links for "
       , msg1: ""
     }
+    , GenericNewEntryForm: {
+      title: "Create a New Record"
+      , instructions: "Records in the database are stored with a unique identifier (ID) that is a library~topic~key. The combination of library~topic~key must be unique in the database. There are different types of records. The fields you can use depend on the type of record you select."
+      , selectSchemaType: "Select the type of record you want to add..."
+      , selectLibrary: "The list below only shows libraries for which you are authorized. Select the library to add the record to..."
+      , enterKey: "Enter the key you want to use for the record..."
+      , formLengthWarning: "Some types of records have a lot of fields.  The Submit button to save your record is at the bottom of the form.  Fields that are required are marked with an asterisk (*)."
+      , bibTex: "This type of record is for a Bibliography.  When OLW generates a PDF, it uses the citations and bibliographies from the package BibTex."
+      , bibTexLink: "Click this to view BibTex"
+      , exists: "A record with this ID already exists..."
+    }
     , NewEntryForm: {
       title: "New Entry Form"
     }
@@ -909,6 +894,7 @@ const   labels = {
       , readOnly: "You do can view this, but not edit it."
       , ok: "OK"
       , preparingPdf: "Preparing the PDF"
+      , notAuthorized: "You are not authorized"
     }
     , grammarTerms: {
       case: {
@@ -1058,6 +1044,7 @@ const   labels = {
     , el: {
     button: {
       cancel: "Ματαίωσε"
+      , checkId: "Ελέγξτε το αναγνωριστικό"
       , close: "Κλείστε"
       , createFiles: "Δημιουργία αρχείων"
       , downloadAsPdf: "Διαβίβαζε ως PDF"
@@ -1070,42 +1057,13 @@ const   labels = {
       , submit: "Να Στέιλει"
       , update: "Να Ανανεώσει"
     }
-    , SearchAbbreviations: {
-      title: "Search, create or edit abbreviations."
+    , SearchGeneric: {
+      title: "Search, create or edit Records using the schema editor."
+      , instructions: "The Schema Editor provides a usable means to create and edit some types of records.  It is not a beautiful interface, but it gets the job done! You can use for Abbreviations, Bibliography Entries, and Ontology Entities."
       , prompt: "enter a word or phrase"
       , clickTheButton: "Click the button below to submit your search criteria..."
-      , propertyIs: "Where the property is..."
-      , propertyTextIs: "and has this text..."
-      , matcherIs: "that matches..."
-      , matchesAtTheStart: "at the beginning"
-      , matchesAtTheEnd: "at the end"
-      , matchesAnywhere: "anywhere"
-      , matchesRegEx: "as a regular expression"
-      , msg1: "Important messages will appear here..."
-      , msg2: "searching..."
-      , msg3: "Found"
-      , msg4: "Abbreviations"
-      , msg5: "You can use the box(es) below to filter the results."
-      , msg6: "To edit a link, click the radio button of the row you are interested in."
-      , pageTitle: "Add, Find, Edit Abbreviations"
-      , resultLabel: "Search Result"
-      , close: "Close"
-      , has: "and has"
-      , tags: "of the these tags"
-      , typeAll: "all"
-      , tagsAny: "any"
-      , creating: "Creating..."
-      , created: "Created"
-      , submit: "Submit"
-      , submitting: "Submitting..."
-      , exists: "already exists..."
-      , textPrompt: "enter text to search for here"
-    }
-    , SearchBibliography: {
-      title: "Search, create or edit Bibliographic Entries."
-      , prompt: "enter a word or phrase"
-      , clickTheButton: "Click the button below to submit your search criteria..."
-      , findWhereTypeIs: "Find where the note type is..."
+      , findWhereTypeIs: "Find where the type is..."
+      , domainIs: "and the domain is..."
       , propertyIs: "and the property is..."
       , propertyTextIs: "and has this text..."
       , matcherIs: "that matches..."
@@ -1116,10 +1074,10 @@ const   labels = {
       , msg1: "Important messages will appear here..."
       , msg2: "searching..."
       , msg3: "Found"
-      , msg4: "Abbreviations"
+      , msg4: "Records"
       , msg5: "You can use the box(es) below to filter the results."
       , msg6: "To edit a link, click the radio button of the row you are interested in."
-      , pageTitle: "Add, Find, Edit Abbreviations"
+      , pageTitle: "Add, Find, Edit Records Using the Schema Editor"
       , resultLabel: "Search Result"
       , close: "Close"
       , has: "and has"
@@ -1227,6 +1185,7 @@ const   labels = {
     }
     , resultsTable: {
       filterPrompt: "πληκτρολογήστε εδώ για να φιλτράρετε τα αποτελέσματα αναζήτησης..."
+      , headerAuthor: "Συγγραφέας του βιβλίου."
       , headerComments: "Σχόλια"
       , headerDate: "Ημερομηνία"
       , headerDesc: "Περιγραφή"
@@ -1241,6 +1200,7 @@ const   labels = {
       , headerScope: "Θέμα"
       , headerTags: "Ετικέτες"
       , headerText: "Κείμενο"
+      , headerTitle: "Τίτλος"
       , headerTo: "Αναφέρεται Σε"
       , headerTopic: "Θέμα"
       , headerType: "Τύπος"
@@ -1858,6 +1818,17 @@ const   labels = {
       , close: "Close"
       , includePersonalNotes: "Include personal notes?"
     }
+    , GenericNewEntryForm: {
+      title: "Create a New Record"
+      , instructions: "Records in the database are stored with a unique identifier (ID) that is a library~topic~key. The combination of library~topic~key must be unique in the database. There are different types of records. The fields you can use depend on the type of record you select."
+      , selectSchemaType: "Select the type of record you want to add..."
+      , selectLibrary: "The list below only shows libraries for which you are authorized. Select the library to add the record to..."
+      , enterKey: "Enter the key you want to use for the record..."
+      , formLengthWarning: "Some types of records have a lot of fields.  The Submit button to save your record is at the bottom of the form. Fields that are required are marked with an asterisk (*)."
+      , bibTex: "This type of record is for a Bibliography.  When OLW generates a PDF, it uses the citations and bibliographies from the package BibTex."
+      , bibTexLink: "Click this to view BibTex"
+      , exists: "Ένα αρχείο υπάρχει ήδη με αυτό το αναγνωριστικό...."
+    }
     , NewEntryForm: {
       title: "New Entry Form"
     }
@@ -1952,6 +1923,7 @@ const   labels = {
       , readOnly: "Μπορείτε να το δείτε αλλά να μην το επεξεργαστείτε"
       , ok: "Εντάξει"
       , preparingPdf: "Preparing the PDF"
+      , notAuthorized: "Δεν είστε εξουσιοδοτημένοι"
     }
     , grammarTerms: {
       case: {
@@ -2143,6 +2115,7 @@ module.exports = {
   , getBibleRefSelectorLabels: (code) => { return labels[code].BibleRefSelector;}
   , getFormattedTextNoteLabels: (code) => { return labels[code].FormattedTextNote;}
   , getOntologyRefSelectorLabels: (code) => { return labels[code].OntologyRefSelector;}
+  , getGenericNewEntryFormLabels: (code) => { return labels[code].GenericNewEntryForm;}
   , getNewEntryFormLabels: (code) => { return labels[code].NewEntryForm;}
   , getParaColTextEditorLabels: (code) => { return labels[code].ParaColTextEditor;}
   , getModalAgesServiceSelectorLabels: (code) => { return labels[code].ModalAgesServiceSelector;}
@@ -2154,8 +2127,7 @@ module.exports = {
   , getPageLoginLabels: (code) => { return labels[code].pageLogin;}
   , getRichEditorLabels: (code) => { return labels[code].RichEditor;}
   , getSchemaBasedAddButtonLabels: (code) => { return labels[code].schemaBasedAddButton;}
-  , getSearchAbbreviationLabels: (code) => { return labels[code].SearchAbbreviations;}
-  , getSearchBibliographyLabels: (code) => { return labels[code].SearchBibliography;}
+  , getSearchGenericLabels: (code) => { return labels[code].SearchGeneric;}
   , getSearchLabels: (code) => { return labels[code].search;}
   , getSearchLinksLabels: (code) => { return labels[code].searchLinks;}
   , getSearchNotesLabels: (code) => { return labels[code].searchNotes;}

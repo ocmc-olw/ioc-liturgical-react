@@ -25,18 +25,18 @@ class NewEntryForm extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: Labels.getMessageLabels(this.props.session.languageCode).initial
       , formData: this.props.formData
-    }
+    };
 
     this.handleStateChange = this.handleStateChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     // make any initial function calls here...
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
@@ -52,12 +52,12 @@ class NewEntryForm extends React.Component {
         }
       }, function () { return this.handleStateChange("place holder")});
     }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function if needed
-  }
+  };
 
   onSubmit = ({formData}) => {
     this.setState({

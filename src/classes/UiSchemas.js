@@ -22,7 +22,7 @@ class UiSchemas {
 
   getFormsDropdown = () => {
     return this.formsDropdown;
-  }
+  };
 
   /**
    * Get the schema whose id matches the parameter
@@ -31,7 +31,7 @@ class UiSchemas {
    */
   getSchema = (id) => {
     return this.formsSchemas[id].schema;
-  }
+  };
 
   /**
    * Get the uiSchema whose id matches the parameter
@@ -40,7 +40,7 @@ class UiSchemas {
    */
   getUiSchema = (id) => {
     return this.formsSchemas[id].uiSchema;
-  }
+  };
 
   /**
    * Get the formsSchema whose id matches the parameter
@@ -49,7 +49,7 @@ class UiSchemas {
    */
   getSchema = (id) => {
     return this.formsSchemas[id].schema;
-  }
+  };
 
   /**
    * Get the form whose id matches the parameter
@@ -58,7 +58,7 @@ class UiSchemas {
    */
   getForm = (id) => {
     return this.forms[id];
-  }
+  };
 
   /**
    * Get the HTTP GET path for the form whose id matches the parameter
@@ -67,7 +67,7 @@ class UiSchemas {
    */
   getHttpGetPathForSchema = (id) => {
     return this.formsSchemas[id].paths.get;
-  }
+  };;
   /**
    * Get the HTTP POST path for the form whose id matches the parameter
    * @param id
@@ -75,7 +75,7 @@ class UiSchemas {
    */
   getHttpPostPathForSchema = (id) => {
     return this.formsSchemas[id].paths.post;
-  }
+  };
   /**
    * Get the HTTP PUT path for the form whose id matches the parameter
    * @param id
@@ -94,7 +94,7 @@ class UiSchemas {
       console.log(`UiSchemas.getHttpPutPathForSchema.schemaId ${schemaId} not found`);
       console.table(this.formsSchemas);
     }
-  }
+  };
 
   getPropsForSchema = (id, exclusions) => {
     var keys = [];
@@ -106,7 +106,7 @@ class UiSchemas {
       }
     }
     return keys;
-  }
+  };
 
   /**
    * Uses the supplied ID to convert it to its
@@ -124,7 +124,7 @@ class UiSchemas {
       name = name + ":1.1";
     }
     return name;
-  }
+  };
 
   /**
    * Uses the supplied ID to convert it to its
