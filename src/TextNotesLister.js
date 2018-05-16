@@ -41,6 +41,8 @@ export class TextNotesLister extends React.Component {
     this.setTheState = this.setTheState.bind(this);
     this.showRowComparison = this.showRowComparison.bind(this);
     this.verifyTextId = this.verifyTextId.bind(this);
+    this.createNotesDropdown = this.createNotesDropdown.bind(this);
+    this.compareNotes = this.compareNotes.bind(this);
   }
 
   componentWillMount = () => {
@@ -73,6 +75,10 @@ export class TextNotesLister extends React.Component {
           , selectMessage: theSearchLabels.msg6
           , messageIcon: get(this.state, "messageIcon", "")
           , message: get(this.state,"message", "")
+          , rowSelectMessage: get(this.state,"rowSelectMessage", "")
+          , rowSelectMessageIcon: get(this.state, "rowSelectMessageIcon", "")
+          , showRowSelectMessage: get(this.state, "showRowSelectMessage", false)
+          , messages: Labels.getMessageLabels(props.session.languageCode)
           , matcherTypes: [
             {label: theSearchLabels.matchesAnywhere, value: "c"}
             , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
@@ -138,8 +144,33 @@ export class TextNotesLister extends React.Component {
           , idColumnSize: "80px"
           , enableAdd: get(this.state, "enableAdd", false)
           , data: get(this.state,"data",[])
+          , notesDropdown: get(this.state,"notesDropdown",[])
         }
     )
+  };
+
+  compareNotes = (a,b) => {
+    if (a.label < b.label)
+      return -1;
+    if (a.label > b.label)
+      return 1;
+    return 0
+  };
+
+  createNotesDropdown = () => {
+    let notesDropdown = this.state.data.values.map(function(a) {
+      let label = a.type;
+      label += ": ";
+      label += a.liturgicalScope;
+      label += " ";
+      label += a.liturgicalLemma;
+      label += " ";
+      label += a.value.substring(0, 20);
+      return {label: label, value: a.id};
+    });
+    notesDropdown.sort(this.compareNotes);
+    this.setState({notesDropdown: notesDropdown});
+
   };
 
   handleCancelRequest() {
@@ -190,17 +221,36 @@ export class TextNotesLister extends React.Component {
   };
 
   handleRowSelect = (row, isSelected, e) => {
-    this.setState({
-      selectedId: row["id"]
-      , selectedLibrary: row["library"]
-      , selectedTopic: row["topic"]
-      , selectedKey: row["key"]
-      , title: row["id"]
-      , selectedText: row["text"]
-      , showIdPartSelector: true
-      , showModalEditor: true
-    });
-  }
+    let rowSelectMessage = this.state.messages.ok;
+    let rowSelectMessageIcon = this.messageIcons.info;
+    if (this.props.session.userInfo.isAuthorFor(row["library"])) {
+      this.setState({
+        selectedId: row["id"]
+        , selectedLibrary: row["library"]
+        , selectedTopic: row["topic"]
+        , selectedKey: row["key"]
+        , title: row["id"]
+        , selectedText: row["text"]
+        , showIdPartSelector: true
+        , showModalEditor: true
+        , rowSelectMessage: rowSelectMessage
+        , rowSelectMessageIcon: rowSelectMessageIcon
+        , showRowSelectMessage: false
+      });
+    } else {
+      rowSelectMessage =
+          this.state.messages.readOnly
+          + " ( "
+          + row["library"]
+          + ")";
+      rowSelectMessageIcon = this.messageIcons.error;
+      this.setState({
+        rowSelectMessage: rowSelectMessage
+        , rowSelectMessageIcon: rowSelectMessageIcon
+        , showRowSelectMessage: true
+      });
+    }
+  };
 
   showRowComparison = (id) => {
       this.setState({
@@ -234,6 +284,8 @@ export class TextNotesLister extends React.Component {
             noteIdTopic={this.state.selectedTopic}
             noteIdKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
+            notesList={this.state.data.values}
+            canUpdate={this.state.canUpdateNote}
         />
     )
   };
@@ -325,7 +377,7 @@ export class TextNotesLister extends React.Component {
                 , selectedLibrary: ""
                 , selectedTopic: this.props.topicId
                 , selectedText: ""
-              }
+              }, this.createNotesDropdown
           );
         })
         .catch((error) => {
@@ -422,6 +474,11 @@ export class TextNotesLister extends React.Component {
           {this.state.showSearchResults &&
           <div>
             {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
+          </div>
+          }
+          {this.state.showRowSelectMessage &&
+          <div>
+            <FontAwesome name={this.state.rowSelectMessageIcon}/> {this.state.rowSelectMessage}
           </div>
           }
           {this.state.showModalEditor && this.getModalEditor()}

@@ -223,7 +223,7 @@ export class SearchGeneric extends React.Component {
           }
           ,
           selectRow: {
-            mode: 'radio' // or checkbox
+            mode: 'checkbox' // radio vs. checkbox
             , hideSelectColumn: false
             , clickToSelect: false
             , onSelect: this.handleRowSelect
@@ -735,6 +735,7 @@ export class SearchGeneric extends React.Component {
             searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
             striped
             hover
+            deleteRow={true}
             pagination
             options={ this.state.options }
             selectRow={ this.state.selectRow }

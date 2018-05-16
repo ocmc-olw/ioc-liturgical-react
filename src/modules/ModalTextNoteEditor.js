@@ -141,6 +141,7 @@ export class ModalTextNoteEditor extends React.Component {
               onEditorChange={this.handleTextNoteContentChange}
               form={this.state.formData}
               id={"tinymiceeditor" + this.props.noteIdTopic}
+              notesList={this.props.notesList}
           />
           );
     } else {
@@ -199,6 +200,7 @@ ModalTextNoteEditor.propTypes = {
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
   , canUpdate: PropTypes.bool
+  , notesList: PropTypes.array
 };
 ModalTextNoteEditor.defaultProps = {
   canUpdate: true

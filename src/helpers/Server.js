@@ -168,7 +168,6 @@ const restGetPdf = (
 
     axios.get(path, config)
         .then(response => {
-//          var blob = new Blob([response.data], {type: 'application/octet-stream'});
           var blob = new Blob([response.data], {type: 'application/pdf'});
             FileSaver.saveAs(blob, filename);
             result.userMessage = "ok";
@@ -863,6 +862,25 @@ export default {
         , password
         , path
         , "d=" + encodeURIComponent(library)
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , restGetGenerationStatus: (
+      restServer
+      , username
+      , password
+      , fileId
+      , callback
+  ) => {
+    let path = dbApi + docs + "/genstatus";
+    return restGet(
+        restServer
+        , username
+        , password
+        , path
+        , "i=" + encodeURIComponent(fileId)
         , function (result) {
           callback(result);
         }

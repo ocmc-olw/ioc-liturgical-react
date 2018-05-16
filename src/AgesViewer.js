@@ -30,17 +30,18 @@ class AgesViewer extends React.Component {
     this.disableFetchButton = this.disableFetchButton.bind(this);
     this.fetchAgesIndex = this.fetchAgesIndex.bind(this);
     this.fetchData = this.fetchData.bind(this);
-    this.fetchPdf = this.fetchPdf.bind(this);
     this.getAgesTableInfo = this.getAgesTableInfo.bind(this);
     this.getAgesTableRow = this.getAgesTableRow.bind(this);
     this.getFetchingAgesTableRow = this.getFetchingAgesTableRow.bind(this);
     this.getPdfButton = this.getPdfButton.bind(this);
+    this.checkPdfStatus = this.checkPdfStatus.bind(this);
     this.getSelectedService = this.getSelectedService.bind(this);
     this.getServiceSelectorPanel = this.getServiceSelectorPanel.bind(this);
     this.handleFetchAgesIndexCallback = this.handleFetchAgesIndexCallback.bind(this);
     this.handleFetchCallback = this.handleFetchCallback.bind(this);
     this.handleFirstLibraryFallbackSelection = this.handleFirstLibraryFallbackSelection.bind(this);
     this.handleFirstLibrarySelection = this.handleFirstLibrarySelection.bind(this);
+    this.handlePdfStatusCallback = this.handlePdfStatusCallback.bind(this);
     this.handleSecondLibraryFallbackSelection = this.handleSecondLibraryFallbackSelection.bind(this);
     this.handleSecondLibrarySelection = this.handleSecondLibrarySelection.bind(this);
     this.handleServiceSelection = this.handleServiceSelection.bind(this);
@@ -50,7 +51,6 @@ class AgesViewer extends React.Component {
     this.handleTimeout = this.handleTimeout.bind(this);
     this.renderHtml = this.renderHtml.bind(this);
     this.setTable = this.setTable.bind(this);
-    this.setTimer = this.setTimer.bind(this);
     this.showServiceSelector = this.showServiceSelector.bind(this);
   }
 
@@ -147,6 +147,7 @@ class AgesViewer extends React.Component {
           , url: url
           , pdfId: pdfId
           , pdfFilename: pdfFilename
+          , generationStatusMessage: ""
           , serviceDate: serviceDate
           , serviceDow: serviceDow
           , serviceType: serviceType
@@ -199,56 +200,36 @@ class AgesViewer extends React.Component {
     }
   };
 
-  fetchPdf = () => {
-
-    this.setState({fetchingPdf: true});
-
-    let parms =
-        "id=" + encodeURIComponent(this.state.pdfId)
-    ;
-
-    server.restGetPdf(
-        this.props.session.restServer
-        , server.getDbServerAgesPdfApi()
-        , this.props.session.userInfo.username
-        , this.props.session.userInfo.password
-        , parms
-        , this.state.pdfFilename
-    )
-        .then( response => {
-          this.setState(
-              {
-                data: response
-                , fetchingPdf: false
-              }
-          );
-        })
-        .catch( error => {
-          this.setState(
-              {
-                data: {
-                  values:
-                      [
-                        {
-                          "id": ""
-                          , "library": ""
-                          , "topic": ""
-                          , "key": ""
-                          , "value:": ""
-                        }
-                      ]
-                  , userMessage: error.userMessage
-                  , developerMessage: error.developerMessage
-                  , messageIcon: error.messageIcon
-                  , status: error.status
-                  , showSearchResults: false
-                  , resultCount: 0
-                  , fetching: false
-                }
-              })
-        })
-    ;
+  checkPdfStatus = () => {
+    this.setState({
+          fetchingPdf: true
+          , showPdfButton: false
+        },
+        server.restGetGenerationStatus(
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
+            , this.state.pdfId
+            , this.handlePdfStatusCallback
+        )
+    );
   };
+
+  handlePdfStatusCallback = (result) => {
+    console.log(result);
+    let statusMessage = this.state.labels.messages.couldNotGenerate;
+    let showPdfButton = false;
+    if (result.code === 200) {
+      let statusMessage = "";
+      showPdfButton = true;
+    }
+    this.setState({
+      fetchingPdf: false
+      , showPdfButton: showPdfButton
+      , generationStatusMessage: statusMessage
+    });
+  };
+
 
   fetchData = () => {
     let parms =
@@ -430,14 +411,10 @@ class AgesViewer extends React.Component {
     }
   };
 
-  setTimer = () => {
-    window.setTimeout(this.handleTimeout, 15000);
-  };
-
   setTable = () => {
     this.setState({
       renderedTable: this.renderHtml(this.state.topElement)
-    }, this.setTimer);
+    }, this.checkPdfStatus);
   };
 
   renderHtml = (element) => {
@@ -631,7 +608,7 @@ class AgesViewer extends React.Component {
             <Spinner message={this.state.labels.messages.preparingPdf}/>
         );
       } else {
-        return (<span></span>);
+        return (<span>{this.state.generationStatusMessage}</span>);
       }
     }
   };

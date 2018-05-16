@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import RichEditor from './modules/RichEditor';
+import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import 'react-draft-wysiwyg/dist/react-draft-wysiwyg.css';
 import { get, has } from 'lodash';
 import {
@@ -62,6 +63,8 @@ class TextNoteEditor extends React.Component {
     let selectedBiblicalVerse = "";
     let citeBible = "";
 
+    let selectedRow = "";
+
     if (props.form) {
       selectedTypeLabel = props.form.noteType;
       if (props.form.tags) {
@@ -95,14 +98,25 @@ class TextNoteEditor extends React.Component {
           citeVerse = parseInt(biblicalIdParts.verse);
         } catch (err) {
           citeVerse = biblicalIdParts.verse;
-        };
+        }
         citeBible = citeBook + " " + citeChapter + ":" + citeVerse;
       }
       if (props.form.noteType) {
         selectedType = props.form.noteType;
         selectedTypeLabel = this.getLabel(props.form.noteType);
       }
+      if (props.form.followsNoteId) {
+        selectedRow = props.form.followsNoteId;
+      }
     }
+    let notesList = [];
+    if (props.notesList && props.form) {
+      notesList = props.notesList;
+    }
+    notesList = notesList.filter(function(el) {
+      return el.id !== props.form.id;
+    });
+
     this.state = {
       labels: {
         thisClass: thisClassLabels
@@ -114,6 +128,7 @@ class TextNoteEditor extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: initialMessage
+      , notesList: notesList
       , textIdParts: textIdParts
       , form: props.form
       , editor: null
@@ -159,7 +174,6 @@ class TextNoteEditor extends React.Component {
         , statusIcon: "edit"
         , visibilityIcon: "lock"
       }
-      , selectedNoteLibrary: props.session.userInfo.domain
       , buttonSubmitDisabled: true
       , selectedTag: selectedTag
       , tags: tags
@@ -171,6 +185,23 @@ class TextNoteEditor extends React.Component {
             }
         ,
       ]
+      , predecessorNote: ""
+      , options: {
+        sizePerPage: 30
+        , sizePerPageList: [5, 15, 30]
+        , onSizePerPageList: this.onSizePerPageList
+        , hideSizePerPage: true
+        , paginationShowsTotal: true
+      }
+      , selectRow: {
+        mode: 'checkbox' // or radio
+        , hideSelectColumn: false
+        , clickToSelect: false
+        , onSelect: this.handlePredecessorChange
+        , className: "App-row-select"
+        , selected: [selectedRow]
+      }
+      , filter: { type: 'RegexFilter', delay: 100 }
     };
 
     this.createMarkup = this.createMarkup.bind(this);
@@ -187,6 +218,8 @@ class TextNoteEditor extends React.Component {
     this.getFormattedView = this.getFormattedView.bind(this);
     this.getSettingsWell = this.getSettingsWell.bind(this);
     this.getIdsWell = this.getIdsWell.bind(this);
+    this.getNoteOrderingRow = this.getNoteOrderingRow.bind(this);
+    this.getOrderWell = this.getOrderWell.bind(this);
     this.getLabel = this.getLabel.bind(this);
     this.getLiturgicalGreekLibraryRow = this.getLiturgicalGreekLibraryRow.bind(this);
     this.getLiturgicalLemmaRow = this.getLiturgicalLemmaRow.bind(this);
@@ -222,9 +255,11 @@ class TextNoteEditor extends React.Component {
     this.handleNoteLibraryChange = this.handleNoteLibraryChange.bind(this);
     this.handleNoteTypeChange = this.handleNoteTypeChange.bind(this);
     this.handleOntologyRefChange = this.handleOntologyRefChange.bind(this);
+    this.handlePredecessorChange = this.handlePredecessorChange.bind(this);
     this.handleTitleChange = this.handleTitleChange.bind(this);
     this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
     this.mapTagsToObjectList = this.mapTagsToObjectList.bind(this);
+    this.noteFormatter = this.noteFormatter.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.settingsValid = this.settingsValid.bind(this);
     this.submitPost = this.submitPost.bind(this);
@@ -274,6 +309,14 @@ class TextNoteEditor extends React.Component {
         tags.push({value: form.tags[i], label: form.tags[i]});
       }
     }
+    let notesList = [];
+    if (nextProps.notesList && nextProps.form) {
+      notesList = nextProps.notesList;
+    }
+    notesList = notesList.filter(function(el) {
+      return ! el.id === nextProps.form.id;
+    });
+
     this.setState((prevState, props) => {
       return {
         labels: {
@@ -285,12 +328,14 @@ class TextNoteEditor extends React.Component {
         }
         , message: get("message", this.state.message, messages.initial)
         , note: form.valueFormatted
+        , notesList: notesList
         , form: form
         , formIsValid: formIsValid
         , selectedTypeLabel: selectedTypeLabel
         , tags: tags
         , selectedTag: selectedTag
         , selectedType: selectedType
+        , predecessorNote: get(this.state,"predecessorNote", "")
       }
     });
   };
@@ -475,14 +520,6 @@ class TextNoteEditor extends React.Component {
   };
 
   fetchSuggestions = () => {
-    // Server.restGetForLibraryTopic(
-    //     this.props.session.restServer
-    //     , this.props.session.userInfo.username
-    //     , this.props.session.userInfo.password
-    //     , this.props.session.userInfo.domain
-    //     , SuperTypeTopics.Suggestions
-    //     , this.handleFetchSuggestionsCallback
-    // );
     let parms =
         "t=" + encodeURIComponent(this.state.topic)
         + "&l=" + encodeURIComponent(this.state.libraries)
@@ -609,6 +646,7 @@ class TextNoteEditor extends React.Component {
         , suggestAbbreviations: suggestAbr
         , suggestBibliography: suggestBib
         , suggestions: suggestBib
+        , message: this.state.labels.messages.ok
       });
     }
   };
@@ -829,6 +867,7 @@ class TextNoteEditor extends React.Component {
     );
   };
 
+
   handleLiturgicalIdSelection = (row) => {
     let form = this.state.form;
     let id = row["id"];
@@ -979,6 +1018,19 @@ class TextNoteEditor extends React.Component {
     this.setState({form: form}, this.validateForm);
   };
 
+  handlePredecessorChange = ( selection ) => {
+    let form = this.state.form;
+    let predecessorId = selection["id"];
+    form.followsNoteId = predecessorId;
+    let selectRow = this.state.selectRow;
+    selectRow["selected"] = [predecessorId];
+    this.setState({
+      predecessorNote: predecessorId
+      , form: form
+      , selectRow: selectRow
+    });
+  };
+
   getNoteLibraryRow = () => {
     if (
         this.props.session.userInfo.domains.author
@@ -998,6 +1050,88 @@ class TextNoteEditor extends React.Component {
                   changeHandler={this.handleNoteLibraryChange}
                   multiSelect={false}
               />
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App App-no-display"></span>);
+    }
+  };
+
+
+  noteFormatter = (cell, row, formatExtraData) => {
+    return (
+        <FormattedTextNote
+            session={formatExtraData}
+            note={row["valueFormatted"]}
+            type={row["type"]}
+            title={row["title"]}
+            scopeLiturgical={row["liturgicalScope"]}
+            lemmaLiturgical={row["liturgicalLemma"]}
+            scopeBiblical={row["biblicalScope"]}
+            lemmaBiblical={row["biblicalLemma"]}
+        />
+    );
+  };
+
+  getNoteOrderingRow = () => {
+    if (
+        this.props.notesList
+        && this.state.labels.resultsTableLabels
+    ) {
+      return (
+          <Row className="App show-grid  App-Text-Note-Editor-Order-Row">
+            <Col xs={12} md={12}>
+              <BootstrapTable
+                  ref="theOrderTable"
+                  data={this.state.notesList}
+                  exportCSV={ false }
+                  trClassName={"App-data-tr"}
+                  striped
+                  hover
+                  pagination
+                  options={ this.state.options }
+                  selectRow={ this.state.selectRow }
+              >
+                <TableHeaderColumn
+                    isKey
+                    dataField='id'
+                    dataSort={ true }
+                    export={ true }
+                    hidden
+                >ID
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='type'
+                    dataSort={ true }
+                    tdClassname="tdType"
+                    filter={this.state.filter}
+                >{this.state.labels.resultsTableLabels.headerType}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='liturgicalLemma'
+                    dataSort={ true }
+                    tdClassname="tdType"
+                    hidden
+                >{this.state.labels.resultsTableLabels.headerLemma}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='liturgicalScope'
+                    dataSort={ true }
+                    tdClassname="tdType"
+                    hidden
+                >{this.state.labels.resultsTableLabels.headerScope}
+                </TableHeaderColumn>
+                <TableHeaderColumn
+                    dataField='valueFormatted'
+                    dataSort={ true }
+                    width={"85%"}
+                    filter={this.state.filter}
+                    dataFormat={ this.noteFormatter }
+                    formatExtraData={this.props.session}
+                >{this.state.labels.resultsTableLabels.headerNote}
+                </TableHeaderColumn>
+              </BootstrapTable>
             </Col>
           </Row>
       );
@@ -1399,6 +1533,17 @@ class TextNoteEditor extends React.Component {
     );
   };
 
+  getOrderWell = () => {
+    return (
+        <Well>
+          <ControlLabel>{this.state.labels.thisClass.selectPredecessor}:</ControlLabel>
+          <Grid>
+            {this.getNoteOrderingRow()}
+          </Grid>
+        </Well>
+    );
+  };
+
   getSettingsWell = () => {
     return (
         <Well>
@@ -1430,6 +1575,9 @@ class TextNoteEditor extends React.Component {
               </Tab>
               <Tab eventKey={"idsheading"} title={this.state.labels.thisClass.ids}>
                 {this.getIdsWell()}
+              </Tab>
+              <Tab eventKey={"idsorder"} title={this.state.labels.thisClass.order}>
+                {this.getOrderWell()}
               </Tab>
               <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
                 {this.getRevisionsPanel()}
@@ -1514,6 +1662,7 @@ TextNoteEditor.propTypes = {
   , onEditorChange: PropTypes.func.isRequired
   , textId: PropTypes.string.isRequired
   , form: PropTypes.object
+  , notesList: PropTypes.array
 };
 
 // set default values for props here
