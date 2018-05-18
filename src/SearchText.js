@@ -206,13 +206,13 @@ export class Search extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 401) {
-            message = server.getDbServerPath() + " is a protected database.  Please login and try again.";
+            message = Server.getWsServerDbApi() + " is a protected database.  Please login and try again.";
             messageIcon = this.messageIcons.error;
           } else if (error && error.response && error.response.status === 404) {
             message = "error retrieving values for dropdowns";
             messageIcon = this.messageIcons.error;
           } else if (error && error.message && error.message.toLowerCase() === "network error") {
-            message = "The database server " + server.getDbServerPath() + " is not available.";
+            message = "The database server " + Server.getWsServerDbApi() + " is not available.";
             messageIcon = this.messageIcons.error;
           }
           this.setState({data: message, message: message, messageIcon: messageIcon});

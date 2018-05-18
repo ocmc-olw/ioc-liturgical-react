@@ -62,7 +62,8 @@ class FormattedTextNote extends React.Component {
   };
 
   getFormattedDiv = () => {
-    if (this.props.type === "REF_TO_BIBLE") {
+    if (this.props.type === "REF_TO_BIBLE"
+        || this.props.type === "CHECK_YOUR_BIBLE") {
       return (
           <div className="App App-Text-Note-formatted">
               <span className="App App-Text-Note-Header-Scope">

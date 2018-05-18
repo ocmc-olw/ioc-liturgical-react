@@ -977,10 +977,21 @@ path.link {
 }
 
 .rdw-suggestion-dropdown {
-    z-index:-1 !important;
-    position:relative !important;
-    border-top: 1px solid #eee;
-    background:  lightblue !important;
+    border: 1px solid #eee;
+    margin-top: 0.4em;
+    position: absolute;
+    width: 50vw !important;
+    background: #d9edf7 !important;
+    border-radius: 2px;
+    box-shadow: 0px 4px 30px 0px rgba(220,220,220,1);
+    cursor: pointer;
+    padding-top: 8px;
+    padding-bottom: 8px;
+    z-index: -1 !important;
+}
+.rdw-suggestion-option {
+    padding-left: 15px !important;
+    border-bottom-color: #9d9d9d !important;
 }
 a.rdw-mention-link {
     cursor: pointer;

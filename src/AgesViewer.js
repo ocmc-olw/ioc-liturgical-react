@@ -216,7 +216,6 @@ class AgesViewer extends React.Component {
   };
 
   handlePdfStatusCallback = (result) => {
-    console.log(result);
     let statusMessage = this.state.labels.messages.couldNotGenerate;
     let showPdfButton = false;
     if (result.code === 200) {

@@ -6,6 +6,7 @@ import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 //import '../../node_modules/tinymce/skins/lightgray/content.min.css'
 import './css/alwb.css';
 import './css/Demo.css'; // important that you load this as the last css
+import '../../node_modules/draft-js/dist/Draft.css'
 import RestServer from './helpers/restServer'
 
 import React from 'react';

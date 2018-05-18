@@ -36,6 +36,7 @@
     "classnames": "^2.2.5",
     "debug": "^3.1.0",
     "draft-js": "^0.10.5",
+    "draft-js-mention-plugin": "^3.0.4",
     "draftjs-to-html": "^0.8.3",
     "draft-js-counter-plugin": "^2.0.1",
     "file-loader": "^0.10.0",

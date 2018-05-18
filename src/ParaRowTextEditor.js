@@ -11,7 +11,7 @@ import {
   , Tabs
   , Well
 } from 'react-bootstrap';
-
+import { get } from 'lodash';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
@@ -87,7 +87,10 @@ export class ParaRowTextEditor extends React.Component {
             + "~"
             + props.idKey
           , pdfId: ""
+          , includeAdviceNotes: false
           , includePersonalNotes: false
+          , includeGrammar: false
+          , combineNotes: false
           , showDownloadLinks: false
           , preparingDownloads: false
     };
@@ -100,7 +103,10 @@ export class ParaRowTextEditor extends React.Component {
     this.handleDownloadRequest = this.handleDownloadRequest.bind(this);
     this.handleDownloadCallback = this.handleDownloadCallback.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
+    this.handleIncludeAdviceNotesChange = this.handleIncludeAdviceNotesChange.bind(this);
+    this.handleIncludeGrammarChange = this.handleIncludeGrammarChange.bind(this);
     this.handleIncludePersonalNotesChange = this.handleIncludePersonalNotesChange.bind(this);
+    this.handleCombineNotesChange = this.handleCombineNotesChange.bind(this);
     this.handlePropsChange = this.handlePropsChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -124,6 +130,10 @@ export class ParaRowTextEditor extends React.Component {
           , message: Labels.getSearchLabels(props.session.languageCode).msg1
           , greekSourceValue: ""
           , greekSourceId: ""
+          , includeAdviceNotes: get(this.state, "includeAdviceNotes", false)
+          , includeGrammar: get(this.state, "includeGrammar", false)
+          , includePersonalNotes: get(this.state, "includePersonalNotes", false)
+          , combineNotes: get(this.state, "combineNotes", false)
         }
       }, function () { return this.handleStateChange("place holder")});
     }
@@ -241,8 +251,20 @@ export class ParaRowTextEditor extends React.Component {
         });
   }
 
+  handleIncludeAdviceNotesChange = (evt) => {
+    this.setState({ includeAdviceNotes: evt.target.checked });
+  };
+
   handleIncludePersonalNotesChange = (evt) => {
     this.setState({ includePersonalNotes: evt.target.checked });
+  };
+
+  handleIncludeGrammarChange = (evt) => {
+    this.setState({ includeGrammar: evt.target.checked });
+  };
+
+  handleCombineNotesChange = (evt) => {
+    this.setState({ combineNotes: evt.target.checked });
   };
 
   getDownloadLinks = () => {
@@ -288,11 +310,32 @@ export class ParaRowTextEditor extends React.Component {
         + this.props.idKey
     ;
 
-    let ip = "false";
-    if (this.state.includePersonalNotes) {
-      ip = "true";
+
+    let includeAdviceNotes = "false";
+    let includePersonalNotes = "false";
+    let includeGrammar = "false";
+    let combineNotes = "false";
+
+    if (this.state.includeAdviceNotes) {
+      includeAdviceNotes = "true";
     }
-    let parms = "ip=" + encodeURIComponent(ip);
+    if (this.state.includePersonalNotes) {
+      includePersonalNotes = "true";
+    }
+    if (this.state.includeGrammar) {
+      includeGrammar = "true";
+    }
+    if (this.state.combineNotes) {
+      combineNotes = "true";
+    }
+    if (this.state.includePersonalNotes) {
+      includePersonalNotes = "true";
+    }
+    let parms =
+    "ia=" + encodeURIComponent(includeAdviceNotes)
+    + "&ip=" + encodeURIComponent(includePersonalNotes)
+    + "&ig=" + encodeURIComponent(includeGrammar)
+    + "&cn=" + encodeURIComponent(combineNotes);
 
     Server.getTextDownloads(
         this.props.session.restServer
@@ -312,7 +355,6 @@ export class ParaRowTextEditor extends React.Component {
 
     let parms =
         "id=" + encodeURIComponent(id)
-        + "&ip=" + encodeURIComponent(this.state.includePersonalNotes)
     ;
 
     Server.restGetPdf(
@@ -360,9 +402,7 @@ export class ParaRowTextEditor extends React.Component {
   };
 
   handleDownloadCallback = (restCallResult) => {
-    if (restCallResult) {
-    console.log("handleDownloadCallback=");
-    console.log(restCallResult);
+    if (restCallResult && restCallResult.data && restCallResult.data.values) {
       let data = restCallResult.data.values[0];
       let pdfId = data.pdfId;
       let pdfFilename = data.pdfFilename;
@@ -376,6 +416,20 @@ export class ParaRowTextEditor extends React.Component {
           }
       );
     }
+  };
+
+  handlePdfStatusCallback = (result) => {
+    let statusMessage = this.state.labels.messages.couldNotGenerate;
+    let showPdfButton = false;
+    if (result.code === 200) {
+      let statusMessage = "";
+      showPdfButton = true;
+    }
+    this.setState({
+      fetchingPdf: false
+      , showPdfButton: showPdfButton
+      , generationStatusMessage: statusMessage
+    });
   };
 
 
@@ -459,13 +513,36 @@ export class ParaRowTextEditor extends React.Component {
                 this.state.labels.thisClass.downloadPanelTitle}>
                 <Well>
                   <Row  className="App-Info-Row">
+                    <Checkbox
+                        checked={this.state.includePersonalNotes}
+                        onChange={this.handleIncludePersonalNotesChange}
+                        inline={true}
+                    >
+                      {this.state.labels.thisClass.includePersonalNotes}
+                    </Checkbox>
                   <Checkbox
-                      checked={this.includePersonalNotes}
-                      onChange={this.handleIncludePersonalNotesChange}
+                      checked={this.state.includeAdviceNotes}
+                      onChange={this.handleIncludeAdviceNotesChange}
                       inline={true}
                   >
-                    {this.state.labels.thisClass.includePersonalNotes}
+                    {this.state.labels.thisClass.includeAdviceNotes}
                   </Checkbox>
+                  </Row>
+                    <Row  className="App-Info-Row">
+                      <Checkbox
+                          checked={this.state.includeGrammar}
+                          onChange={this.handleIncludeGrammarChange}
+                          inline={true}
+                      >
+                        {this.state.labels.thisClass.includeGrammar}
+                      </Checkbox>
+                    <Checkbox
+                        checked={this.state.combineNotes}
+                        onChange={this.handleCombineNotesChange}
+                        inline={true}
+                    >
+                      {this.state.labels.thisClass.combineNotes}
+                    </Checkbox>
                   </Row>
                   <Row  className="App-Info-Row">
                   <Button
@@ -556,91 +633,6 @@ export class ParaRowTextEditor extends React.Component {
                 </Grid>
               </div>
               }
-          {/*<Accordion>*/}
-            {/*<Panel*/}
-                {/*className="App-biblical-links-panel "*/}
-                {/*header={*/}
-                  {/*this.state.labels.thisClass.grammarPanelTitle*/}
-                {/*}*/}
-                {/*eventKey="grammarPanelTitle"*/}
-                {/*collapsible*/}
-            {/*>*/}
-              {/*<Grammar*/}
-                  {/*session={this.props.session}*/}
-                  {/*idTopic={this.props.idTopic}*/}
-                  {/*idKey={this.props.idKey}*/}
-              {/*/>*/}
-            {/*</Panel>*/}
-            {/*<Panel*/}
-                {/*className="App-biblial-links-panel "*/}
-                {/*header={*/}
-                  {/*this.state.labels.thisClass.biblicalLinksPanelTitle*/}
-                {/*}*/}
-                {/*eventKey="biblicalLinksExplorer"*/}
-                {/*collapsible*/}
-            {/*>*/}
-              {/*<ViewReferences*/}
-                  {/*session={this.props.session}*/}
-                  {/*id={*/}
-                    {/*"gr_gr_cog~"*/}
-                    {/*+ this.props.idTopic*/}
-                    {/*+ "~"*/}
-                    {/*+ this.props.idKey*/}
-                  {/*}*/}
-                  {/*type={"REFERS_TO_BIBLICAL_TEXT"}*/}
-                  {/*value={this.state.greekSourceValue}*/}
-              {/*/>*/}
-            {/*</Panel>*/}
-            {/*<Panel*/}
-                {/*className="App-ontology-links-panel "*/}
-                {/*header={*/}
-                  {/*this.state.labels.thisClass.ontologyLinksPanelTitle*/}
-                {/*}*/}
-                {/*eventKey="linksExplorer"*/}
-                {/*collapsible*/}
-            {/*>*/}
-              {/*<ViewReferences*/}
-                  {/*session={this.props.session}*/}
-                  {/*id={*/}
-                    {/*"gr_gr_cog~"*/}
-                    {/*+ this.props.idTopic*/}
-                    {/*+ "~"*/}
-                    {/*+ this.props.idKey*/}
-                  {/*}*/}
-                  {/*type={"*"}*/}
-                  {/*value={this.state.greekSourceValue}*/}
-              {/*/>*/}
-            {/*</Panel>*/}
-            {/*<Panel*/}
-                {/*className="App-user-notes-textual-panel "*/}
-                {/*header={*/}
-                  {/*this.state.labels.thisClass.textualNotesPanelTitle*/}
-                {/*}*/}
-                {/*eventKey="textnotesExplorer"*/}
-                {/*collapsible*/}
-            {/*>*/}
-              {/*<TextNotesLister*/}
-                  {/*session={this.props.session}*/}
-                  {/*topicId={this.state.currentId}*/}
-                  {/*topicText={this.props.value}*/}
-              {/*/>*/}
-            {/*</Panel>*/}
-            {/*<Panel*/}
-                {/*className="App-user-notes-panel "*/}
-                {/*header={*/}
-                  {/*this.state.labels.thisClass.userNotesPanelTitle*/}
-                {/*}*/}
-                {/*eventKey="usernotesExplorer"*/}
-                {/*collapsible*/}
-            {/*>*/}
-              {/*<NotesLister*/}
-                  {/*session={this.props.session}*/}
-                  {/*type={"NoteUser"}*/}
-                  {/*topicId={this.state.currentId}*/}
-                  {/*topicText={this.props.value}*/}
-              {/*/>*/}
-            {/*</Panel>*/}
-          {/*</Accordion>*/}
         </div>
     );
   }

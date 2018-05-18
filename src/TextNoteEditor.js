@@ -343,7 +343,8 @@ class TextNoteEditor extends React.Component {
   settingsValid = () => {
     let valid = false;
     if (this.state.form.noteType) {
-      if (this.state.form.noteType === "REF_TO_BIBLE") {
+      if (this.state.form.noteType === "REF_TO_BIBLE"
+          || this.state.form.noteType === "CHECK_YOUR_BIBLE") {
         valid = (
             this.state.form.liturgicalScope.length > 0
             && this.state.form.liturgicalLemma.length > 0
@@ -797,7 +798,10 @@ class TextNoteEditor extends React.Component {
   };
 
   getBibleRefRow = () => {
-    if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.form.noteType
+        && (this.state.form.noteType === "REF_TO_BIBLE"
+            || this.state.form.noteType === "CHECK_YOUR_BIBLE"
+        )) {
       return (
           <BibleRefSelector
               session={this.props.session}
@@ -815,7 +819,9 @@ class TextNoteEditor extends React.Component {
   getOntologyRefRow = () => {
     if (this.state.form.noteType
         && this.state.form.noteType.startsWith("REF_TO")
-        && (this.state.form.noteType !== ("REF_TO_BIBLE"))
+        && this.state.form.noteType !== ("REF_TO_BIBLE"
+        && this.state.form.noteType !== "CHECK_YOUR_BIBLE"
+        )
     ) {
       let type = this.getOntologyLabel(this.state.form.noteType);
       return (
@@ -846,7 +852,7 @@ class TextNoteEditor extends React.Component {
       return label.charAt(0) + label.slice(1).toLowerCase();
     } catch (err) {
       return type;
-    };
+    }
   };
 
   getLiturgicalView = () => {
@@ -1148,7 +1154,8 @@ class TextNoteEditor extends React.Component {
 
   getBiblicalTranslationLibraryRow = () => {
     if (this.state.form.noteType
-        && this.state.form.noteType === "REF_TO_BIBLE"
+        && (this.state.form.noteType === "REF_TO_BIBLE"
+          || this.state.form.noteType === "CHECK_YOUR_BIBLE")
         && this.state.biblicalLibraries
     ) {
       return (
@@ -1222,7 +1229,9 @@ class TextNoteEditor extends React.Component {
 
   getBiblicalGreekLibraryRow = () => {
     if (this.state.form.noteType
-        && this.state.form.noteType === "REF_TO_BIBLE") {
+        && (this.state.form.noteType === "REF_TO_BIBLE"
+          || this.state.form.noteType === "CHECK_YOUR_BIBLE"
+        )) {
       if (this.state.biblicalLibraries) {
         return (
             <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
@@ -1285,7 +1294,8 @@ class TextNoteEditor extends React.Component {
   getTitleRow = () => {
     if (this.state.form.noteType
         && this.state.form.noteType.startsWith("REF_TO")
-        && (this.state.form.noteType !== ("REF_TO_BIBLE"))
+        && this.state.form.noteType !== "REF_TO_BIBLE"
+        && this.state.form.noteType !== "CHECK_YOUR_BIBLE"
     ) {
       return (<span className="App App-no-display"></span>);
     } else {
@@ -1310,7 +1320,11 @@ class TextNoteEditor extends React.Component {
   };
 
   getBiblicalScopeRow = () => {
-    if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.form.noteType
+        && (this.state.form.noteType === "REF_TO_BIBLE"
+            || this.state.form.noteType === "CHECK_YOUR_BIBLE"
+        )
+    ) {
       return (
           <Row className="App show-grid  App-Text-Note-Editor-Scope-Biblical-Row">
             <Col xs={2} md={2}>
@@ -1335,10 +1349,11 @@ class TextNoteEditor extends React.Component {
   };
 
   getBiblicalLemmaRow = () => {
-    if (this.state.form.noteType && this.state.form.noteType === "REF_TO_BIBLE") {
+    if (this.state.form.noteType
+        && (this.state.form.noteType === "REF_TO_BIBLE"
+            || this.state.form.noteType === "CHECK_YOUR_BIBLE")
+        ) {
       return (
-
-
           <Row className="App show-grid  App-Text-Note-Editor-Lemma-Row">
             <Col xs={2} md={2}>
               <ControlLabel>{this.state.labels.thisClass.biblicalLemma}:</ControlLabel>
