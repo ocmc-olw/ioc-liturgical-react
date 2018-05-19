@@ -130,7 +130,6 @@ export class ModalCompareDocs extends React.Component {
             + "&m=" + encodeURIComponent(this.state.matcher)
         ;
     let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
-console.log(path);
     axios.get(path, config)
         .then(response => {
           // if one of the values is greek, then make it the selected row

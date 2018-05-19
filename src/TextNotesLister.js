@@ -145,6 +145,7 @@ export class TextNotesLister extends React.Component {
           , enableAdd: get(this.state, "enableAdd", false)
           , data: get(this.state,"data",[])
           , notesDropdown: get(this.state,"notesDropdown",[])
+          , canUpdateNote: get(this.state,"canUpdateNote", false)
         }
     )
   };
@@ -513,20 +514,20 @@ export class TextNotesLister extends React.Component {
                 >{this.state.resultsTableLabels.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
+                    dataField='liturgicalScope'
+                    dataSort={ true }
+                    tdClassname="tdType"
+                    width={"15%"}
+                    filter={this.state.filter}
+                >{this.state.resultsTableLabels.headerScope}
+                </TableHeaderColumn>
+                <TableHeaderColumn
                     dataField='liturgicalLemma'
                     dataSort={ true }
                     tdClassname="tdType"
                     width={"15%"}
                     filter={this.state.filter}
                 >{this.state.resultsTableLabels.headerLemma}
-                </TableHeaderColumn>
-                  <TableHeaderColumn
-                      dataField='liturgicalScope'
-                      dataSort={ true }
-                      tdClassname="tdType"
-                      width={"15%"}
-                      filter={this.state.filter}
-                  >{this.state.resultsTableLabels.headerScope}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='valueFormatted'

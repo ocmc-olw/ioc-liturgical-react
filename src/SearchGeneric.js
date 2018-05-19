@@ -59,7 +59,7 @@ export class SearchGeneric extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.state.searchLabels.msg1
+          message: this.state.labels.search.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
@@ -117,9 +117,6 @@ export class SearchGeneric extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchGenericLabels(props.session.languageCode);
-
-
     /**
      * Below is how we define the node properties to return from a database search.
      * Each of the above SuperTypes needs its corresponding propsToReturn and its own
@@ -165,15 +162,21 @@ export class SearchGeneric extends React.Component {
     ) {
       userDomain = this.props.session.userInfo.domain;
     }
+    let theSearchLabels = Labels.getSearchGenericLabels(props.session.languageCode);
+
+
     return (
         {
-          searchLabels: theSearchLabels
+          labels: {
+            thisClass: Labels.getSearchGenericLabels(this.props.session.languageCode)
+            , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+            , search: theSearchLabels
+          }
           , propertiesToReturn: get(this.state, "propertiesToReturn", propsToReturnForGeneric)
           , propertiesToReturnGeneric: propsToReturnForGeneric
           , propertiesToReturnForBiblio: propsToReturnForBiblio
           , propertiesToReturnForOntology: propsToReturnForOntology
           , docType: "*"
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , matcherTypes: [
@@ -267,7 +270,7 @@ export class SearchGeneric extends React.Component {
                   tags={this.state.dropdowns.typeTags["Bibliography"]}
                   tagOperators={this.state.dropdowns.tagOperators}
                   handleSubmit={this.handleAdvancedSearchSubmit}
-                  labels={this.state.searchLabels}
+                  labels={this.state.labels.search}
               />
           </div>
       );
@@ -285,10 +288,10 @@ export class SearchGeneric extends React.Component {
   getMatcherTypes () {
     return (
         [
-            {label: this.state.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.state.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.state.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.state.searchLabels.matchesRegEx, value: "rx"}
+            {label: this.state.labels.search.matchesAnywhere, value: "c"}
+            , {label: this.state.labels.search.matchesAtTheStart, value: "sw"}
+            , {label: this.state.labels.search.matchesAtTheEnd, value: "ew"}
+            , {label: this.state.labels.search.matchesRegEx, value: "rx"}
             ]
     )
   }
@@ -308,13 +311,13 @@ export class SearchGeneric extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedId}
               disabled
             />
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedValue}
@@ -441,7 +444,7 @@ export class SearchGeneric extends React.Component {
               session={this.props.session}
               restPath={Server.getDbServerDocsApi()}
               onClose={this.handleCloseModalAdd}
-              schemaTypes={this.state.dropdowns.types}
+              title={this.state.labels.thisClass.createTitle}
           />
       )
   };
@@ -489,16 +492,16 @@ export class SearchGeneric extends React.Component {
       let message = "No docs found...";
       if (restCallResult.data.valueCount && restCallResult.data.valueCount > 0) {
         resultCount = restCallResult.data.valueCount;
-        message = this.state.searchLabels.msg3
+        message = this.state.labels.search.msg3
             + " "
             + restCallResult.data.valueCount
             + " "
-            + this.state.searchLabels.msg4
+            + this.state.labels.search.msg4
             + "."
       } else {
-        message = this.state.searchLabels.msg3
+        message = this.state.labels.search.msg3
             + " 0 "
-            + this.state.searchLabels.msg4
+            + this.state.labels.search.msg4
             + "."
       }
       this.setState({
@@ -515,7 +518,7 @@ export class SearchGeneric extends React.Component {
   fetchData(event) {
     if (this.state.docType && this.state.docType !== "*") {
       this.setState({
-        message: this.state.searchLabels.msg2
+        message: this.state.labels.search.msg2
         , messageIcon: this.messageIcons.info
         , showSearchResults: false
       });
@@ -735,7 +738,6 @@ export class SearchGeneric extends React.Component {
             searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
             striped
             hover
-            deleteRow={true}
             pagination
             options={ this.state.options }
             selectRow={ this.state.selectRow }
@@ -793,8 +795,8 @@ export class SearchGeneric extends React.Component {
   render() {
     return (
         <div className="App-page App-search">
-          <h3>{this.state.searchLabels.pageTitle}</h3>
-          <Alert>{this.state.searchLabels.instructions}</Alert>
+          <h3>{this.state.labels.search.pageTitle}</h3>
+          <Alert>{this.state.labels.search.instructions}</Alert>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
@@ -804,12 +806,12 @@ export class SearchGeneric extends React.Component {
             </div>
           </div>
 
-          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4}  {this.getAddButton()}</span>
+          <div>{this.state.labels.search.resultLabel}: <span className="App App-message"><FontAwesome
+              name={this.state.messageIcon}/>{this.state.labels.search.msg3} {this.state.resultCount} {this.state.labels.search.msg4}  {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>
-            {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
+            {this.state.labels.search.msg5} {this.state.labels.search.msg6}
           </div>
           }
           {this.state.showModalAdd && this.getModalNewEntryForm()}

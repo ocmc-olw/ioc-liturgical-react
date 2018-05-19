@@ -75,7 +75,7 @@ export class GenericModalNewEntryForm extends React.Component {
               keyboard={true}
           >
             <Modal.Header closeButton>
-              <Modal.Title>{this.state.title}</Modal.Title>
+              <Modal.Title>{this.props.title}</Modal.Title>
             </Modal.Header>
             <Modal.Body>
               <GenericNewEntryForm
@@ -83,6 +83,7 @@ export class GenericModalNewEntryForm extends React.Component {
                 path={this.props.restPath}
                 onSubmit={this.onSubmit}
                 schemaTypes={this.props.schemaTypes}
+                title={this.props.title}
               />
             </Modal.Body>
             <Modal.Footer>
@@ -100,6 +101,7 @@ GenericModalNewEntryForm.propTypes = {
   , onSubmit: PropTypes.func
   , onClose: PropTypes.func
   , schemaTypes: PropTypes.array
+  , title: PropTypes.string.isRequired
 };
 GenericModalNewEntryForm.defaultProps = {
   canUpdate: true

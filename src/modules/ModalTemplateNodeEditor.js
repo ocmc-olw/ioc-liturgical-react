@@ -127,7 +127,6 @@ export class ModalTemplateNodeEditor extends React.Component {
   };
 
   enableModalSchemaEditor = () => {
-    console.log("Setting showModalSchemaEditor=true");
     this.setState({showModalSchemaEditor: true});
   }
 
@@ -249,7 +248,6 @@ export class ModalTemplateNodeEditor extends React.Component {
         break;
       }
       case ("TEMPLATE"): {
-        console.log("invoke Template schema-based editor");
         this.setState({
           idKey: "head"
           ,showModalSchemaEditor: true
@@ -299,22 +297,21 @@ export class ModalTemplateNodeEditor extends React.Component {
 
   handleSubtitleTextIdChange = () => {
 
-  }
+  };
 
   getSubtitleTextIdLookup = () => {
 
-  }
+  };
 
   setSubtitle = (value) => {
-    console.log(`setSubtitle.value=${value}`);
     let node = this.state.node;
     node.subtitle = value;
     this.setState({node: node, selectedSubtitle: value});
-  }
+  };
 
   handleSubtitleChange = (event) => {
     this.setSubtitle(event.target.value);
-  }
+  };
 
   getSubtitleTextInput = () => {
     // Note: use fall throughs (i.e. no break) for switches that group together

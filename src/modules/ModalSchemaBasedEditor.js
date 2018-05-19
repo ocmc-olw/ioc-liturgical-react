@@ -1,11 +1,12 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
+import {ControlLabel, Button, ButtonGroup, Modal, Well} from 'react-bootstrap';
 import Form from "react-jsonschema-form";
 import FontAwesome from 'react-fontawesome';
 import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
+import DeleteButton from "../helpers/DeleteButton";
 
 /**
  * Display modal content.
@@ -40,6 +41,8 @@ export class ModalSchemaBasedEditor extends React.Component {
     this.open = this.open.bind(this);
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
+    this.getModalFooter = this.getModalFooter.bind(this);
+    this.onDelete = this.onDelete.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   };
 
@@ -165,6 +168,35 @@ export class ModalSchemaBasedEditor extends React.Component {
         });
   };
 
+  onDelete = () => {
+    this.close();
+  };
+
+  getModalFooter = () => {
+    if (this.state.formData && this.state.formData.id) {
+      return (
+          <div>
+            <ButtonGroup role="toolbar">
+            <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+            </ButtonGroup>
+            <ButtonGroup>
+            <DeleteButton
+                session={this.props.session}
+                idLibrary={this.state.formData.library}
+                idTopic={this.state.formData.topic}
+                idKey={this.state.formData.key}
+                onDelete={this.onDelete}
+            />
+            </ButtonGroup>
+          </div>
+      )
+    }  else {
+      return (
+          <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+      );
+    }
+  };
+
   render() {
     return (
         <div>
@@ -216,7 +248,7 @@ export class ModalSchemaBasedEditor extends React.Component {
               </Form>
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+              {this.getModalFooter()}
             </Modal.Footer>
           </Modal>
         </div>

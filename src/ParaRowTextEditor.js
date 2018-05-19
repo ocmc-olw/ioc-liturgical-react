@@ -272,11 +272,13 @@ export class ParaRowTextEditor extends React.Component {
       let url = "data/" + this.state.pdfId;
       return (
           <Row className="App-Download-Row">
-            <Col className="App-Download-Col" xs={6} md={6}>
+            <Col className="App-Download-Col" xs={3} md={3}>
               <a href={url + ".pdf"} target={"_blank"}>{this.state.labels.buttons.downloadAsPdf}</a>
             </Col>
-            <Col className="App-Download-Col" xs={6} md={6}>
+            <Col className="App-Download-Col" xs={4} md={4}>
               <a href={url + ".tex"} target={"_blank"}>{this.state.labels.buttons.downloadAsTex}</a>
+            </Col>
+            <Col className="App-Download-Col" xs={5} md={5}>
             </Col>
           </Row>
       );
@@ -284,11 +286,8 @@ export class ParaRowTextEditor extends React.Component {
       if (this.state.preparingDownloads) {
         return (
             <Row className="App-Download-Row">
-              <Col className="App-Download-Col" xs={6} md={6}>{ }</Col>
-              <Col className="App-Download-Col" xs={6} md={6}>
+              <Col className="App-Download-Col" xs={12} md={12}>
                 <Spinner message={this.state.labels.messages.preparingPdf}/>
-              </Col>
-              <Col className="App-Download-Col" xs={6} md={6}>
               </Col>
             </Row>
         );
@@ -335,7 +334,8 @@ export class ParaRowTextEditor extends React.Component {
     "ia=" + encodeURIComponent(includeAdviceNotes)
     + "&ip=" + encodeURIComponent(includePersonalNotes)
     + "&ig=" + encodeURIComponent(includeGrammar)
-    + "&cn=" + encodeURIComponent(combineNotes);
+    + "&cn=" + encodeURIComponent(combineNotes)
+    + "&al=" + encodeURIComponent(this.props.idLibrary);
 
     Server.getTextDownloads(
         this.props.session.restServer
@@ -513,22 +513,27 @@ export class ParaRowTextEditor extends React.Component {
                 this.state.labels.thisClass.downloadPanelTitle}>
                 <Well>
                   <Row  className="App-Info-Row">
-                    <Checkbox
-                        checked={this.state.includePersonalNotes}
-                        onChange={this.handleIncludePersonalNotesChange}
-                        inline={true}
-                    >
-                      {this.state.labels.thisClass.includePersonalNotes}
-                    </Checkbox>
-                  <Checkbox
-                      checked={this.state.includeAdviceNotes}
-                      onChange={this.handleIncludeAdviceNotesChange}
-                      inline={true}
-                  >
-                    {this.state.labels.thisClass.includeAdviceNotes}
-                  </Checkbox>
+                    <Col className="" xs={6} md={6}>
+                      <Checkbox
+                          checked={this.state.includePersonalNotes}
+                          onChange={this.handleIncludePersonalNotesChange}
+                          inline={true}
+                      >
+                        {this.state.labels.thisClass.includePersonalNotes}
+                      </Checkbox>
+                    </Col>
+                    <Col className="" xs={6} md={6}>
+                      <Checkbox
+                          checked={this.state.includeAdviceNotes}
+                          onChange={this.handleIncludeAdviceNotesChange}
+                          inline={true}
+                      >
+                        {this.state.labels.thisClass.includeAdviceNotes}
+                      </Checkbox>
+                    </Col>
                   </Row>
-                    <Row  className="App-Info-Row">
+                  <Row  className="App-Info-Row">
+                    <Col className="" xs={6} md={6}>
                       <Checkbox
                           checked={this.state.includeGrammar}
                           onChange={this.handleIncludeGrammarChange}
@@ -536,13 +541,16 @@ export class ParaRowTextEditor extends React.Component {
                       >
                         {this.state.labels.thisClass.includeGrammar}
                       </Checkbox>
-                    <Checkbox
-                        checked={this.state.combineNotes}
-                        onChange={this.handleCombineNotesChange}
-                        inline={true}
-                    >
-                      {this.state.labels.thisClass.combineNotes}
-                    </Checkbox>
+                    </Col>
+                    <Col className="" xs={6} md={6}>
+                      <Checkbox
+                          checked={this.state.combineNotes}
+                          onChange={this.handleCombineNotesChange}
+                          inline={true}
+                      >
+                        {this.state.labels.thisClass.combineNotes}
+                      </Checkbox>
+                    </Col>
                   </Row>
                   <Row  className="App-Info-Row">
                   <Button

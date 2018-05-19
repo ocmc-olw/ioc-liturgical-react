@@ -27,10 +27,16 @@ class GenericNewEntryForm extends React.Component {
   constructor(props) {
     super(props);
 
-    let schemaTypes = this.props.session.dropdowns.schemaEditorDropdown;
-    schemaTypes = schemaTypes.filter(function(el) {
-      return ! el.label.startsWith("Any ");
-    });
+    let schemaTypes = [];
+    if (props.schemaTypes) {
+      schemaTypes = props.schemaTypes;
+    } else {
+      if (props.session && props.session.dropdowns) {
+        schemaTypes = props.session.dropdowns.schemaEditorDropdown.filter(function(el) {
+          return ! el.label.startsWith("Any ");
+        });
+      }
+    }
 
     let userDomain = "";
     if (this.props.session
@@ -44,12 +50,20 @@ class GenericNewEntryForm extends React.Component {
 
     let libraries = this.props.session.userInfo.domains.author;
 
+    let thisClassLabels = Labels.getGenericNewEntryFormLabels(this.props.session.languageCode);
+
+    let title = thisClassLabels.title;
+    if (props.title) {
+      title = props.title;
+    }
+
     this.state = {
       labels: {
-        thisClass: Labels.getGenericNewEntryFormLabels(this.props.session.languageCode)
+        thisClass: thisClassLabels
         , button: Labels.getButtonLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
         , search: Labels.getSearchLabels(this.props.session.languageCode)
+        , title: title
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -92,23 +106,32 @@ class GenericNewEntryForm extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
 
-    let schemaTypes = {};
+    let schemaTypes = [];
     if (nextProps.schemaTypes) {
       schemaTypes = nextProps.schemaTypes;
+    } else {
+      if (nextProps.session && nextProps.session.dropdowns) {
+        schemaTypes = nextProps.session.dropdowns.schemaEditorDropdown.filter(function(el) {
+          return ! el.label.startsWith("Any ");
+        });
+      }
     }
-    schemaTypes = schemaTypes.filter(function(el) {
-      return ! el.label.startsWith("Any ");
-    });
 
     let libraries = nextProps.session.userInfo.domains.author;
+    let thisClassLabels = Labels.getGenericNewEntryFormLabels(nextProps.session.languageCode);
+    let title = thisClassLabels.title;
+    if (nextProps.title) {
+      title = nextProps.title;
+    }
 
     this.setState((prevState, props) => {
       return {
         labels: {
-          thisClass: Labels.getGenericNewEntryFormLabels(nextProps.session.languageCode)
+          thisClass: thisClassLabels
           , button: Labels.getButtonLabels(this.props.session.languageCode)
           , messages: Labels.getMessageLabels(nextProps.session.languageCode)
           , search: Labels.getSearchLabels(this.props.session.languageCode)
+          , title: title
         }
         , message: Labels.getMessageLabels(props.session.languageCode).initial
         , schemaTypes: get(prevState, "schemaTypes", schemaTypes)
@@ -292,7 +315,6 @@ class GenericNewEntryForm extends React.Component {
   };
 
   handleNewEntryLibraryChange = (selection) => {
-    console.log(selection);
     if (selection && selection.value) {
       this.setState({
         newEntryLibrary: selection.value
@@ -309,7 +331,7 @@ class GenericNewEntryForm extends React.Component {
   ) {
       return (
           <div>
-          <h3>{this.state.labels.thisClass.title}</h3>
+          <h3>{this.state.labels.title}</h3>
           <ControlLabel>{this.state.labels.thisClass.instructions}</ControlLabel>
             <Well>
               <form>
@@ -416,6 +438,7 @@ GenericNewEntryForm.propTypes = {
   , path: PropTypes.string.isRequired
   , onSubmit: PropTypes.func
   , schemaTypes: PropTypes.array
+  , title: PropTypes.string
 };
 
 // set default values for props here

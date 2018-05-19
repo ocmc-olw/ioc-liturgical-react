@@ -40,6 +40,7 @@ export class ModalTextNoteEditor extends React.Component {
     this.setMessage = this.setMessage.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.onDelete = this.onDelete.bind(this);
     this.handleTextNoteContentChange = this.handleTextNoteContentChange.bind(this);
   };
 
@@ -132,6 +133,10 @@ export class ModalTextNoteEditor extends React.Component {
     }
   };
 
+  onDelete = (result) => {
+    this.close();
+  };
+
   getEditor = () => {
     if (this.state.showForm) {
       return (
@@ -142,6 +147,7 @@ export class ModalTextNoteEditor extends React.Component {
               form={this.state.formData}
               id={"tinymiceeditor" + this.props.noteIdTopic}
               notesList={this.props.notesList}
+              deleteCallback={this.onDelete}
           />
           );
     } else {

@@ -232,6 +232,53 @@ const restGetUserDocs = (
   })
 };
 
+const restDelete = (
+    restServer
+    , username
+    , password
+    , parms
+    , callback
+) => {
+
+  let config = {
+    auth: {
+      username: username
+      , password: password
+    }
+  };
+
+  let path = restServer
+      + dbApi
+      + "/delete"
+  ;
+
+    path += "?";
+    path += parms;
+
+  let result = {
+    data: {}
+    , userMessage: "OK"
+    , developerMessage: "OK"
+    , messageIcon: messageIcons.info
+    , status: 200
+  };
+
+  axios.delete(path, config)
+      .then(response => {
+        result.userMessage = response.data.status.userMessage;
+        result.developerMessage = response.data.status.developerMessage;
+        result.code = response.data.status.code;
+        result.data = response.data;
+        callback(result);
+      })
+      .catch((error) => {
+        result.message = error.message;
+        result.messageIcon = messageIcons.error;
+        result.status = error.status;
+        callback(result);
+      });
+};
+
 const restGet = (
     restServer
     , username
@@ -251,11 +298,10 @@ const restGet = (
   let path = restServer
       + serverPath
   ;
-console.log(`server path`);
-console.log(path);
+  console.log(`server path`);
+  console.log(path);
   if (parms && parms.length > 0) {
     path = path + "?" + parms
-//    path = path + "/?" + parms
   }
 
   let result = {
@@ -280,7 +326,7 @@ console.log(path);
         result.status = error.status;
         callback(result);
       });
-}
+};
 
 const restPost = (
     restServer
@@ -914,6 +960,21 @@ export default {
         , serverPath
         , username
         , password
+    );
+  }
+  , restDelete: (
+      restServer
+      , username
+      , password
+      , parms
+      , callback
+  ) => {
+    return restDelete(
+        restServer
+        , username
+        , password
+        , parms
+        , callback
     );
   }
 }

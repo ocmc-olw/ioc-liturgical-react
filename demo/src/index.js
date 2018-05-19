@@ -643,6 +643,7 @@ class Demo extends React.Component {
     this.handleTextNoteContentChange = this.handleTextNoteContentChange.bind(this);
     this.handleEditableListCallback = this.handleEditableListCallback.bind(this);
     this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
+    this.handleDelete = this.handleDelete.bind(this);
   }
 
   componentWillMount = () => {
@@ -650,6 +651,10 @@ class Demo extends React.Component {
 
   handleWorkflowCallback = (status, visibility, user) => {
     console.log(`status=${status} visibility=${visibility} user=${user}`);
+  };
+
+  handleDelete = () => {
+
   };
 
   handleTextNoteContentChange = (content) => {
@@ -1671,6 +1676,7 @@ class Demo extends React.Component {
                         session={this.state.session}
                         textId={"gr_gr_cog~he.h.m2~VythouAnekalypse.text"}
                         onEditorChange={this.handleTextNoteContentChange }
+                        deleteCallback={this.handleDelete}
                   />
                   </div>
                   :
