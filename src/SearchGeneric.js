@@ -612,7 +612,7 @@ export class SearchGeneric extends React.Component {
               tdClassname="tdDomain"
               width={"10%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerDomain}
+          >{this.state.labels.resultsTableLabels.headerDomain}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='key'
@@ -621,7 +621,7 @@ export class SearchGeneric extends React.Component {
               tdClassname="tdKey"
               width={"10%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerText}
+          >{this.state.labels.resultsTableLabels.headerText}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='type'
@@ -629,7 +629,7 @@ export class SearchGeneric extends React.Component {
               tdClassname="tdType"
               width={"10%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerType}
+          >{this.state.labels.resultsTableLabels.headerType}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='title'
@@ -637,7 +637,7 @@ export class SearchGeneric extends React.Component {
               tdClassname={"tdTitle"}
               width={"35%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerNote}
+          >{this.state.labels.resultsTableLabels.headerNote}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='author'
@@ -645,7 +645,7 @@ export class SearchGeneric extends React.Component {
               tdClassname={"tdAuthor"}
               width={"15%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerNote}
+          >{this.state.labels.resultsTableLabels.headerNote}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='date'
@@ -653,7 +653,7 @@ export class SearchGeneric extends React.Component {
               tdClassname={"tdDate"}
               width={"10%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerNote}
+          >{this.state.labels.resultsTableLabels.headerNote}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='tags'
@@ -661,7 +661,7 @@ export class SearchGeneric extends React.Component {
               dataSort={ true }
               width={"20%"}
               filter={this.state.filter}
-          >{this.state.resultsTableLabels.headerTags}
+          >{this.state.labels.resultsTableLabels.headerTags}
           </TableHeaderColumn>
         </BootstrapTable>
     );
@@ -675,7 +675,7 @@ export class SearchGeneric extends React.Component {
             exportCSV={ false }
             trClassName={"App-data-tr"}
             search
-            searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
+            searchPlaceholder={this.state.labels.resultsTableLabels.filterPrompt}
             striped
             hover
             pagination
@@ -695,33 +695,33 @@ export class SearchGeneric extends React.Component {
               dataSort={ true }
               export={ false }
               width={"10%"}
-          >{this.state.resultsTableLabels.headerDomain}
+          >{this.state.labels.resultsTableLabels.headerDomain}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='topic'
               dataSort={ true }
               export={ false }
               width={"10%"}
-          >{this.state.resultsTableLabels.headerTopic}
+          >{this.state.labels.resultsTableLabels.headerTopic}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='key'
               dataSort={ true }
               tdClassname="tdKey"
               width={"10%"}
-          >{this.state.resultsTableLabels.headerKey}
+          >{this.state.labels.resultsTableLabels.headerKey}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='value'
               dataSort={ true }
               width={"40%"}
-          >{this.state.resultsTableLabels.headerValue}
+          >{this.state.labels.resultsTableLabels.headerValue}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='tags'
               export={ false }
               dataSort={ true }
-          >{this.state.resultsTableLabels.headerTags}
+          >{this.state.labels.resultsTableLabels.headerTags}
           </TableHeaderColumn>
         </BootstrapTable>
     );
@@ -735,7 +735,7 @@ export class SearchGeneric extends React.Component {
             exportCSV={ false }
             trClassName={"App-data-tr"}
             search
-            searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
+            searchPlaceholder={this.state.labels.resultsTableLabels.filterPrompt}
             striped
             hover
             pagination
@@ -756,31 +756,31 @@ export class SearchGeneric extends React.Component {
               export={ false }
               tdClassname="tdTopic"
               width={"10%"}
-          >{this.state.resultsTableLabels.headerTopic}
+          >{this.state.labels.resultsTableLabels.headerTopic}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='key'
               dataSort={ true }
               tdClassname="tdKey"
               width={"10%"}
-          >{this.state.resultsTableLabels.headerKey}
+          >{this.state.labels.resultsTableLabels.headerKey}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='name'
               dataSort={ true }
-          >{this.state.resultsTableLabels.headerName}
+          >{this.state.labels.resultsTableLabels.headerName}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='description'
               export={ false }
               dataSort={ true }
-          >{this.state.resultsTableLabels.headerDesc}
+          >{this.state.labels.resultsTableLabels.headerDesc}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='tags'
               export={ false }
               dataSort={ true }
-          >{this.state.resultsTableLabels.headerTags}
+          >{this.state.labels.resultsTableLabels.headerTags}
           </TableHeaderColumn>
           <TableHeaderColumn
               dataField='_valueSchemaId'
