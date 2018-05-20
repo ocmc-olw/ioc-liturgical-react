@@ -745,16 +745,19 @@ path.link {
     height: auto;
     width: 80%;
     box-sizing: border-box;
+    padding-left: 4px;
 }
 .App-Text-Note-Editor-Lemma {
     height: auto;
     width: 80%;
     box-sizing: border-box;
+    padding-left: 4px;
 }
 .App-Text-Note-Editor-Title {
     height: auto;
     width: 80%;
     box-sizing: border-box;
+    padding-left: 4px;
 }
 .mce-container-body {
     width: 80vw;
@@ -1026,4 +1029,9 @@ a.rdw-mention-link {
     position: relative;
     left: 58px;
     margin-top: 10px;
+}
+
+
+.App-PDF-Title {
+    padding-left: 4px;
 }

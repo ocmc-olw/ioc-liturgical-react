@@ -732,6 +732,8 @@ const   labels = {
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
       , textualNotesPanelTitle: "Textual Notes"
       , userNotesPanelTitle: "Personal Notes"
+      , pdfTitle: "PDF title"
+      , pdfSubTitle: "PDF sub-title"
     }
     , FormattedTextNote: {
 
@@ -1774,6 +1776,8 @@ const   labels = {
       , ontologyLinksPanelTitle: "Ontology References Made By the Greek Text"
       , textualNotesPanelTitle: "Textual Notes"
       , userNotesPanelTitle: "Personal Notes"
+      , pdfTitle: "PDF τίτλος"
+      , pdfSubTitle: "PDF υπότιτλος"
     }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"
@@ -1845,6 +1849,8 @@ const   labels = {
       , msg1: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box for you to enter your translation. When you are ready, click the Submit button to update the database with your changes.  The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
       , msg2: "The text editor has three sections. The first section is a table that shows the Greek text and translations of the text. The second section has a text box with the current value of the translation of the selected library.  However, you do not have authority to edit it. The third section is the Grammar Explorer.  Click on the title of the Grammar Explorer to expand it. Click again on the title to hide it. Close this window by using the X at the upper right, or by clicking the Close button at the bottom, or by pressing the Escape key."
       , close: "Close"
+      , pdfTitle: "PDF title"
+      , pdfSubTitle: "PDF sub-title"
       , includePersonalNotes: "Include personal notes?"
     }
     , GenericNewEntryForm: {

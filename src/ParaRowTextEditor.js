@@ -5,6 +5,7 @@ import {
   , Checkbox
   , Col
   , ControlLabel
+  , FormControl
   , Grid
   , Row
   , Tab
@@ -87,6 +88,8 @@ export class ParaRowTextEditor extends React.Component {
             + "~"
             + props.idKey
           , pdfId: ""
+          , pdfTitle: ""
+          , pdfSubTitle: ""
           , includeAdviceNotes: false
           , includePersonalNotes: false
           , includeGrammar: false
@@ -100,6 +103,7 @@ export class ParaRowTextEditor extends React.Component {
     this.getParaRows = this.getParaRows.bind(this);
     this.getTabs = this.getTabs.bind(this);
     this.getTextArea = this.getTextArea.bind(this);
+    this.getTitleRow = this.getTitleRow.bind(this);
     this.handleDownloadRequest = this.handleDownloadRequest.bind(this);
     this.handleDownloadCallback = this.handleDownloadCallback.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
@@ -107,6 +111,8 @@ export class ParaRowTextEditor extends React.Component {
     this.handleIncludeGrammarChange = this.handleIncludeGrammarChange.bind(this);
     this.handleIncludePersonalNotesChange = this.handleIncludePersonalNotesChange.bind(this);
     this.handleCombineNotesChange = this.handleCombineNotesChange.bind(this);
+    this.handlePdfTitleChange = this.handlePdfTitleChange.bind(this);
+    this.handlePdfSubTitleChange = this.handlePdfSubTitleChange.bind(this);
     this.handlePropsChange = this.handlePropsChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
@@ -210,20 +216,32 @@ export class ParaRowTextEditor extends React.Component {
           let greekSource = response.data.values.find( o => o.id.startsWith("gr_gr_cog"));
           let greekSourceId = "";
           let greekSourceValue = "";
+          let pdfTitle = this.state.pdfTitle;
           if (greekSource) {
             greekSourceId = greekSource.id;
             greekSourceValue = greekSource.value;
+            if (pdfTitle.length === 0) {
+              if (greekSourceValue.length > 31) {
+                let words = greekSourceValue.substring(0,30).split(/[\s,.;]/);
+                if (words.length > 4) {
+                  pdfTitle = words[0] + " " + words[1] + " " + words[2]  + " " + words[3];
+                } else if (words.length > 3) {
+                  pdfTitle = words[0] + " " + words[1] + " " + words[2];
+                } else if (words.length > 2) {
+                  pdfTitle = words[0] + " " + words[1];
+                } else {
+                  pdfTitle = words[0];
+                }
+              } else {
+                pdfTitle = greekSourceValue.substring(0,30);
+              }
+            }
           }
           let values = response.data.values.filter((row) => {
             return row.value.length > 0;
           });
           response.data.values = values;
-          this.setState({
-                data: response.data
-                , greekSourceId: greekSourceId
-                , greekSourceValue: greekSourceValue
-              }
-          );
+
           let message = "No docs found...";
           if (response.data.valueCount && response.data.valueCount > 0) {
             message = this.state.labels.search.msg3
@@ -237,6 +255,10 @@ export class ParaRowTextEditor extends React.Component {
                 message: message
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
+                , data: response.data
+                , greekSourceId: greekSourceId
+                , greekSourceValue: greekSourceValue
+                , pdfTitle: pdfTitle
               }
           );
         })
@@ -252,7 +274,21 @@ export class ParaRowTextEditor extends React.Component {
   }
 
   handleIncludeAdviceNotesChange = (evt) => {
-    this.setState({ includeAdviceNotes: evt.target.checked });
+    let pdfSubTitle = this.state.pdfSubTitle;
+    if (this.state.includeAdviceNotes) {
+      if (pdfSubTitle && pdfSubTitle.startsWith("A Liturgical Translator's")) {
+        pdfSubTitle = "";
+      }
+    } else {
+      if (! pdfSubTitle) {
+        pdfSubTitle = "A Liturgical Translator's Manual";
+      }
+    }
+    this.setState(
+        {
+          includeAdviceNotes: evt.target.checked
+          , pdfSubTitle: pdfSubTitle
+        });
   };
 
   handleIncludePersonalNotesChange = (evt) => {
@@ -335,7 +371,10 @@ export class ParaRowTextEditor extends React.Component {
     + "&ip=" + encodeURIComponent(includePersonalNotes)
     + "&ig=" + encodeURIComponent(includeGrammar)
     + "&cn=" + encodeURIComponent(combineNotes)
-    + "&al=" + encodeURIComponent(this.props.idLibrary);
+    + "&al=" + encodeURIComponent(this.props.idLibrary)
+    + "&mt=" + encodeURIComponent(this.state.pdfTitle)
+    + "&st=" + encodeURIComponent(this.state.pdfSubTitle)
+    ;
 
     Server.getTextDownloads(
         this.props.session.restServer
@@ -475,6 +514,52 @@ export class ParaRowTextEditor extends React.Component {
     }
   };
 
+
+  handlePdfTitleChange = (e) => {
+    this.setState({pdfTitle: e.target.value});
+  };
+
+  handlePdfSubTitleChange = (e) => {
+    this.setState({pdfSubTitle: e.target.value});
+  };
+
+  getTitleRow = () => {
+    return (
+        <div>
+        <Row className="App show-grid App-PDF-Title-Row">
+          <Col xs={3} md={3}>
+            <ControlLabel>{this.state.labels.thisClass.pdfTitle}:</ControlLabel>
+          </Col>
+          <Col xs={9} md={9}>
+            <FormControl
+                id={"fxPdfTitle"}
+                className={"App App-PDF-Title"}
+                type="text"
+                value={this.state.pdfTitle}
+                placeholder={this.state.labels.thisClass.pdfTitle}
+                onChange={this.handlePdfTitleChange}
+            />
+          </Col>
+        </Row>
+          <Row className="App show-grid App-PDF-Title-Row">
+            <Col xs={3} md={3}>
+              <ControlLabel>{this.state.labels.thisClass.pdfSubTitle}:</ControlLabel>
+            </Col>
+            <Col xs={9} md={9}>
+              <FormControl
+                  id={"fxPdfSubTitle"}
+                  className={"App App-PDF-Title"}
+                  type="text"
+                  value={this.state.pdfSubTitle}
+                  placeholder={this.state.labels.thisClass.pdfSubTitle}
+                  onChange={this.handlePdfSubTitleChange}
+              />
+            </Col>
+          </Row>
+        </div>
+    );
+  };
+
   getTabs = () => {
       return (
           <div className="row">
@@ -512,8 +597,10 @@ export class ParaRowTextEditor extends React.Component {
               <Tab eventKey={"download"} title={
                 this.state.labels.thisClass.downloadPanelTitle}>
                 <Well>
+                  <Well>
+                    {this.getTitleRow()}
                   <Row  className="App-Info-Row">
-                    <Col className="" xs={6} md={6}>
+                    <Col className="" xs={3} md={3}>
                       <Checkbox
                           checked={this.state.includePersonalNotes}
                           onChange={this.handleIncludePersonalNotesChange}
@@ -522,7 +609,7 @@ export class ParaRowTextEditor extends React.Component {
                         {this.state.labels.thisClass.includePersonalNotes}
                       </Checkbox>
                     </Col>
-                    <Col className="" xs={6} md={6}>
+                    <Col className="" xs={9} md={9}>
                       <Checkbox
                           checked={this.state.includeAdviceNotes}
                           onChange={this.handleIncludeAdviceNotesChange}
@@ -533,7 +620,7 @@ export class ParaRowTextEditor extends React.Component {
                     </Col>
                   </Row>
                   <Row  className="App-Info-Row">
-                    <Col className="" xs={6} md={6}>
+                    <Col className="" xs={3} md={3}>
                       <Checkbox
                           checked={this.state.includeGrammar}
                           onChange={this.handleIncludeGrammarChange}
@@ -542,7 +629,7 @@ export class ParaRowTextEditor extends React.Component {
                         {this.state.labels.thisClass.includeGrammar}
                       </Checkbox>
                     </Col>
-                    <Col className="" xs={6} md={6}>
+                    <Col className="" xs={9} md={9}>
                       <Checkbox
                           checked={this.state.combineNotes}
                           onChange={this.handleCombineNotesChange}
@@ -552,6 +639,7 @@ export class ParaRowTextEditor extends React.Component {
                       </Checkbox>
                     </Col>
                   </Row>
+                  </Well>
                   <Row  className="App-Info-Row">
                   <Button
                       type="submit"
