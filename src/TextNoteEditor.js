@@ -267,6 +267,7 @@ class TextNoteEditor extends React.Component {
     this.getLiturgicalScopeRow = this.getLiturgicalScopeRow.bind(this);
     this.getLiturgicalSubHeadingLibraryRow = this.getLiturgicalSubHeadingLibraryRow.bind(this);
     this.getLiturgicalView = this.getLiturgicalView.bind(this);
+    this.getNoteIdRow = this.getNoteIdRow.bind(this);
     this.getNoteLibraryRow = this.getNoteLibraryRow.bind(this);
     this.getNoteTypeRow = this.getNoteTypeRow.bind(this);
     this.getOntologyLabel = this.getOntologyLabel.bind(this);
@@ -1151,6 +1152,23 @@ class TextNoteEditor extends React.Component {
     }
   };
 
+  getNoteIdRow = () => {
+    if (this.state.form && this.state.form.id
+    ) {
+      return (
+          <Row className="App show-grid  App-Text-Note-Editor-Library-Row">
+            <Col xs={3} md={3}>
+              <ControlLabel>{this.state.labels.thisClass.id}:</ControlLabel>
+            </Col>
+            <Col xs={9} md={9}>
+              <ControlLabel>{this.state.form.id}</ControlLabel>
+            </Col>
+          </Row>
+      );
+    } else {
+      return (<span className="App App-no-display"></span>);
+    }
+  };
 
   noteFormatter = (cell, row, formatExtraData) => {
     return (
@@ -1651,6 +1669,7 @@ class TextNoteEditor extends React.Component {
             {this.getLiturgicalSubHeadingLibraryRow()}
             {this.getBiblicalGreekLibraryRow()}
             {this.getBiblicalTranslationLibraryRow()}
+            {this.getNoteIdRow()}
           </Grid>
         </Well>
     );
@@ -1699,9 +1718,9 @@ class TextNoteEditor extends React.Component {
               <Tab eventKey={"idsheading"} title={this.state.labels.thisClass.ids}>
                 {this.getIdsWell()}
               </Tab>
-              <Tab eventKey={"idsorder"} title={this.state.labels.thisClass.order}>
-                {this.getOrderWell()}
-              </Tab>
+              {/*<Tab eventKey={"idsorder"} title={this.state.labels.thisClass.order}>*/}
+                {/*{this.getOrderWell()}*/}
+              {/*</Tab>*/}
               <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
                 {this.getRevisionsPanel()}
               </Tab>
@@ -1756,7 +1775,7 @@ class TextNoteEditor extends React.Component {
                   <Row className="App show-grid">
                     <Col xs={12} md={12}>
                       <ControlLabel>
-                        {this.state.labels.thisClass.note}: {this.state.selectedTypeLabel}
+                        {this.state.labels.thisClass.note}: {this.state.selectedTypeLabel}.
                       </ControlLabel>
                     </Col>
                   </Row>
