@@ -1533,7 +1533,7 @@ class TextNoteEditor extends React.Component {
               <Glyphicon glyph={this.state.workflow.statusIcon}/>
               <FontAwesome name={this.state.workflow.visibilityIcon}/>
             </span>
-            {this.props.session && this.state.form &&
+            {this.props.session && this.props.form && this.props.form.noteType &&
             <DeleteButton
                 session={this.props.session}
                 idLibrary={this.state.form.library}
