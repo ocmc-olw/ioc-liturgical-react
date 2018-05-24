@@ -238,18 +238,26 @@ export class Search extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    let dropdowns = this.state.dropdowns;
-    let liturgicalDomains = dropdowns.Liturgical.domains;
-    if (nextProps
-        && nextProps.session
-        && nextProps.session.userInfo
-        && nextProps.session.userInfo.domains
-    ) {
-      if (nextProps.session.userInfo.domains.liturgicalSearch) {
-        liturgicalDomains = nextProps.session.userInfo.domains.liturgicalSearch;
-      }
+    let dropdowns = {};
+    let liturgicalDomains = [];
+    if (this.state.dropdowns) {
+      dropdowns = this.state.dropdowns;
     }
-    dropdowns.Liturgical.domains = liturgicalDomains;
+    if (dropdowns && dropdowns.Liturgical) {
+      if (dropdowns.Liturgical.domains) {
+        liturgicalDomains = dropdowns.Liturgical.domains;
+      }
+      if (nextProps
+          && nextProps.session
+          && nextProps.session.userInfo
+          && nextProps.session.userInfo.domains
+      ) {
+        if (nextProps.session.userInfo.domains.liturgicalSearch) {
+          liturgicalDomains = nextProps.session.userInfo.domains.liturgicalSearch;
+        }
+      }
+      dropdowns.Liturgical.domains = liturgicalDomains;
+    }
 
     this.setState({
       docType: nextProps.initialDocType

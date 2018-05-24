@@ -23,12 +23,6 @@ export class CompareDocs extends React.Component {
         + "~"
         + key;
 
-    // let query = ".*~"
-    //     + topic
-    //     + "~"
-    //     + key
-    //     + "$";
-
     this.state = {
       labels: {
         messages: Labels.getMessageLabels(props.session.languageCode)
@@ -337,7 +331,7 @@ export class CompareDocs extends React.Component {
   };
 
   getGrammar = () => {
-    if (this.props.docType === "Liturgical") {
+    if (this.props && this.props.docType && this.props.docType === "Liturgical") {
       return (
           <Grammar
               session={this.props.session}

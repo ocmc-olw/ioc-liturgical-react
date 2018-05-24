@@ -85,8 +85,7 @@ export class ModalCompareDocs extends React.Component {
           this.fetchData();
         }
     );
-
-  }
+  };
 
   /**
    * font-awesome icons for messages
