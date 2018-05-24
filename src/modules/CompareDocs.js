@@ -5,6 +5,7 @@ import axios from 'axios';
 import Server from '../helpers/Server';
 import Spinner from '../helpers/Spinner';
 import Labels from '../Labels';
+import Grammar from './Grammar';
 
 /**
  * Display modal content.
@@ -82,11 +83,14 @@ export class CompareDocs extends React.Component {
       , docProp: "id"
       , matcher: "ew"
       , unmounted: false
+      , idTopic: topic
+      , idKey: key
     };
 
     this.fetchData = this.fetchData.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.getGrammar = this.getGrammar.bind(this);
     this.getTable = this.getTable.bind(this);
     this.evaluateNeedToFetch = this.evaluateNeedToFetch.bind(this);
     this.sendLibrariesInfo = this.sendLibrariesInfo.bind(this);
@@ -103,16 +107,13 @@ export class CompareDocs extends React.Component {
         + topic
         + "~"
         + key;
-    // let query = ".*~"
-    //     + topic
-    //     + "~"
-    //     + key
-    //     + "$";
       this.setState({
             showModal: nextProps.showModal
             , query: query
             , lastQuery: lastQuery
             , unmounted: false
+            , idTopic: topic
+            , idKey: key
           }
           , function () {
             this.evaluateNeedToFetch();
@@ -144,7 +145,7 @@ export class CompareDocs extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
   setMessage(message) {
       this.setState({
@@ -335,11 +336,25 @@ export class CompareDocs extends React.Component {
     }
   };
 
+  getGrammar = () => {
+    if (this.props.docType === "Liturgical") {
+      return (
+          <Grammar
+              session={this.props.session}
+              idTopic={this.state.idTopic}
+              idKey={this.state.idKey}
+              full={false}
+          />
+      );
+    }
+  };
+
   render() {
     return (
         <div>
             {this.state.showSelectionButtons && this.getSelectedDocOptions()}
             {this.getTable()}
+            {this.getGrammar()}
         </div>
     );
   }

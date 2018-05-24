@@ -126,37 +126,37 @@ export class Search extends React.Component {
       , showModalWindow: false
       , idColumnSize: "80px"
     };
-    this.handleIdQuerySelection = this.handleIdQuerySelection.bind(this);
+    this.deselectAllRows = this.deselectAllRows.bind(this);
+    this.editable = this.editable.bind(this);
     this.fetchData = this.fetchData.bind(this);
-    this.onSizePerPageList = this.onSizePerPageList.bind(this);
-    this.handleRowSelect = this.handleRowSelect.bind(this);
-    this.toggleSearchForm = this.toggleSearchForm.bind(this);
-    this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
-    this.handleSimpleSearchSubmit = this.handleSimpleSearchSubmit.bind(this);
-    this.getSearchForm = this.getSearchForm.bind(this);
-    this.getSearchAccordion = this.getSearchAccordion.bind(this);
-    this.searchFormOptionIcons = this.searchFormOptionIcons.bind(this);
-    this.handleSearchFormTypeChange = this.handleSearchFormTypeChange.bind(this);
-    this.toogleIdPattern = this.toogleIdPattern.bind(this);
-    this.showSelectionButtons = this.showSelectionButtons.bind(this);
-    this.handleCancelRequest = this.handleCancelRequest.bind(this);
-    this.handleDoneRequest = this.handleDoneRequest.bind(this);
-    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
-    this.showRowComparison = this.showRowComparison.bind(this);
-    this.getDocComparison = this.getDocComparison.bind(this);
-    this.handleEditorClose = this.handleEditorClose.bind(this);
     this.getBars = this.getBars.bind(this);
+    this.getDocComparison = this.getDocComparison.bind(this);
     this.getDocTypes = this.getDocTypes.bind(this);
     this.getMatcherTypes = this.getMatcherTypes.bind(this);
+    this.getSearchAccordion = this.getSearchAccordion.bind(this);
+    this.getSearchForm = this.getSearchForm.bind(this);
+    this.getSelectedDocOptions = this.getSelectedDocOptions.bind(this);
+    this.getTableIndex = this.getTableIndex.bind(this);
+    this.handleAdvancedSearchSubmit = this.handleAdvancedSearchSubmit.bind(this);
+    this.handleCancelRequest = this.handleCancelRequest.bind(this);
+    this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
+    this.handleDoneRequest = this.handleDoneRequest.bind(this);
+    this.handleEditorClose = this.handleEditorClose.bind(this);
+    this.handleIdQuerySelection = this.handleIdQuerySelection.bind(this);
+    this.handleParaTextEditorSubmit = this.handleParaTextEditorSubmit.bind(this);
+    this.handleRowSelect = this.handleRowSelect.bind(this);
+    this.handleSearchFormTypeChange = this.handleSearchFormTypeChange.bind(this);
+    this.handleSimpleSearchSubmit = this.handleSimpleSearchSubmit.bind(this);
+    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
     this.onRowClick = this.onRowClick.bind(this);
     this.onRowDoubleClick = this.onRowDoubleClick.bind(this);
+    this.onSizePerPageList = this.onSizePerPageList.bind(this);
+    this.searchFormOptionIcons = this.searchFormOptionIcons.bind(this);
     this.showResultsStatus = this.showResultsStatus.bind(this);
-    this.handleParaTextEditorSubmit = this.handleParaTextEditorSubmit.bind(this);
-    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
-    this.editable = this.editable.bind(this);
-    this.getTableIndex = this.getTableIndex.bind(this);
-    this.handleCloseDocComparison = this.handleCloseDocComparison.bind(this);
-    this.deselectAllRows = this.deselectAllRows.bind(this);
+    this.showRowComparison = this.showRowComparison.bind(this);
+    this.showSelectionButtons = this.showSelectionButtons.bind(this);
+    this.toggleSearchForm = this.toggleSearchForm.bind(this);
+    this.toogleIdPattern = this.toogleIdPattern.bind(this);
   }
 
   componentWillMount = () => {
@@ -180,6 +180,17 @@ export class Search extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerDropdownsSearchTextApi();
     axios.get(path, config)
         .then(response => {
+          let liturgicalDomains = response.data.values[1]["domains"];
+          if (this.props
+              && this.props.session
+              && this.props.session.userInfo
+              && this.props.session.userInfo.domains
+          ) {
+            if (this.props.session.userInfo.domains.liturgicalSearch) {
+              liturgicalDomains = this.props.session.userInfo.domains.liturgicalSearch;
+            }
+
+          }
           this.setState({
                 dropdowns: {
                   Biblical: {
@@ -194,12 +205,13 @@ export class Search extends React.Component {
                     all: {
                       books: response.data.values[1]["all"][0]["books"]
                     }
-                    , domains: response.data.values[1]["domains"]
+                    , domains: liturgicalDomains
                     , topics: response.data.values[1]["topics"]
                   }
                   , loaded: true
                 }
-              }
+              , domainInfo: response.data.values[2]
+            }
           );
         })
         .catch((error) => {
@@ -226,6 +238,19 @@ export class Search extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
+    let dropdowns = this.state.dropdowns;
+    let liturgicalDomains = dropdowns.Liturgical.domains;
+    if (nextProps
+        && nextProps.session
+        && nextProps.session.userInfo
+        && nextProps.session.userInfo.domains
+    ) {
+      if (nextProps.session.userInfo.domains.liturgicalSearch) {
+        liturgicalDomains = nextProps.session.userInfo.domains.liturgicalSearch;
+      }
+    }
+    dropdowns.Liturgical.domains = liturgicalDomains;
+
     this.setState({
       docType: nextProps.initialDocType
       , selectedId: ""
@@ -237,8 +262,9 @@ export class Search extends React.Component {
         , {label: nextProps.searchLabels.matchesAtTheEnd, value: "ew"}
         , {label: nextProps.searchLabels.matchesRegEx, value: "rx"}
       ]
+      , dropdowns: dropdowns
     });
-  }
+  };
 
 
   getTableIndex = (id) => {
@@ -250,7 +276,7 @@ export class Search extends React.Component {
       }
     });
     return result;
-  }
+  };
 
   handleParaTextEditorSubmit = (value) => {
     // only update if the value changed

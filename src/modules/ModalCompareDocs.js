@@ -58,7 +58,7 @@ export class ModalCompareDocs extends React.Component {
       showIdPartSelector: false
       , showModalCompareDocs: false
       , idColumnSize: "80px"
-    }
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -103,7 +103,7 @@ export class ModalCompareDocs extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
   setMessage(message) {
     this.setState({
@@ -217,7 +217,7 @@ export class ModalCompareDocs extends React.Component {
       , selectedValue: row["value"]
       , selectedSeq: row["seq"]
     });
-  }
+  };
 
   render() {
     return (

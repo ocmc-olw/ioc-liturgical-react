@@ -29,6 +29,7 @@ class Grammar extends React.Component {
 
     this.closeModal = this.closeModal.bind(this);
     this.getBody = this.getBody.bind(this);
+    this.getDependencyDiagram = this.getDependencyDiagram.bind(this);
     this.getDependencyTreeAsLatex = this.getDependencyTreeAsLatex.bind(this);
     this.getDependencyTreeText = this.getDependencyTreeText.bind(this);
     this.getLatexNode = this.getLatexNode.bind(this);
@@ -152,17 +153,23 @@ class Grammar extends React.Component {
         , this.state.id
         , this.setTextInfo
     );
-    Server.getTable(
-        this.props.session.restServer
-        , this.props.session.userInfo.username
-        , this.props.session.userInfo.password
-        , Server.tableLexiconOald
-        , this.handleEnglishLexiconCallback
-    );
+    if (this.props.full) {
+      Server.getTable(
+          this.props.session.restServer
+          , this.props.session.userInfo.username
+          , this.props.session.userInfo.password
+          , Server.tableLexiconOald
+          , this.handleEnglishLexiconCallback
+      );
+    }
   };
 
   handleEnglishLexiconCallback = (restCallResult) => {
-    if (restCallResult) {
+    if (restCallResult
+        && restCallResult.data
+        && restCallResult.data.values
+        && restCallResult.data.values.length > 0
+    ) {
       this.setState({
         englishLexiconLoaded: true
         , data: restCallResult.data.values[0]
@@ -362,6 +369,7 @@ class Grammar extends React.Component {
   };
 
   getPanelTokenTagger = () => {
+    if (this.props.full) {
       return (
           <Panel
               header={
@@ -383,8 +391,9 @@ class Grammar extends React.Component {
                 callBack={this.handleTaggerCallback}
             />
             {this.getPanelSearchTreebanks()}
-            </Panel>
+          </Panel>
       )
+    }
   };
   getPanelPotentialAnalyses = () => {
     if (this.state.selectedTokenIsWord) {
@@ -676,6 +685,19 @@ class Grammar extends React.Component {
     });
   };
 
+  getDependencyDiagram = () => {
+    if (this.props.full) {
+      return (
+          <DependencyDiagram
+              data={this.state.treeNodeData}
+              onClick={this.treeViewSelectCallback}
+              highlightSelected={true}
+              offsetKey={true}
+          />
+      );
+    }
+  };
+
   getBody = () => {
       return (
           <div>
@@ -685,12 +707,7 @@ class Grammar extends React.Component {
                 collapsible={true}
                 header={this.state.labels.thisClass.panelDependency}
             >
-              <DependencyDiagram
-                  data={this.state.treeNodeData}
-                  onClick={this.treeViewSelectCallback}
-                  highlightSelected={true}
-                  offsetKey={true}
-              />
+              {this.getDependencyDiagram()}
               <Button onClick={this.getDependencyTreeAsLatex}>Get Latex</Button>
             </Panel>
             }
@@ -734,10 +751,12 @@ Grammar.propTypes = {
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
   , text: PropTypes.string
+  , full: PropTypes.bool
 };
 
 Grammar.defaultProps = {
   text: "Dependency Diagram"
+  , full: true
 };
 
 export default Grammar;

@@ -95,14 +95,14 @@ class SearchOptions extends React.Component {
         }
         }
     )
-  }
+  };
 
   componentDidMount = () => {
     this.handleDocTypeChange({
       label: this.props.docType
       , value: this.props.docType
     });
-  }
+  };
   componentWillReceiveProps = (nextProps) => {
     let docType = nextProps.docType;
     let domain = "*";
@@ -164,9 +164,9 @@ class SearchOptions extends React.Component {
             }
             , loaded: true
           }
-        }
+        }, this.cascadeDocTypeChange(docType)
   )
-  }
+  };
 
   isDisabled = () => {
     let disableButton = true;
@@ -251,15 +251,15 @@ class SearchOptions extends React.Component {
 
   handlePropertyChange = (item) => {
     this.setState({property: item.value});
-  }
+  };
 
   handleMatcherChange = (item) => {
     this.setState({matcher: item.value});
-  }
+  };
 
   handleValueChange = (event) => {
     this.setState({value: event.target.value});
-  }
+  };
 
   handleSubmit = (event) => {
     this.props.handleSubmit(
