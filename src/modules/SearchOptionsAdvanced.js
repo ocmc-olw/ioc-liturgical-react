@@ -109,7 +109,7 @@ class SearchOptions extends React.Component {
     let selectedBook = "*";
     let selectedChapter = "*";
     let property = "nnp";
-    let matcher = "c"
+    let matcher = "c";
     let value = "";
 
     if (this.state) {

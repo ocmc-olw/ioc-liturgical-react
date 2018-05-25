@@ -64,7 +64,7 @@ const   labels = {
       , createTitle: "Create a New Record"
     }
     , schemaBasedAddButton: {
-
+      dummy: "dummy"
     }
     , ChangePasswordPage: {
       doNotMatch: "The new password and reentered password do not match."
@@ -737,7 +737,7 @@ const   labels = {
       , pdfSubTitle: "PDF sub-title"
     }
     , FormattedTextNote: {
-
+      dummy: "dummy"
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -888,7 +888,7 @@ const   labels = {
       , submit: "Set status and assigned user"
     }
     , RichEditor: {
-
+      dummy: "dummy"
     }
     , messages: {
       initial: "Important messages will appear here..."
@@ -1057,7 +1057,7 @@ const   labels = {
     , template: {} // place holder
     , templateForTable: {
       pageTitle: "Example Table"
-    } // place holder
+    }
   }
     , el: {
     button: {
@@ -1118,7 +1118,7 @@ const   labels = {
       , createTitle: "Create a New Record"
     }
     , schemaBasedAddButton: {
-
+      dummy: "dummy"
     }
     , ChangePasswordPage: {
       doNotMatch: "The new password and reentered password do not match."
@@ -1219,7 +1219,7 @@ const   labels = {
       , headerComments: "Σχόλια"
       , headerDate: "Ημερομηνία"
       , headerDesc: "Περιγραφή"
-      , headerDomain: "Συλλογλή"
+      , headerDomain: "βιβλιοθήκη"
       , headerKey: "Κλειδί"
       , headerLemma: "Υπολήμμα Α´"
       , headerLink: "Σύνδεσμος"
@@ -1722,7 +1722,7 @@ const   labels = {
       , panelAnalyses: "Potential Analyses"
       , panelPerseusSite: "Perseus Web Site"
       , panelLexigramSite: "Lexigram Web Site (στα Ελληνικά)"
-      , panelLogeion: "Logeion Web Site"
+      , panelLogeionSite: "Logeion Web Site"
       , panelLaParola: "LaParola Web Site"
       , panelKriaras: "Kriaras (στα Ελληνικά)"
       , panelTriantafyllides: "Triantafyllides (στα Ελληνικά)"
@@ -1786,7 +1786,7 @@ const   labels = {
       , instructions: "Use the Text Topic Selector to select the Topic you want."
     }
     , FormattedTextNote: {
-
+      dummy: "dummy"
     }
     , ModalAgesServiceSelector: {
       panelTitle: "Sacraments and Services Available from the AGES Website"
@@ -1937,7 +1937,7 @@ const   labels = {
       , submit: "Submit"
     }
     , RichEditor: {
-
+      dummy: "dummy"
     }
     , messages: {
       initial: "Θα εμφανιστούν σημαντικά μηνύματα εδώ..."

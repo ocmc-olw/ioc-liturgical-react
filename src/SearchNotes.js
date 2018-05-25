@@ -178,7 +178,7 @@ export class SearchNotes extends React.Component {
           , idColumnSize: "80px"
         }
     )
-  }
+  };
   getSearchForm() {
     return (
             <div>

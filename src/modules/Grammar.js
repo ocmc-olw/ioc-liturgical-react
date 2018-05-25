@@ -63,6 +63,13 @@ class Grammar extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     let nextId = IdManager.toId("gr_gr_cog", nextProps.idTopic, nextProps.idKey);
+    let full = false;
+    if (nextProps.session
+        && nextProps.session.userInfo
+        && nextProps.session.userInfo.authenticated
+    ) {
+      full = true;
+    }
     this.state = this.setTheState(
         nextProps
         , this.state.text
@@ -75,7 +82,10 @@ class Grammar extends React.Component {
         , this.state.nodeDependencies
         , this.state.treeNodeData
         , this.state.selectedPerseus
+        , this.state.selectedToken
         , this.state.selectedTokenIndexNumber
+        , this.state.selectedTokenIsWord
+        , full
     );
     if (this.state.text && this.state.text.id !== nextId) {
       this.fetchData();
@@ -94,7 +104,10 @@ class Grammar extends React.Component {
       , nodeDependencies
       , treeNodeData
       , selectedPerseus
+      , selectedToken
       , selectedTokenIndexNumber
+      , selectedTokenIsWord
+      , full
   ) => {
     return (
         {
@@ -106,6 +119,7 @@ class Grammar extends React.Component {
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
           , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , full: full
           , options: {
             sizePerPage: 30
             , sizePerPageList: [5, 15, 30]
@@ -140,6 +154,8 @@ class Grammar extends React.Component {
           , nodeDependencies: nodeDependencies
           , treeNodeData: treeNodeData ? treeNodeData : {}
           , selectedPerseus: selectedPerseus ? selectedPerseus : {}
+          , selectedToken: selectedToken
+          , selectedTokenIsWord: selectedTokenIsWord
           , selectedTokenIndexNumber: selectedTokenIndexNumber ? selectedTokenIndexNumber : 1
       }
     )
@@ -153,7 +169,7 @@ class Grammar extends React.Component {
         , this.state.id
         , this.setTextInfo
     );
-    if (this.props.full) {
+    if (this.state.full) {
       Server.getTable(
           this.props.session.restServer
           , this.props.session.userInfo.username
@@ -369,7 +385,7 @@ class Grammar extends React.Component {
   };
 
   getPanelTokenTagger = () => {
-    if (this.props.full) {
+    if (this.state.full) {
       return (
           <Panel
               header={
@@ -459,7 +475,7 @@ class Grammar extends React.Component {
   };
 
   getPanelLogeion = () => {
-    if (this.state.selectedTokenIsWord) {
+    if (this.state.selectedTokenIsWord && this.state.selectedLemmas) {
       return (
           <GrammarSitePanel
               languageCode={this.props.session.languageCode}
@@ -473,7 +489,7 @@ class Grammar extends React.Component {
     }
   };
   getPanelLexigram = () => {
-    if (this.state.selectedTokenIsWord) {
+    if (this.state.selectedTokenIsWord && this.state.selectedLemmas) {
       return (
           < GrammarSitePanel
               languageCode={this.props.session.languageCode}
@@ -512,7 +528,7 @@ class Grammar extends React.Component {
     }
   };
   getPanelLaParola = () => {
-    if (this.state.selectedTokenIsWord) {
+    if (this.state.selectedTokenIsWord && this.state.selectedLemmas) {
       return (
           <GrammarSitePanel
               languageCode={this.props.session.languageCode}
@@ -526,7 +542,7 @@ class Grammar extends React.Component {
     }
   };
   getPanelKriaras = () => {
-    if (this.state.selectedTokenIsWord) {
+    if (this.state.selectedTokenIsWord && this.state.selectedLemmas) {
       return (
           <GrammarSitePanel
               languageCode={this.props.session.languageCode}
@@ -540,7 +556,7 @@ class Grammar extends React.Component {
     }
   };
   getPanelTriantafyllides = () => {
-    if (this.state.selectedTokenIsWord) {
+    if (this.state.selectedTokenIsWord && this.state.selectedLemmas) {
       return (
           <GrammarSitePanel
               languageCode={this.props.session.languageCode}
@@ -554,7 +570,7 @@ class Grammar extends React.Component {
     }
   };
   getPanelBasicLexicon = () => {
-    if (this.state.selectedTokenIsWord) {
+    if (this.state.selectedTokenIsWord && this.state.selectedLemmas) {
       return (
           <GrammarSitePanel
               languageCode={this.props.session.languageCode}
@@ -686,14 +702,21 @@ class Grammar extends React.Component {
   };
 
   getDependencyDiagram = () => {
-    if (this.props.full) {
+    if (this.state.full) {
       return (
-          <DependencyDiagram
-              data={this.state.treeNodeData}
-              onClick={this.treeViewSelectCallback}
-              highlightSelected={true}
-              offsetKey={true}
-          />
+          <Panel
+              className="App-Grammar-Explorer-DependencyDiagram"
+              collapsible={true}
+              header={this.state.labels.thisClass.panelDependency}
+          >
+            <DependencyDiagram
+                data={this.state.treeNodeData}
+                onClick={this.treeViewSelectCallback}
+                highlightSelected={true}
+                offsetKey={true}
+            />
+            <Button onClick={this.getDependencyTreeAsLatex}>Get Latex</Button>
+          </Panel>
       );
     }
   };
@@ -702,15 +725,7 @@ class Grammar extends React.Component {
       return (
           <div>
             { this.state.nodeData &&
-            <Panel
-                className="App-Grammar-Explorer-DependencyDiagram"
-                collapsible={true}
-                header={this.state.labels.thisClass.panelDependency}
-            >
-              {this.getDependencyDiagram()}
-              <Button onClick={this.getDependencyTreeAsLatex}>Get Latex</Button>
-            </Panel>
-            }
+              this.getDependencyDiagram()}
             <Well>
             <HyperTokenText
                 languageCode={this.props.session.languageCode}
@@ -751,12 +766,10 @@ Grammar.propTypes = {
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired
   , text: PropTypes.string
-  , full: PropTypes.bool
 };
 
 Grammar.defaultProps = {
   text: "Dependency Diagram"
-  , full: true
 };
 
 export default Grammar;
