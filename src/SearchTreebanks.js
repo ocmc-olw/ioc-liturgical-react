@@ -252,7 +252,7 @@ export class SearchTreebanks extends React.Component {
           ,this.state.tokens[intKey]
       );
     }
-  }
+  };
 
   handleTokenClick = (index, token) => {
     let treeViewIndex = (parseInt(index)+1);
@@ -328,25 +328,25 @@ export class SearchTreebanks extends React.Component {
     this.refs.theTable.setState({
       selectedRowKeys: []
     });
-  }
+  };
 
   handleRowSelect = (row, isSelected, e) => {
     this.setState({
       selectedTopic: row["c.topic"]
     }, this.fetchDiagramData);
-  }
+  };
 
   handleCloseModal = () => {
       this.setState({
         showModalWindow: false
-      })
+      });
     this.deselectAllRows();
-  }
+  };
 
   getModalWindow = () => {
       return (
           <div className={"App-Modal-Dependency-Diagram"}>
-            <Modal show={true} onHide={this.handleCloseModal}>
+            <Modal backdrop={'static'} show={true} onHide={this.handleCloseModal}>
               <Modal.Header closeButton>
                 <Modal.Title>{this.state.selectedTopic}</Modal.Title>
               </Modal.Header>

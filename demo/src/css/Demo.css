@@ -748,12 +748,14 @@ path.link {
     padding-left: 4px;
 }
 .App-Text-Note-Editor-Lemma {
+    margin-top: 8px;
     height: auto;
     width: 80%;
     box-sizing: border-box;
     padding-left: 4px;
 }
 .App-Text-Note-Editor-Title {
+    margin-top: 8px;
     height: auto;
     width: 80%;
     box-sizing: border-box;
@@ -840,12 +842,15 @@ path.link {
     display: none;
 }
 
+.App-Bible-Ref-Selector-Label {
+    padding-left: 10px;
+}
 .App-Bible-Ref-Selector-Container {
     display: inline-flex;
 }
 .App-Bible-Ref-Selector-Book .Select-control{
     float: left;
-    width: 30ch;
+    width: 27ch;
 }
 .App-Bible-Ref-Selector-Chapter .Select-control{
     float: left;

@@ -1441,7 +1441,7 @@ class TextNoteEditor extends React.Component {
                   className={"App App-Text-Note-Editor-Scope"}
                   type="text"
                   value={this.state.form.biblicalScope}
-                  placeholder="scope"
+                  placeholder={this.state.labels.thisClass.biblicalScope}
                   onChange={this.handleBiblicalScopeChange}
               />
             </Col>
@@ -1469,7 +1469,7 @@ class TextNoteEditor extends React.Component {
                   className={"App App-Text-Note-Editor-Lemma"}
                   type="text"
                   value={this.state.form.biblicalLemma}
-                  placeholder="biblical lemma"
+                  placeholder={this.state.labels.thisClass.biblicalLemma}
                   onChange={this.handleBiblicalLemmaChange}
               />
             </Col>

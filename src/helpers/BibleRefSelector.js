@@ -157,7 +157,7 @@ class BibleRefSelector extends React.Component {
   render() {
     return (
         <Row  className="show-grid App-Bible-Ref-Selector-Row">
-          <Col className="App App-Bible-Ref-Selector-Label" xs={2} md={2}>
+          <Col className="App App-Bible-Ref-Selector-Label" xs={3} md={3}>
             <ControlLabel>Bible Ref:</ControlLabel>
           </Col>
           <Col className="App-Bible-Ref-Selector-Container" xs={2} md={2}>
@@ -171,26 +171,32 @@ class BibleRefSelector extends React.Component {
                 autosize={true}
                 clearable
             />
-          <Select
-              name="App-Bible-Ref-Selector-Chapter"
-              className="App-Bible-Ref-Selector-Chapter"
-              value={this.state.selectedChapter}
-              options={this.props.session.dropdowns.biblicalChaptersDropdown}
-              onChange={this.handleChapterChange}
-              multi={false}
-              autosize={true}
-              clearable
-          />
-          <Select
-              name="App-Bible-Ref-Selector-Verse"
-              className="App-Bible-Ref-Selector-Verse"
-              value={this.state.selectedVerse}
-              options={this.props.session.dropdowns.biblicalVersesDropdown}
-              onChange={this.handleVerseChange}
-              multi={false}
-              autosize={true}
-              clearable
-          />
+            <Col className="App App-Bible-Ref-Selector-Label" xs={2} md={2}>
+            </Col>
+            <Select
+                name="App-Bible-Ref-Selector-Chapter"
+                className="App-Bible-Ref-Selector-Chapter"
+                value={this.state.selectedChapter}
+                options={this.props.session.dropdowns.biblicalChaptersDropdown}
+                onChange={this.handleChapterChange}
+                multi={false}
+                autosize={true}
+                clearable
+            />
+            <Col className="App App-Bible-Ref-Selector-Label" xs={2} md={2}>
+            </Col>
+            <Select
+                name="App-Bible-Ref-Selector-Verse"
+                className="App-Bible-Ref-Selector-Verse"
+                value={this.state.selectedVerse}
+                options={this.props.session.dropdowns.biblicalVersesDropdown}
+                onChange={this.handleVerseChange}
+                multi={false}
+                autosize={true}
+                clearable
+            />
+          </Col>
+          <Col className="App App-Bible-Ref-Selector-Label" xs={3} md={3}>
           </Col>
         </Row>
     )
