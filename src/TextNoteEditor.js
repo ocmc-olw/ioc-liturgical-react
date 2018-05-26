@@ -336,7 +336,7 @@ class TextNoteEditor extends React.Component {
       form = nextProps.form;
       selectedType = form.noteType;
       selectedTypeLabel = this.getLabel(form.noteType);
-    } else {
+    } else if (nextProps.session && nextProps.session.uiSchemas) {
       form = JSON.parse(JSON.stringify(nextProps.session.uiSchemas.getForm("TextualNote:1.1")));
       form.liturgicalScope = textIdParts.key;
       form.library = nextProps.session.userInfo.domain;

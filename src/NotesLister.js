@@ -346,11 +346,14 @@ export class NotesLister extends React.Component {
 
   handleAddClose = () => {
     this.fetchData();
-  }
+  };
 
 
   getAddButton = () => {
-    if (this.state.enableAdd) {
+    if (this.state.enableAdd
+      && this.props.session
+        && this.props.session.uiSchemas
+    ) {
       let id = "UserNoteCreateForm:1.1";
       let textIdParts = IdManager.getParts(this.props.topicId);
       let topicId = "gr_gr_cog" + "~" + textIdParts.topic + "~" + textIdParts.key;
@@ -393,7 +396,7 @@ export class NotesLister extends React.Component {
     } else {
       return (<span/>)
     }
-  }
+  };
 
   handleGetForIdCallback = (restCallResult) => {
     let enableAdd = false;

@@ -1243,6 +1243,10 @@ const   labels = {
       , headerType: "Τύπος"
       , headerToId: "Προς (Κλειδί)"
       , headerTags: "Ετικέτες"
+      , headerTopic: "Topic"
+      , headerKey: "Key"
+      , headerName: "Name"
+      , headerDesc: "Description"
     }
     , header: {
       about: "Σχετικά"
@@ -1296,7 +1300,9 @@ const   labels = {
       , secAdvancedSearch: "Αναζήτηση για προχωρημένους"
       , secDocIdP01: "Όταν γράφτηκε η Βίβλος, δεν είχε κεφάλαια και αριθμούς στους στίχους. Αυτά προστέθηκαν αιώνες αργότερα ώστε οι άνθρωποι να έχουν έναν κοινό, τυποποιημένο τρόπο να συζητούν για ένα συγκεκριμέν μέρος της Βίβλου. Ένα κεφάλαιο της Βίβλου και ένας αριθμός στίχου προσδιορίζουν μοναδικά ένα μικρό έγγραφο( ή doc εν συντομία). Για ένα κείμενο της Βίβλου, καλούμε αυτού του είδους το αρχείο στίχο."
       , secDocIdP02: "Ο πατήρ Σεραφείμ Δέδες δημιούργησε τα ισοδύναμα αναγνωριστικά του κεφαλαίου και του στίχου για τα Ανατολικά Ορθόδοξα Χριστιανικά Λειτουργικά κείμενα. Αυτό το αναγνωριστικό σχήμα χρησιμοποιείται στις  AGES Liturgical Workbench (ALWB), αναπτυγμένα από κοινού από τα AGES, Initiatives, Inc. and OCMC."
+      , secDocIdP03: "Each doc in the database has an ID that uniquely identifies it. The ID is composed of three parts:"
       , secDocIdP04: "Η περιοχή είναι ισοδύναμη με την έκδοση της μετάφρασης της Βίβλου. Για παράδειγμα, KJV για τον Βασιλιά Τζέιμς Έκδοση της Βίβλου. Το θέμα είναι ισοδύναμο με ένα όνομα από το βιβλίο της Βίβλου. Για παράδειγμα, το βιβλίο της Γένεσης. Το κλειδί είναι ισοδύναμο με το κεφάλαιο και τον αριθμό στίχου."
+      , secDocIdP05: "In order to understand how each doc is uniquely identified in the database, consider the following:"
       , secDocIdP06: "Το κείμενο είναι από το Μηναίον,  Μήνας πρώτος, Ημέρα έκτη, δηλαδή, τα Θεοφάνεια του Κυρίου μας. Ας δούμε το ID. Το ID αναγνωριστικό αποτελείται από τον τομέα, το θέμα, και το κλειδί."
       , secDocIdP07: "Ας ξεκινήσουμε με το θέμα. Σε αυτήν την περίπτωση, το μέρος του θέματος του ID αναγνωριστικού έιναι me.m01.d06. Σημειώστε ότι συχνά τα θέματα έχουν μέρη που χωρίζονται από μια τελεία. Το πρώτο μέρος me σημαίνει Μηναίον. Το δεύτερο μέρος M01 σημαίνει  Μήνας 1. Το τελευταίο μέρος d06 σημαίνει Ημέρα 6."
       , secDocIdP08: "Τώρα, κοιτάξτε το κλειδί meVE.Apolytikion1.text. Πάλι το me σημαίνει Μηναίον. VE σημαίνει Εσπερινός. Το κλειδί δείχνει επίσης ότι αυτό είναι το Απολυτίκιον 1, το οποίο είναι ο ύμνος απόλυσης του Εσπερινού."
@@ -1576,6 +1582,8 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , typeAny: "οποιαδήποτε"
+      , typeAll: "όλες"
       , textPrompt: "πληκτρολογήστε κείμενο για αναζήτηση εδώ"
     }
     , searchTemplates: {
@@ -1609,6 +1617,8 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , typeAny: "οποιαδήποτε"
+      , typeAll: "όλες"
     }
     , searchTreebanks: {
       prompt: "Βρείτε σημειώσεις"
@@ -1641,6 +1651,8 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , typeAny: "οποιαδήποτε"
+      , typeAll: "όλες"
     }
     , searchOntology: {
       prompt: "εισάγετε μία λέξη ή φράση"
@@ -1673,6 +1685,8 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , typeAny: "οποιαδήποτε"
+      , typeAll: "όλες"
     }
     , searchLinks: {
       prompt: "εισάγετε μία λέξη ή φράση"
@@ -1704,6 +1718,9 @@ const   labels = {
       , submit: "Να Στέιλει"
       , submitting: "Έστειλε..."
       , exists: "υπάρχει ήδη..."
+      , domainIs: "and the domain is..."
+      , typeAny: "οποιαδήποτε"
+      , typeAll: "όλες"
     }
     , DependencyDiagram: {
       title: "Dependency Diagram for"
@@ -1758,7 +1775,12 @@ const   labels = {
       , 500: "Server error"
     }
     , NewEntry: {
-      submit: "Submit"
+      panels: {
+        main: "Create a New Entry"
+        , form: "View the Form"
+      }
+      , formSelector: "Select the Form for the new entry you want to create..."
+      , paraTextPanelTitle: "View Parallel Texts"
     }
     , ParaTextEditor: {
       panelTitle: "View Parallel Texts in Rows"
