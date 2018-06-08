@@ -22,7 +22,7 @@ import NotesLister from './NotesLister';
 import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
 import TextNotesLister from './TextNotesLister';
-
+import ResourceSelector from './modules/ReactSelector';
 /**
  * Display a text to edit, with source and models as rows.
  */
@@ -30,6 +30,37 @@ export class ParaRowTextEditor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let citeStyles = [
+      "alphabetic",
+      "alphabetic-verb",
+      "authortitle",
+      "authortitle-comp",
+      "authortitle-ibid",
+      "authortitle-icomp",
+      "authortitle-tcomp",
+      "authortitle-terse",
+      "authortitle-ticomp",
+      "authoryear",
+      "authoryear-comp",
+      "authoryear-ibid",
+      "authoryear-icomp",
+      "numeric",
+      "numeric-comp",
+      "numeric-verb",
+      "reading",
+      "verbose",
+      "verbose-ibid",
+      "verbose-inote",
+      "verbose-note",
+      "verbose-trad1",
+      "verbose-trad2",
+      "verbose-trad3"
+    ];
+    let citeData = [];
+    citeStyles.forEach(function(element) {
+      citeData.push({label: element, value: element});
+    });
 
     this.state =
         {
@@ -39,6 +70,8 @@ export class ParaRowTextEditor extends React.Component {
             , buttons: Labels.getButtonLabels(props.session.languageCode)
             , search: Labels.getSearchLabels(props.session.languageCode)
           }
+          , citeData: citeData
+          , citeStyle: "authoryear"
           , greekSourceValue: ""
           , greekSourceId: ""
           , showSearchResults: false
@@ -90,12 +123,17 @@ export class ParaRowTextEditor extends React.Component {
           , pdfId: ""
           , pdfTitle: ""
           , pdfSubTitle: ""
+          , pdfAuthor: ""
+          , pdfAuthorTitle: ""
+          , pdfAuthorAffiliation: ""
           , includeAdviceNotes: false
           , includePersonalNotes: false
           , includeGrammar: false
           , combineNotes: false
+          , createToc: false
           , showDownloadLinks: false
           , preparingDownloads: false
+          , biblatex: "http://ftp.math.purdue.edu/mirrors/ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf"
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -104,6 +142,7 @@ export class ParaRowTextEditor extends React.Component {
     this.getTabs = this.getTabs.bind(this);
     this.getTextArea = this.getTextArea.bind(this);
     this.getTitleRow = this.getTitleRow.bind(this);
+    this.handleciteStyleChange = this.handleciteStyleChange.bind(this);
     this.handleDownloadRequest = this.handleDownloadRequest.bind(this);
     this.handleDownloadCallback = this.handleDownloadCallback.bind(this);
     this.handleEditorChange = this.handleEditorChange.bind(this);
@@ -111,6 +150,10 @@ export class ParaRowTextEditor extends React.Component {
     this.handleIncludeGrammarChange = this.handleIncludeGrammarChange.bind(this);
     this.handleIncludePersonalNotesChange = this.handleIncludePersonalNotesChange.bind(this);
     this.handleCombineNotesChange = this.handleCombineNotesChange.bind(this);
+    this.handleCreateTocChange = this.handleCreateTocChange.bind(this);
+    this.handlePdfAuthorChange = this.handlePdfAuthorChange.bind(this);
+    this.handlePdfAuthorAffiliationChange = this.handlePdfAuthorAffiliationChange.bind(this);
+    this.handlePdfAuthorTitleChange = this.handlePdfAuthorTitleChange.bind(this);
     this.handlePdfTitleChange = this.handlePdfTitleChange.bind(this);
     this.handlePdfSubTitleChange = this.handlePdfSubTitleChange.bind(this);
     this.handlePropsChange = this.handlePropsChange.bind(this);
@@ -312,6 +355,10 @@ export class ParaRowTextEditor extends React.Component {
     this.setState({ combineNotes: evt.target.checked });
   };
 
+  handleCreateTocChange = (evt) => {
+    this.setState({ createToc: evt.target.checked });
+  };
+
   getDownloadLinks = () => {
     if (this.state.showDownloadLinks) {
       let url = "data/" + this.state.pdfId;
@@ -342,6 +389,13 @@ export class ParaRowTextEditor extends React.Component {
     }
   };
 
+
+  handleciteStyleChange = (selection) => {
+    this.setState({
+      citeStyle: selection["value"]
+    });
+  };
+
   handleDownloadRequest = () => {
     this.setState({
       preparingDownloads: true
@@ -359,6 +413,7 @@ export class ParaRowTextEditor extends React.Component {
     let includePersonalNotes = "false";
     let includeGrammar = "false";
     let combineNotes = "false";
+    let createToc = "false";
 
     if (this.state.includeAdviceNotes) {
       includeAdviceNotes = "true";
@@ -375,14 +430,22 @@ export class ParaRowTextEditor extends React.Component {
     if (this.state.includePersonalNotes) {
       includePersonalNotes = "true";
     }
+    if (this.state.createToc) {
+      createToc = "true";
+    }
     let parms =
     "ia=" + encodeURIComponent(includeAdviceNotes)
     + "&ip=" + encodeURIComponent(includePersonalNotes)
     + "&ig=" + encodeURIComponent(includeGrammar)
     + "&cn=" + encodeURIComponent(combineNotes)
+    + "&toc=" + encodeURIComponent(createToc)
     + "&al=" + encodeURIComponent(this.props.idLibrary)
     + "&mt=" + encodeURIComponent(this.state.pdfTitle)
     + "&st=" + encodeURIComponent(this.state.pdfSubTitle)
+    + "&au=" + encodeURIComponent(this.state.pdfAuthor)
+    + "&at=" + encodeURIComponent(this.state.pdfAuthorTitle)
+    + "&af=" + encodeURIComponent(this.state.pdfAuthorAffiliation)
+    + "&cs=" + encodeURIComponent(this.state.citeStyle)
     ;
 
     Server.getTextDownloads(
@@ -524,6 +587,18 @@ export class ParaRowTextEditor extends React.Component {
   };
 
 
+  handlePdfAuthorChange = (e) => {
+    this.setState({pdfAuthor: e.target.value});
+  };
+
+  handlePdfAuthorAffiliationChange = (e) => {
+    this.setState({pdfAuthorAffiliation: e.target.value});
+  };
+
+  handlePdfAuthorTitleChange = (e) => {
+    this.setState({pdfAuthorTitle: e.target.value});
+  };
+
   handlePdfTitleChange = (e) => {
     this.setState({pdfTitle: e.target.value});
   };
@@ -563,6 +638,70 @@ export class ParaRowTextEditor extends React.Component {
                   placeholder={this.state.labels.thisClass.pdfSubTitle}
                   onChange={this.handlePdfSubTitleChange}
               />
+            </Col>
+          </Row>
+          <Row className="App show-grid App-PDF-Author-Row">
+            <Col xs={3} md={3}>
+              <ControlLabel>{this.state.labels.thisClass.pdfAuthor}:</ControlLabel>
+            </Col>
+            <Col xs={9} md={9}>
+              <FormControl
+                  id={"fxPdfAuthor"}
+                  className={"App App-PDF-Author"}
+                  type="text"
+                  value={this.state.pdfAuthor}
+                  placeholder={this.state.labels.thisClass.pdfAuthor}
+                  onChange={this.handlePdfAuthorChange}
+              />
+            </Col>
+          </Row>
+          <Row className="App show-grid App-PDF-Author-Row">
+            <Col xs={3} md={3}>
+              <ControlLabel>{this.state.labels.thisClass.pdfAuthorTitle}:</ControlLabel>
+            </Col>
+            <Col xs={9} md={9}>
+              <FormControl
+                  id={"fxPdfAuthorTitle"}
+                  className={"App App-PDF-Author"}
+                  type="text"
+                  value={this.state.pdfAuthorTitle}
+                  placeholder={this.state.labels.thisClass.pdfAuthorTitle}
+                  onChange={this.handlePdfAuthorTitleChange}
+              />
+            </Col>
+          </Row>
+          <Row className="App show-grid App-PDF-Author-Row">
+            <Col xs={3} md={3}>
+              <ControlLabel>{this.state.labels.thisClass.pdfAuthorAffiliation}:</ControlLabel>
+            </Col>
+            <Col xs={9} md={9}>
+              <FormControl
+                  id={"fxPdfAuthorAffiliation"}
+                  className={"App App-PDF-Author"}
+                  type="text"
+                  value={this.state.pdfAuthorAffiliation}
+                  placeholder={this.state.labels.thisClass.pdfAuthorAffiliation}
+                  onChange={this.handlePdfAuthorAffiliationChange}
+              />
+            </Col>
+          </Row>
+          <Row className="App show-grid App-PDF-BibStyle-Row">
+            <Col xs={3} md={3}>
+              <ControlLabel>{this.state.labels.thisClass.citeStyle}:</ControlLabel>
+            </Col>
+            <Col xs={5} md={5}>
+              <div className="App-PDF-BibStyle-Dropdown">
+              <ResourceSelector
+                  title={""}
+                  initialValue={this.state.citeStyle}
+                  resources={this.state.citeData}
+                  changeHandler={this.handleciteStyleChange}
+                  multiSelect={false}
+              />
+              </div>
+            </Col>
+            <Col xs={4} md={4}>
+              <a className="App-See-Biblatex" href={this.state.biblatex} target={"_blank"}>{this.state.labels.thisClass.seeBiblatex}</a>
             </Col>
           </Row>
         </div>
@@ -608,8 +747,41 @@ export class ParaRowTextEditor extends React.Component {
                 <Well>
                   <Well>
                     {this.getTitleRow()}
+                    <Row>
+                      <Col className="App-Info-Row" xs={12} md={12}>
+                        <Checkbox
+                            checked={this.state.combineNotes}
+                            onChange={this.handleCombineNotesChange}
+                            inline={true}
+                        >
+                          {this.state.labels.thisClass.combineNotes}
+                        </Checkbox>
+                      </Col>
+                    </Row>
+                    <Row>
+                      <Col className="App-Info-Row" xs={12} md={12}>
+                        <Checkbox
+                            checked={this.state.createToc}
+                            onChange={this.handleCreateTocChange}
+                            inline={true}
+                        >
+                          {this.state.labels.thisClass.createToc}
+                        </Checkbox>
+                      </Col>
+                    </Row>
+                    <Row  className="App-Info-Row">
+                      <Col className="" xs={12} md={12}>
+                        <Checkbox
+                            checked={this.state.includeGrammar}
+                            onChange={this.handleIncludeGrammarChange}
+                            inline={true}
+                        >
+                          {this.state.labels.thisClass.includeGrammar}
+                        </Checkbox>
+                      </Col>
+                    </Row>
                   <Row  className="App-Info-Row">
-                    <Col className="" xs={3} md={3}>
+                    <Col className="" xs={12} md={12}>
                       <Checkbox
                           checked={this.state.includePersonalNotes}
                           onChange={this.handleIncludePersonalNotesChange}
@@ -618,33 +790,15 @@ export class ParaRowTextEditor extends React.Component {
                         {this.state.labels.thisClass.includePersonalNotes}
                       </Checkbox>
                     </Col>
-                    <Col className="" xs={9} md={9}>
+                  </Row>
+                  <Row>
+                    <Col className="App-Info-Row" xs={12} md={12}>
                       <Checkbox
                           checked={this.state.includeAdviceNotes}
                           onChange={this.handleIncludeAdviceNotesChange}
                           inline={true}
                       >
                         {this.state.labels.thisClass.includeAdviceNotes}
-                      </Checkbox>
-                    </Col>
-                  </Row>
-                  <Row  className="App-Info-Row">
-                    <Col className="" xs={3} md={3}>
-                      <Checkbox
-                          checked={this.state.includeGrammar}
-                          onChange={this.handleIncludeGrammarChange}
-                          inline={true}
-                      >
-                        {this.state.labels.thisClass.includeGrammar}
-                      </Checkbox>
-                    </Col>
-                    <Col className="" xs={9} md={9}>
-                      <Checkbox
-                          checked={this.state.combineNotes}
-                          onChange={this.handleCombineNotesChange}
-                          inline={true}
-                      >
-                        {this.state.labels.thisClass.combineNotes}
                       </Checkbox>
                     </Col>
                   </Row>

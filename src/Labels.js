@@ -741,6 +741,7 @@ const   labels = {
       , includePersonalNotes: "Include personal notes?"
       , includeGrammar: "Include grammar?"
       , combineNotes: "Combine notes based on the note heading?"
+      , createToc: "Create a Table of Contents?"
       , biblicalLinksPanelTitle: "Biblical References Made By the Greek Text"
       , downloadPanelTitle: "Download"
       , grammarPanelTitle: "Grammar Explorer"
@@ -749,6 +750,11 @@ const   labels = {
       , userNotesPanelTitle: "Personal Notes"
       , pdfTitle: "PDF title"
       , pdfSubTitle: "PDF sub-title"
+      , pdfAuthor: "Author(s)"
+      , pdfAuthorTitle: "Author's Title"
+      , pdfAuthorAffiliation: "Author's affiliation"
+      , citeStyle: "BibLaTeX Style"
+      , seeBiblatex: "See BibLaTeX 'Standard Styles'."
     }
     , FormattedTextNote: {
       dummy: "dummy"
@@ -1820,6 +1826,7 @@ const   labels = {
       , includePersonalNotes: "Include personal notes?"
       , includeGrammar: "Include grammar?"
       , combineNotes: "Combine notes based on the note heading?"
+      , createToc: "Δημιουργήστε έναν πίνακα περιεχομένων;"
       , showingMatchesFor: "Showing matches for "
       , yourTranslation: "Your Translation"
       , valueFor: "Value for"
@@ -1832,6 +1839,11 @@ const   labels = {
       , userNotesPanelTitle: "Personal Notes"
       , pdfTitle: "PDF τίτλος"
       , pdfSubTitle: "PDF υπότιτλος"
+      , pdfAuthor: "Συγγραφέας (ες)"
+      , pdfAuthorTitle: "Τίτλος του συγγραφέας"
+      , pdfAuthorAffiliation: "Συνεργάζεται με..."
+      , citeStyle: "Στυλ BibLaTeX"
+      , seeBiblatex: "Δείτε το BibLaTeX Standard Styles."
     }
     , TopicsSelector : {
       panelTitle: "Text Topic Selector"

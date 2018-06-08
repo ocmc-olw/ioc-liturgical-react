@@ -1039,4 +1039,16 @@ a.rdw-mention-link {
 
 .App-PDF-Title {
     padding-left: 4px;
+    margin-bottom: 4px;
+}
+.App-PDF-Author {
+    padding-left: 4px;
+    margin-bottom: 4px;
+}
+.App-PDF-BibStyle-Dropdown {
+    margin-left: 5px;
+}
+
+.App-See-Biblatex {
+    margin-top: 30px;
 }
