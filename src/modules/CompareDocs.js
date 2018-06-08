@@ -216,14 +216,22 @@ export class CompareDocs extends React.Component {
                     }
                 );
             }
-            let message = "No docs found...";
-            if (response.data.valueCount && response.data.valueCount > 0) {
-              message = this.props.labels.msg3
-                  + " "
-                  + response.data.valueCount
-                  + " "
-                  + this.props.labels.msg4
-                  + "."
+
+            let resultCount = 0;
+            let message = this.props.labels.foundNone
+            let found = this.props.labels.foundMany;
+            if (response.data.valueCount) {
+              resultCount = response.data.valueCount;
+              if (resultCount === 0) {
+                message = this.props.labels.foundNone;
+              } else if (resultCount === 1) {
+                message = this.props.labels.foundOne;
+              } else {
+                message = found
+                    + " "
+                    + resultCount
+                    + ".";
+              }
             }
             if (this._isMounted) {
               this.setState({
@@ -241,7 +249,7 @@ export class CompareDocs extends React.Component {
             let message = error.message;
             let messageIcon = this.messageIcons.error;
             if (error && error.response && error.response.status === 404) {
-              message = "no docs found";
+              message = this.props.labels.foundNone;
               messageIcon = this.messageIcons.warning;
               if (this._isMounted) {
                 this.setState({

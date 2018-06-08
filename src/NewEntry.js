@@ -4,6 +4,7 @@ import 'react-select/dist/react-select.css';
 import ResourceSelector from './modules/ReactSelector'
 import Labels from './Labels'
 import TemplateNodeInitializer from './classes/TemplateNodeInitializer';
+import UiSchemas from './classes/UiSchemas';
 import IdManager from './helpers/IdManager';
 import server from './helpers/Server';
 import IdBuilder from './modules/IdBuilder';
@@ -14,7 +15,7 @@ import { Panel, Well } from 'react-bootstrap'
 /**
  * This allows addition of a new entry. The forms are only 'pure ontology'
  * and are hard coded. They should use the web service dropdown
- * this.props.session.uiSchemas.formsDropdown
+ * this.state.session.uiSchemas.formsDropdown
  */
 export class NewEntry extends React.Component {
 
@@ -59,15 +60,27 @@ export class NewEntry extends React.Component {
 //      ,{label: "Word Analysis", value: "WordAnalysis:1.1"}
     ];
 
+    let uiSchemas = {};
+    if (props.session && props.session.uiSchemas) {
+      uiSchemas = new UiSchemas(
+          props.session.uiSchemas.formsDropdown
+          , props.session.uiSchemas.formsSchemas
+          , props.session.uiSchemas.forms
+      );
+    }
+
     this.state = {
       labels: {
-        thisClass: Labels.getComponentNewEntryLabels(this.props.session.languageCode)
-        , search: Labels.getSearchLabels(this.props.session.languageCode)
-        , paraRowEditor: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
+        thisClass: Labels.getComponentNewEntryLabels(props.session.languageCode)
+        , search: Labels.getSearchLabels(props.session.languageCode)
+        , paraRowEditor: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
+      }
+      , session: {
+        uiSchemas: uiSchemas
       }
       , formsDropdown: formsDropdown
       , idBuilt: false
-      , message: Labels.getSearchLabels(this.props.session.languageCode).msg1
+      , message: Labels.getSearchLabels(props.session.languageCode).msg1
       , messageIcon: this.messageIcons.info
       , formSelected: false
       , selectedForm: ""
@@ -197,10 +210,10 @@ export class NewEntry extends React.Component {
       workflowStatus: status
       , workflowUser: user
     });
-  }
+  };
 
   handleFormSelection = (selection) => {
-    let theForm = this.props.session.uiSchemas.getForm(selection.value);
+    let theForm = this.state.session.uiSchemas.getForm(selection.value);
 
     theForm.assignedToUser = this.props.session.userInfo.username;
 
@@ -315,10 +328,10 @@ export class NewEntry extends React.Component {
     }
     this.setState({
       selected: {
-        schema: this.props.session.uiSchemas.getSchema(selection.value)
-        , uiSchema: this.props.session.uiSchemas.getUiSchema(selection.value)
+        schema: this.state.session.uiSchemas.getSchema(selection.value)
+        , uiSchema: this.state.session.uiSchemas.getUiSchema(selection.value)
         , form: theForm
-        , path: this.props.session.uiSchemas.getHttpPostPathForSchema(selection.value)
+        , path: this.state.session.uiSchemas.getHttpPostPathForSchema(selection.value)
       }
       , selectedForm: selection.value
       , initialOntologyType: initialOntologyType
@@ -539,7 +552,7 @@ export class NewEntry extends React.Component {
   };
 
   // in the ResourceSelector, use this to get all forms:
-  //               resources={this.props.session.uiSchemas.formsDropdown}
+  //               resources={this.state.session.uiSchemas.formsDropdown}
 
   render () {
 

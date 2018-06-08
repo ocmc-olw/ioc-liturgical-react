@@ -177,7 +177,7 @@ export class SearchRelationships extends React.Component {
         , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
       }
     });
-  }
+  };
 
   getSearchForm() {
     return (
@@ -203,7 +203,7 @@ export class SearchRelationships extends React.Component {
     this.refs.theTable.setState({
       selectedRowKeys: []
     });
-  }
+  };
 
   getMatcherTypes () {
     return (
@@ -225,7 +225,7 @@ export class SearchRelationships extends React.Component {
     if (this.props.callback) {
       this.props.callback(this.state.selectedId, this.state.selectedValue);
     }
-  }
+  };
 
   getSelectedDocOptions() {
     return (
@@ -252,7 +252,7 @@ export class SearchRelationships extends React.Component {
           </FormGroup>
         </Panel>
     )
-  }
+  };
 
   handleAdvancedSearchSubmit = (
       type
@@ -292,14 +292,14 @@ export class SearchRelationships extends React.Component {
       , selectedToId: row["toId"]
       , selectedToValue: row["toValue"]
     });
-  }
+  };
 
   showRowComparison = (id) => {
     this.setState({
       showModalCompareDocs: true
       , selectedId: id
     })
-  }
+  };
 
   handleCloseDocComparison = (id, value) => {
     if (id && id.length > 0) {
@@ -314,7 +314,7 @@ export class SearchRelationships extends React.Component {
       })
     }
     this.deselectAllRows();
-  }
+  };
 
   getDocComparison = () => {
     return (
@@ -336,13 +336,13 @@ export class SearchRelationships extends React.Component {
             searchLabels={this.props.searchLabels}
         />
     )
-  }
+  };
 
   onSizePerPageList = (sizePerPage) => {
     this.setState({
       options: {sizePerPage: sizePerPage}
     });
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -359,19 +359,19 @@ export class SearchRelationships extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
   searchFormTypes = {
     simple: "simple"
     , advanced: "advanced"
     , idPattern: "id"
-  }
+  };
 
   setMessage(message) {
     this.setState({
       message: message
     });
-  }
+  };
 
   fetchData(event) {
     this.setState({
@@ -397,28 +397,28 @@ export class SearchRelationships extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerLinksApi() + parms;
     axios.get(path, config)
         .then(response => {
-          this.setState({
-                data: response.data
-              }
-          );
+          console.log("search relationships");
+          console.log(response.data);
           let resultCount = 0;
-          let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
+          let message = this.props.searchLabels.foundNone;
+          let found = this.props.searchLabels.foundMany;
+          if (response.data.valueCount) {
             resultCount = response.data.valueCount;
-            message = this.props.searchLabels.msg3
-                + " "
-                + response.data.valueCount
-                + " "
-                + this.props.searchLabels.msg4
-                + "."
-          } else {
-            message = this.props.searchLabels.msg3
-                + " 0 "
-                + this.props.searchLabels.msg4
-                + "."
+            if (resultCount === 0) {
+              message = this.props.searchLabels.foundNone;
+            } else if (resultCount === 1) {
+              message = this.props.searchLabels.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
+
           this.setState({
                 message: message
+                , data: response.data
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
@@ -426,19 +426,21 @@ export class SearchRelationships extends React.Component {
           );
         })
         .catch((error) => {
+          console.log("search relationships");
+          console.log(error.message);
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.props.searchLabels.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
         });
-  }
+  };
 
   onExportToCSV = ( row ) => {
     return this.state.data.values;
-  }
+  };
 
   render() {
     return (
@@ -454,7 +456,7 @@ export class SearchRelationships extends React.Component {
           </div>
 
           <div>{this.props.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.props.searchLabels.msg3} {this.state.resultCount} {this.props.searchLabels.msg4} </span>
+              name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.state.showSearchResults &&
           <div>

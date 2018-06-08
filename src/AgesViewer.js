@@ -10,6 +10,7 @@ import server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
 import ModalAgesServiceSelector from './modules/ModalAgesServiceSelector';
 import ReactSelector from './modules/ReactSelector'
+import User from "./classes/User";
 
 /**
  * This class renders a liturgical service or book using a json
@@ -122,6 +123,21 @@ class AgesViewer extends React.Component {
       selectedThirdLibraryFallback = currentState.selectedThirdLibraryFallback;
     }
 
+    let userInfo = {};
+    if (props.session && props.session.userInfo) {
+      userInfo = new User(
+          props.session.userInfo.username
+          , props.session.userInfo.password
+          , props.session.userInfo.domain
+          , props.session.userInfo.email
+          , props.session.userInfo.firstname
+          , props.session.userInfo.lastname
+          , props.session.userInfo.title
+          , props.session.userInfo.authenticated
+          , props.session.userInfo.domains
+      );
+    }
+
     return (
         {
           labels: {
@@ -129,6 +145,9 @@ class AgesViewer extends React.Component {
             , buttons: Labels.getButtonLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
             , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
+          }
+          , session: {
+            userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
@@ -182,8 +201,8 @@ class AgesViewer extends React.Component {
           },
           server.getAgesIndex(
               this.props.session.restServer
-              , this.props.session.userInfo.username
-              , this.props.session.userInfo.password
+              , this.state.session.userInfo.username
+              , this.state.session.userInfo.password
               , this.handleFetchAgesIndexCallback
           )
       );
@@ -207,8 +226,8 @@ class AgesViewer extends React.Component {
         },
         server.restGetGenerationStatus(
             this.props.session.restServer
-            , this.props.session.userInfo.username
-            , this.props.session.userInfo.password
+            , this.state.session.userInfo.username
+            , this.state.session.userInfo.password
             , this.state.pdfId
             , this.handlePdfStatusCallback
         )
@@ -249,8 +268,8 @@ class AgesViewer extends React.Component {
         },
         server.getAgesReadOnlyTemplate(
             this.props.session.restServer
-            , this.props.session.userInfo.username
-            , this.props.session.userInfo.password
+            , this.state.session.userInfo.username
+            , this.state.session.userInfo.password
             , parms
             , this.handleFetchCallback
         )
@@ -658,7 +677,7 @@ class AgesViewer extends React.Component {
               <Col xs={8} md={8}>
                 <ReactSelector
                     initialValue={this.state.selectedFirstLibrary}
-                    resources={this.props.session.userInfo.domains.reader}
+                    resources={this.state.session.userInfo.domains.reader}
                     changeHandler={this.handleFirstLibrarySelection}
                     multiSelect={false}
                 />
@@ -690,7 +709,7 @@ class AgesViewer extends React.Component {
                     <Col xs={8} md={8}>
                       <ReactSelector
                           initialValue={this.state.selectedSecondLibrary}
-                          resources={this.props.session.userInfo.domains.reader}
+                          resources={this.state.session.userInfo.domains.reader}
                           changeHandler={this.handleSecondLibrarySelection}
                           multiSelect={false}
                       />
@@ -724,7 +743,7 @@ class AgesViewer extends React.Component {
                     <Col xs={8} md={8}>
                       <ReactSelector
                           initialValue={this.state.selectedThirdLibrary}
-                          resources={this.props.session.userInfo.domains.reader}
+                          resources={this.state.session.userInfo.domains.reader}
                           changeHandler={this.handleThirdLibrarySelection}
                           multiSelect={false}
                       />

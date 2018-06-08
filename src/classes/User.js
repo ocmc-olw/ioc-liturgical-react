@@ -1,5 +1,14 @@
 /**
  * Created by mac002 on 6/6/17.
+ * Note: if you want to use the functions for this class,
+ * you should import the class, and when you set the state,
+ * create a new instance of User and pass in the constructor
+ * parameters from props.session.userInfo.  Then in your
+ * component, use this.state.session.userInfo instead of
+ * this.props.session.userInfo.  This is only necessary if
+ * you are using the functions.  The reason for this is
+ * that users of ioc-liturgical-react who use redux will
+ * make a copy of objects and lose the functions.
  */
 
 class User {

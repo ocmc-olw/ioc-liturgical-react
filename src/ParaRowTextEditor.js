@@ -242,15 +242,24 @@ export class ParaRowTextEditor extends React.Component {
           });
           response.data.values = values;
 
-          let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
-            message = this.state.labels.search.msg3
-                + " "
-                + values.length
-                + " "
-                + this.state.labels.search.msg4
-                + "."
+          let resultCount = 0;
+          let message = this.state.labels.search.foundNone
+          let found = this.state.labels.search.foundMany;
+          if (values) {
+            resultCount = values.length;
+            if (resultCount === 0) {
+              message = this.state.labels.search.foundNone;
+            } else if (resultCount === 1) {
+              message = this.state.labels.search.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
+
+
           this.setState({
                 message: message
                 , messageIcon: this.messageIcons.info
@@ -266,7 +275,7 @@ export class ParaRowTextEditor extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.labels.search.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -674,7 +683,7 @@ export class ParaRowTextEditor extends React.Component {
           this.state.editorValue
       );
     }
-  }
+  };
 
   getParaRows = () => {
     if (this.state.showSearchResults) {

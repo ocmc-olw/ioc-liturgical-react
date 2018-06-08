@@ -19,6 +19,7 @@ import axios from 'axios';
 import ResourceSelector from './ReactSelector';
 import { get } from 'lodash';
 import Server from './../helpers/Server';
+import UiSchemas from "../classes/UiSchemas";
 
 /**
  * This component provides a schema based form editor
@@ -57,6 +58,15 @@ class GenericNewEntryForm extends React.Component {
       title = props.title;
     }
 
+    let uiSchemas = {};
+    if (props.session && props.session.uiSchemas) {
+      uiSchemas = new UiSchemas(
+          props.session.uiSchemas.formsDropdown
+          , props.session.uiSchemas.formsSchemas
+          , props.session.uiSchemas.forms
+      );
+    }
+
     this.state = {
       labels: {
         thisClass: thisClassLabels
@@ -64,6 +74,9 @@ class GenericNewEntryForm extends React.Component {
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
         , search: Labels.getSearchLabels(this.props.session.languageCode)
         , title: title
+      }
+      , session: {
+        uiSchemas: uiSchemas
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -124,6 +137,16 @@ class GenericNewEntryForm extends React.Component {
       title = nextProps.title;
     }
 
+    let uiSchemas = {};
+    if (nextProps.session && nextProps.session.uiSchemas) {
+      uiSchemas = new UiSchemas(
+          nextProps.session.uiSchemas.formsDropdown
+          , nextProps.session.uiSchemas.formsSchemas
+          , nextProps.session.uiSchemas.forms
+      );
+    }
+
+
     this.setState((prevState, props) => {
       return {
         labels: {
@@ -132,6 +155,9 @@ class GenericNewEntryForm extends React.Component {
           , messages: Labels.getMessageLabels(nextProps.session.languageCode)
           , search: Labels.getSearchLabels(this.props.session.languageCode)
           , title: title
+        }
+        , session: {
+          uiSchemas: uiSchemas
         }
         , message: Labels.getMessageLabels(props.session.languageCode).initial
         , schemaTypes: get(prevState, "schemaTypes", schemaTypes)
@@ -287,11 +313,11 @@ class GenericNewEntryForm extends React.Component {
       message = this.state.messages.notAuthorized;
     }
     if (type && this.props.session
-        && this.props.session.uiSchemas
+        && this.state.session.uiSchemas
     ) {
-      schema = this.props.session.uiSchemas.getSchema(schemaId);
-      uiSchema = this.props.session.uiSchemas.getUiSchema(schemaId);
-      formData = this.props.session.uiSchemas.getForm(schemaId);
+      schema = this.state.session.uiSchemas.getSchema(schemaId);
+      uiSchema = this.state.session.uiSchemas.getUiSchema(schemaId);
+      formData = this.state.session.uiSchemas.getForm(schemaId);
     }
     this.setState({
       newEntryType: type

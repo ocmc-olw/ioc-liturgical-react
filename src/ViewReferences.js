@@ -14,6 +14,7 @@ import IdManager from './helpers/IdManager';
 import MessageIcons from './helpers/MessageIcons';
 import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
+import UiSchemas from "./classes/UiSchemas";
 
 /**
  * For the prop ID, finds and displays all REFERS_TO relationships.
@@ -23,12 +24,24 @@ class ViewReferences extends React.Component {
   constructor(props) {
     super(props);
 
+    let uiSchemas = {};
+    if (props.session && props.session.uiSchemas) {
+      uiSchemas = new UiSchemas(
+          props.session.uiSchemas.formsDropdown
+          , props.session.uiSchemas.formsSchemas
+          , props.session.uiSchemas.forms
+      );
+    }
+    
     this.state = {
       labels: {
         thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
         , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+      }
+      , session: {
+        uiSchemas: uiSchemas
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -53,7 +66,7 @@ class ViewReferences extends React.Component {
         , onSelect: this.handleRowSelect
         , className: "App-row-select"
       }
-    }
+    };
 
     this.fetchDocData = this.fetchDocData.bind(this);
     this.getModalEditor = this.getModalEditor.bind(this);
@@ -71,11 +84,11 @@ class ViewReferences extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     this.fetchDocData();
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
@@ -91,12 +104,12 @@ class ViewReferences extends React.Component {
         }
       }, function () { return this.handleStateChange("place holder")});
     }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function if needed
-  }
+  };
 
   fetchDocData = () => {
 
@@ -164,7 +177,7 @@ class ViewReferences extends React.Component {
           })
         })
     ;
-  }
+  };
 
   handleRowSelect = (row, isSelected, e) => {
     let id = IdManager.toId(row["library"],row["fromId"],row["toId"]);
@@ -183,7 +196,7 @@ class ViewReferences extends React.Component {
       , selectedToId: row["toId"]
       , selectedToValue: row["toValue"]
     });
-  }
+  };
 
   editable = (library) => {
     let canEdit = false;
@@ -196,7 +209,7 @@ class ViewReferences extends React.Component {
       };
     }
     return canEdit;
-  }
+  };
 
   getModalEditor = () => {
     return (
@@ -218,7 +231,7 @@ class ViewReferences extends React.Component {
             canUpdate={this.editable(this.state.selectedLibrary)}
         />
     )
-  }
+  };
 
   handleCloseModal = (id, value) => {
     if (id && id.length > 0) {
@@ -232,13 +245,13 @@ class ViewReferences extends React.Component {
         showModalWindow: false
       })
     }
-  }
+  };
 
   // a property must be a table column (even if hidden)
   // and have export: { true } set
   onExportToCSV = ( row ) => {
     return this.state.data.values;
-  }
+  };
 
   handleDomainChange = (item) => {
     this.setState(
@@ -247,19 +260,19 @@ class ViewReferences extends React.Component {
           , showSearchResults: false
         }
         , this.fetchDocData);
-  }
+  };
 
 
   getTableColsForBiblicalReference = () => {
     let keys = [];
-    if (this.props.session.uiSchemas) {
-      keys = this.props.session.uiSchemas.getPropsForSchema(
+    if (this.state.session.uiSchemas) {
+      keys = this.state.session.uiSchemas.getPropsForSchema(
           "LinkRefersToBiblicalTextCreateForm:1.1"
           , ["id", "fromId", "type", "toId", "value", "toValue", "tags", "comments" ]
       );
     }
     return keys;
-  }
+  };
 
   getTable = () => {
     if (this.state.showSearchResults) {
@@ -341,7 +354,7 @@ class ViewReferences extends React.Component {
     } else {
       return (<div></div>)
     }
-  }
+  };
 
   getSelector = () => {
     if (this.props.session.userInfo.domains && this.props.session.userInfo.domains.reader) {
@@ -361,11 +374,11 @@ class ViewReferences extends React.Component {
     } else {
       return (<div></div>)
     }
-  }
+  };
 
   handleAddClose = () => {
     this.fetchDocData();
-  }
+  };
 
   getEntityAddButton = () => {
     /**
@@ -386,10 +399,10 @@ class ViewReferences extends React.Component {
     return (
         <SchemaBasedAddButton
             session={this.props.session}
-            restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
-            uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
-            schema={this.props.session.uiSchemas.getSchema(id)}
-            formData={this.props.session.uiSchemas.getForm(id)}
+            restPath={this.state.session.uiSchemas.getHttpPostPathForSchema(id)}
+            uiSchema={this.state.session.uiSchemas.getUiSchema(id)}
+            schema={this.state.session.uiSchemas.getSchema(id)}
+            formData={this.state.session.uiSchemas.getForm(id)}
             idLibrary={library}
             idTopic={this.props.id}
             idKey={""}
@@ -400,7 +413,7 @@ class ViewReferences extends React.Component {
             fromText={this.props.value}
         />
     )
-  }
+  };
 
   render() {
     return (

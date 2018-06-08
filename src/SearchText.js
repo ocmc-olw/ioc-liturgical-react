@@ -808,22 +808,20 @@ export class Search extends React.Component {
               }
           );
           let resultCount = 0;
-          let message = "No docs found...";
-          let csvData = response.data.values;
-          if (response.data.valueCount && response.data.valueCount > 0) {
+          let message = this.props.searchLabels.foundNone;
+          let found = this.props.searchLabels.foundMany;
+          if (response.data.valueCount) {
             resultCount = response.data.valueCount;
-            message = this.props.searchLabels.msg3
-                + " "
-                + response.data.valueCount
-                + " "
-                + this.props.searchLabels.msg4
-                + "."
-          } else {
-            message = this.props.searchLabels.msg3
-                + " 0 "
-                + this.props.searchLabels.msg4
-                + "."
+            if (resultCount === 1) {
+              message = this.props.searchLabels.foundOne;
+            } else if (resultCount > 1) {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
+
           this.setState({
                 message: message
                 , resultCount: resultCount
@@ -837,7 +835,7 @@ export class Search extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.props.searchLabels.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({
               data: message
@@ -886,7 +884,7 @@ export class Search extends React.Component {
         );
       }
     }
-  }
+  };
 
   render() {
     return (
@@ -902,7 +900,7 @@ export class Search extends React.Component {
           </div>
 
           <div>{this.props.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.props.searchLabels.msg3} {this.state.resultCount} {this.props.searchLabels.msg4} </span>
+              name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.showResultsStatus()}
           {this.state.showModalWindow && this.getDocComparison()}

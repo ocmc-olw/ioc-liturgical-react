@@ -10,6 +10,7 @@ import MessageIcons from './helpers/MessageIcons';
 import IdManager from './helpers/IdManager';
 import ModalAgesServiceSelector from './modules/ModalAgesServiceSelector';
 import ReactSelector from './modules/ReactSelector'
+import User from "./classes/User";
 
 /**
  *
@@ -85,12 +86,30 @@ class AgesEditor extends React.Component {
       selectedLibrary = currentState.selectedLibrary;
     }
 
+    let userInfo = {};
+    if (props.session && props.session.userInfo) {
+      userInfo = new User(
+          props.session.userInfo.username
+          , props.session.userInfo.password
+          , props.session.userInfo.domain
+          , props.session.userInfo.email
+          , props.session.userInfo.firstname
+          , props.session.userInfo.lastname
+          , props.session.userInfo.title
+          , props.session.userInfo.authenticated
+          , props.session.userInfo.domains
+      );
+    }
+
     return (
         {
           labels: {
             thisClass: Labels.getAgesEditorLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
             , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
+          }
+          , session: {
+            userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
@@ -132,8 +151,8 @@ class AgesEditor extends React.Component {
           },
           server.getAgesIndex(
               this.props.session.restServer
-              , this.props.session.userInfo.username
-              , this.props.session.userInfo.password
+              , this.state.session.userInfo.username
+              , this.state.session.userInfo.password
               , this.handleFetchAgesIndexCallback
           )
       );
@@ -164,8 +183,8 @@ class AgesEditor extends React.Component {
         },
         server.getAgesEditorTemplate(
             this.props.session.restServer
-            , this.props.session.userInfo.username
-            , this.props.session.userInfo.password
+            , this.state.session.userInfo.username
+            , this.state.session.userInfo.password
             , parms
             , this.handleFetchCallback
         )
@@ -222,8 +241,8 @@ class AgesEditor extends React.Component {
 
       server.putValue(
           this.props.session.restServer
-          , this.props.session.userInfo.username
-          , this.props.session.userInfo.password
+          , this.state.session.userInfo.username
+          , this.state.session.userInfo.password
           , {value: value, seq: undefined}
           , parms
           , this.handleValueUpdateCallback
@@ -254,7 +273,7 @@ class AgesEditor extends React.Component {
   editable = (id) => {
     let library = IdManager.getLibrary(id);
     let canEdit = false;
-    for (let entry of this.props.session.userInfo.domains.author) {
+    for (let entry of this.state.session.userInfo.domains.author) {
       if (entry.value == library) {
         canEdit = true;
         break;
@@ -540,7 +559,7 @@ class AgesEditor extends React.Component {
                   </ControlLabel>
                 <ReactSelector
                     initialValue={this.state.selectedLibrary}
-                    resources={this.props.session.userInfo.domains.author}
+                    resources={this.state.session.userInfo.domains.author}
                     changeHandler={this.handleLibrarySelection}
                     multiSelect={false}
                 />

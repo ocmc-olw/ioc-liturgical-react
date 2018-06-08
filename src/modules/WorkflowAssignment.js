@@ -22,12 +22,12 @@ class WorkflowAssignment extends React.Component {
 
   componentWillMount = () => {
     this.fetchData();
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps);
     this.fetchData();
-  }
+  };
 
   setTheState = (props) => {
     return (
@@ -52,7 +52,7 @@ class WorkflowAssignment extends React.Component {
           , dropdownsLoaded: false
         }
     )
-  }
+  };
 
   handleStatusChange = (item) => {
 
@@ -82,18 +82,18 @@ class WorkflowAssignment extends React.Component {
       , selectedUser: ""
       , userRolesIndex: userIndex
     });
-  }
+  };
 
   handleUserChange = (item) => {
     this.setState({selectedUser: item.value});
-  }
+  };
 
   handleCallback = () => {
     this.props.callback(
         this.state.selectedStatus
         , this.state.selectedUser
     );
-  }
+  };
 
   fetchData = () => {
     let config = {
@@ -127,7 +127,7 @@ class WorkflowAssignment extends React.Component {
           }
         });
 
-  }
+  };
 
   render() {
         return (

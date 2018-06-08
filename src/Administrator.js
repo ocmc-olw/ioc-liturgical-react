@@ -13,6 +13,7 @@ import ResourceSelector from './modules/ReactSelector';
 import Form from "react-jsonschema-form";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import auth from './helpers/Auth'
+import User from "./classes/User";
 
 class Administrator extends React.Component {
 
@@ -76,12 +77,30 @@ class Administrator extends React.Component {
       }
     }
 
+    let userInfo = {};
+    if (props.session && props.session.userInfo) {
+      userInfo = new User(
+          props.session.userInfo.username
+          , props.session.userInfo.password
+          , props.session.userInfo.domain
+          , props.session.userInfo.email
+          , props.session.userInfo.firstname
+          , props.session.userInfo.lastname
+          , props.session.userInfo.title
+          , props.session.userInfo.authenticated
+          , props.session.userInfo.domains
+      );
+    }
+
     return (
         {
           labels: {
             thisClass: Labels.getAgesEditorLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
             , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
+          }
+          , session: {
+            userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
@@ -154,8 +173,8 @@ class Administrator extends React.Component {
   fetchData(path, updateMessage) {
     var config = {
       auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
       }
     };
     axios.get(
@@ -192,8 +211,8 @@ class Administrator extends React.Component {
   handlePost(formData) {
     var config = {
       auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
       }
     };
     axios.post(
@@ -221,8 +240,8 @@ class Administrator extends React.Component {
   handlePut(formData) {
     var config = {
       auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
       }
     };
     let path = IdManager.idToPath(this.state.item.id);
@@ -245,7 +264,7 @@ class Administrator extends React.Component {
             message = path + ": " + response.data.userMessage;
           }
           if (formData.formData && formData.formData.password) {
-            this.props.session.userInfo.password = formData.formData.password;
+            this.state.session.userInfo.password = formData.formData.password;
           }
           this.setState({
             message: message
@@ -277,8 +296,8 @@ class Administrator extends React.Component {
   getResources = () => {
     var config = {
       auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
       }
     };
 

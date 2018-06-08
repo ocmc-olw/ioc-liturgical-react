@@ -10,6 +10,7 @@ import Server from './helpers/Server';
 import Labels from './Labels';
 import IdManager from './helpers/IdManager';
 import FormattedTextNote from './FormattedTextNote';
+import User from "./classes/User";
 
 /**
  *
@@ -65,10 +66,27 @@ export class TextNotesLister extends React.Component {
         selectedId = this.state.selectedId;
       }
     }
+    let userInfo = {};
+    if (props.session && props.session.userInfo) {
+      userInfo = new User(
+          props.session.userInfo.username
+          , props.session.userInfo.password
+          , props.session.userInfo.domain
+          , props.session.userInfo.email
+          , props.session.userInfo.firstname
+          , props.session.userInfo.lastname
+          , props.session.userInfo.title
+          , props.session.userInfo.authenticated
+          , props.session.userInfo.domains
+      );
+    }
 
     return (
         {
           searchLabels: theSearchLabels
+          , session: {
+            userInfo: userInfo
+          }
           , docType: props.initialType
           , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
@@ -224,7 +242,7 @@ export class TextNotesLister extends React.Component {
   handleRowSelect = (row, isSelected, e) => {
     let rowSelectMessage = this.state.messages.ok;
     let rowSelectMessageIcon = this.messageIcons.info;
-    if (this.props.session.userInfo.isAuthorFor(row["library"])) {
+    if (this.state.session.userInfo.isAuthorFor(row["library"])) {
       this.setState({
         selectedId: row["id"]
         , selectedLibrary: row["library"]
@@ -327,8 +345,8 @@ export class TextNotesLister extends React.Component {
     });
     let config = {
       auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
       }
     };
 
@@ -347,24 +365,25 @@ export class TextNotesLister extends React.Component {
         .then(response => {
           let resultCount = 0;
           let data = [];
-          let message = "No docs found...";
           let showSearchResults = false;
-          if (response.data && response.data.valueCount && response.data.valueCount > 0) {
+          let message = this.state.searchLabels.foundNone
+          let found = this.state.searchLabels.foundMany;
+          if (response.data.valueCount) {
             data = response.data;
             resultCount = data.valueCount;
-            message = this.state.searchLabels.msg3
-                + " "
-                + data.valueCount
-                + " "
-                + this.state.searchLabels.msg4
-                + ".";
-            showSearchResults = true;
-          } else {
-            message = this.state.searchLabels.msg3
-                + " 0 "
-                + this.state.searchLabels.msg4
-                + "."
+            showSearchResults = resultCount > 0;
+            if (resultCount === 0) {
+              message = this.state.searchLabels.foundNone;
+            } else if (resultCount === 1) {
+              message = this.state.searchLabels.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
+
           let enableAdd = resultCount > 0;
           this.setState({
                 message: message
@@ -385,7 +404,7 @@ export class TextNotesLister extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.searchLabels.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -443,8 +462,8 @@ export class TextNotesLister extends React.Component {
 
       Server.restGetForId(
           this.props.session.restServer
-          , this.props.session.userInfo.username
-          , this.props.session.userInfo.password
+          , this.state.session.userInfo.username
+          , this.state.session.userInfo.password
           , nextId
           , this.handleGetForIdCallback
       );
@@ -470,7 +489,7 @@ export class TextNotesLister extends React.Component {
     return (
         <div className="App-page App-Notes-Lister">
           {this.props.title && <h3>{this.props.title}</h3>}
-          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.getAddButton()}</span>
+          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.message} {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>

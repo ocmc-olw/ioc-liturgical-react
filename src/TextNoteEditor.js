@@ -37,6 +37,7 @@ import WorkflowForm from './helpers/WorkflowForm';
 
 import CompareDocs from './modules/CompareDocs';
 import axios from "axios/index";
+import UiSchemas from "./classes/UiSchemas";
 
 /**
  * Note: The form properties need to be remapped in the server:
@@ -336,8 +337,17 @@ class TextNoteEditor extends React.Component {
       form = nextProps.form;
       selectedType = form.noteType;
       selectedTypeLabel = this.getLabel(form.noteType);
-    } else if (nextProps.session && nextProps.session.uiSchemas) {
-      form = JSON.parse(JSON.stringify(nextProps.session.uiSchemas.getForm("TextualNote:1.1")));
+    } else if (nextProps.session
+        && nextProps.session.uiSchemas
+        && nextProps.session.uiSchemas.getForm
+    ) {
+      let uiSchemas = {};
+        uiSchemas = new UiSchemas(
+            nextProps.session.uiSchemas.formsDropdown
+            , nextProps.session.uiSchemas.formsSchemas
+            , nextProps.session.uiSchemas.forms
+        );
+      form = JSON.parse(JSON.stringify(uiSchemas.getForm("TextualNote:1.1")));
       form.liturgicalScope = textIdParts.key;
       form.library = nextProps.session.userInfo.domain;
       let key = this.getTimestamp();

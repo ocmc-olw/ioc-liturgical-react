@@ -6,6 +6,7 @@ import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
+import UiSchemas from './classes/UiSchemas';
 import Server from './helpers/Server';
 import Labels from './Labels';
 import SchemaBasedAddButton from "./modules/SchemaBasedAddButton";
@@ -71,10 +72,21 @@ export class NotesLister extends React.Component {
     let textIdParts = IdManager.getParts(this.props.topicId);
     let topicId = "gr_gr_cog" + "~" + textIdParts.topic + "~" + textIdParts.key;
 
+    let uiSchemas = {};
+    if (props.session && props.session.uiSchemas) {
+      uiSchemas = new UiSchemas(
+          props.session.uiSchemas.formsDropdown
+          , props.session.uiSchemas.formsSchemas
+          , props.session.uiSchemas.forms
+      );
+    }
 
     return (
         {
           searchLabels: theSearchLabels
+          , session: {
+            uiSchemas: uiSchemas
+          }
           , docType: props.initialType
           , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
@@ -303,26 +315,26 @@ export class NotesLister extends React.Component {
         .then(response => {
           // response.data will contain: "id, library, topic, key, value, tags, text"
           let resultCount = 0;
+          let message = this.state.searchLabels.foundNone
+          let found = this.state.searchLabels.foundMany;
           let data = [];
-          let message = "No docs found...";
           let showSearchResults = false;
-          if (response.data && response.data.valueCount && response.data.valueCount > 0) {
+          if (response.data.valueCount) {
             data = response.data;
             resultCount = data.valueCount;
-            message = this.state.searchLabels.msg3
-                + " "
-                + data.valueCount
-                + " "
-                + this.state.searchLabels.msg4
-                + "."
-            showSearchResults = true;
-          } else {
-            message = this.state.searchLabels.msg3
-                + " 0 "
-                + this.state.searchLabels.msg4
-                + "."
+            showSearchResults = resultCount > 0;
+            if (resultCount === 0) {
+              message = this.state.searchLabels.foundNone;
+            } else if (resultCount === 1) {
+              message = this.state.searchLabels.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
-//          let enableAdd = resultCount > 0;
+
           this.setState({
                 message: message
                 , data: data
@@ -337,7 +349,7 @@ export class NotesLister extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.searchLabels.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -351,8 +363,8 @@ export class NotesLister extends React.Component {
 
   getAddButton = () => {
     if (this.state.enableAdd
-      && this.props.session
-        && this.props.session.uiSchemas
+      && this.state.session
+        && this.state.session.uiSchemas
     ) {
       let id = "UserNoteCreateForm:1.1";
       let textIdParts = IdManager.getParts(this.props.topicId);
@@ -379,10 +391,10 @@ export class NotesLister extends React.Component {
       return (
           <SchemaBasedAddButton
               session={this.props.session}
-              restPath={this.props.session.uiSchemas.getHttpPostPathForSchema(id)}
-              uiSchema={this.props.session.uiSchemas.getUiSchema(id)}
-              schema={this.props.session.uiSchemas.getSchema(id)}
-              formData={this.props.session.uiSchemas.getForm(id)}
+              restPath={this.state.session.uiSchemas.getHttpPostPathForSchema(id)}
+              uiSchema={this.state.session.uiSchemas.getUiSchema(id)}
+              schema={this.state.session.uiSchemas.getSchema(id)}
+              formData={this.state.session.uiSchemas.getForm(id)}
               idLibrary={library}
               idTopic={topicId}
               idKey={key}
@@ -427,13 +439,13 @@ export class NotesLister extends React.Component {
           , this.handleGetForIdCallback
       );
     }
-  }
+  };
 
   render() {
     return (
         <div className="App-page App-Notes-Lister">
           {this.props.title && <h3>{this.props.title}</h3>}
-          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} {this.getAddButton()}</span>
+          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.message} {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>

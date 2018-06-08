@@ -17,6 +17,7 @@ import {
 } from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import { SuperTypes } from './classes/ENUMS';
+import User from './classes/User';
 import Server from './helpers/Server';
 import Labels from './Labels';
 
@@ -67,8 +68,8 @@ export class SearchGeneric extends React.Component {
     );
     let config = {
       auth: {
-        username: this.props.session.userInfo.username
-        , password: this.props.session.userInfo.password
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
       }
     };
     let path = this.props.session.restServer + Server.getDbServerDropdownsSearchGenericApi();
@@ -156,21 +157,36 @@ export class SearchGeneric extends React.Component {
 
 
     let userDomain = "";
-    if (this.props.session
-        && this.props.session.userInfo
-        && this.props.session.userInfo.domain
+    let userInfo = {};
+
+    if (props.session
+        && props.session.userInfo
+        && props.session.userInfo.domain
     ) {
-      userDomain = this.props.session.userInfo.domain;
+      userDomain = props.session.userInfo.domain;
+      userInfo = new User(
+          props.session.userInfo.username
+          , props.session.userInfo.password
+          , props.session.userInfo.domain
+          , props.session.userInfo.email
+          , props.session.userInfo.firstname
+          , props.session.userInfo.lastname
+          , props.session.userInfo.title
+          , props.session.userInfo.authenticated
+          , props.session.userInfo.domains
+      );
     }
     let theSearchLabels = Labels.getSearchGenericLabels(props.session.languageCode);
-
 
     return (
         {
           labels: {
-            thisClass: Labels.getSearchGenericLabels(this.props.session.languageCode)
+            thisClass: Labels.getSearchGenericLabels(props.session.languageCode)
             , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
             , search: theSearchLabels
+          }
+          , session: {
+            userInfo: userInfo
           }
           , propertiesToReturn: get(this.state, "propertiesToReturn", propsToReturnForGeneric)
           , propertiesToReturnGeneric: propsToReturnForGeneric
@@ -433,7 +449,7 @@ export class SearchGeneric extends React.Component {
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
-            canUpdate={this.props.session.userInfo.isAuthorFor(this.state.selectedLibrary)}
+            canUpdate={this.state.session.userInfo.isAuthorFor(this.state.selectedLibrary)}
         />
     )
   };
@@ -489,21 +505,22 @@ export class SearchGeneric extends React.Component {
           }
       );
       let resultCount = 0;
-      let message = "No docs found...";
-      if (restCallResult.data.valueCount && restCallResult.data.valueCount > 0) {
+      let message = this.state.labels.search.foundNone
+      let found = this.state.labels.search.foundMany;
+      if (restCallResult.data.valueCount) {
         resultCount = restCallResult.data.valueCount;
-        message = this.state.labels.search.msg3
-            + " "
-            + restCallResult.data.valueCount
-            + " "
-            + this.state.labels.search.msg4
-            + "."
-      } else {
-        message = this.state.labels.search.msg3
-            + " 0 "
-            + this.state.labels.search.msg4
-            + "."
+        if (resultCount === 0) {
+          message = this.state.labels.search.foundNone;
+        } else if (resultCount === 1) {
+          message = this.state.labels.search.foundOne;
+        } else {
+          message = found
+              + " "
+              + resultCount
+              + ".";
+        }
       }
+
       this.setState({
             message: message
             , resultCount: resultCount
@@ -524,8 +541,8 @@ export class SearchGeneric extends React.Component {
       });
       let config = {
         auth: {
-          username: this.props.session.userInfo.username
-          , password: this.props.session.userInfo.password
+          username: this.state.session.userInfo.username
+          , password: this.state.session.userInfo.password
         }
       };
 
@@ -542,8 +559,8 @@ export class SearchGeneric extends React.Component {
 
       Server.getGenericSearchResult(
           this.props.session.restServer
-          , this.props.session.userInfo.username
-          , this.props.session.userInfo.password
+          , this.state.session.userInfo.username
+          , this.state.session.userInfo.password
           , parms
           , this.handleSearchCallback
       );
@@ -807,7 +824,7 @@ export class SearchGeneric extends React.Component {
           </div>
 
           <div>{this.state.labels.search.resultLabel}: <span className="App App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.labels.search.msg3} {this.state.resultCount} {this.state.labels.search.msg4}  {this.getAddButton()}</span>
+              name={this.state.messageIcon}/>{this.state.message} {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>

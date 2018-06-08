@@ -93,7 +93,7 @@ export class SearchTemplates extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setTheState(nextProps, this.state.docType);
-  }
+  };
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
@@ -398,21 +398,22 @@ export class SearchTemplates extends React.Component {
               }
           );
           let resultCount = 0;
-          let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
+          let message = this.state.searchLabels.foundNone;
+          let found = this.state.searchLabels.foundMany;
+          if (response.data.valueCount) {
             resultCount = response.data.valueCount;
-            message = this.state.searchLabels.msg3
-                + " "
-                + response.data.valueCount
-                + " "
-                + this.state.searchLabels.msg4
-                + "."
-          } else {
-            message = this.state.searchLabels.msg3
-                + " 0 "
-                + this.state.searchLabels.msg4
-                + "."
+            if (resultCount === 0) {
+              message = this.state.searchLabels.foundNone;
+            } else if (resultCount === 1) {
+              message = this.state.searchLabels.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
+
           this.setState({
                 message: message
                 , resultCount: resultCount
@@ -425,7 +426,7 @@ export class SearchTemplates extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.searchLabels.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -446,7 +447,7 @@ export class SearchTemplates extends React.Component {
           </div>
 
           <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.searchLabels.msg3} {this.state.resultCount} {this.state.searchLabels.msg4} </span>
+              name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.state.showSearchResults &&
           <div>

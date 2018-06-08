@@ -15,6 +15,7 @@ import {
   , Row
   , Well
 } from 'react-bootstrap';
+import User from "./classes/User";
 
 /**
  * Provides a text editor with source and models as parallel columns
@@ -40,11 +41,11 @@ class ParaColTextEditor extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let dataFetched = false;
@@ -84,11 +85,29 @@ class ParaColTextEditor extends React.Component {
       }
     }
 
+    let userInfo = {};
+    if (props.session && props.session.userInfo) {
+      userInfo = new User(
+          props.session.userInfo.username
+          , props.session.userInfo.password
+          , props.session.userInfo.domain
+          , props.session.userInfo.email
+          , props.session.userInfo.firstname
+          , props.session.userInfo.lastname
+          , props.session.userInfo.title
+          , props.session.userInfo.authenticated
+          , props.session.userInfo.domains
+      );
+    }
+
     return (
         {
           labels: {
             thisClass: Labels.getParaColTextEditorLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
+          }
+          , session: {
+            userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
@@ -152,8 +171,8 @@ class ParaColTextEditor extends React.Component {
     },
       server.getViewForTopic(
           this.props.session.restServer
-          , this.props.session.userInfo.username
-          , this.props.session.userInfo.password
+          , this.state.session.userInfo.username
+          , this.state.session.userInfo.password
           , parms
           , this.handleFetchCallback
       )
@@ -272,8 +291,8 @@ class ParaColTextEditor extends React.Component {
 
     server.putValue(
         this.props.session.restServer
-        , this.props.session.userInfo.username
-        , this.props.session.userInfo.password
+        , this.state.session.userInfo.username
+        , this.state.session.userInfo.password
         , {value: value, seq: seq}
         , parms
         , this.handleValueUpdateCallback
@@ -323,7 +342,7 @@ class ParaColTextEditor extends React.Component {
    */
   editable = (library) => {
     let canEdit = false;
-    for (let entry of this.props.session.userInfo.domains.author) {
+    for (let entry of this.state.session.userInfo.domains.author) {
       if (entry.value == library) {
         canEdit = true;
         break;
@@ -412,7 +431,7 @@ class ParaColTextEditor extends React.Component {
                               <Col xs={12} md={12}>
                                 <ResourceSelector
                                     initialValue={this.state.libraries.join()}
-                                    resources={this.props.session.userInfo.domains.reader}
+                                    resources={this.state.session.userInfo.domains.reader}
                                     changeHandler={this.handleLibrarySelection}
                                     multiSelect={true}
                                 />

@@ -7,6 +7,7 @@ import ModalSearchOntologyWithCallback from './ModalSearchOntologyWithCallback';
 import ModalSearchTextWithCallback from './ModalSearchTextWithCallback';
 import ModalNewEntryForm from './ModalNewEntryForm';
 import FontAwesome from 'react-fontawesome';
+import UiSchemas from "../classes/UiSchemas";
 
 /**
  * Provides an Add button for adding an entry that is based on a json schema
@@ -14,12 +15,24 @@ import FontAwesome from 'react-fontawesome';
 class SchemaBasedAddButton extends React.Component {
   constructor(props) {
     super(props);
+    let uiSchemas = {};
+    if (props.session && props.session.uiSchemas) {
+      uiSchemas = new UiSchemas(
+          props.session.uiSchemas.formsDropdown
+          , props.session.uiSchemas.formsSchemas
+          , props.session.uiSchemas.forms
+      );
+    }
+
     this.state = {
       labels: {
         thisClass: Labels.getSchemaBasedAddButtonLabels(this.props.session.languageCode)
         , messages: Labels.getMessageLabels(this.props.session.languageCode)
         , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
         , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+      }
+      , session: {
+        uiSchemas: uiSchemas
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -38,7 +51,7 @@ class SchemaBasedAddButton extends React.Component {
       , uiSchema: this.props.uiSchema
       , schema: this.props.schema
       , formData: this.props.formData
-    }
+    };
 
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleAddButtonClick = this.handleAddButtonClick.bind(this);
@@ -105,8 +118,8 @@ class SchemaBasedAddButton extends React.Component {
       , seq
       , schema
   ) => {
-    let schemaId = this.props.session.uiSchemas.getLinkCreateSchemaIdForSchemaId(schema);
-    let formData = this.props.session.uiSchemas.getForm(schemaId);
+    let schemaId = this.state.session.uiSchemas.getLinkCreateSchemaIdForSchemaId(schema);
+    let formData = this.state.session.uiSchemas.getForm(schemaId);
 
     this.setState({
       idKey: id
@@ -116,9 +129,9 @@ class SchemaBasedAddButton extends React.Component {
       , idSchema: schemaId
       , idTopicType: formData["partTypeOfTopic"]
       , idKeyType: formData["partTypeOfKey"]
-      , restPath: this.props.session.uiSchemas.getHttpPostPathForSchema(schemaId)
-      , uiSchema: this.props.session.uiSchemas.getUiSchema(schemaId)
-      , schema: this.props.session.uiSchemas.getSchema(schemaId)
+      , restPath: this.state.session.uiSchemas.getHttpPostPathForSchema(schemaId)
+      , uiSchema: this.state.session.uiSchemas.getUiSchema(schemaId)
+      , schema: this.state.session.uiSchemas.getSchema(schemaId)
       , formData: formData
     });
   };

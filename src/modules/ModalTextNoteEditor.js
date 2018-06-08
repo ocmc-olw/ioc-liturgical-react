@@ -110,7 +110,7 @@ export class ModalTextNoteEditor extends React.Component {
           let message = error.message;
           let messageIcon = MessageIcons.getMessageIcons().error;
           if (error && error.response && error.response.status === 404) {
-            message = "not found";
+            message = this.state.labels.messages.foundNone;
             messageIcon = MessageIcons.getMessageIcons().warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }

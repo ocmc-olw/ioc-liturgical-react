@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { get } from 'lodash';
 import OntologySearchOptions from "./modules/OntologySearchOptions";
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
@@ -94,7 +95,7 @@ export class SearchOntology extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setTheState(nextProps, this.state.docType);
-  }
+  };
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
@@ -111,7 +112,7 @@ export class SearchOntology extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
+            thisClass: Labels.getSearchOntologyLabels(this.props.session.languageCode)
             , buttons: Labels.getButtonLabels(this.props.session.languageCode)
             , messages: Labels.getMessageLabels(this.props.session.languageCode)
             , search: theSearchLabels
@@ -153,7 +154,7 @@ export class SearchOntology extends React.Component {
           ,
           searchFormType: "simple"
           ,
-          showSearchResults: false
+          showSearchResults: get(this.state, "showSearchResults", false)
           ,
           resultCount: 0
           ,
@@ -419,28 +420,26 @@ export class SearchOntology extends React.Component {
     axios.get(path, config)
         .then(response => {
           // response.data will contain: "id, library, topic, key, name, description, tags, _valueSchemaId"
+          let resultCount = 0;
+          let message = this.state.labels.search.foundNone
+          let found = this.state.labels.search.foundMany;
+          if (response.data.valueCount) {
+            resultCount = response.data.valueCount;
+            if (resultCount === 0) {
+              message = this.state.labels.search.foundNone;
+            } else if (resultCount === 1) {
+              message = this.state.labels.search.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
+          }
+
           this.setState({
                 data: response.data
-              }
-          );
-          let resultCount = 0;
-          let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
-            resultCount = response.data.valueCount;
-            message = this.state.labels.search.msg3
-                + " "
-                + response.data.valueCount
-                + " "
-                + this.state.labels.search.msg4
-                + "."
-          } else {
-            message = this.state.labels.search.msg3
-                + " 0 "
-                + this.state.labels.search.msg4
-                + "."
-          }
-          this.setState({
-                message: message
+                , message: message
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: true
@@ -451,7 +450,7 @@ export class SearchOntology extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.labels.search.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -472,7 +471,7 @@ export class SearchOntology extends React.Component {
           </div>
 
           <div>{this.state.labels.search.resultLabel}: <span className="App App-message">
-            <FontAwesome name={this.state.messageIcon}/>{this.state.labels.search.msg3} {this.state.resultCount} {this.state.labels.search.msg4} </span>
+            <FontAwesome name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.state.showSearchResults &&
           <div>

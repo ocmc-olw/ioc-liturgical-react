@@ -16,6 +16,7 @@ import LabelSelector from '../helpers/LabelSelector';
 import MessageIcons from '../helpers/MessageIcons';
 import Server from '../helpers/Server';
 import Spinner from '../helpers/Spinner';
+import UiSchemas from "../classes/UiSchemas";
 
 /**
  * Provides a means for the user to set the tags for a token.
@@ -184,6 +185,15 @@ class TokenTagger extends React.Component {
         submitDisabled = currentState.theTaggedNode.notComplete();
       }
 
+      let uiSchemas = {};
+      if (props.session && props.session.uiSchemas) {
+        uiSchemas = new UiSchemas(
+            props.session.uiSchemas.formsDropdown
+            , props.session.uiSchemas.formsSchemas
+            , props.session.uiSchemas.forms
+        );
+      }
+
       return (
           {
             labels: {
@@ -200,6 +210,9 @@ class TokenTagger extends React.Component {
                 , tense: labelTense
                 , voice: labelVoice
               }
+            }
+            , session: {
+              uiSchemas: uiSchemas
             }
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
@@ -620,7 +633,7 @@ class TokenTagger extends React.Component {
    * Update the database and return the value to the caller
    */
   submitUpdate = () => {
-    let path = this.props.session.uiSchemas.getHttpPutPathForSchema(
+    let path = this.state.session.uiSchemas.getHttpPutPathForSchema(
         this.state.tokenAnalysis._valueSchemaId
     );
     // submit update to the database via the rest api

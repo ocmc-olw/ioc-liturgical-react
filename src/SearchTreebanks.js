@@ -110,7 +110,7 @@ export class SearchTreebanks extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.setTheState(nextProps, this.state);
-  }
+  };
 
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, currentState) => {
@@ -436,23 +436,23 @@ export class SearchTreebanks extends React.Component {
             data: response.data
             , fetchingData: false
             , dataFetched: true
-              }
-          );
+          });
+
           let resultCount = 0;
-          let message = "No docs found...";
-          if (response.data.valueCount && response.data.valueCount > 0) {
+          let message = this.state.labels.thisClass.foundNone;
+          let found = this.state.labels.thisClass.foundMany;
+          if (response.data.valueCount) {
             resultCount = response.data.valueCount;
-            message = this.state.labels.thisClass.msg3
-                + " "
-                + response.data.valueCount
-                + " "
-                + this.state.labels.thisClass.msg4
-                + "."
-          } else {
-            message = this.state.labels.thisClass.msg3
-                + " 0 "
-                + this.state.labels.thisClass.msg4
-                + "."
+            if (resultCount === 0) {
+              message = this.state.labels.thisClass.foundNone;
+            } else if (resultCount === 1) {
+              message = this.state.labels.thisClass.foundOne;
+            } else {
+              message = found
+                  + " "
+                  + resultCount
+                  + ".";
+            }
           }
           this.setState({
                 message: message
@@ -466,7 +466,7 @@ export class SearchTreebanks extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.labels.thisClass.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -496,7 +496,7 @@ export class SearchTreebanks extends React.Component {
     axios.get(path, config)
         .then(response => {
           let text = response.data.values[0].text.value;
-          let tokens = response.data.values[1].tokens
+          let tokens = response.data.values[1].tokens;
           let nodes = response.data.values[2].nodes;
           let treeViewUtils = new TreeViewUtils(nodes);
           let treeNodeData = treeViewUtils.toTreeViewData("Root");
@@ -514,7 +514,7 @@ export class SearchTreebanks extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = "no docs found";
+            message = this.state.labels.search.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -529,7 +529,7 @@ export class SearchTreebanks extends React.Component {
     } else if (this.state.showSearchResults) {
         return (
             <div>{this.state.labels.thisClass.resultLabel}: <span className="App App-message"><FontAwesome
-              name={this.state.messageIcon}/>{this.state.labels.messages.found} {this.state.resultCount} {this.state.labels.thisClass.searchResultsType} </span>
+              name={this.state.messageIcon}/>{this.state.message} </span>
               <div>
                 {this.state.labels.thisClass.msg5} {this.state.labels.thisClass.msg6}
               </div>

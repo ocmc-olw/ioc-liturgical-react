@@ -67,7 +67,7 @@ class UiSchemas {
    */
   getHttpGetPathForSchema = (id) => {
     return this.formsSchemas[id].paths.get;
-  };;
+  };
   /**
    * Get the HTTP POST path for the form whose id matches the parameter
    * @param id
