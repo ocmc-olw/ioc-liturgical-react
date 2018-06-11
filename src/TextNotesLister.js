@@ -133,8 +133,6 @@ export class TextNotesLister extends React.Component {
           ,
           resultCount: get(this.state, "resultCount", 0)
           ,
-          data: {values: [{"id": "", "value:": ""}]}
-          ,
           options: {
             sizePerPage: 30
             , sizePerPageList: [5, 15, 30]
@@ -161,7 +159,7 @@ export class TextNotesLister extends React.Component {
           , showModalEditor: false
           , idColumnSize: "80px"
           , enableAdd: get(this.state, "enableAdd", false)
-          , data: get(this.state,"data",[])
+          , data: get(this.state,"data",[{"id": "", "value:": ""}])
           , notesDropdown: get(this.state,"notesDropdown",[])
           , canUpdateNote: get(this.state,"canUpdateNote", false)
         }
@@ -303,7 +301,7 @@ export class TextNotesLister extends React.Component {
             noteIdTopic={this.state.selectedTopic}
             noteIdKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
-            notesList={this.state.data.values}
+            notesList={this.state.data}
             canUpdate={this.state.canUpdateNote}
         />
     )
@@ -363,13 +361,15 @@ export class TextNotesLister extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerNotesApi() + parms;
     axios.get(path, config)
         .then(response => {
+          console.log("DUDE");
+          console.log(response.data);
           let resultCount = 0;
           let data = [];
           let showSearchResults = false;
           let message = this.state.searchLabels.foundNone
           let found = this.state.searchLabels.foundMany;
           if (response.data.valueCount) {
-            data = response.data;
+            data = response.values;
             resultCount = data.valueCount;
             showSearchResults = resultCount > 0;
             if (resultCount === 0) {
