@@ -730,8 +730,11 @@ class Demo extends React.Component {
       , valid
       , username
       , password
-      , userinfo
+      , userdata
   ) {
+    let userinfo = userdata[0];
+    let prefs = userdata[1];
+
     if (valid) {
       let userInfo = new User(
           username
@@ -743,6 +746,7 @@ class Demo extends React.Component {
           , userinfo.title
           , true
           , {}
+          , prefs
       );
       let session = this.state.session;
       session.userInfo = userInfo;
@@ -765,6 +769,7 @@ class Demo extends React.Component {
           , ""
           , ""
           , false
+          , {}
           , {}
       );
       let session = this.state.session;
@@ -813,7 +818,8 @@ class Demo extends React.Component {
         , forms.noteTypesDropdown
         , forms.noteTypesBilDropdown
         , forms.schemaEditorFormsDropdown
-  );
+        , forms.bibTexStyles
+    );
     session.dropdowns = dropdowns;
     console.log(session);
     this.setState({

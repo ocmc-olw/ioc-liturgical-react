@@ -38,7 +38,7 @@ class Login extends React.Component {
               , true
               , formData.username
               , formData.password
-              , response.data // domain, email, firstname, lastname, title
+              , response.data.values // [0] = domain, email, firstname, lastname, title, and [1] = prefs
           );
           server.getResources(
               this.props.restServer
@@ -62,7 +62,7 @@ class Login extends React.Component {
               , undefined
           );
         });
-  }
+  };
 
   fetchResources() {
 

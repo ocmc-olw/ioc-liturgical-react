@@ -31,37 +31,18 @@ export class ParaRowTextEditor extends React.Component {
   constructor(props) {
     super(props);
 
-    let citeStyles = [
-      "alphabetic",
-      "alphabetic-verb",
-      "authortitle",
-      "authortitle-comp",
-      "authortitle-ibid",
-      "authortitle-icomp",
-      "authortitle-tcomp",
-      "authortitle-terse",
-      "authortitle-ticomp",
-      "authoryear",
-      "authoryear-comp",
-      "authoryear-ibid",
-      "authoryear-icomp",
-      "numeric",
-      "numeric-comp",
-      "numeric-verb",
-      "reading",
-      "verbose",
-      "verbose-ibid",
-      "verbose-inote",
-      "verbose-note",
-      "verbose-trad1",
-      "verbose-trad2",
-      "verbose-trad3"
-    ];
+    let pdfSubTitle = "";
+    let prefs = {};
+    if (props.session.userInfo && props.session.userInfo.prefs) {
+      prefs = props.session.userInfo.prefs;
+      if (prefs.includeNotesTransAdvice) {
+        pdfSubTitle = "A Liturgical Translator's Manual";
+      }
+    }
     let citeData = [];
-    citeStyles.forEach(function(element) {
-      citeData.push({label: element, value: element});
-    });
-
+    if (props.session.dropdowns) {
+      citeData = props.session.dropdowns.bibTexStylesDropdown;
+    }
     this.state =
         {
           labels: {
@@ -71,7 +52,7 @@ export class ParaRowTextEditor extends React.Component {
             , search: Labels.getSearchLabels(props.session.languageCode)
           }
           , citeData: citeData
-          , citeStyle: "authoryear"
+          , citeStyle: prefs.bibLatexStyle ? prefs.bibLatexStyle : "authoryear"
           , greekSourceValue: ""
           , greekSourceId: ""
           , showSearchResults: false
@@ -122,15 +103,15 @@ export class ParaRowTextEditor extends React.Component {
             + props.idKey
           , pdfId: ""
           , pdfTitle: ""
-          , pdfSubTitle: ""
-          , pdfAuthor: ""
-          , pdfAuthorTitle: ""
-          , pdfAuthorAffiliation: ""
-          , includeAdviceNotes: false
-          , includePersonalNotes: false
-          , includeGrammar: false
-          , combineNotes: false
-          , createToc: false
+          , pdfSubTitle: pdfSubTitle
+          , pdfAuthor: prefs.author ? prefs.author : ""
+          , pdfAuthorTitle: prefs.authorTitle ? prefs.authorTitle : ""
+          , pdfAuthorAffiliation: prefs.authorAffiliation ? prefs.authorAffiliation : ""
+          , includeAdviceNotes: prefs.includeNotesTransAdvice ? prefs.includeNotesTransAdvice : ""
+          , includePersonalNotes: prefs.includeNotesUser ? prefs.includeNotesUser : ""
+          , includeGrammar: prefs.includeGrammar ? prefs.includeGrammar : ""
+          , combineNotes: prefs.combineNotes ? prefs.combineNotes : ""
+          , createToc: prefs.createToc ? prefs.createToc : ""
           , showDownloadLinks: false
           , preparingDownloads: false
           , biblatex: "http://ftp.math.purdue.edu/mirrors/ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf"
@@ -167,8 +148,20 @@ export class ParaRowTextEditor extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      this.setState((prevState, props) => {
+    let prefs = {};
+    let pdfSubTitle = get(this.state, "pdfSubTitle", "");
+    if (nextProps.session.userInfo && nextProps.session.userInfo.prefs) {
+      prefs = nextProps.session.userInfo.prefs;
+      if (pdfSubTitle.length === 0 && prefs.includeNotesTransAdvice) {
+        pdfSubTitle = "A Liturgical Translator's Manual";
+      }
+    }
+    let citeData = [];
+    if (nextProps.session.dropdowns) {
+      citeData = nextProps.session.dropdowns.bibTexStylesDropdown;
+    }
+
+    this.setState((prevState, props) => {
         return {
           labels: {
             thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
@@ -179,13 +172,19 @@ export class ParaRowTextEditor extends React.Component {
           , message: Labels.getSearchLabels(props.session.languageCode).msg1
           , greekSourceValue: ""
           , greekSourceId: ""
-          , includeAdviceNotes: get(this.state, "includeAdviceNotes", false)
-          , includeGrammar: get(this.state, "includeGrammar", false)
-          , includePersonalNotes: get(this.state, "includePersonalNotes", false)
-          , combineNotes: get(this.state, "combineNotes", false)
+          , citeData: citeData
+          , citeStyle: prefs.bibLatexStyle ? prefs.bibLatexStyle : "authoryear"
+          , pdfSubTitle: pdfSubTitle
+          , pdfAuthor: prefs.author ? prefs.author : ""
+          , pdfAuthorTitle: prefs.authorTitle ? prefs.authorTitle : ""
+          , pdfAuthorAffiliation: prefs.authorAffiliation ? prefs.authorAffiliation : ""
+          , includeAdviceNotes: prefs.includeNotesTransAdvice ? prefs.includeNotesTransAdvice : ""
+          , includePersonalNotes: prefs.includeNotesUser ? prefs.includeNotesUser : ""
+          , includeGrammar: prefs.includeGrammar ? prefs.includeGrammar : ""
+          , combineNotes: prefs.combineNotes ? prefs.combineNotes : ""
+          , createToc: prefs.createToc ? prefs.createToc : ""
         }
       }, function () { return this.handleStateChange("place holder")});
-    }
   };
 
   // if we need to do something after setState, do it here...

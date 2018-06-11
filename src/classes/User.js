@@ -22,6 +22,7 @@ class User {
       , title
       , authenticated
       , domains
+      , prefs
   ) {
     this.username = (username ? username : "");
     this.password = (password ? password : "");
@@ -31,7 +32,8 @@ class User {
     this.lastname = (lastname ? lastname: "");
     this.title = (title ? title: "");
     this.authenticated = (authenticated ? authenticated : false);
-    this.domains = (domains ? domains : {admin: {}, author: {}, reader: {}});;
+    this.domains = (domains ? domains : {admin: {}, author: {}, reader: {}});
+    this.prefs = (prefs ? prefs : {});
   };
 
   /**
