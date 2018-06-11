@@ -23,10 +23,67 @@ const   labels = {
       , submit: "Submit"
       , update: "Update"
     }
+    , BibleRefSelector: {
+      book: "Book"
+      , chapter: "Chapter"
+      , verse: "Verse"
+    }
+    , ChangePasswordPage: {
+      doNotMatch: "The new password and reentered password do not match."
+      , changed: "Your password was sucessfully changed."
+    }
     , deleteButton: {
       danger: "Danger!"
       , yesDelete: "Yes, delete the record"
       , msg1: "If you confirm the delete, this record and its relationships with other records will be deleted. This cannot be undone."
+    }
+    , liturgicalAcronyms: {
+      baptism: "Baptism"
+      , funeral: "Funeral"
+      , funeral_brightweek: "Funeral (Brightweek)"
+      , li: "Divine Liturgy"
+      , greatwaterblessing: "Blessing of the Waters (Great)"
+      , hymnbystnektarios: "Hymn by Saint Nektarios"
+      , ma: "Matins"
+      , matinsordinary: "Matins (Ordinary)"
+      , matinsordinary_paschal: "Matins (Ordinary - Paschal)"
+      , matinsordinary_ascension: "Matins (Ordinary - Ascension)"
+      , ma2: "Matins - full options"
+      , memorial: "Memorial"
+      , smallwaterblessing: "Blessing of the Waters (Small)"
+      , unction: "Unction"
+      , ve: "Vespers"
+      , wedding: "Wedding"
+    }
+    , OntologyRefSelector: {
+      type: "Ontology Type"
+      , entity: "Entity"
+    }
+    , schemaBasedAddButton: {
+      dummy: "dummy"
+    }
+    , resultsTable: {
+      filterPrompt: "type here to filter search results..."
+      , headerAuthor: "Auth/Ed"
+      , headerComments: "Comments"
+      , headerDate: "Date"
+      , headerDesc: "Description"
+      , headerDomain: "Library"
+      , headerKey: "Key"
+      , headerLemma: "Sub-Heading A"
+      , headerLink: "Link"
+      , headerName: "Name"
+      , headerNote: "Note"
+      , headerOntologyInstance: "Ontology Instance"
+      , headerOntologyType: "Ontology Category"
+      , headerScope: "Heading"
+      , headerTags: "Tags"
+      , headerText: "Text"
+      , headerTitle: "Sub-Heading B"
+      , headerTo: "Refers To"
+      , headerTopic: "Topic"
+      , headerType: "Type"
+      , headerValue: "Value"
     }
     , SearchGeneric: {
       title: "Search, create or edit Records using the Schema Editor"
@@ -65,13 +122,6 @@ const   labels = {
       , textPrompt: "enter text to search for here"
       , createTitle: "Create a New Record"
     }
-    , schemaBasedAddButton: {
-      dummy: "dummy"
-    }
-    , ChangePasswordPage: {
-      doNotMatch: "The new password and reentered password do not match."
-      , changed: "Your password was sucessfully changed."
-    }
     , TextNoteEditor: {
       type: "Type"
       , bibleRef: "Bible Ref"
@@ -104,48 +154,6 @@ const   labels = {
       , requiredMsg: "The note and fields in the settings tab are required."
       , createTitle: "Create a New Bibliography Entry"
     }
-    , WorkflowForm: {
-      visibility: "Visibility"
-      , status: "Status"
-      , AssignedTo: "Assigned to"
-      , statusTypes: {
-        edit: "Edit"
-        , review: "Review"
-        , final: "Final"
-      }
-      , visibilityTypes: {
-        personal: "Personal - only the library owner can see/edit it"
-        , private: "Private - only those granted access can see/edit it"
-        , public: "Public - anyone can see it, but not edit it"
-      }
-    }
-    , BibleRefSelector: {
-      book: "Book"
-      , chapter: "Chapter"
-      , verse: "Verse"
-      }
-    , OntologyRefSelector: {
-      type: "Ontology Type"
-      , entity: "Entity"
-    }
-    , liturgicalAcronyms: {
-      baptism: "Baptism"
-      , funeral: "Funeral"
-      , funeral_brightweek: "Funeral (Brightweek)"
-      , li: "Divine Liturgy"
-      , greatwaterblessing: "Blessing of the Waters (Great)"
-      , hymnbystnektarios: "Hymn by Saint Nektarios"
-      , ma: "Matins"
-      , matinsordinary: "Matins (Ordinary)"
-      , matinsordinary_paschal: "Matins (Ordinary - Paschal)"
-      , matinsordinary_ascension: "Matins (Ordinary - Ascension)"
-      , ma2: "Matins - full options"
-      , memorial: "Memorial"
-      , smallwaterblessing: "Blessing of the Waters (Small)"
-      , unction: "Unction"
-      , ve: "Vespers"
-      , wedding: "Wedding"
-    }
     , treebanksResultsTable: {
       filterPrompt: "type here to filter search results..."
       , headerParentLabel: "P.Relation"
@@ -161,28 +169,20 @@ const   labels = {
       , headerChildLemma: "C.Lemma"
       , headerChildGrammar: "C.Grammar"
     }
-    , resultsTable: {
-      filterPrompt: "type here to filter search results..."
-      , headerComments: "Comments"
-      , headerDate: "Date"
-      , headerDesc: "Description"
-      , headerDomain: "Library"
-      , headerKey: "Key"
-      , headerLemma: "Sub-Heading A"
-      , headerLink: "Link"
-      , headerName: "Name"
-      , headerNote: "Note"
-      , headerOntologyInstance: "Ontology Instance"
-      , headerOntologyType: "Ontology Category"
-      , headerScope: "Heading"
-      , headerTags: "Tags"
-      , headerText: "Text"
-      , headerTo: "Refers To"
-      , headerTopic: "Topic"
-      , headerType: "Type"
-      , headerValue: "Value"
-      , headerTitle: "Sub-Heading B"
-      , headerAuthor: "Auth/Ed"
+    , WorkflowForm: {
+      visibility: "Visibility"
+      , status: "Status"
+      , AssignedTo: "Assigned to"
+      , statusTypes: {
+        edit: "Edit"
+        , review: "Review"
+        , final: "Final"
+      }
+      , visibilityTypes: {
+        personal: "Personal - only the library owner can see/edit it"
+        , private: "Private - only those granted access can see/edit it"
+        , public: "Public - anyone can see it, but not edit it"
+      }
     }
     , linkSearchResultsTable: {
       filterPrompt: "type here to filter search results..."
@@ -1246,16 +1246,16 @@ const   labels = {
       , headerDesc: "Περιγραφή"
       , headerDomain: "βιβλιοθήκη"
       , headerKey: "Κλειδί"
-      , headerLemma: "Υπολήμμα Α´"
+      , headerLemma: "Υπότιτλος Α´"
       , headerLink: "Σύνδεσμος"
       , headerName: "Όνομα"
       , headerNote: "Σημείωση"
       , headerOntologyInstance: "Οντολογική περίπτωση"
       , headerOntologyType: "Οντολογική Κατηγορία"
-      , headerScope: "Λήμμα"
+      , headerScope: "Τίτλος"
       , headerTags: "Ετικέτες"
       , headerText: "Κείμενο"
-      , headerTitle: "Υπολήμμα Β´"
+      , headerTitle: "Υπότιτλος Β´"
       , headerTo: "Αναφέρεται Σε"
       , headerTopic: "Θέμα"
       , headerType: "Τύπος"
@@ -1871,7 +1871,7 @@ const   labels = {
     }
     , AgesEditor: {
       panelTitle: "View and Edit a Service or Sacrament from the AGES Initiatives website"
-      , msg1: " Double-click on text to open an editor window."
+      , msg1: " Double-click text to open an editor window."
       , msg2: "Got: "
       , agesGreek: "Below, the left column is Greek from AGES, "
       , agesEnglish: "and the right column is English from AGES."
@@ -1953,7 +1953,7 @@ const   labels = {
       , infoBelow: "Πληροφορίες σχετικά με την αναφορά είναι παρακάτω...."
       , prompt: "The default library for references is en_sys_ontology.  If you have authorization to view a different library, you may select it from the dropdown below."
     }
-      , TemplateEditor: {
+    , TemplateEditor: {
       panelTitle: "Template Editor"
       , instructions: "Use the Template Editor to create reusable templates to generate Liturgical books or services."
       , expandAll: "Expand All"

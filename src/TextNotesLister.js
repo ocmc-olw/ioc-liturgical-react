@@ -159,7 +159,7 @@ export class TextNotesLister extends React.Component {
           , showModalEditor: false
           , idColumnSize: "80px"
           , enableAdd: get(this.state, "enableAdd", false)
-          , data: get(this.state,"data",[{"id": "", "value:": ""}])
+          , notes: get(this.state,"notes",[{"id": "", "value:": ""}])
           , notesDropdown: get(this.state,"notesDropdown",[])
           , canUpdateNote: get(this.state,"canUpdateNote", false)
         }
@@ -175,7 +175,7 @@ export class TextNotesLister extends React.Component {
   };
 
   createNotesDropdown = () => {
-    let notesDropdown = this.state.data.values.map(function(a) {
+    let notesDropdown = this.state.notes.map(function(a) {
       let label = a.type;
       label += ": ";
       label += a.liturgicalScope;
@@ -301,7 +301,7 @@ export class TextNotesLister extends React.Component {
             noteIdTopic={this.state.selectedTopic}
             noteIdKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
-            notesList={this.state.data}
+            notesList={this.state.notes}
             canUpdate={this.state.canUpdateNote}
         />
     )
@@ -361,16 +361,14 @@ export class TextNotesLister extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerNotesApi() + parms;
     axios.get(path, config)
         .then(response => {
-          console.log("DUDE");
-          console.log(response.data);
           let resultCount = 0;
-          let data = [];
+          let notes = [];
           let showSearchResults = false;
           let message = this.state.searchLabels.foundNone
           let found = this.state.searchLabels.foundMany;
           if (response.data.valueCount) {
-            data = response.values;
-            resultCount = data.valueCount;
+            notes = response.data.values;
+            resultCount = response.data.valueCount;
             showSearchResults = resultCount > 0;
             if (resultCount === 0) {
               message = this.state.searchLabels.foundNone;
@@ -387,7 +385,7 @@ export class TextNotesLister extends React.Component {
           let enableAdd = resultCount > 0;
           this.setState({
                 message: message
-                , data: data
+                , notes: notes
                 , resultCount: resultCount
                 , messageIcon: this.messageIcons.info
                 , showSearchResults: showSearchResults
@@ -507,7 +505,7 @@ export class TextNotesLister extends React.Component {
             <div className="row">
               <BootstrapTable
                   ref="theTable"
-                  data={this.state.data.values}
+                  data={this.state.notes}
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
                   striped

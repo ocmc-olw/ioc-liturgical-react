@@ -877,7 +877,7 @@ export class ParaRowTextEditor extends React.Component {
           <Spinner message={this.state.labels.messages.retrieving}/>
       )
     }
-  }
+  };
   render() {
     return (
         <div className="App App-Text-Note-Editor">
