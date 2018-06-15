@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Table, Well} from 'react-bootstrap';
-import Labels from './Labels';
 import ModalParaRowEditor from './ModalParaRowEditor';
 
 import Spinner from './helpers/Spinner';
@@ -104,16 +103,16 @@ class AgesEditor extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesEditorLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
-            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
+            thisClass: props.session.labels[props.session.labelTopics.AgesEditor]
+            , messages: props.session.labels[props.session.labelTopics.messages]
+            , liturgicalAcronyms: props.session.labels[props.session.labelTopics.liturgicalAcronyms]
           }
           , session: {
             userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+          , message: props.session.labels[props.session.labelTopics.messages].initial
           , selectedLibrary: selectedLibrary
           , showModalEditor: false
           , selectedId: ""
@@ -410,7 +409,7 @@ class AgesEditor extends React.Component {
     if (this.state.showModalServiceSelector) {
       return (
         <ModalAgesServiceSelector
-            languageCode={this.props.session.languageCode}
+            session={this.props.session}
             callBack={this.handleServiceSelection}
             onClose={this.handleServiceSelectionClose}
             values={this.state.agesIndexValues}

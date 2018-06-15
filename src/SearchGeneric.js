@@ -19,7 +19,6 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import { SuperTypes } from './classes/ENUMS';
 import User from './classes/User';
 import Server from './helpers/Server';
-import Labels from './Labels';
 
 export class SearchGeneric extends React.Component {
 
@@ -176,15 +175,15 @@ export class SearchGeneric extends React.Component {
           , props.session.userInfo.domains
       );
     }
-    let theSearchLabels = Labels.getSearchGenericLabels(props.session.languageCode);
+    let theSearchLabels = props.session.labels[props.session.labelTopics.SearchGeneric];
 
     return (
         {
           labels: {
-            thisClass: Labels.getSearchGenericLabels(props.session.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+            resultsTableLabels: props.session.labels[props.session.labelTopics.resultsTable]
             , search: theSearchLabels
           }
+          , message: theSearchLabels.msg1
           , session: {
             userInfo: userInfo
           }
@@ -286,7 +285,6 @@ export class SearchGeneric extends React.Component {
                   tags={this.state.dropdowns.typeTags["Bibliography"]}
                   tagOperators={this.state.dropdowns.tagOperators}
                   handleSubmit={this.handleAdvancedSearchSubmit}
-                  labels={this.state.labels.search}
               />
           </div>
       );
@@ -449,7 +447,7 @@ export class SearchGeneric extends React.Component {
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
-            canUpdate={this.state.session.userInfo.isAuthorFor(this.state.selectedLibrary)}
+            canUpdate={this.props.session.userInfo.isAuthorFor(this.state.selectedLibrary)}
         />
     )
   };
@@ -460,7 +458,7 @@ export class SearchGeneric extends React.Component {
               session={this.props.session}
               restPath={Server.getDbServerDocsApi()}
               onClose={this.handleCloseModalAdd}
-              title={this.state.labels.thisClass.createTitle}
+              title={this.state.labels.search.createTitle}
           />
       )
   };

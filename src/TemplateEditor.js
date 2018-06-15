@@ -9,11 +9,9 @@ import SortableTree, {
   , removeNodeAtPath
   , toggleExpandedForAll
 } from "react-sortable-tree";
-import Labels from './Labels';
 import Spinner from './helpers/Spinner';
 import MessageIcons from './helpers/MessageIcons';
 import ModalTemplateNodeEditor from './modules/ModalTemplateNodeEditor';
-import axios from "axios/index";
 import Server from './helpers/Server';
 
 /**
@@ -31,18 +29,18 @@ class TemplateEditor extends React.Component {
     super(props);
 
     const renderDepthTitle = ({ path }) => `Depth: ${path.length}`;
-    let languageCode = props.session.languageCode;
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
 
     this.state = {
-      labels: { // TODO: replace getViewReferencesLabels with method for this class
-        thisClass: Labels.getTemplateEditorLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+      labels: {
+        thisClass: labels[labelTopics.TemplateEditor]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , searchString: ''
       , searchFocusIndex: 0
       , searchFoundCount: null
@@ -59,7 +57,7 @@ class TemplateEditor extends React.Component {
       , selectedId: "" // from SearchText
       , selectedItem: "" // from ReactSelector
       , updating: false
-    }
+    };
 
     this.handleStateChange = this.handleStateChange.bind(this);
 
@@ -78,24 +76,24 @@ class TemplateEditor extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     // make any initial function calls here...
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
       this.setState((prevState, props) => {
-        let languageCode = nextProps.session.languageCode;
+        let labels = nextProps.session.labels;
+        let labelTopics = nextProps.session.labelTopics;
+
         return {
           labels: {
-            thisClass: Labels.getTemplateEditorLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            thisClass: labels[labelTopics.TemplateEditor]
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , treeData: nextProps.treeData
           , updating: false
           , showModalEditor: false
@@ -110,13 +108,12 @@ class TemplateEditor extends React.Component {
           , selectedItem: "" // from ReactSelector
         }
       }, function () { return this.handleStateChange("place holder")});
-    }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function if needed
-  }
+  };
 
 
   getNodeEditor = () => {
@@ -463,5 +460,11 @@ TemplateEditor.defaultProps = {
   , maxDepth: 20
 };
 
-// TODO: rename class for export
+TemplateEditor.propTypes = {
+  session: PropTypes.object.isRequired
+  , treeData: PropTypes.array.isRequired
+  , idLibrary: PropTypes.string.isRequired
+  , idTopic: PropTypes.string.isRequired
+};
+
 export default TemplateEditor;

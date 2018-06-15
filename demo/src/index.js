@@ -2,8 +2,6 @@ import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
-//import '../../node_modules/tinymce/skins/lightgray/skin.min.css'
-//import '../../node_modules/tinymce/skins/lightgray/content.min.css'
 import './css/alwb.css';
 import './css/Demo.css'; // important that you load this as the last css
 import '../../node_modules/draft-js/dist/Draft.css'
@@ -44,10 +42,10 @@ import {
   , Flag
   , HelpSearch
   , Html5VideoPanel
-  , Labels
   , LiturgicalDayProperties
   , Login
   , NewEntry
+  , ParaColLabelEditor
   , ParaRowTextEditor
   , SearchNotes
   , SearchOntology
@@ -60,7 +58,6 @@ import {
   , Session
   , Spinner
   , TemplateEditor
-  , TemplateForTable
   , TextNoteEditor
   , TopicsSelector
   , UiSchemas
@@ -72,12 +69,6 @@ import {
 
 import VersionNumbers from '../../src/helpers/VersionNumbers'
 import ParaColTextEditor from "../../src/ParaColTextEditor";
-import LifeCycleDemo from "../../src/helpers/LifeCycleDemo";
-
-const initialStateExample = "this.state = {\n    restServer: \"https://ioc-liturgical-ws.org/\"\n    , username: \"\"\n    , password: \"\"\n    , authenticated: false\n    , language: {\n      language: \"en\"\n      , labels: {\n        , resultsTable: Labels.labels.en.resultsTable\n        , header: Labels.labels.en.header\n        , help: Labels.labels.en.help\n        , pageAbout: Labels.labels.en.pageAbout\n        , pageLogin: Labels.labels.en.pageLogin\n        , search: Labels.labels.en.search\n  }\n}\n};";
-const languageChangeHandlerExample = "handleLanguageChange = (code) => {\nif (code.length > 0 && code !== \"undefined\") {\n  this.setState({\n    language: {\n      code: code\n      , labels: {\n        compSimpleSearch: Labels.getCompSimpleSearchLabels(code)\n        , resultsTable: Labels.getResultsTableLabels(code)\n        , header: Labels.getHeaderLabels(code)\n        , help: Labels.getHelpLabels(code)\n        , pageAbout: Labels.getPageAboutLabels(code)\n        , pageLogin: Labels.getPageLoginLabels(code)\n        , search: Labels.getSearchLabels(code)\n      }\n    }\n  });\n}\n};";
-const menuLanguageChangeExample = "<MenuItem eventKey={6.2} id=\"el\" onClick={this.handleLanguageChange}><Flag code=\"el\"/></MenuItem>";
-const localLanguageChangeHandlerExample = "handleLanguageChange = (event) => {\n  if (event.target.id) {\n    this.props.changeHandler(event.target.id);\n    event.preventDefault();\n  }\n};";
 const loginSample = "<Login\n\tsession={this.state.session} // e.g. https://ioc-liturgical-ws.org/\n\tusername={this.state.session.userInfo.username} // initially set to \"\"\n\tpassword={this.state.session.userInfo.password} // initially set to \"\"\n\tloginCallback={this.handleLoginCallback}\n\tformPrompt={this.state.language.labels.pageLogin.prompt}\n\tformMsg={this.state.loginFormMsg} // initially set to \"\"\n />";
 const searchSample = "<SearchText\n session={this.state.session}\n username={this.state.session.userInfo.username}\n password={this.state.session.userInfo.password}\n callback={this.handleSearchCallback}\n searchLabels={this.state.language.labels.search}\n resultsTableLabels={this.state.language.labels.resultsTable}\n/>"
 const searchCallbackSample = "\nhandleSearchCallback(id, value) {\n\tif (id && id.length > 0) {\n\t\tthis.setState({\n\t\t\tsearching: false\n\t\t\t, data : {\n\t\t\t\t\"idReferredByText\": id,\n\t\t\t\t\"referredByText\": value\n\t\t\t}\n\t\t});\n\t}\n};";
@@ -104,24 +95,6 @@ class Demo extends React.Component {
       , npmVersion: VersionNumbers.getPackageNumber()
       , authenticated: false
       , agesIndex: {}
-      , language: {
-        code: "en"
-        , labels: {
-          resultsTable: Labels.labels.en.resultsTable
-          , linkSearchResultsTable: Labels.labels.en.linkSearchResultsTable
-          , header: Labels.labels.en.header
-          , help: Labels.labels.en.help
-          , pageAbout: Labels.labels.en.pageAbout
-          , pageLogin: Labels.labels.en.pageLogin
-          , search: Labels.labels.en.search
-          , searchLinks: Labels.labels.en.searchLinks
-          , searchNotes: Labels.labels.en.searchNotes
-          , searchOntology: Labels.labels.en.searchOntology
-          , searchTreebanks: Labels.labels.en.searchTreebanks
-          , ldp: Labels.labels.en.ldp
-          , messages: Labels.getMessageLabels("en")
-        }
-      }
       , loginFormMsg: ""
       , data: {
         "idReferredByText": "gr_gr_cog~me.m01.d01~meVE.Stichera01.text",
@@ -682,26 +655,9 @@ class Demo extends React.Component {
     if (code.length > 0 && code !== "undefined") {
       let session = this.state.session;
       session.languageCode = code;
+      session.labels = session.labelsAll[code];
       this.setState({
         session
-        , language: {
-          code: code
-          , labels: {
-            resultsTable: Labels.getResultsTableLabels(code)
-            , linkSearchResultsTable: Labels.getLinkSearchResultsTableLabels(code)
-            , header: Labels.getHeaderLabels(code)
-            , help: Labels.getHelpLabels(code)
-            , pageAbout: Labels.getPageAboutLabels(code)
-            , pageLogin: Labels.getPageLoginLabels(code)
-            , search: Labels.getSearchLabels(code)
-            , searchLinks: Labels.getSearchLinksLabels(code)
-            , searchNotes: Labels.getSearchNotesLabels(code)
-            , searchTreebanks: Labels.getSearchTreebanksLabels(code)
-            , searchOntology: Labels.getSearchOntologyLabels(code)
-            , ldp: Labels.getLdpLabels(code)
-            , messages: Labels.getMessageLabels(code)
-          }
-        }
       });
     }
   };
@@ -732,10 +688,9 @@ class Demo extends React.Component {
       , password
       , userdata
   ) {
-    let userinfo = userdata[0];
-    let prefs = userdata[1];
-
     if (valid) {
+      let userinfo = userdata[0];
+      let prefs = userdata[1];
       let userInfo = new User(
           username
           , password
@@ -754,7 +709,7 @@ class Demo extends React.Component {
       this.setState({
         session: session
         , authenticated: true
-        , loginFormMsg: this.state.language.labels.pageLogin.good
+        , loginFormMsg: session.labels[session.labelTopics.pageLogin].good
         , formsLoaded: false
         , forms: {}
         , agesIndex: {}
@@ -778,7 +733,7 @@ class Demo extends React.Component {
       this.setState({
         session
         , authenticated: false
-        , loginFormMsg: this.state.language.labels.pageLogin.bad
+        , loginFormMsg: this.state.session.labels[this.state.session.labelTopics.pageLogin].bad
         , formsLoaded: false
         , forms: {}
         , agesIndex: {}
@@ -819,8 +774,13 @@ class Demo extends React.Component {
         , forms.noteTypesBilDropdown
         , forms.schemaEditorFormsDropdown
         , forms.bibTexStyles
+        , forms.uiDomains
+        , forms.uiLanguages
+        , forms.uiSystems
     );
     session.dropdowns = dropdowns;
+    session.labelsAll = forms.uiLabels;
+    session.labels = session.labelsAll[session.languageCode];
     console.log(session);
     this.setState({
       session: session
@@ -982,7 +942,7 @@ class Demo extends React.Component {
         );
       } else {
         return (
-            <Spinner message={this.state.language.labels.messages.retrieving}/>
+            <Spinner message={this.state.session.labels[this.state.session.labelTopics.messages].retrieving}/>
         );
       }
     } else {
@@ -990,7 +950,7 @@ class Demo extends React.Component {
           <p>Parallel Row Text Editor.  You must log in first in order to see and use this.</p>
       );
     }
-  }
+  };
 
   handleTopicsSelection(topic) {
     console.log("Selected topic: " + topic);
@@ -1059,7 +1019,7 @@ class Demo extends React.Component {
                   password={this.state.session.userInfo.password} // initially set to ""
                   loginCallback={this.handleLoginCallback}
                   dropdownsCallback={this.handleDropdownsCallback}
-                  formPrompt={this.state.language.labels.pageLogin.prompt}
+                  formPrompt={this.state.session.labels[this.state.session.labelTopics.pageLogin].prompt}
                   formMsg={this.state.loginFormMsg}
               />
               <Accordion>
@@ -1144,7 +1104,7 @@ class Demo extends React.Component {
                     <ChangePassword
                         session={this.state.session}
                         callback={this.handleLoginCallback}
-                        formPrompt={this.state.language.labels.pageLogin.prompt}
+                        formPrompt={this.state.session.labels[this.state.session.labelTopics.pageLogin].prompt}
                         formMsg={this.state.loginFormMsg}
                     />
                   </div>
@@ -1259,8 +1219,6 @@ class Demo extends React.Component {
                     results.</p>
                   <SearchText
                       session={this.state.session}
-                      searchLabels={this.state.language.labels.search}
-                      resultsTableLabels={this.state.language.labels.resultsTable}
                       initialDocType="Liturgical"
                   />
                 </Panel> {/* Search Text without Callback*/}
@@ -1271,8 +1229,6 @@ class Demo extends React.Component {
                       <SearchText
                           session={this.state.session}
                           callback={this.handleSearchCallback}
-                          searchLabels={this.state.language.labels.search}
-                          resultsTableLabels={this.state.language.labels.resultsTable}
                           initialDocType="Liturgical"
                       />
                       :
@@ -1298,9 +1254,6 @@ class Demo extends React.Component {
                   <p>Use the Search component relationships component to search properties of relationships between two docs.</p>
                   <SearchRelationships
                       session={this.state.session}
-//                      callback={this.handleSearchLinksCallback}
-                      searchLabels={this.state.language.labels.searchLinks}
-                      resultsTableLabels={this.state.language.labels.linkSearchResultsTable}
                   />
                 </Panel> {/* Search Relationships */}
                 <Panel header="Search Notes" eventKey="searchNotes">
@@ -1340,7 +1293,6 @@ class Demo extends React.Component {
                         <p>Use the Search Ontology Component to search for instances of Ontology entries.</p>
                         <SearchOntology
                             session={this.state.session}
-                            callback={this.handleSearchOntologyCallback}
                             editor={true}
                             initialType={"Human"}
                             fixedType={false}
@@ -1376,7 +1328,6 @@ class Demo extends React.Component {
                   { (this.state.authenticated && this.state.formsLoaded) &&
                   <SearchTreebanks
                       session={this.state.session}
-                      callback={this.handleSearchTreebanksCallback}
                       editor={true}
                       initialType={"PtbWord"}
                       fixedType={false}
@@ -1478,7 +1429,6 @@ class Demo extends React.Component {
               <LiturgicalDayProperties
                   session={this.state.session}
                   callback={this.handleLdpCallback}
-                  labels={this.state.language.labels.ldp}
               />
             </Panel> {/* LiturgicalDayProperties */}
             <Html5VideoPanel
@@ -1495,21 +1445,16 @@ class Demo extends React.Component {
             />
             <Panel header="Application Information" eventKey="info">
               <Configuration
+                  session={this.state.session}
                   appVersion={this.state.demoVersion}
-                  appVersionLabel={this.state.language.labels.pageAbout.appVersion}
-                  dbServerLabel={this.state.language.labels.pageAbout.DbServer}
                   restServer={this.state.session.restServer}
-                  restServerLabel={this.state.language.labels.pageAbout.RestServer}
-                  wsVersionLabel={this.state.language.labels.pageAbout.wsVersion}
-                  synchEnabledLabel={this.state.language.labels.pageAbout.synchEnabled}
-                  synchDbConnectionOkLabel={this.state.language.labels.pageAbout.synchDbConnectionOk}
               />
             </Panel> {/* Configuration */}
             <Panel header="Help - for Search Component" eventKey="helpSearch">
-              <HelpSearch labels={this.state.language.labels.help.search}/>
+              <HelpSearch session={this.state.session}/>
             </Panel> {/* Help for search */}
             <Panel header="About the Database" eventKey="aboutdb">
-              <AboutDatabase labels={this.state.language.labels.pageAbout}/>
+              <AboutDatabase session={this.state.session}/>
             </Panel> {/* About Database */}
             <Panel header="Create a New Entry" eventKey="NewEntry">
               { (this.state.authenticated  && this.state.formsLoaded) ?
@@ -1540,6 +1485,19 @@ class Demo extends React.Component {
                 />
               }
             </Panel> {/* Greek Liturgical Library Topics Selector */}
+            <Panel header="Parallel Column Label Editor" eventKey="paraColLabelEditor">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated && this.state.formsLoaded &&
+              <ParaColLabelEditor
+                  session={this.state.session}
+                  source={"gr_gr_cog"}
+              />
+              }
+            </Panel> {/* Parallel Column Label Editor */}
             <Panel header="Parallel Column Text Editor" eventKey="paraColTextEditor">
               { (this.state.authenticated) ?
                   <p></p>
@@ -1619,22 +1577,7 @@ class Demo extends React.Component {
                   idTopic={"se.m01.d01.li"}
               />
               }
-            </Panel> {/* Template for Table */}
-            <Panel header="Template for Table Example" eventKey="tfort">
-              { (this.state.authenticated) ?
-                  <p></p>
-                  :
-                  <p>You must log in first in order to see and use this.</p>
-              }
-              { this.state.authenticated  && this.state.formsLoaded &&
-              <TemplateForTable
-                  session={this.state.session}
-              />
-              }
-            </Panel> {/* Template for Table */}
-            {/*<Panel header="Life Cycle Demo" eventKey="lcd">*/}
-              {/*<LifeCycleDemo languageCode={this.state.language.code}/>*/}
-            {/*</Panel> /!* Life Cycle Demo *!/*/}
+            </Panel> {/* Template Editor */}
             <Panel header="User Records Download" eventKey="userRecords">
               { (this.state.authenticated) ?
                   <DownloadUserRecords

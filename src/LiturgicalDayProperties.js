@@ -13,6 +13,7 @@ class LiturgicalDayProperties extends React.Component {
 
     this.state = {
       selectedType: "g"
+      , labels: props.session.labels[props.session.labelTopics.ldp]
     };
 
     this.handleChange = this.handleChange.bind(this);
@@ -20,25 +21,33 @@ class LiturgicalDayProperties extends React.Component {
     this.onSelect = this.onSelect.bind(this);
   }
 
+  componentWillReceiveProps = (nextProps) => {
+    this.setState(
+        {
+          labels: nextProps.session.labels[nextProps.session.labelTopics.ldp]
+        }
+    );
+  };
+
   componentWillMount = () => {
     var value = new Date().toISOString();
     this.setState({
       value: value, // ISO String, ex: "2016-11-19T12:00:00.000Z"
     });
-  }
+  };
 
   handleChange = (value, formattedValue) => {
     this.setState({
       value: value, // ISO String, ex: "2016-11-19T12:00:00.000Z"
       formattedValue: formattedValue // Formatted String, ex: "11/19/2016"
     }, this.fetchData(value));
-  }
+  };
 
   onSelect = (index) => {
     this.setState({
       selectedType: index
     })
-  }
+  };
 
   fetchData(date) {
     var config = {
@@ -75,17 +84,17 @@ class LiturgicalDayProperties extends React.Component {
             <div className="App-DateSelector">
               <h3 className="App-DateSelector-prompt">{this.props.formPrompt}</h3>
               <FormGroup>
-                <ControlLabel>{this.props.labels.prompt}</ControlLabel>
+                <ControlLabel>{this.state.labels.prompt}</ControlLabel>
                 <p/>
                 <DropdownButton
                     bsStyle="primary"
-                    title={this.props.labels.calendar}
+                    title={this.state.labels.calendar}
                     key={"a"}
                     id={`App-DateSelector-calendar-type`}
                     onSelect={this.onSelect}
                 >
-                  <MenuItem eventKey="j">{this.props.labels.julian}</MenuItem>
-                  <MenuItem eventKey="g">{this.props.labels.gregorian}</MenuItem>
+                  <MenuItem eventKey="j">{this.state.labels.julian}</MenuItem>
+                  <MenuItem eventKey="g">{this.state.labels.gregorian}</MenuItem>
                 </DropdownButton>
                 <p/>
                 <DatePicker
@@ -113,7 +122,6 @@ class LiturgicalDayProperties extends React.Component {
 LiturgicalDayProperties.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func.isRequired
-  , labels: PropTypes.object.isRequired
 };
 
 LiturgicalDayProperties.defaultProps = {

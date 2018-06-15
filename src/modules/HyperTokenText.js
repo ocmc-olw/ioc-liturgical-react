@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import Spinner from '../helpers/Spinner';
 
@@ -21,31 +20,33 @@ class HyperTokenText extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state);
-  }
+  };
 
   setTheState = (props, currentState) => {
     let selectedToken = get(currentState, "selectedToken", -1);
     if (this.props.selectedToken !== props.selectedToken) {
       selectedToken = props.selectedToken;
     }
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
     return (
         {
           labels: {
-            thisClass: Labels.getHyperTokenTextLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+            thisClass: labels[labelTopics.HyperTokenText]
+            , messages: labels[labelTopics.messages]
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , selectedToken: selectedToken
           , lastPropToken: get(props,"selectedToken", -1)
         }
     )
-  }
+  };
 
   handleClick = (event) => {
     this.setState({
@@ -55,7 +56,7 @@ class HyperTokenText extends React.Component {
         event.currentTarget.id
         , event.currentTarget.textContent.trim()
     );
-  }
+  };
 
   getTokenWordSpan = (token, index) => {
     if (this.state.selectedToken === index) {
@@ -106,7 +107,7 @@ class HyperTokenText extends React.Component {
 }
 
 HyperTokenText.propTypes = {
-  languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , tokens: PropTypes.array.isRequired
   , onClick: PropTypes.func.isRequired
   , selectedToken: PropTypes.number

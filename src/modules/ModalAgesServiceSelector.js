@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 
 import {Alert, Button, Glyphicon, Modal} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 
 /**
@@ -14,14 +13,17 @@ export class ModalAgesServiceSelector extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getModalAgesServiceSelectorLabels(this.props.languageCode)
-        , messages: Labels.getMessageLabels(this.props.languageCode)
+        thisClass: labels[labelTopics.ModalAgesServiceSelector]
+        , messages: labels[labelTopics.messages]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , options: {
         sizePerPage: 15
         , sizePerPageList: [5, 15, 30]
@@ -40,14 +42,14 @@ export class ModalAgesServiceSelector extends React.Component {
       , tableColumnFilter: {
         defaultValue: ""
         , type: 'RegexFilter'
-        , placeholder: Labels.getMessageLabels(this.props.languageCode).regEx
+        , placeholder: labels[labelTopics.messages].regEx
       }
       ,
       showSelectionButtons: false
       ,
       selectedId: ""
       , showModal: true
-    }
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -55,7 +57,7 @@ export class ModalAgesServiceSelector extends React.Component {
   };
 
   PropTypesWillMount = () => {
-  }
+  };
 
   close = () => {
     this.setState({showModal: false}, this.props.onClose);
@@ -69,7 +71,7 @@ export class ModalAgesServiceSelector extends React.Component {
     this.setState({
       selectedUrl: row["url"]
     }, this.props.callBack(row["url"], row["type"], row["date"], row["dayOfWeek"]));
-  }
+  };
 
   render() {
     return (
@@ -148,7 +150,7 @@ export class ModalAgesServiceSelector extends React.Component {
   }
 }
 ModalAgesServiceSelector.propTypes = {
-  languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , callBack: PropTypes.func.isRequired
   , onClose: PropTypes.func.isRequired
   , values: PropTypes.array.isRequired

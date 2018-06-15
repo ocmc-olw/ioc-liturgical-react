@@ -8,7 +8,6 @@ import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelG
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import UiSchemas from './classes/UiSchemas';
 import Server from './helpers/Server';
-import Labels from './Labels';
 import SchemaBasedAddButton from "./modules/SchemaBasedAddButton";
 import IdManager from './helpers/IdManager';
 
@@ -60,7 +59,7 @@ export class NotesLister extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
+    let theSearchLabels = props.session.labels[props.session.labelTopics.searchNotes]
 
     let selectedId = "";
     if (docType) {
@@ -88,7 +87,7 @@ export class NotesLister extends React.Component {
             uiSchemas: uiSchemas
           }
           , docType: props.initialType
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+          , resultsTableLabels: props.session.labels[props.session.labelTopics.resultsTable]
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , messageIcon: get(this.state, "messageIcon", "")

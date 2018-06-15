@@ -936,146 +936,128 @@ const   labels = {
       , notAuthorized: "You are not authorized"
       , couldNotGenerate: "The files could not be generated."
     }
-    , grammarTerms: {
-      case: {
-        title: "Case"
-        , values: {
-          "ACC": "accusative "
-          , "DAT": "dative"
-          , "GEN": "genitive"
-          , "NOM": "nominative"
-          , "VOC": "vocative "
-        }
-      }
-      , categories: {
-        title: "Syntactic Category"
-        , values: {
-          "ADV": "adverb"
-          , "ADV_CO": "adverb - coordinated"
-          , "APOS": "apposing element"
-          , "ATR": "attributive"
-          , "ATR_CO": "attributive - coordinated"
-          , "ATV": "complement"
-          , "AuxC": "conjunction"
-          , "AuxG": "bracketing punctuation"
-          , "AuxK": "terminal punctuation"
-          , "AuxP": "preposition"
-          , "AuxV": "auxiliary verb"
-          , "AuxX": "commas"
-          , "AuxY": "sentence adverbials"
-          , "AuxZ": "emphasizing particles"
-          , "COORD": "coordinator"
-          , "ExD": "ellipsis"
-          , "OBJ": "object"
-          , "OBJ_CO": "object - coordinated"
-          , "OCOMP": "object complement"
-          , "MWE": "multi-word expression"
-          , "PNOM": "predicate nominal"
-          , "PRED": "predicate"
-          , "PRED_CO": "predicate - coordinated"
-          , "ROOT" : "root of the dependency tree"
-          , "SBJ": "subject"
-          , "SBJ_CO": "subject - coordinated"
-          , "SCAN": "scansion (metrical pattern marker)"
-        }
-      }
-      , gender: {
-        title: "Gender"
-        , values: {
-          "F": "feminine"
-          , "M": "masculine"
-          , "N": "neuter"
-        }
-      }
-      , mood: {
-        title: "Mood"
-        , values: {
-          "IMP": "imperative"
-          , "IND": "indicative"
-          , "OPT": "optative"
-          , "SBJV": "subjunctive"
-        }
-      }
-      , number: {
-        title: "Number"
-        , values: {
-          "DU": "dual"
-          , "PL": "plural"
-          , "SG": "singular"
-        }
-      }
-      , person: {
-        title: "Person"
-        , values: {
-          "1": "first person"
-          , "2": "second person"
-          , "3": "third person"
-        }
-      }
-      , pos: {
-        title: "Part of Speech"
-        , values: {
-          "ABRV": "abbreviation"
-          ,"ADJ": "adjective"
-          , "ADJ.COMP": "adjective (comparative)"
-          , "ADJ.SUP.ABS": "adjective (absolute superlative)"
-          , "ADJ.SUP.REL": "adjective (relative superlative)"
-          , "ADV": "adverb(ial)"
-          , "ART": "article"
-          , "ART.DEF": "article (definite)"
-          , "ART.INDF": "article (indefinite)"
-          , "AUX": "auxiliary"
-          , "CONJ": "conjunction"
-          , "DEM": "demonstrative"
-          , "DET": "determiner"
-          , "EXCLM": "exclamation"
-          , "INF": "infinitive"
-          , "NEG": "negation, negative"
-          , "NOUN": "noun"
-          , "NUM": "number"
-          , "PM": "punctuation mark"
-          , "PREP": "preposition"
-          , "PRON": "pronoun"
-          , "PRON.COR": "pronoun (correlative)"
-          , "PRON.DEF": "pronoun (definite)"
-          , "PRON.DEM": "pronoun (demonstrative)"
-          , "PRON.INDF": "pronoun (indefinite)"
-          , "PRON.Q": "pronoun (interrogative)"
-          , "PRON.PERS": "pronoun (personal)"
-          , "PRON.POSS": "pronoun (possessive)"
-          , "PRON.REFL": "pronoun (reflexive)"
-          , "PRON.REL": "pronoun (relative)"
-          , "PTCP": "participle"
-          , "Q": "question particle/marker"
-          , "SUF": "suffix"
-          , "SYMB": "symbol"
-          , "VERB": "verb"
-          , "VERB.AUX": "auxiliary verb"
-          , "VERB.MOD": "modal verb"
-          , "VERB.PHRS": "phrasal verb"
-        }
-      }
-      , tense: {
-        title: "Tense"
-        , values: {
-          "AOR": "aorist"
-          , "FUT": "future"
-          , "IMPRF": "imperfect"
-          , "PFV": "perfective"
-          , "PLUP": "pluperfect"
-          , "PRF": "perfect"
-          , "PRS": "present"
-        }
-      }
-      , voice: {
-        title: "Voice"
-        , values: {
+    , grammarTermsTitles: {
+      case: "Case"
+      , categories: "Syntactic Category"
+      , gender: "Gender"
+      , mood: "Mood"
+      , number: "Number"
+      , person: "Person"
+      , pos: "Part of Speech"
+      , tense: "Tense"
+      , voice: "Voice"
+    }
+    , grammarTermsCaseValues: {
+      "ACC": "accusative "
+      , "DAT": "dative"
+      , "GEN": "genitive"
+      , "NOM": "nominative"
+      , "VOC": "vocative "
+    }
+    , grammarTermsCategoryValues: {
+      "ADV": "adverb"
+      , "ADV_CO": "adverb - coordinated"
+      , "APOS": "apposing element"
+      , "ATR": "attributive"
+      , "ATR_CO": "attributive - coordinated"
+      , "ATV": "complement"
+      , "AuxC": "conjunction"
+      , "AuxG": "bracketing punctuation"
+      , "AuxK": "terminal punctuation"
+      , "AuxP": "preposition"
+      , "AuxV": "auxiliary verb"
+      , "AuxX": "commas"
+      , "AuxY": "sentence adverbials"
+      , "AuxZ": "emphasizing particles"
+      , "COORD": "coordinator"
+      , "ExD": "ellipsis"
+      , "OBJ": "object"
+      , "OBJ_CO": "object - coordinated"
+      , "OCOMP": "object complement"
+      , "MWE": "multi-word expression"
+      , "PNOM": "predicate nominal"
+      , "PRED": "predicate"
+      , "PRED_CO": "predicate - coordinated"
+      , "ROOT" : "root of the dependency tree"
+      , "SBJ": "subject"
+      , "SBJ_CO": "subject - coordinated"
+      , "SCAN": "scansion (metrical pattern marker)"
+    }
+    , grammarTermsGenderValues: {
+      "F": "feminine"
+      , "M": "masculine"
+      , "N": "neuter"
+    }
+    , grammarTermsMoodValues: {
+      "IMP": "imperative"
+      , "IND": "indicative"
+      , "OPT": "optative"
+      , "SBJV": "subjunctive"
+    }
+    , grammarTermsNumberValues: {
+      "DU": "dual"
+      , "PL": "plural"
+      , "SG": "singular"
+    }
+    , grammarTermsPersonValues: {
+      "1": "first person"
+      , "2": "second person"
+      , "3": "third person"
+    }
+    , grammarTermsPosValues: {
+      "ABRV": "abbreviation"
+      ,"ADJ": "adjective"
+      , "ADJ.COMP": "adjective (comparative)"
+      , "ADJ.SUP.ABS": "adjective (absolute superlative)"
+      , "ADJ.SUP.REL": "adjective (relative superlative)"
+      , "ADV": "adverb(ial)"
+      , "ART": "article"
+      , "ART.DEF": "article (definite)"
+      , "ART.INDF": "article (indefinite)"
+      , "AUX": "auxiliary"
+      , "CONJ": "conjunction"
+      , "DEM": "demonstrative"
+      , "DET": "determiner"
+      , "EXCLM": "exclamation"
+      , "INF": "infinitive"
+      , "NEG": "negation, negative"
+      , "NOUN": "noun"
+      , "NUM": "number"
+      , "PM": "punctuation mark"
+      , "PREP": "preposition"
+      , "PRON": "pronoun"
+      , "PRON.COR": "pronoun (correlative)"
+      , "PRON.DEF": "pronoun (definite)"
+      , "PRON.DEM": "pronoun (demonstrative)"
+      , "PRON.INDF": "pronoun (indefinite)"
+      , "PRON.Q": "pronoun (interrogative)"
+      , "PRON.PERS": "pronoun (personal)"
+      , "PRON.POSS": "pronoun (possessive)"
+      , "PRON.REFL": "pronoun (reflexive)"
+      , "PRON.REL": "pronoun (relative)"
+      , "PTCP": "participle"
+      , "Q": "question particle/marker"
+      , "SUF": "suffix"
+      , "SYMB": "symbol"
+      , "VERB": "verb"
+      , "VERB.AUX": "auxiliary verb"
+      , "VERB.MOD": "modal verb"
+      , "VERB.PHRS": "phrasal verb"
+    }
+    , grammarTermsTenseValues: {
+      "AOR": "aorist"
+      , "FUT": "future"
+      , "IMPRF": "imperfect"
+      , "PFV": "perfective"
+      , "PLUP": "pluperfect"
+      , "PRF": "perfect"
+      , "PRS": "present"
+    }
+    , grammarTermsVoiceValues: {
           "ACT": "active "
           , "MID": "middle"
           , "MP": "middle/passive"
           , "PASS": "passive"
-        }
-      }
     }
     , template: {} // place holder
     , templateForTable: {
@@ -2013,146 +1995,128 @@ const   labels = {
       , notAuthorized: "Δεν είστε εξουσιοδοτημένοι"
       , couldNotGenerate: "Δεν ήταν δυνατή η δημιουργία των αρχείων."
     }
-    , grammarTerms: {
-      case: {
-        title: "Case"
-        , values: {
-          "ACC": "accusative "
-          , "DAT": "dative"
-          , "GEN": "genitive"
-          , "NOM": "nominative"
-          , "VOC": "vocative "
-        }
-      }
-      , categories: {
-        title: "Syntactic Category"
-        , values: {
-          "ADV": "adverb"
-          , "ADV_CO": "adverb - coordinated"
-          , "APOS": "apposing element"
-          , "ATR": "attributive"
-          , "ATR_CO": "attributive - coordinated"
-          , "ATV": "complement"
-          , "AuxC": "conjunction"
-          , "AuxG": "bracketing punctuation"
-          , "AuxK": "terminal punctuation"
-          , "AuxP": "preposition"
-          , "AuxV": "auxiliary verb"
-          , "AuxX": "commas"
-          , "AuxY": "sentence adverbials"
-          , "AuxZ": "emphasizing particles"
-          , "COORD": "coordinator"
-          , "ExD": "ellipsis"
-          , "OBJ": "object"
-          , "OBJ_CO": "object - coordinated"
-          , "OCOMP": "object complement"
-          , "MWE": "multi-word expression"
-          , "PNOM": "predicate nominal"
-          , "PRED": "predicate"
-          , "PRED_CO": "predicate - coordinated"
-          , "ROOT" : "root of the dependency tree"
-          , "SBJ": "subject"
-          , "SBJ_CO": "subject - coordinated"
-          , "SCAN": "scansion (metrical pattern marker)"
-        }
-      }
-      , gender: {
-        title: "Gender"
-        , values: {
-          "F": "feminine"
-          , "M": "masculine"
-          , "N": "neuter"
-        }
-      }
-      , mood: {
-        title: "Mood"
-        , values: {
-          "IMP": "imperative"
-          , "IND": "indicative"
-          , "OPT": "optative"
-          , "SBJV": "subjunctive"
-        }
-      }
-      , number: {
-        title: "Number"
-        , values: {
-          "DU": "dual"
-          , "PL": "plural"
-          , "SG": "singular"
-        }
-      }
-      , person: {
-        title: "Person"
-        , values: {
-          "1": "first person"
-          , "2": "second person"
-          , "3": "third person"
-        }
-      }
-      , pos: {
-        title: "Part of Speech"
-        , values: {
-          "ABRV": "abbreviation"
-          , "ADJ": "adjective"
-          , "ADJ.COMP": "adjective (comparative)"
-          , "ADJ.SUP.ABS": "adjective (absolute superlative)"
-          , "ADJ.SUP.REL": "adjective (relative superlative)"
-          , "ADV": "adverb(ial)"
-          , "ART": "article"
-          , "ART.DEF": "article (definite)"
-          , "ART.INDF": "article (indefinite)"
-          , "AUX": "auxiliary"
-          , "CONJ": "conjunction"
-          , "DEM": "demonstrative"
-          , "DET": "determiner"
-          , "EXCLM": "exclamation"
-          , "INF": "infinitive"
-          , "NEG": "negation, negative"
-          , "NOUN": "noun"
-          , "NUM": "number"
-          , "PM": "punctuation mark"
-          , "PREP": "preposition"
-          , "PRON": "αντωνυμία"
-          , "PRON.COR": "αντωνυμία (συσχετική)"
-          , "PRON.DEF": "αντωνυμία (οριστική)"
-          , "PRON.DEM": "αντωνυμία (δεικτική)"
-          , "PRON.INDF": "αντωνυμία (αόριστη)"
-          , "PRON.Q": "αντωνυμία (ερωτηματική)"
-          , "PRON.PERS": "αντωνυμία (προωπική)"
-          , "PRON.POSS": "αντωνυμία (κτητική)"
-          , "PRON.REFL": "αντωνυμία (αυτοπαθής)"
-          , "PRON.REL": "αντωνυμία (αναφορική)"
-          , "PTCP": "participle"
-          , "Q": "question particle/marker"
-          , "SUF": "suffix"
-          , "SYMB": "symbol"
-          , "VERB": "verb"
-          , "VERB.AUX": "auxiliary verb"
-          , "VERB.MOD": "modal verb"
-          , "VERB.PHRS": "phrasal verb"
-         }
-      }
-      , tense: {
-        title: "Tense"
-        , values: {
-          "AOR": "aorist"
-          , "FUT": "future"
-          , "IMPRF": "imperfect"
-          , "PFV": "perfective"
-          , "PLUP": "pluperfect"
-          , "PRF": "perfect"
-          , "PRS": "present"
-        }
-      }
-      , voice: {
-        title: "Voice"
-        , values: {
-          "ACT": "active "
-          , "MID": "middle"
-          , "MP": "middle/passive"
-          , "PASS": "passive"
-        }
-      }
+    , grammarTermsTitles: {
+      case: "Case"
+      , categories: "Syntactic Category"
+      , gender: "Gender"
+      , mood: "Mood"
+      , number: "Number"
+      , person: "Person"
+      , pos: "Part of Speech"
+      , tense: "Tense"
+      , voice: "Voice"
+    }
+    , grammarTermsCaseValues: {
+      "ACC": "accusative "
+      , "DAT": "dative"
+      , "GEN": "genitive"
+      , "NOM": "nominative"
+      , "VOC": "vocative "
+    }
+    , grammarTermsCategoryValues: {
+      "ADV": "adverb"
+      , "ADV_CO": "adverb - coordinated"
+      , "APOS": "apposing element"
+      , "ATR": "attributive"
+      , "ATR_CO": "attributive - coordinated"
+      , "ATV": "complement"
+      , "AuxC": "conjunction"
+      , "AuxG": "bracketing punctuation"
+      , "AuxK": "terminal punctuation"
+      , "AuxP": "preposition"
+      , "AuxV": "auxiliary verb"
+      , "AuxX": "commas"
+      , "AuxY": "sentence adverbials"
+      , "AuxZ": "emphasizing particles"
+      , "COORD": "coordinator"
+      , "ExD": "ellipsis"
+      , "OBJ": "object"
+      , "OBJ_CO": "object - coordinated"
+      , "OCOMP": "object complement"
+      , "MWE": "multi-word expression"
+      , "PNOM": "predicate nominal"
+      , "PRED": "predicate"
+      , "PRED_CO": "predicate - coordinated"
+      , "ROOT" : "root of the dependency tree"
+      , "SBJ": "subject"
+      , "SBJ_CO": "subject - coordinated"
+      , "SCAN": "scansion (metrical pattern marker)"
+    }
+    , grammarTermsGenderValues: {
+      "F": "feminine"
+      , "M": "masculine"
+      , "N": "neuter"
+    }
+    , grammarTermsMoodValues: {
+      "IMP": "imperative"
+      , "IND": "indicative"
+      , "OPT": "optative"
+      , "SBJV": "subjunctive"
+    }
+    , grammarTermsNumberValues: {
+      "DU": "dual"
+      , "PL": "plural"
+      , "SG": "singular"
+    }
+    , grammarTermsPersonValues: {
+      "1": "first person"
+      , "2": "second person"
+      , "3": "third person"
+    }
+    , grammarTermsPosValues: {
+      "ABRV": "abbreviation"
+      ,"ADJ": "adjective"
+      , "ADJ.COMP": "adjective (comparative)"
+      , "ADJ.SUP.ABS": "adjective (absolute superlative)"
+      , "ADJ.SUP.REL": "adjective (relative superlative)"
+      , "ADV": "adverb(ial)"
+      , "ART": "article"
+      , "ART.DEF": "article (definite)"
+      , "ART.INDF": "article (indefinite)"
+      , "AUX": "auxiliary"
+      , "CONJ": "conjunction"
+      , "DEM": "demonstrative"
+      , "DET": "determiner"
+      , "EXCLM": "exclamation"
+      , "INF": "infinitive"
+      , "NEG": "negation, negative"
+      , "NOUN": "noun"
+      , "NUM": "number"
+      , "PM": "punctuation mark"
+      , "PREP": "preposition"
+      , "PRON": "pronoun"
+      , "PRON.COR": "pronoun (correlative)"
+      , "PRON.DEF": "pronoun (definite)"
+      , "PRON.DEM": "pronoun (demonstrative)"
+      , "PRON.INDF": "pronoun (indefinite)"
+      , "PRON.Q": "pronoun (interrogative)"
+      , "PRON.PERS": "pronoun (personal)"
+      , "PRON.POSS": "pronoun (possessive)"
+      , "PRON.REFL": "pronoun (reflexive)"
+      , "PRON.REL": "pronoun (relative)"
+      , "PTCP": "participle"
+      , "Q": "question particle/marker"
+      , "SUF": "suffix"
+      , "SYMB": "symbol"
+      , "VERB": "verb"
+      , "VERB.AUX": "auxiliary verb"
+      , "VERB.MOD": "modal verb"
+      , "VERB.PHRS": "phrasal verb"
+    }
+    , grammarTermsTenseValues: {
+      "AOR": "aorist"
+      , "FUT": "future"
+      , "IMPRF": "imperfect"
+      , "PFV": "perfective"
+      , "PLUP": "pluperfect"
+      , "PRF": "perfect"
+      , "PRS": "present"
+    }
+    , grammarTermsVoiceValues: {
+      "ACT": "active "
+      , "MID": "middle"
+      , "MP": "middle/passive"
+      , "PASS": "passive"
     }
     , template: {} // place holder
     , templateForTable: {
@@ -2235,12 +2199,11 @@ module.exports = {
   , getLiturgicalAcronymsLabels: (code) => { return labels[code].liturgicalAcronyms;}
   , getHttpCodeLabels: (code) => { return labels[code].httpCodes;}
   , getHttpMessage: (languageCode, errorCode, errorMessage) => {
-    if (labels[languageCode].httpCodes[errorCode]) {
-      message = labels[languageCode].httpCodes[errorCode];
-    } else {
-      message = errorMessage;
-    }
-    return message;
+      let message = errorMessage;
+      if (labels[languageCode].httpCodes[errorCode]) {
+       message = labels[languageCode].httpCodes[errorCode];
+      }
+      return message;
   }
   , getTemplateLabels: (code) => { return labels[code].template }
   , getTemplateForTableLabels: (code) => { return labels[code].templateForTable }

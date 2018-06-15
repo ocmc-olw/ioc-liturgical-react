@@ -6,7 +6,6 @@ import auth from './helpers/Auth'
 import Form from "react-jsonschema-form";
 import server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
-import Labels from './Labels';
 
 class ChangePassword extends React.Component {
   constructor(props) {
@@ -16,13 +15,23 @@ class ChangePassword extends React.Component {
       , username: ""
       , password: ""
       , labels: {
-        thisClass: Labels.getChangePasswordPageLabels(props.session.languageCode)
+        thisClass: props.session.labels[props.session.labelTopics.ChangePasswordPage]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: props.session.labels[props.session.labelTopics.messages].initial
     };
   }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState({
+      labels: {
+        thisClass: nextProps.session.labels[nextProps.session.labelTopics.ChangePasswordPage]
+      }
+      , message: nextProps.session.labels[nextProps.session.labelTopics.messages].initial
+    });
+  };
+
 
   onSubmit = ({formData}) => {
     if (formData.password === formData.passwordReenter) {

@@ -22,6 +22,9 @@ class Dropdowns {
     , noteTypesBilDropdown
     , schemaEditorDropdown
     , bibTexStylesDropdown
+    , uiDomainsDropdown
+      , uiLanguagesDropdown
+      , uiSystemsDropdown
     ) {
     this.liturgicalBooksDropdown = (liturgicalBooksDropdown ? liturgicalBooksDropdown : []);
     this.biblicalBooksDropdown = (biblicalBooksDropdown ? biblicalBooksDropdown : []);
@@ -41,6 +44,9 @@ class Dropdowns {
     this.templateWhenMonthNameCasesDropdown = (templateWhenMonthNameCasesDropdown ? templateWhenMonthNameCasesDropdown : []);
     this.schemaEditorDropdown = (schemaEditorDropdown ? schemaEditorDropdown : []);
     this.bibTexStylesDropdown = (bibTexStylesDropdown ? bibTexStylesDropdown : []);
+    this.uiDomainsDropdown = (uiDomainsDropdown ? uiDomainsDropdown : []);
+    this.uiLanguagesDropdown = (uiLanguagesDropdown ? uiLanguagesDropdown : []);
+    this.uiSystemsDropdown = (uiSystemsDropdown ? uiSystemsDropdown : []);
   };
 }
 export default Dropdowns;

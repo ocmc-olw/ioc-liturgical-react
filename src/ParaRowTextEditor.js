@@ -17,7 +17,6 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
 import Server from './helpers/Server';
-import Labels from './Labels';
 import NotesLister from './NotesLister';
 import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
@@ -43,20 +42,23 @@ export class ParaRowTextEditor extends React.Component {
     if (props.session.dropdowns) {
       citeData = props.session.dropdowns.bibTexStylesDropdown;
     }
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state =
         {
           labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
-            , messages: Labels.getMessageLabels(props.session.languageCode)
-            , buttons: Labels.getButtonLabels(props.session.languageCode)
-            , search: Labels.getSearchLabels(props.session.languageCode)
+            thisClass: labels[labelTopics.ParaTextEditor]
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , search: labels[labelTopics.search]
           }
           , citeData: citeData
           , citeStyle: prefs.bibLatexStyle ? prefs.bibLatexStyle : "authoryear"
           , greekSourceValue: ""
           , greekSourceId: ""
           , showSearchResults: false
-          , message: Labels.getSearchLabels(props.session.languageCode).msg1
+          , message: labels[labelTopics.search].msg1
           , downloadMessage: ""
           ,
           messageIcon: this.messageIcons.info
@@ -160,16 +162,18 @@ export class ParaRowTextEditor extends React.Component {
     if (nextProps.session.dropdowns) {
       citeData = nextProps.session.dropdowns.bibTexStylesDropdown;
     }
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
 
     this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
-            , messages: Labels.getMessageLabels(props.session.languageCode)
-            , buttons: Labels.getButtonLabels(props.session.languageCode)
-            , search: Labels.getSearchLabels(props.session.languageCode)
+            thisClass: labels[labelTopics.ParaTextEditor]
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , search: labels[labelTopics.search]
           }
-          , message: Labels.getSearchLabels(props.session.languageCode).msg1
+          , message: labels[labelTopics.search].msg1
           , greekSourceValue: ""
           , greekSourceId: ""
           , citeData: citeData

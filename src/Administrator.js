@@ -4,7 +4,6 @@ import axios from 'axios';
 import IdManager from './helpers/IdManager';
 import server from './helpers/Server';
 import Button from './helpers/Button';
-import Labels from './Labels';
 import Spinner from './helpers/Spinner';
 import MessageIcons from './helpers/MessageIcons';
 import FontAwesome from 'react-fontawesome';
@@ -95,16 +94,16 @@ class Administrator extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesEditorLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
-            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
+            thisClass: props.session.labels[props.session.labelTopics.AgesEditor]
+            , messages: props.session.labels[props.session.labelTopics.messages]
+            , liturgicalAcronyms: props.session.labels[props.session.labelTopics.liturgicalAcronyms]
           }
           , session: {
             userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+          , message: props.session.labels[props.session.labelTopics.messages].initial
           , action: action
           , path: path
           , item: item

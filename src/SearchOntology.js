@@ -9,7 +9,6 @@ import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelG
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
-import Labels from './Labels';
 
 export class SearchOntology extends React.Component {
 
@@ -100,7 +99,9 @@ export class SearchOntology extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchOntologyLabels(props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let theSearchLabels = labels[labelTopics.searchOntology];
 
     let selectedId = "";
     if (docType) {
@@ -112,13 +113,13 @@ export class SearchOntology extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getSearchOntologyLabels(this.props.session.languageCode)
-            , buttons: Labels.getButtonLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
             , search: theSearchLabels
+            , resultsTableLabels: labels[labelTopics.resultsTable]
           }
+          , message: theSearchLabels.msg1
           , docType: props.initialType
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , matcherTypes: [
@@ -343,7 +344,7 @@ export class SearchOntology extends React.Component {
       }, this.fetchData)
     }
     this.deselectAllRows();
-  }
+  };
 
   getModalEditor = () => {
     return (
@@ -356,15 +357,16 @@ export class SearchOntology extends React.Component {
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
             onClose={this.handleCloseModal}
+            canUpdate={this.props.session.userInfo.isAuthorFor(this.state.selectedLibrary)}
         />
     )
-  }
+  };
 
   onSizePerPageList = (sizePerPage) => {
     this.setState({
       options: {sizePerPage: sizePerPage}
     });
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -488,7 +490,7 @@ export class SearchOntology extends React.Component {
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
-                  searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
+                  searchPlaceholder={this.state.labels.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -509,30 +511,30 @@ export class SearchOntology extends React.Component {
                     export={ false }
                     tdClassname="tdTopic"
                     width={"10%"}
-                >{this.state.resultsTableLabels.headerTopic}
+                >{this.state.labels.resultsTableLabels.headerTopic}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='key'
                     dataSort={ true }
                     tdClassname="tdKey"
-                >{this.state.resultsTableLabels.headerKey}
+                >{this.state.labels.resultsTableLabels.headerKey}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='name'
                     dataSort={ true }
-                >{this.state.resultsTableLabels.headerName}
+                >{this.state.labels.resultsTableLabels.headerName}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='description'
                     export={ false }
                     dataSort={ true }
-                >{this.state.resultsTableLabels.headerDesc}
+                >{this.state.labels.resultsTableLabels.headerDesc}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
                     export={ false }
                     dataSort={ true }
-                >{this.state.resultsTableLabels.headerTags}
+                >{this.state.labels.resultsTableLabels.headerTags}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='_valueSchemaId'

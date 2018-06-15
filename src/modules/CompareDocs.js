@@ -4,7 +4,6 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import axios from 'axios';
 import Server from '../helpers/Server';
 import Spinner from '../helpers/Spinner';
-import Labels from '../Labels';
 import Grammar from './Grammar';
 
 /**
@@ -23,9 +22,12 @@ export class CompareDocs extends React.Component {
         + "~"
         + key;
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        messages: Labels.getMessageLabels(props.session.languageCode)
+        messages: labels[labelTopics.messages]
       }
       , showSearchResults: false
       , message: this.props.labels.msg1
@@ -101,8 +103,14 @@ export class CompareDocs extends React.Component {
         + topic
         + "~"
         + key;
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
       this.setState({
-            showModal: nextProps.showModal
+            labels: {
+              messages: labels[labelTopics.messages]
+            }
+            , showModal: nextProps.showModal
             , query: query
             , lastQuery: lastQuery
             , unmounted: false

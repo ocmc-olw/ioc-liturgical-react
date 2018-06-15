@@ -8,7 +8,6 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
-import Labels from './Labels';
 import FormattedTextNote from './FormattedTextNote';
 
 export class SearchTextNotes extends React.Component {
@@ -42,7 +41,7 @@ export class SearchTextNotes extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.state.searchLabels.msg1
+          message: this.state.labels.search.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
@@ -99,13 +98,18 @@ export class SearchTextNotes extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
+    let theSearchLabels = labels[labelTopics.searchNotes];
 
     return (
         {
-          searchLabels: theSearchLabels
+          labels: {
+            search: theSearchLabels
+            , resultsTable: labels[labelTopics.resultsTable]
+          }
           , docType: "NoteTextual"
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , matcherTypes: [
@@ -174,7 +178,8 @@ export class SearchTextNotes extends React.Component {
           , idColumnSize: "80px"
         }
     )
-  }
+  };
+
   getSearchForm() {
     if (this.state.dropdowns) {
       return (
@@ -188,7 +193,7 @@ export class SearchTextNotes extends React.Component {
                   tags={this.state.dropdowns.typeTags["NoteTextual"]}
                   tagOperators={this.state.dropdowns.tagOperators}
                   handleSubmit={this.handleAdvancedSearchSubmit}
-                  labels={this.state.searchLabels}
+                  labels={this.state.labels.search}
               />
           </div>
       );
@@ -202,10 +207,10 @@ export class SearchTextNotes extends React.Component {
   getMatcherTypes () {
     return (
         [
-            {label: this.state.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.state.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.state.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.state.searchLabels.matchesRegEx, value: "rx"}
+            {label: this.state.labels.search.matchesAnywhere, value: "c"}
+            , {label: this.state.labels.search.matchesAtTheStart, value: "sw"}
+            , {label: this.state.labels.search.matchesAtTheEnd, value: "ew"}
+            , {label: this.state.labels.search.matchesRegEx, value: "rx"}
             ]
     )
   }
@@ -225,13 +230,13 @@ export class SearchTextNotes extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedId}
               disabled
             />
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedValue}
@@ -364,7 +369,7 @@ export class SearchTextNotes extends React.Component {
 
   fetchData(event) {
     this.setState({
-      message: this.state.searchLabels.msg2
+      message: this.state.labels.search.msg2
       , messageIcon: this.messageIcons.info
     });
     let config = {
@@ -391,14 +396,14 @@ export class SearchTextNotes extends React.Component {
               }
           );
           let resultCount = 0;
-          let message = this.state.searchLabels.foundNone;
-          let found = this.state.searchLabels.foundMany;
+          let message = this.state.labels.search.foundNone;
+          let found = this.state.labels.search.foundMany;
           if (response.data.valueCount) {
             resultCount = response.data.valueCount;
             if (resultCount === 0) {
-              message = this.state.searchLabels.foundNone;
+              message = this.state.labels.search.foundNone;
             } else if (resultCount === 1) {
-              message = this.state.searchLabels.foundOne;
+              message = this.state.labels.search.foundOne;
             } else {
               message = found
                   + " "
@@ -419,7 +424,7 @@ export class SearchTextNotes extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = this.state.searchLabels.foundNone;
+            message = this.state.labels.search.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -446,7 +451,7 @@ export class SearchTextNotes extends React.Component {
   render() {
     return (
         <div className="App-page App-search">
-          <h3>{this.state.searchLabels.pageTitle}</h3>
+          <h3>{this.state.labels.search.pageTitle}</h3>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
@@ -456,12 +461,12 @@ export class SearchTextNotes extends React.Component {
             </div>
           </div>
 
-          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
+          <div>{this.state.labels.search.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.state.showSearchResults &&
           <div>
-            {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
+            {this.state.labels.search.msg5} {this.state.labels.search.msg6}
           </div>
           }
           {this.state.showModalEditor && this.getModalEditor()}
@@ -494,7 +499,7 @@ export class SearchTextNotes extends React.Component {
                     tdClassname="tdText"
                     width={"30%"}
                     filter={this.state.filter}
-                >{this.state.resultsTableLabels.headerText}
+                >{this.state.labels.resultsTable.headerText}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='type'
@@ -502,7 +507,7 @@ export class SearchTextNotes extends React.Component {
                     tdClassname="tdType"
                     width={"10%"}
                     filter={this.state.filter}
-                >{this.state.resultsTableLabels.headerType}
+                >{this.state.labels.resultsTable.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='valueFormatted'
@@ -511,7 +516,7 @@ export class SearchTextNotes extends React.Component {
                     filter={this.state.filter}
                     dataFormat={ this.noteFormatter }
                     formatExtraData={this.props.session}
-                >{this.state.resultsTableLabels.headerNote}
+                >{this.state.labels.resultsTable.headerNote}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
@@ -519,7 +524,7 @@ export class SearchTextNotes extends React.Component {
                     dataSort={ true }
                     width={"10%"}
                     filter={this.state.filter}
-                >{this.state.resultsTableLabels.headerTags}
+                >{this.state.labels.resultsTable.headerTags}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='noteTitle'

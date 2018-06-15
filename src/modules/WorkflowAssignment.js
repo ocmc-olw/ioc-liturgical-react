@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import server from '../helpers/Server';
 import {Button, ControlLabel, Well} from 'react-bootstrap';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import ResourceSelector from '../modules/ReactSelector'
 import FontAwesome from 'react-fontawesome';
@@ -30,15 +29,18 @@ class WorkflowAssignment extends React.Component {
   };
 
   setTheState = (props) => {
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     return (
         {
           labels: {
-            thisClass: Labels.getWorkflowAssignmentLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            thisClass: labels[labelTopics.WorkflowAssignment]
+            , messages: labels[labelTopics.messages]
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , userRolesForDomain: {
             admins: []
             , authors: []

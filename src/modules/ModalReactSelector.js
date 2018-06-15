@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import {Button, Modal, Well} from 'react-bootstrap';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import ReactSelector from './ReactSelector';
 
@@ -14,17 +13,20 @@ export class ModalReactSelector extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getModalReactSelectorLabels(this.props.languageCode)
-        , messages: Labels.getMessageLabels(this.props.languageCode)
+        thisClass: labels[labelTopics.ModalReactSelector]
+        , messages: labels[labelTopics.messages]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , selectedValue: ""
       , showModal: true
-    }
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -32,7 +34,7 @@ export class ModalReactSelector extends React.Component {
   };
 
   PropTypesWillMount = () => {
-  }
+  };
 
   close = () => {
     this.setState({showModal: false});
@@ -77,7 +79,7 @@ export class ModalReactSelector extends React.Component {
   }
 }
 ModalReactSelector.propTypes = {
-  languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , resources: PropTypes.array.isRequired
   , initialValue: PropTypes.string
   , callBack: PropTypes.func.isRequired

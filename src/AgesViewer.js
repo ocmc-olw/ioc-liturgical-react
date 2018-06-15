@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 
 import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Table, Well} from 'react-bootstrap';
 
-import Labels from './Labels';
-
 import Spinner from './helpers/Spinner';
 import server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
@@ -141,17 +139,17 @@ class AgesViewer extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getAgesViewerLabels(this.props.session.languageCode)
-            , buttons: Labels.getButtonLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
-            , liturgicalAcronyms: Labels.getLiturgicalAcronymsLabels(this.props.session.languageCode)
+            thisClass: props.session.labels[props.session.labelTopics.AgesViewer]
+            , buttons: props.session.labels[props.session.labelTopics.button]
+            , messages: props.session.labels[props.session.labelTopics.messages]
+            , liturgicalAcronyms: props.session.labels[props.session.labelTopics.liturgicalAcronyms]
           }
           , session: {
             userInfo: userInfo
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+          , message: props.session.labels[props.session.labelTopics.messages].initial
           , selectedFirstLibrary: selectedFirstLibrary
           , selectedFirstLibraryFallback: selectedFirstLibraryFallback
           , selectedSecondLibrary: selectedSecondLibrary
@@ -511,7 +509,7 @@ class AgesViewer extends React.Component {
     if (this.state.showModalServiceSelector) {
       return (
         <ModalAgesServiceSelector
-            languageCode={this.props.session.languageCode}
+            session={this.props.session}
             callBack={this.handleServiceSelection}
             onClose={this.handleServiceSelectionClose}
             values={this.state.agesIndexValues}

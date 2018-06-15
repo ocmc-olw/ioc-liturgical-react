@@ -7,17 +7,22 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
-import Labels from './Labels';
 
 export class SearchRelationships extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let searchLabels = labels[labelTopics.searchLinks];
     this.state = {
       labels: {
-        messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+        references: labels[labelTopics.ViewReferences]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+        , messages: labels[labelTopics.messages]
+        , searchLabels: searchLabels
       }
       , domain: "*"
       ,
@@ -26,10 +31,10 @@ export class SearchRelationships extends React.Component {
       matcher: "c"
       ,
       matcherTypes: [
-        {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-        , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-        , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-        , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+        {label: searchLabels.matchesAnywhere, value: "c"}
+        , {label: searchLabels.matchesAtTheStart, value: "sw"}
+        , {label: searchLabels.matchesAtTheEnd, value: "ew"}
+        , {label: searchLabels.matchesRegEx, value: "rx"}
       ]
       ,
       suggestedQuery: ""
@@ -52,15 +57,14 @@ export class SearchRelationships extends React.Component {
       ,
       showSearchForm: true
       ,
-      filterMessage: this.props.searchLabels.msg5
+      filterMessage: searchLabels.msg5
       ,
-      selectMessage: this.props.searchLabels.msg6
+      selectMessage: searchLabels.msg6
       ,
       searchFormType: "simple"
-      ,
-      showSearchResults: false
-      ,
-      resultCount: 0
+      , showSearchResults: false
+      , showIdPartSelector: true
+      , resultCount: 0
       ,
       data: {values: [{"id": "", "value:": ""}]}
       ,
@@ -116,7 +120,7 @@ export class SearchRelationships extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.props.searchLabels.msg1
+          message: this.state.labels.searchLabels.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
@@ -170,11 +174,17 @@ export class SearchRelationships extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+    let searchLabels = labels[labelTopics.searchLinks];
+    
     this.setState({
       labels: {
-        messages: Labels.getMessageLabels(nextProps.session.languageCode)
-        , references: Labels.getViewReferencesLabels(nextProps.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+        references: labels[labelTopics.ViewReferences]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+        , messages: labels[labelTopics.messages]
+        , searchLabels: searchLabels
       }
     });
   };
@@ -191,7 +201,7 @@ export class SearchRelationships extends React.Component {
                   tags={this.state.dropdowns.linkTypeTags}
                   tagOperators={this.state.dropdowns.linkTagOperators}
                   handleSubmit={this.handleAdvancedSearchSubmit}
-                  labels={this.props.searchLabels}
+                  labels={this.state.labels.searchLabels}
               />
               : "Loading dropdowns for search..."
           }
@@ -208,10 +218,10 @@ export class SearchRelationships extends React.Component {
   getMatcherTypes () {
     return (
         [
-          {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-          , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-          , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-          , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+          {label: this.state.labels.searchLabels.matchesAnywhere, value: "c"}
+          , {label: this.state.labels.searchLabels.matchesAtTheStart, value: "sw"}
+          , {label: this.state.labels.searchLabels.matchesAtTheEnd, value: "ew"}
+          , {label: this.state.labels.searchLabels.matchesRegEx, value: "rx"}
         ]
     )
   }
@@ -231,13 +241,13 @@ export class SearchRelationships extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedId}
                 disabled
             />
-            <ControlLabel>{this.props.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.searchLabels.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedValue}
@@ -333,7 +343,7 @@ export class SearchRelationships extends React.Component {
             fromTitle={this.state.labels.references.theText}
             toTitle={this.state.labels.references.refersTo}
             onClose={this.handleCloseDocComparison}
-            searchLabels={this.props.searchLabels}
+            searchLabels={this.state.labels.searchLabels}
         />
     )
   };
@@ -352,8 +362,6 @@ export class SearchRelationships extends React.Component {
     info: "info-circle"
     , warning: "lightbulb-o"
     , error: "exclamation-triangle"
-    // , toggleOn: "eye"
-    // , toggleOff: "eye-slash"
     , toggleOn: "toggle-on"
     , toggleOff: "toggle-off"
     , simpleSearch: "minus"
@@ -375,7 +383,7 @@ export class SearchRelationships extends React.Component {
 
   fetchData(event) {
     this.setState({
-      message: this.props.searchLabels.msg2
+      message: this.state.labels.searchLabels.msg2
       , messageIcon: this.messageIcons.info
     });
     let config = {
@@ -397,17 +405,15 @@ export class SearchRelationships extends React.Component {
     let path = this.props.session.restServer + Server.getDbServerLinksApi() + parms;
     axios.get(path, config)
         .then(response => {
-          console.log("search relationships");
-          console.log(response.data);
           let resultCount = 0;
-          let message = this.props.searchLabels.foundNone;
-          let found = this.props.searchLabels.foundMany;
+          let message = this.state.labels.searchLabels.foundNone;
+          let found = this.state.labels.searchLabels.foundMany;
           if (response.data.valueCount) {
             resultCount = response.data.valueCount;
             if (resultCount === 0) {
-              message = this.props.searchLabels.foundNone;
+              message = this.state.labels.searchLabels.foundNone;
             } else if (resultCount === 1) {
-              message = this.props.searchLabels.foundOne;
+              message = this.state.labels.searchLabels.foundOne;
             } else {
               message = found
                   + " "
@@ -426,12 +432,10 @@ export class SearchRelationships extends React.Component {
           );
         })
         .catch((error) => {
-          console.log("search relationships");
-          console.log(error.message);
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = this.props.searchLabels.foundNone;
+            message = this.state.labels.searchLabels.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -445,7 +449,7 @@ export class SearchRelationships extends React.Component {
   render() {
     return (
         <div className="App-page App-search">
-          <h3>{this.props.searchLabels.pageTitle}</h3>
+          <h3>{this.state.labels.searchLabels.pageTitle}</h3>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
@@ -455,12 +459,12 @@ export class SearchRelationships extends React.Component {
             </div>
           </div>
 
-          <div>{this.props.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
+          <div>{this.state.labels.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.state.showSearchResults &&
           <div>
-            {this.props.searchLabels.msg5} {this.props.searchLabels.msg6}
+            {this.state.labels.searchLabels.msg5} {this.state.labels.searchLabels.msg6}
           </div>
           }
           {this.state.showModalCompareDocs && this.getDocComparison()}
@@ -473,7 +477,7 @@ export class SearchRelationships extends React.Component {
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
-                  searchPlaceholder={this.props.resultsTableLabels.filterPrompt}
+                  searchPlaceholder={this.state.labels.resultsTableLabels.filterPrompt}
                   striped
                   hover
                   pagination
@@ -494,30 +498,30 @@ export class SearchRelationships extends React.Component {
                     export={ false }
                     tdClassname="tdDomain"
                     width={"10%"}
-                >{this.props.resultsTableLabels.headerDomain}
+                >{this.state.labels.resultsTableLabels.headerDomain}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='fromId'
                     dataSort={ true }
                     export={ false }
-                >{this.props.resultsTableLabels.headerFromId}
+                >{this.state.labels.resultsTableLabels.headerFromId}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='type'
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerType}
+                >{this.state.labels.resultsTableLabels.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='toId'
                     export={ false }
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerToId}
+                >{this.state.labels.resultsTableLabels.headerToId}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='tags'
                     export={ false }
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerTags}
+                >{this.state.labels.resultsTableLabels.headerTags}
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>
@@ -531,8 +535,6 @@ export class SearchRelationships extends React.Component {
 SearchRelationships.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func
-  , searchLabels: PropTypes.object.isRequired
-  , resultsTableLabels: PropTypes.object.isRequired
 };
 
 export default SearchRelationships;

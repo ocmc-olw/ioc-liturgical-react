@@ -5,7 +5,6 @@ import {
 } from 'react-bootstrap';
 
 import { get } from 'lodash';
-import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
 class FormattedTextNote extends React.Component {
@@ -13,15 +12,15 @@ class FormattedTextNote extends React.Component {
     super(props);
     let languageCode = props.session.languageCode;
     this.state = {
-      labels: { //
-        thisClass: Labels.getFormattedTextNoteLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+      labels: {
+        thisClass: props.session.labels[props.session.labelTopics.FormattedTextNote]
+        , buttons: props.session.labels[props.session.labelTopics.button]
+        , messages: props.session.labels[props.session.labelTopics.messages]
+        , resultsTableLabels: props.session.labels[props.session.labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: props.session.labels[props.session.labelTopics.messages].initial
     };
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -37,16 +36,15 @@ class FormattedTextNote extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-      let languageCode = nextProps.session.languageCode;
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getFormattedTextNoteLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            thisClass: nextProps.session.labels[nextProps.session.labelTopics.FormattedTextNote]
+            , buttons: nextProps.session.labels[nextProps.session.labelTopics.button]
+            , messages: nextProps.session.labels[nextProps.session.labelTopics.messages]
+            , resultsTableLabels: nextProps.session.labels[nextProps.session.labelTopics.resultsTable]
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: nextProps.session.labels[nextProps.session.labelTopics.messages].initial
           , somethingWeTrackIfChanged: get(this.state, "somethingWeTrackIfChanged", "" )
         }
       }, function () { return this.handleStateChange("place holder")});

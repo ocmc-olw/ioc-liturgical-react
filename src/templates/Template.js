@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import Labels from './Labels';
 import MessageIcons from './helpers/MessageIcons';
 
 /**
@@ -15,18 +14,8 @@ import MessageIcons from './helpers/MessageIcons';
 class NewComponentTemplate extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
-    this.state = {
-      labels: { // TODO: replace getViewReferencesLabels with method for this class
-        thisClass: Labels.getViewReferencesLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-      }
-      , messageIcons: MessageIcons.getMessageIcons()
-      , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
-    };
+
+    this.state = this.setTheState(props, {});
 
     this.handleStateChange = this.handleStateChange.bind(this);
   };
@@ -39,25 +28,34 @@ class NewComponentTemplate extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-      let languageCode = nextProps.session.languageCode;
-      this.setState((prevState, props) => {
-        return {
-          labels: {
-            thisClass: Labels.getViewReferencesLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-          }
-          , message: Labels.getMessageLabels(languageCode).initial
-          , somethingWeTrackIfChanged: get(this.state, "somethingWeTrackIfChanged", "" )
-        }
-      }, function () { return this.handleStateChange("place holder")});
+    this.setState(this.setTheState(nextProps, this.state));
   };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function if needed
   };
+
+  // a method called by both the constructor and componentWillReceiveProps
+  setTheState = (props, currentState) => {
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
+    return ({
+      labels: { // TODO: replace ViewReferences with method for this class
+        thisClass: labels[labelTopics.ViewReferences]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+      }
+      , messageIcons: MessageIcons.getMessageIcons()
+      , messageIcon: MessageIcons.getMessageIcons().info
+      , message: labels[labelTopics.messages].initial
+    }, function () { return this.handleStateChange("place holder")})
+  };
+
+
 
   // TODO: add the content for the render function
   render() {
@@ -77,7 +75,6 @@ NewComponentTemplate.propTypes = {
 // set default values for props here
 // TODO: rename class
 NewComponentTemplate.defaultProps = {
-  languageCode: "en"
 };
 
 // TODO: rename class for export

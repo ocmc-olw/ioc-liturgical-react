@@ -8,7 +8,6 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
-import Labels from './Labels';
 
 export class SearchTemplates extends React.Component {
 
@@ -40,7 +39,7 @@ export class SearchTemplates extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.state.searchLabels.msg1
+          message: this.props.session.labels[this.props.session.labelTopics.messages].msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
@@ -98,7 +97,10 @@ export class SearchTemplates extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchTemplatesLabels(props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
+    let theSearchLabels = labels[labelTopics.searchTemplates];
 
     let selectedId = "";
     if (docType) {
@@ -111,7 +113,7 @@ export class SearchTemplates extends React.Component {
         {
           searchLabels: theSearchLabels
           , docType: props.initialType
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+          , resultsTableLabels: labels[labelTopics.resultsTable]
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , matcherTypes: [
@@ -170,7 +172,7 @@ export class SearchTemplates extends React.Component {
           , tableColumnFilter: {
             defaultValue: "",
             type: 'RegexFilter',
-            placeholder: Labels.getMessageLabels(props.session.languageCode).regEx
+            placeholder: labels[labelTopics.messages].regEx
           }
           ,
           showSelectionButtons: false
@@ -184,7 +186,7 @@ export class SearchTemplates extends React.Component {
           , idColumnSize: "80px"
         }
     )
-  }
+  };
   getSearchForm() {
     return (
             <div>

@@ -12,7 +12,6 @@ import {
   , Well
 } from 'react-bootstrap';
 
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import {get} from "lodash";
 
@@ -27,18 +26,19 @@ class TextNoteSearchOptions extends React.Component {
       initialType = this.props.initialType;
     }
 
-    let languageCode = props.session.languageCode;
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
 
     this.state = {
       labels: {
-        thisClass: Labels.getSearchNotesLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+        thisClass: labels[labelTopics.searchNotes]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , selectedType: initialType
       , selectedProperty: "value"
       , selectedMatcher: "c"
@@ -75,16 +75,19 @@ class TextNoteSearchOptions extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    let languageCode = nextProps.session.languageCode;
+
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
     this.setState((prevState, props) => {
       return {
         labels: {
-          thisClass: Labels.getSearchNotesLabels(languageCode)
-          , buttons: Labels.getButtonLabels(languageCode)
-          , messages: Labels.getMessageLabels(languageCode)
-          , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+          thisClass: labels[labelTopics.searchNotes]
+          , buttons: labels[labelTopics.button]
+          , messages: labels[labelTopics.messages]
+          , resultsTableLabels: labels[labelTopics.resultsTable]
         }
-        , message: Labels.getMessageLabels(languageCode).initial
+        , message: labels[labelTopics.messages].initial
       }
     });
   };

@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Button } from 'react-bootstrap';
-import Labels from '../Labels';
-import MessageIcons from '../helpers/MessageIcons';
+ import MessageIcons from '../helpers/MessageIcons';
 import ModalSearchOntologyWithCallback from './ModalSearchOntologyWithCallback';
 import ModalSearchTextWithCallback from './ModalSearchTextWithCallback';
 import ModalNewEntryForm from './ModalNewEntryForm';
@@ -24,19 +23,22 @@ class SchemaBasedAddButton extends React.Component {
       );
     }
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getSchemaBasedAddButtonLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+        thisClass: labels[labelTopics.schemaBasedAddButton]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+        , references: labels[labelTopics.ViewReferences]
       }
       , session: {
         uiSchemas: uiSchemas
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , idTopicType: this.props.formData["partTypeOfTopic"]
       , idKeyType: this.props.formData["partTypeOfKey"]
       , showModal: false
@@ -67,34 +69,35 @@ class SchemaBasedAddButton extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     // make any initial function calls here...
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      this.setState((prevState, props) => {
-        return {
-          labels: {
-            thisClass: Labels.getSchemaBasedAddButtonLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-            , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
-          }
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
+    this.setState((prevState, props) => {
+      return {
+        labels: {
+          thisClass: labels[labelTopics.schemaBasedAddButton]
+          , messages: labels[labelTopics.messages]
+          , resultsTableLabels: labels[labelTopics.resultsTable]
+          , references: labels[labelTopics.ViewReferences]
         }
-      }, function () {
-        return this.handleStateChange("place holder")
-      });
-    }
-  }
+        , message: labels[labelTopics.messages].initial
+      }
+    }, function () {
+      return this.handleStateChange("place holder")
+    });
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {
     // call a function if needed
-  }
+  };
 
 
   handleIdLibrarySelection = (library) => {
@@ -103,14 +106,14 @@ class SchemaBasedAddButton extends React.Component {
         idLibrary: library
       });
     }
-  }
+  };
 
   handleIdTopicSelection = (topic, value) => {
     this.setState({
       idTopic: topic
       , idTopicValue: value
     });
-  }
+  };
 
   handleIdKeySelection = (
       id
@@ -153,20 +156,20 @@ class SchemaBasedAddButton extends React.Component {
       idSelected: idSelected
       , showModal: idSelected
     });
-  }
+  };
 
   handleModalClose = () => {
     this.setState({
       showModal: false
     });
     this.props.onClose();
-  }
+  };
 
   handleModalSubmit = ({formData}) => {
     if (this.props.onSubmit) {
       this.props.onSubmit(formData);
     }
-  }
+  };
 
   setFormData = () => {
     let formData = this.state.formData;
@@ -181,7 +184,7 @@ class SchemaBasedAddButton extends React.Component {
     formData.seq = this.props.seq;
     formData.status = "FINALIZED";
     return formData;
-  }
+  };
 
   getContent = () => {
     if (this.state.showModal) {
@@ -214,8 +217,7 @@ class SchemaBasedAddButton extends React.Component {
                     onCallback={this.handleIdKeySelection}
                     onClose={this.handleIdBuilderClose}
                 />
-            )
-            break;
+            );
           case "ID_OF_SELECTED_ONTOLOGY_INSTANCE":
             return (
                 <ModalSearchOntologyWithCallback
@@ -224,8 +226,7 @@ class SchemaBasedAddButton extends React.Component {
                     onCallback={this.handleIdKeySelection}
                     onClose={this.handleIdBuilderClose}
                 />
-            )
-            break;
+            );
         }
       }
     } else {
@@ -241,7 +242,7 @@ class SchemaBasedAddButton extends React.Component {
           </Button>
       )
     }
-  }
+  };
 
   render() {
     return (

@@ -11,7 +11,6 @@ import { Accordion
 } from 'react-bootstrap'
 import ResourceSelector from './ReactSelector'
 import SearchText from '../SearchText'
-import Labels from '../Labels';
 import SearchOntology from '../SearchOntology';
 import IdManager from '../helpers/IdManager';
 
@@ -47,17 +46,20 @@ class IdBuilder extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps, this.state.selectedLibrary);
-  }
+  };
 
   setTheState = (props, IdLibrary) => {
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     return (
         {
-          searchLabels: Labels.getSearchLabels(props.session.languageCode)
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+          searchLabels: labels[labelTopics.search]
+          , resultsTableLabels: labels[labelTopics.resultsTable]
           , selectedLibrary: props.IdLibrary
           , selectedLibraryLabel: ""
           , selectedTopic: props.IdTopic

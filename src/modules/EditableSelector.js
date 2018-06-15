@@ -4,17 +4,18 @@ import PropTypes from 'prop-types';
 import Select from 'react-select';
 import { Button } from 'react-bootstrap';
 import 'react-select/dist/react-select.css';
-import Labels from "../Labels";
 
 export class EditableSelector extends React.Component {
 
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
 
     this.state = {
       labels: {
-        buttons: Labels.getButtonLabels(languageCode)
+        buttons: labels[labelTopics.button]
       }
       , value: this.props.initialValue
       , options: this.props.options
@@ -26,10 +27,11 @@ export class EditableSelector extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    let languageCode = nextProps.session.languageCode;
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
     this.setState({
       labels: {
-        buttons: Labels.getButtonLabels(languageCode)
+        buttons: labels[labelTopics.button]
       }
       , value: nextProps.initialValue
       , options: nextProps.options

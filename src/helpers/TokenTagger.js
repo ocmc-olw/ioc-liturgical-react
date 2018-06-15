@@ -8,8 +8,6 @@ import {
 import FontAwesome from 'react-fontawesome';
 import { get } from 'lodash';
 
-import Labels from '../Labels';
-
 import TreeNode from '../classes/TreeNode';
 
 import LabelSelector from '../helpers/LabelSelector';
@@ -80,15 +78,31 @@ class TokenTagger extends React.Component {
   setTheState = (props, currentState) => {
     let index = props.index;
     let tokenAnalysis = props.tokenAnalysis;
-    let labelCase = Labels.getGrammarTermsCase(props.session.languageCode);
-    let labelCategories = Labels.getGrammarTermsCategories(props.session.languageCode);
-    let labelGender = Labels.getGrammarTermsGender(props.session.languageCode);
-    let labelNumber = Labels.getGrammarTermsNumber(props.session.languageCode);
-    let labelPerson = Labels.getGrammarTermsPerson(props.session.languageCode);
-    let labelPos = Labels.getGrammarTermsPartsOfSpeech(props.session.languageCode);
-    let labelMood = Labels.getGrammarTermsMood(props.session.languageCode);
-    let labelTense = Labels.getGrammarTermsTense(props.session.languageCode);
-    let labelVoice = Labels.getGrammarTermsVoice(props.session.languageCode);
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let labelGrammarTermsTitles = labels[labelTopics.grammarTermsTitles];
+    let labelCase = labels[labelTopics.grammarTermsCaseValues];
+    let labelCategories = labels[labelTopics.grammarTermsCategoryValues];
+    let labelGender = labels[labelTopics.grammarTermsGenderValues];
+    let labelNumber = labels[labelTopics.grammarTermsNumberValues];
+    let labelPerson = labels[labelTopics.grammarTermsPersonValues];
+    let labelPos = labels[labelTopics.grammarTermsPosValues];
+    let labelMood = labels[labelTopics.grammarTermsMoodValues];
+    let labelTense = labels[labelTopics.grammarTermsTenseValues];
+    let labelVoice = labels[labelTopics.grammarTermsVoiceValues];
+    let grammar = {
+      case: {title: labelGrammarTermsTitles.case, values: labelCase}
+      , categories: {title: labelGrammarTermsTitles.categories, values: labelCategories}
+      , gender: {title: labelGrammarTermsTitles.gender, values: labelGender}
+      , mood: {title: labelGrammarTermsTitles.mood, values: labelMood}
+      , number: {title: labelGrammarTermsTitles.number, values: labelNumber}
+      , person: {title: labelGrammarTermsTitles.person, values: labelPerson}
+      , pos: {title: labelGrammarTermsTitles.pos, values: labelPos}
+      , tense: {title: labelGrammarTermsTitles.tense, values: labelTense}
+      , voice: {title: labelGrammarTermsTitles.voice, values: labelVoice}
+    };
+
 
     // if the index did not change, preserve the previous state
     if (currentState.index && (currentState.index === index)) {
@@ -165,17 +179,17 @@ class TokenTagger extends React.Component {
           }
           if (labelCase.values[tag]) {
             selectedCase = tag;
-          } else if (labelGender.values[tag]) {
+          } else if (grammar.gender.values[tag]) {
             selectedGender = tag;
-          } else if (labelNumber.values[tag]) {
+          } else if (grammar.number.values[tag]) {
             selectedNumber = tag;
-          } else if (labelMood.values[tag]) {
+          } else if (grammar.mood.values[tag]) {
             selectedMood = tag;
-          } else if (labelPerson.values[tag]) {
+          } else if (grammar.person.values[tag]) {
             selectedPerson = tag;
-          } else if (labelTense.values[tag]) {
+          } else if (grammar.tense.values[tag]) {
             selectedTense = tag;
-          } else if (labelVoice.values[tag]) {
+          } else if (grammar.voice.values[tag]) {
             selectedVoice = tag;
           }
         }
@@ -197,26 +211,16 @@ class TokenTagger extends React.Component {
       return (
           {
             labels: {
-              thisClass: Labels.getTokenTaggerLabels(props.session.languageCode)
-              , messages: Labels.getMessageLabels(props.session.languageCode)
-              , grammar: {
-                case: labelCase
-                , categories: labelCategories
-                , gender: labelGender
-                , mood: labelMood
-                , number: labelNumber
-                , person: labelPerson
-                , pos: labelPos
-                , tense: labelTense
-                , voice: labelVoice
-              }
+              thisClass: labels[labelTopics.TokenTagger]
+              , messages: labels[labelTopics.messages]
+              , grammar: grammar
             }
             , session: {
               uiSchemas: uiSchemas
             }
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
-            , message: Labels.getMessageLabels(props.session.languageCode).initial
+            , message: labels[labelTopics.messages].initial
             , index: index
             , selectedCase: selectedCase
             , selectedGender: selectedGender
@@ -246,23 +250,13 @@ class TokenTagger extends React.Component {
       return (
           {
             labels: {
-              thisClass: Labels.getTokenTaggerLabels(this.props.session.languageCode)
-              , messages: Labels.getMessageLabels(this.props.session.languageCode)
-              , grammar: {
-                case: labelCase
-                , categories: labelCategories
-                , gender: labelGender
-                , mood: labelMood
-                , number: labelNumber
-                , person: labelPerson
-                , pos: labelPos
-                , tense: labelTense
-                , voice: labelVoice
-              }
+              thisClass: labels[labelTopics.TokenTagger]
+              , messages: labels[labelTopics.messages]
+              , grammar: grammar
             }
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
-            , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+            , message: labels[labelTopics.messages].initial
             , updatingData: false
             , dataUpdated: false
             , index: index
@@ -804,7 +798,7 @@ class TokenTagger extends React.Component {
                     onClick={this.handleSubmit}
                     disabled={this.state.submitDisabled}
                     >
-                    {Labels.getMessageLabels(this.props.session.languageCode).submit}
+                    {this.state.labels.messages.submit}
                   </Button>
                 </div>
                 <div className="col-sm-6 col-md-6 col-lg-6  App-Label-Selector-Retrieving">

@@ -17,7 +17,6 @@ import {
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import TreeViewUtils from './helpers/TreeViewUtils';
-import Labels from './Labels';
 import Spinner from './helpers/Spinner';
 import DependencyDiagram from './modules/DependencyDiagram';
 import HyperTokenText from './modules/HyperTokenText';
@@ -115,16 +114,20 @@ export class SearchTreebanks extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, currentState) => {
 
-    let theSearchLabels = Labels.getSearchTreebanksLabels(props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
+    let theSearchLabels = labels[labelTopics.searchTreebanks];
+
 
     return (
         {
           labels: {
             thisClass: theSearchLabels
-            , messages: Labels.getMessageLabels(props.session.languageCode)
+            , messages: labels[labelTopics.messages]
+            , resultsTable: labels[labelTopics.resultsTable]
           }
           , docType: get(currentState,"docType", props.initialType)
-          , resultsTableLabels: Labels.getTreebankSearchResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , matcherTypes: [
@@ -183,7 +186,7 @@ export class SearchTreebanks extends React.Component {
           , tableColumnFilter: {
             defaultValue: "",
             type: 'RegexFilter',
-            placeholder: Labels.getMessageLabels(props.session.languageCode).regEx
+            placeholder: labels[labelTopics.messages].regEx
           }
           ,
           showSelectionButtons: false
@@ -200,7 +203,8 @@ export class SearchTreebanks extends React.Component {
           , selectedTokenIndexNumber: get(currentState,"selectedTokenIndexNumber", 1)
         }
     )
-  }
+  };
+
   getSearchForm() {
     return (
             <div>
@@ -352,7 +356,7 @@ export class SearchTreebanks extends React.Component {
               </Modal.Header>
               <Modal.Body>
                 <HyperTokenText
-                    languageCode={this.props.session.languageCode}
+                    session={this.props.session}
                     tokens={this.state.tokens}
                     selectedToken={this.state.selectedTokenIndexNumber}
                     onClick={this.handleTokenClick}
@@ -564,7 +568,7 @@ export class SearchTreebanks extends React.Component {
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
-                  searchPlaceholder={this.state.resultsTableLabels.filterPrompt}
+                  searchPlaceholder={this.state.labels.resultsTable.filterPrompt}
                   striped
                   hover
                   pagination
@@ -588,73 +592,73 @@ export class SearchTreebanks extends React.Component {
                     dataField='d.token'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
-                >{this.state.resultsTableLabels.headerChildToken}
+                >{this.state.labels.resultsTable.headerChildToken}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='d.nnpToken'
                     hidden
-                >{this.state.resultsTableLabels.headerChildToken}
+                >{this.state.labels.resultsTable.headerChildToken}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='d.grammar'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
-                >{this.state.resultsTableLabels.headerChildGrammar}
+                >{this.state.labels.resultsTable.headerChildGrammar}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='DtoC'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
-                >{this.state.resultsTableLabels.headerChildLabel}
+                >{this.state.labels.resultsTable.headerChildLabel}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='c.token'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
                     columnClassName={"App-Search-Treebank-Target"}
-                >{this.state.resultsTableLabels.headerToken}
+                >{this.state.labels.resultsTable.headerToken}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='c.nnpToken'
                     hidden
-                >{this.state.resultsTableLabels.headerToken}
+                >{this.state.labels.resultsTable.headerToken}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='c.grammar'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
                     columnClassName={"App-Search-Treebank-Target"}
-                >{this.state.resultsTableLabels.headerGrammar}
+                >{this.state.labels.resultsTable.headerGrammar}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='CtoB'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
                     columnClassName={"App-Search-Treebank-Target"}
-                >{this.state.resultsTableLabels.headerLabel}
+                >{this.state.labels.resultsTable.headerLabel}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='b.token'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
-                >{this.state.resultsTableLabels.headerParentToken}
+                >{this.state.labels.resultsTable.headerParentToken}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='b.nnpToken'
                     hidden
-                >{this.state.resultsTableLabels.headerParentToken}
+                >{this.state.labels.resultsTable.headerParentToken}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='b.grammar'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
-                >{this.state.resultsTableLabels.headerParentGrammar}
+                >{this.state.labels.resultsTable.headerParentGrammar}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='BtoA'
                     dataSort={ true }
                     filter={this.state.tableColumnFilter}
-                >{this.state.resultsTableLabels.headerParentLabel}
+                >{this.state.labels.resultsTable.headerParentLabel}
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>

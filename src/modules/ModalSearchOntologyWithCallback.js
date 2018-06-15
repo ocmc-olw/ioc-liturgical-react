@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Modal, Well} from 'react-bootstrap';
 import SearchOntology from '../SearchOntology';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 
 /**
@@ -12,18 +11,22 @@ export class ModalSearchOntologyWithCallback extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        button: Labels.getButtonLabels(props.session.languageCode)
-        , messages: Labels.getMessageLabels(props.session.languageCode)
-        , searchLabels: Labels.getSearchLabels(props.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+        button: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+        , searchLabels: labels[labelTopics.search]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , showModal: true
-  }
+  };
 
     this.close = this.close.bind(this);
     this.setMessage = this.setMessage.bind(this);
@@ -31,18 +34,21 @@ export class ModalSearchOntologyWithCallback extends React.Component {
   };
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
     this.setState({
       labels: {
-        button: Labels.getButtonLabels(nextProps.session.languageCode)
-        , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-        , searchLabels: Labels.getSearchLabels(nextProps.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+        button: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+        , searchLabels: labels[labelTopics.search]
       }
     });
-  }
+  };
 
   setMessage(message) {
     this.setState({

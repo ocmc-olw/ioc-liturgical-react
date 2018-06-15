@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, Col, ControlLabel, Form, FormControl, FormGroup, Glyphicon, InputGroup, Modal, Well} from 'react-bootstrap';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import ReactSelector from './ReactSelector';
 import ModalReactSelector from './ModalReactSelector';
@@ -17,15 +16,20 @@ export class ModalTemplateNodeEditor extends React.Component {
 
   constructor(props) {
     super(props);
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getModalTemplateNodeEditorLabels(this.props.session.languageCode)
-        , buttons: Labels.getButtonLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
+        thisClass: labels[labelTopics.ModalTemplateNodeEditor]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , node: this.props.node
       , selectedNodeType: this.props.node.title
       , selectedSubtitle: this.props.node.subtitle
@@ -36,7 +40,7 @@ export class ModalTemplateNodeEditor extends React.Component {
       , showTextInput: false
       , idKey: "head"
       , modalTitle: this.props.node.subtitle
-    }
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -70,18 +74,21 @@ export class ModalTemplateNodeEditor extends React.Component {
   };
 
   PropTypesWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
     this.setState((prevState, nextProps) => {
       return {
         labels: {
-          thisClass: Labels.getModalTemplateNodeEditorLabels(nextProps.session.languageCode)
-          , buttons: Labels.getButtonLabels(nextProps.session.languageCode)
-          , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-          , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+          thisClass: labels[labelTopics.ModalTemplateNodeEditor]
+          , buttons: labels[labelTopics.button]
+          , messages: labels[labelTopics.messages]
+          , resultsTableLabels: labels[labelTopics.resultsTable]
         }
-        , message: Labels.getMessageLabels(nextProps.session.languageCode).initial
+        , message: labels[labelTopics.messages].initial
         , node: nextProps.node
         , selectedNodeType: nextProps.node.title
         , selectedSubtitle: nextProps.node.subtitle

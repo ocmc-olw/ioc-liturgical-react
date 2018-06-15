@@ -4,20 +4,20 @@ import PropTypes from 'prop-types';
 import Server from "./Server";
 import Spinner from './Spinner';
 import MessageIcons from "./MessageIcons";
-import Labels from "../Labels";
 
 class DownloadUserRecords extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
     this.state = {
       fetching: false
       , labels: {
-        messages: Labels.getMessageLabels(languageCode)
+        messages: labels[labelTopics.messages]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
     };
 
     this.handleStateChange = this.handleStateChange.bind(this);
@@ -32,17 +32,16 @@ class DownloadUserRecords extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      let languageCode = nextProps.session.languageCode;
-      this.setState((prevState, props) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+    this.setState((prevState, props) => {
         return {
           labels: {
-            messages: Labels.getMessageLabels(languageCode)
+            messages: labels[labelTopics.messages]
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: labels[labelTopics.messages].initial
         }
       }, function () { return this.handleStateChange("place holder")});
-    }
   };
 
   // if we need to do something after setState, do it here...
@@ -101,7 +100,6 @@ DownloadUserRecords.propTypes = {
 
 // set default values for props here
 DownloadUserRecords.defaultProps = {
-  languageCode: "en"
 };
 
 export default DownloadUserRecords;

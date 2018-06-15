@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import Labels from '../Labels';
 import CitationButton from '../helpers/CitationButton';
 import MessageIcons from '../helpers/MessageIcons';
 import {
@@ -16,7 +15,6 @@ import htmlToDraft from 'html-to-draftjs';
 class RichEditor extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
     const blocksFromHtml = htmlToDraft(props.content);
     const { contentBlocks, entityMap } = blocksFromHtml;
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
@@ -30,16 +28,13 @@ class RichEditor extends React.Component {
             suggestions: this.props.suggestions
       };
     }
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
-      labels: {
-        thisClass: Labels.getRichEditorLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-      }
-      , messageIcons: MessageIcons.getMessageIcons()
+      messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , editorState: editorState
       , content: ""
       , mention: mention
@@ -66,15 +61,12 @@ class RichEditor extends React.Component {
           suggestions: nextProps.suggestions
         };
       }
-      this.setState((prevState, props) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
+    this.setState((prevState, props) => {
         return {
-          labels: {
-            thisClass: Labels.getRichEditorLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-          }
-          , message: Labels.getMessageLabels(languageCode).initial
+          message: labels[labelTopics.messages].initial
           , somethingWeTrackIfChanged: get(this.state, "somethingWeTrackIfChanged", "" )
           , mention: mention
         }

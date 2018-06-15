@@ -4,8 +4,6 @@ import { ControlLabel, Well } from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import FontAwesome from 'react-fontawesome';
 
-import Labels from './Labels';
-
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import ReactSelector from './modules/ReactSelector';
 import SchemaBasedAddButton from './modules/SchemaBasedAddButton';
@@ -32,20 +30,22 @@ class ViewReferences extends React.Component {
           , props.session.uiSchemas.forms
       );
     }
-    
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getViewReferencesLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+        thisClass: labels[labelTopics.ViewReferences]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , session: {
         uiSchemas: uiSchemas
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , data: {}
       , resultCount: 0
       , fetching: false
@@ -91,19 +91,18 @@ class ViewReferences extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      this.setState((prevState, props) => {
+    this.setState((prevState, props) => {
+      let labels = nextProps.session.labels;
+      let labelTopics = nextProps.session.labelTopics;
         return {
-          labels: {
-            thisClass: Labels.getViewReferencesLabels(nextProps.session.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-            , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
-          }
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+        labels: {
+          thisClass: labels[labelTopics.ViewReferences]
+          , messages: labels[labelTopics.messages]
+          , resultsTableLabels: labels[labelTopics.resultsTable]
         }
-      }, function () { return this.handleStateChange("place holder")});
-    }
+        , message: labels[labelTopics.messages].initial
+      }
+    }, function () { return this.handleStateChange("place holder")});
   };
 
   // if we need to do something after setState, do it here...
@@ -217,14 +216,14 @@ class ViewReferences extends React.Component {
             session={this.props.session}
             restPath={Server.getDbServerLinksApi()}
             showModal={this.state.showModalWindow}
-            title={this.state.labels.references.textualReference}
+            title={this.state.labels.thisClass.textualReference}
             idLibrary={this.state.selectedLibrary}
             idTopic={this.state.selectedTopic}
             idKey={this.state.selectedKey}
             fromId={this.state.selectedFromId}
             fromText={this.state.selectedFromValue}
-            fromTitle={this.state.labels.references.theText}
-            toTitle={this.state.labels.references.refersTo}
+            fromTitle={this.state.labels.thisClass.theText}
+            toTitle={this.state.labels.thisClass.refersTo}
             toId={this.state.selectedToId}
             toText={this.state.selectedToValue}
             onClose={this.handleCloseModal}

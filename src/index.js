@@ -14,11 +14,11 @@ import Flag from './Flag';
 import FormattedTextNote from './FormattedTextNote';
 import HelpSearch from './HelpSearch';
 import Html5VideoPanel from './modules/Html5VideoPanel';
-import Labels from './Labels';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
 import Login from './Login';
 import NewEntry from './NewEntry';
 import NotesLister from './NotesLister';
+import ParaColLabelEditor from './ParaColLabelEditor';
 import ParaColTextEditor from './ParaColTextEditor';
 import ParaRowTextEditor from './ParaRowTextEditor';
 import SearchGeneric from './SearchGeneric';
@@ -42,9 +42,6 @@ import User from './classes/User';
 import WorkflowForm from './helpers/WorkflowForm';
 import YoutubeVideoPanel from './modules/YoutubeVideoPanel';
 
-//import LifeCycleDemo from './helpers/LifeCycleDemo';
-import TemplateForTable from './templates/TemplateForTable';
-
 export {
   Administrator
   , AgesEditor
@@ -62,12 +59,12 @@ export {
   , FormattedTextNote
   , HelpSearch
   , Html5VideoPanel
-  , Labels
 //  , LifeCycleDemo
   , LiturgicalDayProperties
   , Login
   , NewEntry
   , NotesLister
+  , ParaColLabelEditor
   , ParaColTextEditor
   , ParaRowTextEditor
   , SearchGeneric
@@ -82,7 +79,6 @@ export {
   , Session
   , Spinner
   , TemplateEditor
-  , TemplateForTable
   , TextNoteEditor
   , TextNotesLister
   , TopicsSelector

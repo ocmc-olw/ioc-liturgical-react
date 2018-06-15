@@ -1,53 +1,73 @@
 import React from 'react'
 import SsSearchResultYourKingdomOf from '../../images/SsSearchResultYourKingdomOf';
 import SsShowingRows from '../../images/SsSearchShowingRows';
+import PropTypes from "prop-types";
 
 class DocSearchResults extends React.Component {
+
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      labels: props.session.labels[props.session.labelTopics.help]
+    };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState(
+        {
+          labels: nextProps.session.labels[nextProps.session.labelTopics.help]
+        }
+    );
+  };
+
   render() {
     return (
     <div className="App-help-doc-search-results">
       <div className="jumbotron">
         <p>
-          {this.props.labels.secDocSearchResultsP01a} <em>your kingdom of</em>
+          {this.state.labels.searchSecDocSearchResultsP01a} <em>your kingdom of</em>
         </p>
         <SsSearchResultYourKingdomOf />
         <p>
-          {this.props.labels.secDocSearchResultsP02}
+          {this.state.labels.searchSecDocSearchResultsP02}
           </p>
         <ol>
           <li>
-            {this.props.labels.secDocSearchResultsP03}
+            {this.state.labels.searchSecDocSearchResultsP03}
           </li>
           <li>
-            {this.props.labels.secDocSearchResultsP04}
+            {this.state.labels.searchSecDocSearchResultsP04}
           </li>
           <li>
-            {this.props.labels.secDocSearchResultsP05}
+            {this.state.labels.searchSecDocSearchResultsP05}
           </li>
           <li>
-            {this.props.labels.secDocSearchResultsP06}
+            {this.state.labels.searchSecDocSearchResultsP06}
           </li>
           <li>
-            {this.props.labels.secDocSearchResultsP07}
+            {this.state.labels.searchSecDocSearchResultsP07}
           </li>
           <li>
-            {this.props.labels.secDocSearchResultsP08}
+            {this.state.labels.searchSecDocSearchResultsP08}
           </li>
           <li>
-            {this.props.labels.secDocSearchResultsP09}
+            {this.state.labels.searchSecDocSearchResultsP09}
           </li>
         </ol>
         <p>
-          {this.props.labels.secDocSearchResultsP10}
+          {this.state.labels.searchSecDocSearchResultsP10}
         </p>
         <SsShowingRows />
         <p>
-          {this.props.labels.secDocSearchResultsP11}
+          {this.state.labels.searchSecDocSearchResultsP11}
         </p>
       </div>
     </div>
     )
   }
 }
-
+DocSearchResults.propTypes = {
+  session: PropTypes.object.isRequired
+};
 export default DocSearchResults;

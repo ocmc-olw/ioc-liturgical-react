@@ -8,7 +8,6 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
-import Labels from './Labels';
 
 export class SearchNotes extends React.Component {
 
@@ -98,7 +97,10 @@ export class SearchNotes extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
+    let theSearchLabels = labels[labelTopics.searchNotes];
 
     let selectedId = "";
     if (docType) {
@@ -110,8 +112,9 @@ export class SearchNotes extends React.Component {
     return (
         {
           searchLabels: theSearchLabels
+          , message: theSearchLabels.msg1
           , docType: props.initialType
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
+          , resultsTableLabels: labels[labelTopics.resultsTable]
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , matcherTypes: [

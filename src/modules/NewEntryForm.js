@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import Form from "react-jsonschema-form";
 import { Button} from 'react-bootstrap'
@@ -14,16 +13,19 @@ class NewEntryForm extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getNewEntryFormLabels(this.props.session.languageCode)
-        , button: Labels.getButtonLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , search: Labels.getSearchLabels(this.props.session.languageCode)
+        thisClass: labels[labelTopics.NewEntryForm]
+        , button: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , search: labels[labelTopics.search]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , formData: this.props.formData
     };
 
@@ -39,19 +41,19 @@ class NewEntryForm extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getNewEntryFormLabels(nextProps.session.languageCode)
-            , button: Labels.getButtonLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-            , search: Labels.getSearchLabels(this.props.session.languageCode)
+            thisClass: labels[labelTopics.NewEntryForm]
+            , button: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , search: labels[labelTopics.search]
           }
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , message: labels[labelTopics.messages].initial
         }
       }, function () { return this.handleStateChange("place holder")});
-    }
   };
 
   // if we need to do something after setState, do it here...
@@ -89,11 +91,7 @@ class NewEntryForm extends React.Component {
           }
         })
         .catch( (error) => {
-          var message = Labels.getHttpMessage(
-              this.props.session.languageCode
-              , error.response.status
-              , error.response.statusText
-          );
+          var message = error.response.statusText;
           var messageIcon = this.state.messageIcons.error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });

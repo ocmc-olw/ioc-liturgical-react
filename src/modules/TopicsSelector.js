@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import server from '../helpers/Server';
 import 'react-select/dist/react-select.css'
@@ -48,21 +47,23 @@ class TopicsSelector extends React.Component {
         selectedItem = currentState.selectedItem;
       }
     }
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
       return (
           {
             labels: {
-              thisClass: Labels.getTopicsSelectorLabels(this.props.session.languageCode)
-              , messages: Labels.getMessageLabels(this.props.session.languageCode)
+              thisClass: labels[labelTopics.TopicsSelector]
+              , messages: labels[labelTopics.messages]
             }
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
-            , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+            , message: labels[labelTopics.messages].initial
             , selectedItem: selectedItem
             , dataFetched: dataFetched
             , data: data
           }
       )
-  }
+  };
 
   fetchData = (library) => {
       server.getTopics(

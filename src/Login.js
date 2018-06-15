@@ -54,6 +54,10 @@ class Login extends React.Component {
               , formData.password
               , false
           );
+          // important -- leave this here. There are errors thrown
+          // by other components that get caught here for some reason.
+          console.log("caught login error");
+          console.log(error);
           this.props.loginCallback(
               error.message
               , false

@@ -2,24 +2,26 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import { Alert, Button, Glyphicon } from 'react-bootstrap';
-import Labels from '../Labels';
 import Server from './Server';
 import MessageIcons from './MessageIcons';
 
 class DeleteButton extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        thisClass: Labels.getDeleteButtonLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+        thisClass: labels[labelTopics.deleteButton]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , show: false
     };
 
@@ -37,16 +39,19 @@ class DeleteButton extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-      let languageCode = nextProps.session.languageCode;
+
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getDeleteButtonLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            thisClass: labels[labelTopics.deleteButton]
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , resultsTableLabels: labels[labelTopics.resultsTable]
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , somethingWeTrackIfChanged: get(this.state, "somethingWeTrackIfChanged", "" )
         }
       }, function () { return this.handleStateChange("place holder")});

@@ -12,7 +12,6 @@ import {
   , Well
 } from 'react-bootstrap';
 
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import {get} from "lodash";
 
@@ -27,18 +26,19 @@ class GenericSearchOptions extends React.Component {
       initialType = this.props.initialType;
     }
 
-    let languageCode = props.session.languageCode;
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
 
     this.state = {
       labels: {
-        thisClass: Labels.getSearchGenericLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+        search: labels[labelTopics.SearchGeneric]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , selectedTypeLabel: ""
       , selectedType: initialType
       , selectedLibrary: "*"
@@ -49,7 +49,7 @@ class GenericSearchOptions extends React.Component {
       , selectedTags: ""
       , tagData: []
       , dropDownProperties: {
-        msg: this.props.labels.domainIs
+        msg: labels[labelTopics.SearchGeneric].domainIs
         , source: this.props.properties[initialType]
         , initialValue: "*"
       }
@@ -79,16 +79,19 @@ class GenericSearchOptions extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    let languageCode = nextProps.session.languageCode;
+
     this.setState((prevState, props) => {
+      let labels = props.session.labels;
+      let labelTopics = props.session.labelTopics;
+
       return {
         labels: {
-          thisClass: Labels.getSearchGenericLabels(languageCode)
-          , buttons: Labels.getButtonLabels(languageCode)
-          , messages: Labels.getMessageLabels(languageCode)
-          , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+          search: labels[labelTopics.SearchGeneric]
+          , buttons: labels[labelTopics.button]
+          , messages: labels[labelTopics.messages]
+          , resultsTableLabels: labels[labelTopics.resultsTable]
         }
-        , message: Labels.getMessageLabels(languageCode).initial
+        , message: labels[labelTopics.messages].initial
       }
     });
   };
@@ -100,7 +103,7 @@ class GenericSearchOptions extends React.Component {
       selectedTypeLabel: typeLabel
       , selectedType: type
       , dropDownProperties: {
-        msg: this.props.labels.domainIs
+        msg: this.state.labels.search.domainIs
         , source: this.props.properties[type]
         , initialValue: "*"
       }
@@ -179,7 +182,7 @@ class GenericSearchOptions extends React.Component {
           <Col xs={12} md={12}>
             <div className={"App App-Bibliography-Type-Selector"}>
               <ResourceSelector
-                  title={this.props.labels.findWhereTypeIs}
+                  title={this.state.labels.search.findWhereTypeIs}
                   initialValue={this.state.selectedType}
                   resources={this.props.session.dropdowns.schemaEditorDropdown}
                   changeHandler={this.handleDocTypeChange}
@@ -197,7 +200,7 @@ class GenericSearchOptions extends React.Component {
           <Col xs={12} md={12}>
             <div className={"App App-Bibliography-Type-Selector"}>
               <ResourceSelector
-                  title={this.props.labels.propertyIs}
+                  title={this.state.labels.search.propertyIs}
                   initialValue={this.state.selectedProperty}
                   resources={this.props.properties}
                   changeHandler={this.handlePropertyChange}
@@ -213,13 +216,13 @@ class GenericSearchOptions extends React.Component {
     return (
         <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
-            <ControlLabel>{this.props.labels.propertyTextIs}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.propertyTextIs}</ControlLabel>
             <FormControl
                 id={"fxGenericSearchText"}
                 className={"App App-search-text-input"}
                 type="text"
                 value={this.state.value}
-                placeholder={this.props.labels.textPrompt}
+                placeholder={this.state.labels.search.textPrompt}
                 onChange={this.handleValueChange}
             />
           </Col>
@@ -233,7 +236,7 @@ class GenericSearchOptions extends React.Component {
           <Col xs={12} md={12}>
             <div className={"App App-Generic-Type-Selector"}>
               <ResourceSelector
-                  title={this.props.labels.matcherIs}
+                  title={this.state.labels.search.matcherIs}
                   initialValue={this.state.selectedMatcher}
                   resources={this.props.matchers}
                   changeHandler={this.handleMatcherChange}
@@ -251,7 +254,7 @@ class GenericSearchOptions extends React.Component {
           <Col xs={12} md={12}>
             <div className={"App App-Generic-Tag-Selector"}>
               <ResourceSelector
-                  title={this.props.labels.has}
+                  title={this.state.labels.search.has}
                   initialValue={this.state.selectedTagOperator}
                   resources={this.props.tagOperators}
                   changeHandler={this.handleTagOperatorChange}
@@ -269,7 +272,7 @@ class GenericSearchOptions extends React.Component {
           <Col xs={12} md={12}>
             <div className={"App App-Generic-Tag-Selector"}>
               <ResourceSelector
-                  title={this.props.labels.tags}
+                  title={this.state.labels.search.tags}
                   initialValue={this.state.selectedTags}
                   resources={this.props.tags}
                   changeHandler={this.handleTagsSelection}
@@ -294,7 +297,7 @@ class GenericSearchOptions extends React.Component {
               <Col xs={12} md={12}>
                 <div className={"App App-Generic-Library-Selector"}>
                   <ResourceSelector
-                      title={this.props.labels.domainIs}
+                      title={this.state.labels.search.domainIs}
                       initialValue={this.state.selectedLibrary}
                       resources={resources}
                       changeHandler={this.handleLibraryChange}
@@ -313,7 +316,7 @@ class GenericSearchOptions extends React.Component {
         <Row className="show-grid App-Generic-Search-Options-Row">
           <Col xs={12} md={12}>
             <div className={"App App-Generic-Selector-Button"}>
-              <ControlLabel>{this.props.labels.clickTheButton}</ControlLabel>
+              <ControlLabel>{this.state.labels.search.clickTheButton}</ControlLabel>
               <div>
               <Button
                   bsStyle="primary"
@@ -323,7 +326,7 @@ class GenericSearchOptions extends React.Component {
                   onClick={this.handleSubmit}
               >
                 <FontAwesome className="Button-Select-FontAwesome" name={"search"}/>
-                {this.props.labels.submit}
+                {this.state.labels.search.submit}
               </Button>
               </div>
             </div>
@@ -359,7 +362,6 @@ GenericSearchOptions.propTypes = {
   , tags: PropTypes.array.isRequired
   , tagOperators: PropTypes.array.isRequired
   , handleSubmit: PropTypes.func.isRequired
-  , labels: PropTypes.object.isRequired
 };
 
 export default GenericSearchOptions;

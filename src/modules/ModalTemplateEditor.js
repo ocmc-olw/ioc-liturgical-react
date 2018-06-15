@@ -1,9 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import FontAwesome from 'react-fontawesome';
-import {Col, ControlLabel, Button, Grid, Modal, Row, Well} from 'react-bootstrap';
-import Labels from '../Labels';
+import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
 import MessageIcons from '../helpers/MessageIcons';
 import Spinner from '../helpers/Spinner';
 import TemplateEditor from '../TemplateEditor';
@@ -16,15 +14,18 @@ export class ModalTemplateEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        buttons: Labels.getButtonLabels(props.session.languageCode)
-        , messages: Labels.getMessageLabels(props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , references: labels[labelTopics.ViewReferences]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , resultCount: 0
       , showSearchResults: false
       , schema: {}
@@ -34,10 +35,9 @@ export class ModalTemplateEditor extends React.Component {
       , showForm: false
       , topicText: ""
       , keyText: ""
-      , httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
       , treeData: undefined
       , dataFetched: false
-    }
+    };
 
     this.close = this.close.bind(this);
     this.open = this.open.bind(this);
@@ -54,14 +54,17 @@ export class ModalTemplateEditor extends React.Component {
           this.fetchData();
         }
     );
-
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
     this.setState({
-     httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
+      buttons: labels[labelTopics.button]
+      , messages: labels[labelTopics.messages]
+      , references: labels[labelTopics.ViewReferences]
     });
-  }
+  };
 
   setMessage(message) {
     this.setState({

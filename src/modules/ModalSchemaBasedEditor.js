@@ -4,7 +4,6 @@ import axios from 'axios';
 import {ControlLabel, Button, ButtonGroup, Modal, Well} from 'react-bootstrap';
 import Form from "react-jsonschema-form";
 import FontAwesome from 'react-fontawesome';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import DeleteButton from "../helpers/DeleteButton";
 
@@ -16,15 +15,18 @@ export class ModalSchemaBasedEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        button: Labels.getButtonLabels(props.session.languageCode)
-        , messages: Labels.getMessageLabels(props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , references: labels[labelTopics.ViewReferences]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , resultCount: 0
       , showSearchResults: false
       , schema: {}
@@ -34,7 +36,11 @@ export class ModalSchemaBasedEditor extends React.Component {
       , showForm: false
       , topicText: ""
       , keyText: ""
-      , httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
+      , httpCodeLabels: labels[labelTopics.httpCodes]
+      , selectedId: ""
+      , selectedValue: ""
+      , selectedSchema: ""
+      , showModal: true
     };
 
     this.close = this.close.bind(this);
@@ -58,8 +64,17 @@ export class ModalSchemaBasedEditor extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
     this.setState({
-     httpCodeLabels: Labels.getHttpCodeLabels(this.props.session.languageCode)
+      labels: {
+        buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , references: labels[labelTopics.ViewReferences]
+      }
+      , message: labels[labelTopics.messages].initial
+      , httpCodeLabels: labels[labelTopics.httpCodes]
     });
   };
 
@@ -177,7 +192,7 @@ export class ModalSchemaBasedEditor extends React.Component {
       return (
           <div>
             <ButtonGroup role="toolbar">
-            <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+            <Button onClick={this.close}>{this.state.labels.buttons.close}</Button>
             </ButtonGroup>
             <ButtonGroup>
             <DeleteButton
@@ -192,7 +207,7 @@ export class ModalSchemaBasedEditor extends React.Component {
       )
     }  else {
       return (
-          <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+          <Button onClick={this.close}>{this.state.labels.buttons.close}</Button>
       );
     }
   };
@@ -238,7 +253,7 @@ export class ModalSchemaBasedEditor extends React.Component {
                       type="submit"
                       disabled={! this.props.canUpdate}
                   >
-                    {this.state.labels.button.submit}
+                    {this.state.labels.buttons.submit}
                   </Button>
                   <span className="App App-message"><FontAwesome
                     name={this.state.messageIcon}/>

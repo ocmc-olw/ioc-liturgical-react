@@ -7,7 +7,6 @@ import FontAwesome from 'react-fontawesome';
 import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
-import Labels from './Labels';
 import IdManager from './helpers/IdManager';
 import FormattedTextNote from './FormattedTextNote';
 import User from "./classes/User";
@@ -58,7 +57,10 @@ export class TextNotesLister extends React.Component {
   // a method called by both the constructor and componentWillReceiveProps
   setTheState = (props, docType) => {
 
-    let theSearchLabels = Labels.getSearchNotesLabels(props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
+    let theSearchLabels = labels[labelTopics.searchNotes];
 
     let selectedId = "";
     if (docType) {
@@ -83,12 +85,15 @@ export class TextNotesLister extends React.Component {
 
     return (
         {
-          searchLabels: theSearchLabels
+          labels: {
+          messages: labels[labelTopics.messages]
+            , search: theSearchLabels
+            , resultsTable: labels[labelTopics.resultsTable]
+          }
           , session: {
             userInfo: userInfo
           }
           , docType: props.initialType
-          , resultsTableLabels: Labels.getResultsTableLabels(props.session.languageCode)
           , filterMessage: theSearchLabels.msg5
           , selectMessage: theSearchLabels.msg6
           , messageIcon: get(this.state, "messageIcon", "")
@@ -96,7 +101,6 @@ export class TextNotesLister extends React.Component {
           , rowSelectMessage: get(this.state,"rowSelectMessage", "")
           , rowSelectMessageIcon: get(this.state, "rowSelectMessageIcon", "")
           , showRowSelectMessage: get(this.state, "showRowSelectMessage", false)
-          , messages: Labels.getMessageLabels(props.session.languageCode)
           , matcherTypes: [
             {label: theSearchLabels.matchesAnywhere, value: "c"}
             , {label: theSearchLabels.matchesAtTheStart, value: "sw"}
@@ -206,13 +210,13 @@ export class TextNotesLister extends React.Component {
     return (
         <Panel>
           <FormGroup>
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedId}
               disabled
             />
-            <ControlLabel>{this.state.searchLabels.selectedDoc}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedDoc}</ControlLabel>
             <FormControl
                 type="text"
                 value={this.state.selectedValue}
@@ -238,7 +242,7 @@ export class TextNotesLister extends React.Component {
   };
 
   handleRowSelect = (row, isSelected, e) => {
-    let rowSelectMessage = this.state.messages.ok;
+    let rowSelectMessage = this.state.labels.messages.ok;
     let rowSelectMessageIcon = this.messageIcons.info;
     if (this.state.session.userInfo.isAuthorFor(row["library"])) {
       this.setState({
@@ -256,7 +260,7 @@ export class TextNotesLister extends React.Component {
       });
     } else {
       rowSelectMessage =
-          this.state.messages.readOnly
+          this.state.labels.messages.readOnly
           + " ( "
           + row["library"]
           + ")";
@@ -338,7 +342,7 @@ export class TextNotesLister extends React.Component {
 
   fetchData(event) {
     this.setState({
-      message: this.state.searchLabels.msg2
+      message: this.state.labels.search.msg2
       , messageIcon: this.messageIcons.info
     });
     let config = {
@@ -364,16 +368,16 @@ export class TextNotesLister extends React.Component {
           let resultCount = 0;
           let notes = [];
           let showSearchResults = false;
-          let message = this.state.searchLabels.foundNone
-          let found = this.state.searchLabels.foundMany;
+          let message = this.state.labels.search.foundNone
+          let found = this.state.labels.search.foundMany;
           if (response.data.valueCount) {
             notes = response.data.values;
             resultCount = response.data.valueCount;
             showSearchResults = resultCount > 0;
             if (resultCount === 0) {
-              message = this.state.searchLabels.foundNone;
+              message = this.state.labels.search.foundNone;
             } else if (resultCount === 1) {
-              message = this.state.searchLabels.foundOne;
+              message = this.state.labels.search.foundOne;
             } else {
               message = found
                   + " "
@@ -402,7 +406,7 @@ export class TextNotesLister extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = this.state.searchLabels.foundNone;
+            message = this.state.labels.search.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({data: message, message: message, messageIcon: messageIcon});
           }
@@ -487,11 +491,11 @@ export class TextNotesLister extends React.Component {
     return (
         <div className="App-page App-Notes-Lister">
           {this.props.title && <h3>{this.props.title}</h3>}
-          <div>{this.state.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.message} {this.getAddButton()}</span>
+          <div>{this.state.labels.search.resultLabel}: <span className="App App-message"><FontAwesome name={this.state.messageIcon}/>{this.state.message} {this.getAddButton()}</span>
           </div>
           {this.state.showSearchResults &&
           <div>
-            {this.state.searchLabels.msg5} {this.state.searchLabels.msg6}
+            {this.state.labels.search.msg5} {this.state.labels.search.msg6}
           </div>
           }
           {this.state.showRowSelectMessage &&
@@ -528,7 +532,7 @@ export class TextNotesLister extends React.Component {
                     tdClassname="tdType"
                     width={"15%"}
                     filter={this.state.filter}
-                >{this.state.resultsTableLabels.headerType}
+                >{this.state.labels.resultsTable.headerType}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='liturgicalScope'
@@ -536,7 +540,7 @@ export class TextNotesLister extends React.Component {
                     tdClassname="tdType"
                     width={"15%"}
                     filter={this.state.filter}
-                >{this.state.resultsTableLabels.headerScope}
+                >{this.state.labels.resultsTable.headerScope}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='liturgicalLemma'
@@ -544,7 +548,7 @@ export class TextNotesLister extends React.Component {
                     tdClassname="tdType"
                     width={"15%"}
                     filter={this.state.filter}
-                >{this.state.resultsTableLabels.headerLemma}
+                >{this.state.labels.resultsTable.headerLemma}
                 </TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='valueFormatted'
@@ -553,7 +557,7 @@ export class TextNotesLister extends React.Component {
                     filter={this.state.filter}
                     dataFormat={ this.noteFormatter }
                     formatExtraData={this.props.session}
-                >{this.state.resultsTableLabels.headerNote}
+                >{this.state.labels.resultsTable.headerNote}
                 </TableHeaderColumn>
               </BootstrapTable>
             </div>

@@ -3,25 +3,25 @@ import PropTypes from 'prop-types';
 import FontAwesome from 'react-fontawesome';
 import Select from 'react-select';
 import {Col, ControlLabel, Glyphicon, Grid, Row, Well } from 'react-bootstrap';
-import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
 import server from "./Server";
 
 class WorkflowForm extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
-    let thisClassLabels = Labels.getWorkflowFormLabels(languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let thisClassLabels = labels[labelTopics.WorkflowForm];
     this.state = {
-      labels: { //
+      labels: {
         thisClass: thisClassLabels
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , library: props.library
       , selectedStatus: props.status
       , selectedStatusIcon: "edit"
@@ -36,14 +36,14 @@ class WorkflowForm extends React.Component {
           , reviewers: []
         }
         , statusDropdown: [
-          {value: "EDITING", label: thisClassLabels.statusTypes.edit}
-          , {value: "REVIEWING", label: thisClassLabels.statusTypes.review}
-          , {value: "FINALIZED", label: thisClassLabels.statusTypes.final}
+          {value: "EDITING", label: thisClassLabels.statusTypesEdit}
+          , {value: "REVIEWING", label: thisClassLabels.statusTypesReview}
+          , {value: "FINALIZED", label: thisClassLabels.statusTypesFinal}
         ]
         , visibilityDropdown: [
-          {value: "PERSONAL", label: thisClassLabels.visibilityTypes.personal}
-          , {value: "PRIVATE", label: thisClassLabels.visibilityTypes.private}
-          , {value: "PUBLIC", label: thisClassLabels.visibilityTypes.public}
+          {value: "PERSONAL", label: thisClassLabels.visibilityTypesPersonal}
+          , {value: "PRIVATE", label: thisClassLabels.visibilityTypesPrivate}
+          , {value: "PUBLIC", label: thisClassLabels.visibilityTypesPublic}
         ]
         , isPublic: false
         , stateEnabled: false
@@ -70,25 +70,35 @@ class WorkflowForm extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      let languageCode = nextProps.session.languageCode;
+      let labels = nextProps.session.labels;
+      let labelTopics = nextProps.session.labelTopics;
+      let thisClassLabels = labels[labelTopics.WorkflowForm];
       let currentLibrary = this.state.library;
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getWorkflowFormLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            thisClass: thisClassLabels
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , resultsTableLabels: labels[labelTopics.resultsTable]
             , library: nextProps.library
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , selectedStatus: nextProps.status
           , selectedVisibility: nextProps.visibility
+          , statusDropdown: [
+            {value: "EDITING", label: thisClassLabels.statusTypesEdit}
+            , {value: "REVIEWING", label: thisClassLabels.statusTypesReview}
+            , {value: "FINALIZED", label: thisClassLabels.statusTypesFinal}
+          ]
+          , visibilityDropdown: [
+            {value: "PERSONAL", label: thisClassLabels.visibilityTypesPersonal}
+            , {value: "PRIVATE", label: thisClassLabels.visibilityTypesPrivate}
+            , {value: "PUBLIC", label: thisClassLabels.visibilityTypesPublic}
+          ]
         }
       }, function () { return this.fetchData(currentLibrary)});
-    }
-  }
+  };
 
   // if we need to do something after setState, do it here...
   handleStateChange = (parm) => {

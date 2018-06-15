@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 
@@ -17,22 +16,25 @@ class GlossBuilder extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps);
-  }
+  };
 
   setTheState = (props) => {
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     return (
         {
           labels: {
-            thisClass: Labels.getGlossBuilderLabels(this.props.languageCode)
-            , messages: Labels.getMessageLabels(this.props.languageCode)
+            thisClass: labels[labelTopics.GlossBuilder]
+            , messages: labels[labelTopics.messages]
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(this.props.languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , values: this.props.values
           , options: {
             sizePerPage: 30
@@ -51,7 +53,7 @@ class GlossBuilder extends React.Component {
           }
         }
     )
-  }
+  };
 
   handleRowSelect = (row, isSelected, e) => {
     let idParts = row["id"].split("~");
@@ -66,7 +68,7 @@ class GlossBuilder extends React.Component {
       , showIdPartSelector: true
       , showModalCompareDocs: true
     });
-  }
+  };
 
   render() {
         return (
@@ -109,7 +111,7 @@ class GlossBuilder extends React.Component {
 }
 
 GlossBuilder.propTypes = {
-  languageCode: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
   , values: PropTypes.array.isRequired
   , callBack: PropTypes.func.isRequired
 };

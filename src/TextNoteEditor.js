@@ -23,7 +23,6 @@ import {
   , Well
 } from 'react-bootstrap';
 import GenericModalNewEntryForm from './modules/GenericModalNewEntryForm';
-import Labels from './Labels';
 import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
 import MessageIcons from './helpers/MessageIcons';
@@ -55,10 +54,13 @@ import UiSchemas from "./classes/UiSchemas";
 class TextNoteEditor extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
-    let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
-    let messages = Labels.getMessageLabels(languageCode);
+
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let thisClassLabels = labels[labelTopics.TextNoteEditor];
+    let messages = labels[labelTopics.messages]
     let initialMessage = messages.initial;
+
     let textIdParts = IdManager.getParts(props.textId);
     let editorId = "tinymce-" + (new Date).getTime();
     let tags = [];
@@ -160,10 +162,10 @@ class TextNoteEditor extends React.Component {
     this.state = {
       labels: {
         thisClass: thisClassLabels
-        , buttons: Labels.getButtonLabels(languageCode)
+        , buttons: labels[labelTopics.button]
         , messages: messages
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-        , search: Labels.getSearchLabels(languageCode)
+        , resultsTableLabels: labels[labelTopics.resultsTable]
+        , search: labels[labelTopics.search]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
@@ -322,9 +324,10 @@ class TextNoteEditor extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
-    let languageCode = nextProps.session.languageCode;
-    let thisClassLabels = Labels.getTextNoteEditorLabels(languageCode);
-    let messages = Labels.getMessageLabels(languageCode);
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+    let thisClassLabels = labels[labelTopics.TextNoteEditor];
+    let messages = labels[labelTopics.messages]
     let textIdParts = IdManager.getParts(nextProps.textId);
     let formIsValid = false;
     let form = {};
@@ -384,10 +387,10 @@ class TextNoteEditor extends React.Component {
       return {
         labels: {
           thisClass: thisClassLabels
-          , buttons: Labels.getButtonLabels(languageCode)
+          , buttons: labels[labelTopics.button]
           , messages: messages
-          , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
-          , search: Labels.getSearchLabels(languageCode)
+          , resultsTableLabels: labels[labelTopics.resultsTable]
+          , search: labels[labelTopics.search]
         }
         , message: get("message", this.state.message, messages.initial)
         , note: form.valueFormatted
@@ -1728,9 +1731,6 @@ class TextNoteEditor extends React.Component {
               <Tab eventKey={"idsheading"} title={this.state.labels.thisClass.ids}>
                 {this.getIdsWell()}
               </Tab>
-              {/*<Tab eventKey={"idsorder"} title={this.state.labels.thisClass.order}>*/}
-                {/*{this.getOrderWell()}*/}
-              {/*</Tab>*/}
               <Tab eventKey={"revisions"} title={this.state.labels.thisClass.revisions}>
                 {this.getRevisionsPanel()}
               </Tab>

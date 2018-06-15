@@ -8,7 +8,6 @@ import {
   , PanelGroup
   , Well
 } from 'react-bootstrap';
-import Labels from '../Labels';
 import IdManager from '../helpers/IdManager';
 import MessageIcons from '../helpers/MessageIcons';
 import HyperTokenText from './HyperTokenText';
@@ -109,16 +108,19 @@ class Grammar extends React.Component {
       , selectedTokenIsWord
       , full
   ) => {
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
     return (
         {
           labels: {
-            thisClass: Labels.getGrammarLabels(props.session.languageCode)
-            , messages: Labels.getMessageLabels(props.session.languageCode)
-            , search: Labels.getSearchLabels(props.session.languageCode)
+            thisClass: labels[labelTopics.Grammar]
+            , messages: labels[labelTopics.messages]
+            , search: labels[labelTopics.search]
+            , tokenTagger: labels[labelTopics.TokenTagger]
           }
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , full: full
           , options: {
             sizePerPage: 30
@@ -139,7 +141,7 @@ class Grammar extends React.Component {
           , tableColumnFilter: {
           defaultValue: ""
           , type: 'RegexFilter'
-          , placeholder: Labels.getMessageLabels(props.session.languageCode).regEx
+          , placeholder: labels[labelTopics.messages].regEx
             }
           , id: IdManager.toId("gr_gr_cog", props.idTopic, this.props.idKey)
           , props: props
@@ -148,7 +150,7 @@ class Grammar extends React.Component {
           , data: data
           , tokens: tokens
           , analyses: analyses
-          , selectedTokenPanelTitle: Labels.getTokenTaggerLabels(props.session.languageCode).panelTitle
+          , selectedTokenPanelTitle: labels[labelTopics.TokenTagger].panelTitle
           , selectedTokenTags: selectedTokenTags
           , nodeData: nodeData
           , nodeDependencies: nodeDependencies
@@ -308,7 +310,7 @@ class Grammar extends React.Component {
       , selectedNodeData: this.state.nodeData[tokenIndex]
       , selectedLemma: this.state.analyses[token][0].lemmaGreek
       , selectedLemmas: this.getLemmas(token)
-      , selectedTokenPanelTitle: Labels.getTokenTaggerLabels(this.props.session.languageCode).panelTitle
+      , selectedTokenPanelTitle: this.state.labels.tokenTagger.panelTitle
         + " "
         + panelIndex
         + " "
@@ -728,7 +730,7 @@ class Grammar extends React.Component {
               this.getDependencyDiagram()}
             <Well>
             <HyperTokenText
-                languageCode={this.props.session.languageCode}
+                session={this.props.session}
                 tokens={this.state.tokens ? this.state.tokens : []}
                 onClick={this.handleTokenClick}
                 selectedToken={this.state.selectedTokenIndexNumber}

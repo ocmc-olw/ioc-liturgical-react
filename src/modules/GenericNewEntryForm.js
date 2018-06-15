@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Labels from '../Labels';
 import MessageIcons from '../helpers/MessageIcons';
 import IdManager from '../helpers/IdManager';
 import Form from "react-jsonschema-form";
@@ -51,7 +50,9 @@ class GenericNewEntryForm extends React.Component {
 
     let libraries = this.props.session.userInfo.domains.author;
 
-    let thisClassLabels = Labels.getGenericNewEntryFormLabels(this.props.session.languageCode);
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let thisClassLabels = labels[labelTopics.GenericNewEntryForm];
 
     let title = thisClassLabels.title;
     if (props.title) {
@@ -70,9 +71,10 @@ class GenericNewEntryForm extends React.Component {
     this.state = {
       labels: {
         thisClass: thisClassLabels
-        , button: Labels.getButtonLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , search: Labels.getSearchLabels(this.props.session.languageCode)
+        , button: labels[labelTopics.button]
+        , httpCodes: labels[labelTopics.httpCodes]
+        , messages: labels[labelTopics.messages]
+        , search: labels[labelTopics.search]
         , title: title
       }
       , session: {
@@ -80,7 +82,7 @@ class GenericNewEntryForm extends React.Component {
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(this.props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , schemaTypes: get(this.state, "schemaTypes", schemaTypes)
       , schema: {}
       , uiSchema: {}
@@ -119,6 +121,10 @@ class GenericNewEntryForm extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
 
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+    let thisClassLabels = labels[labelTopics.GenericNewEntryForm];
+
     let schemaTypes = [];
     if (nextProps.schemaTypes) {
       schemaTypes = nextProps.schemaTypes;
@@ -131,7 +137,6 @@ class GenericNewEntryForm extends React.Component {
     }
 
     let libraries = nextProps.session.userInfo.domains.author;
-    let thisClassLabels = Labels.getGenericNewEntryFormLabels(nextProps.session.languageCode);
     let title = thisClassLabels.title;
     if (nextProps.title) {
       title = nextProps.title;
@@ -151,15 +156,16 @@ class GenericNewEntryForm extends React.Component {
       return {
         labels: {
           thisClass: thisClassLabels
-          , button: Labels.getButtonLabels(this.props.session.languageCode)
-          , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-          , search: Labels.getSearchLabels(this.props.session.languageCode)
+          , button: labels[labelTopics.button]
+          , httpCodes: labels[labelTopics.httpCodes]
+          , messages: labels[labelTopics.messages]
+          , search: labels[labelTopics.search]
           , title: title
         }
         , session: {
           uiSchemas: uiSchemas
         }
-        , message: Labels.getMessageLabels(props.session.languageCode).initial
+        , message: labels[labelTopics.messages].initial
         , schemaTypes: get(prevState, "schemaTypes", schemaTypes)
         , schema: get(prevState, "schema", "")
         , uiSchema: get(prevState, "uiSchema", {})
@@ -261,11 +267,11 @@ class GenericNewEntryForm extends React.Component {
           }
         })
         .catch( (error) => {
-          var message = Labels.getHttpMessage(
-              this.props.session.languageCode
-              , error.response.status
-              , error.response.statusText
-          );
+          var message = error.response.statusText;
+          if (this.state.labels.httpCodes[error.response.status]) {
+            message = labels[languageCode].httpCodes[error.response.status];
+          }
+
           var messageIcon = this.state.messageIcons.error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });

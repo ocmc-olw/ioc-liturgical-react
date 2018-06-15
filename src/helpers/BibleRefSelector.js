@@ -3,13 +3,11 @@ import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import Select from 'react-select';
 import {Col, ControlLabel, Grid, Row } from 'react-bootstrap';
-import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
 
 class BibleRefSelector extends React.Component {
   constructor(props) {
     super(props);
-    let languageCode = props.session.languageCode;
     let citeBook = "";
     let citeChapter = "";
     let citeVerse = "";
@@ -30,16 +28,19 @@ class BibleRefSelector extends React.Component {
       };
     }
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
-      labels: { //
-        thisClass: Labels.getBibleRefSelectorLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+      labels: {
+        thisClass: labels[labelTopics.BibleRefSelector]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , selectedBook: props.book
       , selectedChapter: props.chapter
       , selectedVerse: props.verse
@@ -65,16 +66,18 @@ class BibleRefSelector extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      let languageCode = nextProps.session.languageCode;
+      let labels = nextProps.session.labels;
+      let labelTopics = nextProps.session.labelTopics;
+
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getBibleRefSelectorLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            thisClass: labels[labelTopics.BibleRefSelector]
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , resultsTableLabels: labels[labelTopics.resultsTable]
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , selectedBook: get(this.state, "selectedBook", nextProps.book)
           , selectedChapter: get(this.state, "selectedChapter", nextProps.chapter)
           , selectedVerse: get(this.state, "selectedVerse", nextProps.verse)
@@ -213,8 +216,7 @@ BibleRefSelector.propTypes = {
 
 // set default values for props here
 BibleRefSelector.defaultProps = {
-  languageCode: "en"
-  , book: ""
+  book: ""
   , chapter: ""
   , verse: ""
 };

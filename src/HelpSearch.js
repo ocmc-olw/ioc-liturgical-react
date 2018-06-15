@@ -12,48 +12,58 @@ import DocSearchAdvanced from './modules/docs/DocSearchAdvanced';
 import DocRegEx from './modules/docs/DocSearchRegularExpressions';
 
 class HelpSearch extends React.Component {
-  render() {
-    return (
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      labels: props.session.labels[props.session.labelTopics.help]
+    };
+  }
+  componentWillReceiveProps = (nextProps) => {
+    this.setState(
+        {
+          labels: nextProps.session.labels[nextProps.session.labelTopics.help]
+        }
+    );
+  };
+    render() {
+      return (
         <div className="App-page App-help">
-          <h2>{this.props.labels.pageTitle}</h2>
+          <h2>{this.state.labels.searchPageTitle}</h2>
           <div className="jumbotron">
             <p>
-              {this.props.labels.para01}
+              {this.state.labels.searchPara01}
             </p>
             <p>
-              {this.props.labels.para02}
+              {this.state.labels.searchPara02}
             </p>
             <p>
-              {this.props.labels.para03}
+              {this.state.labels.searchPara03}
             </p>
             <Accordion>
-              <Panel header={this.props.labels.secDocIds} eventKey="1">
-                <DocIds
-                    labelDomain={this.props.labels.headerDomain}
-                    labelTopic={this.props.labels.headerTopic}
-                    labelKey={this.props.labels.headerKey}
-                    labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecDocIds} eventKey="1">
+                <DocIds session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secDocProps} eventKey="2">
-                <DocProps labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecDocProps} eventKey="2">
+                <DocProps session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secDocSearchTypes} eventKey="3">
-                <DocSearchTypes labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecDocSearchTypes} eventKey="3">
+                <DocSearchTypes session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secSimpleSearch}  eventKey="4">
-                <DocSimpleSearch labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecSimpleSearch}  eventKey="4">
+                <DocSimpleSearch session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secSearchResults} eventKey="6">
-                <DocSearchResults labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecSearchResults} eventKey="6">
+                <DocSearchResults session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secDocVersionComparisonTitle} eventKey="5">
-                <DocComparison labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecDocVersionComparisonTitle} eventKey="5">
+                <DocComparison session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secAdvancedSearch} eventKey="7">
-                <DocSearchAdvanced labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecAdvancedSearch} eventKey="7">
+                <DocSearchAdvanced session={this.props.session}/>
               </Panel>
-              <Panel header={this.props.labels.secDocRegExSearch}  eventKey="8">
-                <DocRegEx labels={this.props.labels}/>
+              <Panel header={this.state.labels.searchSecDocRegExSearch}  eventKey="8">
+                <DocRegEx session={this.props.session}/>
               </Panel>
             </Accordion>
           </div>
@@ -63,7 +73,7 @@ class HelpSearch extends React.Component {
 }
 
 HelpSearch.propTypes = {
-  labels: PropTypes.object.isRequired
+  session: PropTypes.object.isRequired
 };
 
 HelpSearch.defaultProps = {

@@ -17,7 +17,6 @@ import {
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import Server from './helpers/Server';
 import Spinner from './helpers/Spinner';
-import Labels from './Labels';
 import ModalParaRowEditor from './ModalParaRowEditor';
 import IdManager from './helpers/IdManager';
 
@@ -26,12 +25,16 @@ export class Search extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+    let search = labels[labelTopics.search];
     this.state = {
       labels: {
-        thisClass: Labels.getComponentParaTextEditorLabels(this.props.session.languageCode)
-        , buttons: Labels.getButtonLabels(this.props.session.languageCode)
-        , messages: Labels.getMessageLabels(this.props.session.languageCode)
-        , search: Labels.getSearchLabels(this.props.session.languageCode)
+        thisClass: labels[labelTopics.ParaTextEditor]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTable: labels[labelTopics.resultsTable]
+        , search: search
       },
       docType: this.props.initialDocType,
       docTypes: [
@@ -51,10 +54,10 @@ export class Search extends React.Component {
       matcher: "c"
       ,
       matcherTypes: [
-        {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-        , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-        , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-        , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+        {label: search.matchesAnywhere, value: "c"}
+        , {label: search.matchesAtTheStart, value: "sw"}
+        , {label: search.matchesAtTheEnd, value: "ew"}
+        , {label: search.matchesRegEx, value: "rx"}
       ]
       ,
       suggestedQuery: ""
@@ -79,9 +82,9 @@ export class Search extends React.Component {
       ,
       showSearchForm: true
       ,
-      filterMessage: this.props.searchLabels.msg5
+      filterMessage: search.msg5
       ,
-      selectMessage: this.props.searchLabels.msg6
+      selectMessage: search.msg6
       ,
       searchFormType: "simple"
       ,
@@ -165,7 +168,7 @@ export class Search extends React.Component {
       showSelectionButtons = true;
     }
     this.setState({
-          message: this.props.searchLabels.msg1
+          message: this.state.labels.search.msg1
           , messageIcon: this.messageIcons.info
           , docPropMessage: this.state.docPropMessageByValue
           , showSelectionButtons: showSelectionButtons
@@ -259,16 +262,27 @@ export class Search extends React.Component {
       dropdowns.Liturgical.domains = liturgicalDomains;
     }
 
-    this.setState({
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+    let search = labels[labelTopics.search];
+
+      this.setState({
       docType: nextProps.initialDocType
+      , labels: {
+        thisClass: labels[labelTopics.ParaTextEditor]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTable: labels[labelTopics.resultsTable]
+        , search: search
+      }
       , selectedId: ""
       , selectedValue: ""
       , selectedSeq: ""
       , matcherTypes: [
-        {label: nextProps.searchLabels.matchesAnywhere, value: "c"}
-        , {label: nextProps.searchLabels.matchesAtTheStart, value: "sw"}
-        , {label: nextProps.searchLabels.matchesAtTheEnd, value: "ew"}
-        , {label: nextProps.searchLabels.matchesRegEx, value: "rx"}
+        {label: search.matchesAnywhere, value: "c"}
+        , {label: search.matchesAtTheStart, value: "sw"}
+        , {label: search.matchesAtTheEnd, value: "ew"}
+        , {label: search.matchesRegEx, value: "rx"}
       ]
       , dropdowns: dropdowns
     });
@@ -440,7 +454,7 @@ export class Search extends React.Component {
   getSearchAccordion(type) {
     if (this.props.callback) {
       return (
-            <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
+            <Panel className="App-search-panel" header={this.state.labels.search.advanced} eventKey="2">
               {this.state.dropdowns ?
                   <SearchOptionsAdvanced
                       docType={this.state.docType}
@@ -449,7 +463,7 @@ export class Search extends React.Component {
                       properties={this.state.propertyTypes}
                       matchers={this.getMatcherTypes()}
                       handleSubmit={this.handleAdvancedSearchSubmit}
-                      labels={this.props.searchLabels}
+                      labels={this.state.labels.search}
                   />
                   : "Loading dropdowns for advanced search..."}
             </Panel>
@@ -457,15 +471,15 @@ export class Search extends React.Component {
     } else {
       return (
           <PanelGroup defaultActiveKey="1" accordion>
-            <Panel  className="App-search-panel" header={this.props.searchLabels.simple} eventKey="1">
+            <Panel  className="App-search-panel" header={this.state.labels.search.simple} eventKey="1">
               <SearchOptionsSimple
                   valueTitle=""
-                  buttonLabel={this.props.searchLabels.submit}
-                  placeholder={this.props.searchLabels.prompt}
+                  buttonLabel={this.state.labels.search.submit}
+                  placeholder={this.state.labels.search.prompt}
                   handleSubmit={this.handleSimpleSearchSubmit}
               />
             </Panel>
-            <Panel className="App-search-panel" header={this.props.searchLabels.advanced} eventKey="2">
+            <Panel className="App-search-panel" header={this.state.labels.search.advanced} eventKey="2">
               {this.state.dropdowns ?
                   <SearchOptionsAdvanced
                       docType={this.props.initialDocType}
@@ -474,7 +488,7 @@ export class Search extends React.Component {
                       properties={this.state.propertyTypes}
                       matchers={this.getMatcherTypes()}
                       handleSubmit={this.handleAdvancedSearchSubmit}
-                      labels={this.props.searchLabels}
+                      labels={this.state.labels.search}
                   />
                   : "Loading dropdowns for advanced search..."}
             </Panel>
@@ -494,7 +508,7 @@ export class Search extends React.Component {
                 properties={this.state.propertyTypes}
                 matchers={this.state.matcherTypes}
                 handleSubmit={this.handleAdvancedSearchSubmit}
-                labels={this.props.searchLabels}
+                labels={this.state.labels.search}
             />
         );
       }
@@ -502,7 +516,7 @@ export class Search extends React.Component {
         return (
             <SearchOptionsSimple
                 valueTitle=""
-                buttonLabel={this.props.searchLabels.submit}
+                buttonLabel={this.state.labels.search.submit}
                 placeholder="enter a word or phrase and press the search icon..."
                 handleSubmit={this.handleSimpleSearchSubmit}
             />
@@ -514,10 +528,10 @@ export class Search extends React.Component {
   getMatcherTypes () {
     return (
         [
-            {label: this.props.searchLabels.matchesAnywhere, value: "c"}
-            , {label: this.props.searchLabels.matchesAtTheStart, value: "sw"}
-            , {label: this.props.searchLabels.matchesAtTheEnd, value: "ew"}
-            , {label: this.props.searchLabels.matchesRegEx, value: "rx"}
+            {label: this.state.labels.search.matchesAnywhere, value: "c"}
+            , {label: this.state.labels.search.matchesAtTheStart, value: "sw"}
+            , {label: this.state.labels.search.matchesAtTheEnd, value: "ew"}
+            , {label: this.state.labels.search.matchesRegEx, value: "rx"}
             ]
     )
   }
@@ -543,15 +557,15 @@ export class Search extends React.Component {
         <Panel>
           <FormGroup>
             <div>
-            <ControlLabel>{this.props.searchLabels.searchToSelectInstructions}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.searchToSelectInstructions}</ControlLabel>
             </div>
-            <ControlLabel>{this.props.searchLabels.selectedId}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedId}</ControlLabel>
             <FormControl
               type="text"
               value={this.state.selectedId}
               disabled
             />
-            <ControlLabel>{this.props.searchLabels.selectedValue}</ControlLabel>
+            <ControlLabel>{this.state.labels.search.selectedValue}</ControlLabel>
             <Well>{this.state.selectedValue}
             </Well>
             <div>
@@ -698,9 +712,9 @@ export class Search extends React.Component {
   getDocTypes = () => {
     return (
       [
-          {label: this.props.searchLabels.typeAny, value: "all"}
-            , {label: this.props.searchLabels.biblical, value: "Biblical"}
-            , {label: this.props.searchLabels.liturgical, value: "Liturgical"}
+          {label: this.state.labels.search.typeAny, value: "all"}
+            , {label: this.state.labels.search.biblical, value: "Biblical"}
+            , {label: this.state.labels.search.liturgical, value: "Liturgical"}
             ]
     );
   }
@@ -730,7 +744,7 @@ export class Search extends React.Component {
               docType={this.state.docType}
               selectedIdParts={this.state.selectedIdParts}
               onClose={this.handleCloseDocComparison}
-              labels={this.props.searchLabels}
+              labels={this.state.labels.search}
           />
       )
     }
@@ -780,7 +794,7 @@ export class Search extends React.Component {
 
   fetchData(event) {
     this.setState({
-      message: this.props.searchLabels.msg2
+      message: this.state.labels.search.msg2
       , messageIcon: this.messageIcons.info
       , fetchingData: true
     });
@@ -808,12 +822,12 @@ export class Search extends React.Component {
               }
           );
           let resultCount = 0;
-          let message = this.props.searchLabels.foundNone;
-          let found = this.props.searchLabels.foundMany;
+          let message = this.state.labels.search.foundNone;
+          let found = this.state.labels.search.foundMany;
           if (response.data.valueCount) {
             resultCount = response.data.valueCount;
             if (resultCount === 1) {
-              message = this.props.searchLabels.foundOne;
+              message = this.state.labels.search.foundOne;
             } else if (resultCount > 1) {
               message = found
                   + " "
@@ -835,7 +849,7 @@ export class Search extends React.Component {
           let message = error.message;
           let messageIcon = this.messageIcons.error;
           if (error && error.response && error.response.status === 404) {
-            message = this.props.searchLabels.foundNone;
+            message = this.state.labels.search.foundNone;
             messageIcon = this.messageIcons.warning;
             this.setState({
               data: message
@@ -879,7 +893,7 @@ export class Search extends React.Component {
       if (this.state.showSearchResults) {
         return (
             <div>
-              {this.props.searchLabels.msg5} {this.props.searchLabels.msg6}
+              {this.state.labels.search.msg5} {this.state.labels.search.msg6}
             </div>
         );
       }
@@ -889,7 +903,7 @@ export class Search extends React.Component {
   render() {
     return (
         <div className="App-search">
-          <h3>{this.props.searchLabels.pageTitle}</h3>
+          <h3>{this.state.labels.search.pageTitle}</h3>
           {this.state.showSelectionButtons && this.getSelectedDocOptions()}
           <div className="App-search-form">
             <div className="row">
@@ -899,7 +913,7 @@ export class Search extends React.Component {
             </div>
           </div>
 
-          <div>{this.props.searchLabels.resultLabel}: <span className="App App-message"><FontAwesome
+          <div>{this.state.labels.search.resultLabel}: <span className="App App-message"><FontAwesome
               name={this.state.messageIcon}/>{this.state.message} </span>
           </div>
           {this.showResultsStatus()}
@@ -913,7 +927,7 @@ export class Search extends React.Component {
                   exportCSV={ false }
                   trClassName={"App-data-tr"}
                   search
-                  searchPlaceholder={this.props.resultsTableLabels.filterPrompt}
+                  searchPlaceholder={this.state.labels.resultsTable.filterPrompt}
                   striped
                   hover
                   pagination
@@ -932,21 +946,21 @@ export class Search extends React.Component {
                     dataSort={ true }
                     export={ false }
                     tdClassname="tdDomain"
-                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerDomain}</TableHeaderColumn>
+                    width={this.state.idColumnSize}>{this.state.labels.resultsTable.headerDomain}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='topic'
                     dataSort={ true }
                     export={ false }
-                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerTopic}</TableHeaderColumn>
+                    width={this.state.idColumnSize}>{this.state.labels.resultsTable.headerTopic}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='key'
                     export={ false }
                     dataSort={ true }
-                    width={this.state.idColumnSize}>{this.props.resultsTableLabels.headerKey}</TableHeaderColumn>
+                    width={this.state.idColumnSize}>{this.state.labels.resultsTable.headerKey}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='value'
                     dataSort={ true }
-                >{this.props.resultsTableLabels.headerValue}</TableHeaderColumn>
+                >{this.state.labels.resultsTable.headerValue}</TableHeaderColumn>
                 <TableHeaderColumn
                     dataField='_valueSchemaId'
                     export={ false }
@@ -965,8 +979,6 @@ export class Search extends React.Component {
 Search.propTypes = {
   session: PropTypes.object.isRequired
   , callback: PropTypes.func
-  , searchLabels: PropTypes.object.isRequired
-  , resultsTableLabels: PropTypes.object.isRequired
   , initialDocType: PropTypes.string.isRequired
   , dropdowns: PropTypes.object
 };

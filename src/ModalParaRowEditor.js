@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Alert, Button, Glyphicon, Modal, Panel} from 'react-bootstrap';
 
-import Labels from './Labels';
 import IdManager from './helpers/IdManager';
 import MessageIcons from './helpers/MessageIcons';
 import ParaRowTextEditor from './ParaRowTextEditor';
@@ -14,13 +13,14 @@ export class ModalParaRowEditor extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      labels: {
-        thisClass: Labels.getModalParaRowEditorLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
-      }
-      , messageIcons: MessageIcons.getMessageIcons()
+        labels: {
+          thisClass: props.session.labels[props.session.labelTopics.ModalParaRowEditor]
+          , messages: props.session.labels[props.session.labelTopics.messages]
+          , resultsTableLabels: props.session.labels[props.session.labelTopics.resultsTable]
+        }
+        , message: props.session.labels[props.session.labelTopics.messages].initial
+        , messageIcons: MessageIcons.getMessageIcons()
         , messageIcon: MessageIcons.getMessageIcons().info
-        , message: Labels.getMessageLabels(this.props.session.languageCode).initial
         , showModal: this.props.showModal
         , topic: IdManager.getTopic(this.props.editId)
         , key: IdManager.getKey(this.props.editId)
@@ -42,11 +42,11 @@ export class ModalParaRowEditor extends React.Component {
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getModalParaRowEditorLabels(nextProps.session.languageCode)
-            , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(nextProps.session.languageCode)
+            thisClass: nextProps.session.labels[nextProps.session.labelTopics.ModalParaRowEditor]
+            , messages: nextProps.session.labels[nextProps.session.labelTopics.messages]
+            , resultsTableLabels: nextProps.session.labels[nextProps.session.labelTopics.resultsTable]
           }
-          , message: Labels.getMessageLabels(props.session.languageCode).initial
+          , message: nextProps.session.labels[nextProps.session.labelTopics.messages].initial
         }
       }, function () { return this.handleStateChange("place holder")});
     }

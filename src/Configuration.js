@@ -23,7 +23,7 @@ class Configuration extends React.Component {
 
   componentWillMount = () => {
     this.fetchData();
-  }
+  };
 
   fetchData() {
     axios.get(this.props.restServer + server.getWsServerVersionApi())
@@ -47,13 +47,13 @@ class Configuration extends React.Component {
         return (
             <div className="App-DomainSelector">
               <Alert bsStyle="info">
-                <p>{this.props.appVersionLabel} {this.props.appVersion}.</p>
+                <p>{this.props.session.labels.pageAbout.appVersion} {this.props.appVersion}.</p>
                 <p>ioc-liturgical-react {versionNumbers.getPackageNumber()}.</p>
-                <p>{this.props.dbServerLabel} {this.state.dbServerDomain}</p>
-                <p>{this.props.restServerLabel} {this.props.restServer}</p>
-                <p>{this.props.wsVersionLabel} {this.state.wsVersion}</p>
-                <p>{this.props.synchEnabledLabel} {this.state.synchEnabled}</p>
-                <p>{this.props.synchDbConnectionOkLabel} {this.state.synchDbConnectionOkLabel}</p>
+                <p>{this.props.session.labels.pageAbout.DbServer} {this.state.dbServerDomain}</p>
+                <p>{this.props.session.labels.pageAbout.RestServer} {this.props.restServer}</p>
+                <p>{this.props.session.labels.pageAbout.wsVersion} {this.state.wsVersion}</p>
+                <p>{this.props.session.labels.pageAbout.synchEnabled} {this.state.synchEnabled}</p>
+                <p>{this.props.session.labels.pageAbout.synchDbConnectionOk} {this.state.synchDbConnectionOkLabel}</p>
               </Alert>
             </div>
         );
@@ -64,14 +64,9 @@ class Configuration extends React.Component {
 }
 
 Configuration.propTypes = {
-  appVersion: PropTypes.string.isRequired
-  , appVersionLabel: PropTypes.string.isRequired
+  session: PropTypes.object.isRequired
+  , appVersion: PropTypes.string.isRequired
   , restServer: PropTypes.string.isRequired
-  , restServerLabel: PropTypes.string.isRequired
-  , wsVersionLabel: PropTypes.string.isRequired
-  , dbServerLabel: PropTypes.string.isRequired
-  , synchEnabledLabel: PropTypes.string.isRequired
-  , synchDbConnectionOkLabel: PropTypes.string.isRequired
 };
 
 Configuration.defaultProps = {

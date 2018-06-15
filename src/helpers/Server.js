@@ -12,6 +12,7 @@ import IdManager from './IdManager';
 
 const adminApi = "/admin/api/v1/";
 const dbApi = "/db/api/v1/";
+const uilabels = "docs/uilabels";
 const ldpApi = "/ldp/api/v1/";
 const resources = "docs/new";
 const version = "info";
@@ -719,6 +720,25 @@ export default {
         }
     );
   }
+  , getUiLabels: (
+      restServer
+      , username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + uilabels
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getAgesIndex: (
       restServer
       , username
@@ -831,6 +851,27 @@ export default {
         , password
         , dbApi
         + valuePath
+        , value
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , putUiLabel: (
+      restServer
+      , username
+      , password
+      , value
+      , parms
+      , callback
+  ) => {
+    restPut(
+        restServer
+        , username
+        , password
+        , dbApi
+        + uilabels
         , value
         , parms
         , function (result) {

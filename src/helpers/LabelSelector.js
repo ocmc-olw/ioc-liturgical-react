@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import ResourceSelector from '../modules/ReactSelector';
-import Labels from '../Labels';
 
 /**
  * Converts a specified label property into a ReactSelector
@@ -17,7 +16,7 @@ class LabelSelector extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps);

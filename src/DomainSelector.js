@@ -16,7 +16,7 @@ class DomainSelector extends React.Component {
 
   componentDidMount = () => {
     this.fetchData();
-  }
+  };
 
   onSelect = (index) => {
     let item = this.state.items[index];
@@ -26,7 +26,7 @@ class DomainSelector extends React.Component {
       domain = idParts[2];
     }
     this.props.callback(domain, item.label);
-  }
+  };
 
   domainObjectsToStringArray(domains) {
     let values = domains.values;
@@ -48,15 +48,6 @@ class DomainSelector extends React.Component {
           this.setState( { data: error.message });
           this.props.callback(error.message, "");
         });
-
-    // axios.get(this.props.restServer + server.getWsServerDomainsApi(), config)
-    //     .then(response => {
-    //       this.setState( { items: response.data.values} );
-    //     })
-    //     .catch( (error) => {
-    //       this.setState( { data: error.message });
-    //       this.props.callback(error.message, "");
-    //     });
   }
 
   getMenuItems = (items) => {
@@ -71,17 +62,6 @@ class DomainSelector extends React.Component {
     return  itemsList ;
   };
 
-  // getMenuItems = (items) => {
-  //   let itemsList = items.map(function(item, index){
-  //     let idParts = item._id.split("|");
-  //     let domain = item._id;
-  //     if (idParts.length === 3) {
-  //       domain = idParts[2];
-  //     }
-  //     return <MenuItem key={domain} eventKey={ index }>{domain + ": " + item.value.description}</MenuItem>;
-  //   });
-  //   return  itemsList ;
-  // };
   render() {
     if (this.state.items) {
         return (

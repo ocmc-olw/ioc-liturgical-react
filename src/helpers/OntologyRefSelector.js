@@ -1,26 +1,27 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Select from 'react-select';
-import {Col, ControlLabel, Grid, Row } from 'react-bootstrap';
-import Labels from '../Labels';
 import MessageIcons from './MessageIcons';
 import Server from "./Server";
+import { get } from 'lodash';
 
 class OntologyRefSelector extends React.Component {
   constructor(props) {
     super(props);
 
-    let languageCode = props.session.languageCode;
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: { //
-        thisClass: Labels.getOntologyRefSelectorLabels(languageCode)
-        , buttons: Labels.getButtonLabels(languageCode)
-        , messages: Labels.getMessageLabels(languageCode)
-        , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+        thisClass: labels[labelTopics.OntologyRefSelector]
+        , buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , resultsTableLabels: labels[labelTopics.resultsTable]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , selectedEntityValue: props.initialValue
       , selectedEntityLabel: ""
       , fetching: false
@@ -34,30 +35,31 @@ class OntologyRefSelector extends React.Component {
   }
 
   componentWillMount = () => {
-  }
+  };
 
   componentDidMount = () => {
     this.setState({fetching: true}, this.fetchData);
-  }
+  };
 
   componentWillReceiveProps = (nextProps) => {
-    if (this.props.session.languageCode !== nextProps.session.languageCode) {
-      let languageCode = nextProps.session.languageCode;
+
+      let labels = nextProps.session.labels;
+      let labelTopics = nextProps.session.labelTopics;
+
       this.setState((prevState, props) => {
         return {
           labels: {
-            thisClass: Labels.getViewReferencesLabels(languageCode)
-            , buttons: Labels.getButtonLabels(languageCode)
-            , messages: Labels.getMessageLabels(languageCode)
-            , resultsTableLabels: Labels.getResultsTableLabels(languageCode)
+            thisClass: labels[labelTopics.OntologyRefSelector]
+            , buttons: labels[labelTopics.button]
+            , messages: labels[labelTopics.messages]
+            , resultsTableLabels: labels[labelTopics.resultsTable]
           }
-          , message: Labels.getMessageLabels(languageCode).initial
+          , message: labels[labelTopics.messages].initial
           , selectedEntity: "*"
           , fetching: false
-          , data: []
+          , data: get(this.state, "data", [])
         }
       });
-    }
     if (nextProps.type !== this.state.lastType) {
       this.setState(
           {lastType: nextProps.type}
@@ -136,7 +138,7 @@ class OntologyRefSelector extends React.Component {
               })
         })
     ;
-  }
+  };
 
 
   render() {
@@ -170,8 +172,7 @@ OntologyRefSelector.propTypes = {
 
 // set default values for props here
 OntologyRefSelector.defaultProps = {
-  languageCode: "en"
-  , initialValue: "*"
+  initialValue: "*"
 };
 
 export default OntologyRefSelector;

@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import Labels from './Labels';
 import server from './helpers/Server';
 import ResourceSelector from './modules/ReactSelector';
 import TopicsSelector from './modules/TopicsSelector';
@@ -61,7 +60,7 @@ class ParaColTextEditor extends React.Component {
         , ""
     ];
     let topic = "";
-    let message = Labels.getMessageLabels(this.props.session.languageCode).initial;
+    let message = props.session.labels[props.session.labelTopics.messages].initial;
     let messageIcon = MessageIcons.getMessageIcons().info;
 
     if (currentState) {
@@ -103,8 +102,8 @@ class ParaColTextEditor extends React.Component {
     return (
         {
           labels: {
-            thisClass: Labels.getParaColTextEditorLabels(this.props.session.languageCode)
-            , messages: Labels.getMessageLabels(this.props.session.languageCode)
+            thisClass: props.session.labels[props.session.labelTopics.ParaColTextEditor]
+            , messages: props.session.labels[props.session.labelTopics.messages]
           }
           , session: {
             userInfo: userInfo
@@ -148,17 +147,17 @@ class ParaColTextEditor extends React.Component {
           , tableColumnFilter: {
             defaultValue: ""
             , type: 'RegexFilter'
-            , placeholder: Labels.getMessageLabels(this.props.session.languageCode).regEx
+            , placeholder: props.session.labels[props.session.labelTopics.messages].regEx
           }
         }
     )
-  }
+  };
 
   onSizePerPageList = (sizePerPage) => {
     this.setState({
       options: {sizePerPage: sizePerPage}
     });
-  }
+  };
 
   fetchData = () => {
     let parms =
@@ -178,11 +177,12 @@ class ParaColTextEditor extends React.Component {
       )
     );
 
-  }
+  };
 
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
       let data = restCallResult.data.values[0];
+      console.log(data);
       let about = data.about;
       let templateKeys = data.templateKeys;
       let libraryKeys = data.libraryKeys;
@@ -202,7 +202,7 @@ class ParaColTextEditor extends React.Component {
         , resultCount: templateKeys.length
       }, this.setTableData);
     }
-  }
+  };
 
   handleValueUpdateCallback = (restCallResult) => {
     if (restCallResult) {
@@ -211,7 +211,7 @@ class ParaColTextEditor extends React.Component {
         , messageIcon: restCallResult.messageIcon
       }, this.setTableData);
     }
-  }
+  };
 
   setTableData = () => {
     if (this.state.dataFetched) {
@@ -247,13 +247,12 @@ class ParaColTextEditor extends React.Component {
         values: tableData
       });
     }
-  }
+  };
 
   handleTopicSelect = (topic) => {
     this.setState({
       topic: topic
     });
-    ;
   };
 
   handleRowSelect = (row, isSelected, e) => {
@@ -297,7 +296,7 @@ class ParaColTextEditor extends React.Component {
         , parms
         , this.handleValueUpdateCallback
     )
-  }
+  };
 
   handleLibrarySelection = (selection) => {
     let libraries = [];
@@ -333,7 +332,7 @@ class ParaColTextEditor extends React.Component {
       , message: message
       , messageIcon: messageIcon
     });
-  }
+  };
 
   /**
    * Does the user have permission to edit records in this library?
@@ -353,12 +352,12 @@ class ParaColTextEditor extends React.Component {
     } else {
       return false;
     }
-  }
+  };
 
   handleSubmit = (event) => {
     this.fetchData();
     event.preventDefault();
-  }
+  };
 
   handleFilterClear = () => {
     if (this.refs) {
@@ -378,7 +377,7 @@ class ParaColTextEditor extends React.Component {
         this.refs.lib3.applyFilter("");
       }
     }
-  }
+  };
 
   render() {
         return (
@@ -465,12 +464,12 @@ class ParaColTextEditor extends React.Component {
                     <Well>
                       <Grid>
                         <Row>
-                          <Col xs={10} md={6}>
+                          <Col xs={9} md={9}>
                             <div className="control-label">
                               {this.state.labels.thisClass.msg2}
                             </div>
                           </Col>
-                          <Col xs={2} md={2}>
+                          <Col xs={3} md={3}>
                             <Button
                                 onClick={ this.handleFilterClear }
                                 bsStyle="primary"

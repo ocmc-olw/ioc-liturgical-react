@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import 'react-select/dist/react-select.css';
 import ResourceSelector from './modules/ReactSelector'
-import Labels from './Labels'
 import TemplateNodeInitializer from './classes/TemplateNodeInitializer';
 import UiSchemas from './classes/UiSchemas';
 import IdManager from './helpers/IdManager';
@@ -68,19 +67,21 @@ export class NewEntry extends React.Component {
           , props.session.uiSchemas.forms
       );
     }
+    let labels = props.session.labels;
+    let topics = props.session.labelTopics;
 
     this.state = {
       labels: {
-        thisClass: Labels.getComponentNewEntryLabels(props.session.languageCode)
-        , search: Labels.getSearchLabels(props.session.languageCode)
-        , paraRowEditor: Labels.getComponentParaTextEditorLabels(props.session.languageCode)
+        thisClass: labels[topics.NewEntry]
+        , search: labels[topics.search]
+        , paraRowEditor: labels[topics.ParaTextEditor]
       }
       , session: {
         uiSchemas: uiSchemas
       }
       , formsDropdown: formsDropdown
       , idBuilt: false
-      , message: Labels.getSearchLabels(props.session.languageCode).msg1
+      , message: labels[topics.search].msg1
       , messageIcon: this.messageIcons.info
       , formSelected: false
       , selectedForm: ""
@@ -145,14 +146,17 @@ export class NewEntry extends React.Component {
   }
 
   componentWillReceiveProps = (nextProps) => {
-    this.setState({
+      let labels = nextProps.session.labels;
+      let topics = nextProps.session.labelTopics;
+
+      this.setState({
       labels: {
-        thisClass: Labels.getComponentNewEntryLabels(nextProps.session.languageCode)
-        , search: Labels.getSearchLabels(nextProps.session.languageCode)
-        , paraRowEditor: Labels.getComponentParaTextEditorLabels(nextProps.session.languageCode)
+        thisClass: labels[topics.NewEntry]
+        , search: labels[topics.search]
+        , paraRowEditor: labels[topics.ParaTextEditor]
       }
     });
-  }
+  };
 
   /**
    * font-awesome icons for messages

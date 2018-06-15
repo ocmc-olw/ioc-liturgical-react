@@ -2,7 +2,6 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Button, ControlLabel, Modal, Well} from 'react-bootstrap';
 
-import Labels from '../Labels';
 import NewEntryForm from './NewEntryForm';
 import MessageIcons from '../helpers/MessageIcons';
 
@@ -14,15 +13,18 @@ export class ModalNewEntryForm extends React.Component {
   constructor(props) {
     super(props);
 
+    let labels = props.session.labels;
+    let labelTopics = props.session.labelTopics;
+
     this.state = {
       labels: {
-        button: Labels.getButtonLabels(props.session.languageCode)
-        , messages: Labels.getMessageLabels(props.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , references: labels[labelTopics.ViewReferences]
       }
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
-      , message: Labels.getMessageLabels(props.session.languageCode).initial
+      , message: labels[labelTopics.messages].initial
       , showModal: true
     };
 
@@ -35,11 +37,14 @@ export class ModalNewEntryForm extends React.Component {
   };
 
   componentWillReceiveProps = (nextProps) => {
+    let labels = nextProps.session.labels;
+    let labelTopics = nextProps.session.labelTopics;
+
     this.setState({
       labels: {
-        button: Labels.getButtonLabels(nextProps.session.languageCode)
-        , messages: Labels.getMessageLabels(nextProps.session.languageCode)
-        , references: Labels.getViewReferencesLabels(this.props.session.languageCode)
+        buttons: labels[labelTopics.button]
+        , messages: labels[labelTopics.messages]
+        , references: labels[labelTopics.ViewReferences]
       }
     });
   };

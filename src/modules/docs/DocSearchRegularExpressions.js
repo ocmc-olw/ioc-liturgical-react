@@ -1,60 +1,80 @@
 import React from 'react';
 import SsRegEx from '../../images/SsRegEx';
 import SsRegExResult from '../../images/SsRegExResult';
+import PropTypes from "prop-types";
 
 class DocSearchRegularExpressions extends React.Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      labels: props.session.labels[props.session.labelTopics.help]
+    };
+  }
+
+  componentWillReceiveProps = (nextProps) => {
+    this.setState(
+        {
+          labels: nextProps.session.labels[nextProps.session.labelTopics.help]
+        }
+    );
+  };
   render() {
     return (
     <div className="App-help-doc-regex-search">
       <div className="jumbotron">
         <p>
-          {this.props.labels.secDocSearchRegExP01}
+          {this.state.labels.searchSecDocSearchRegExP01}
         </p>
         <p>
-          {this.props.labels.secDocSearchRegExP02}
+          {this.state.labels.searchSecDocSearchRegExP02}
         </p>
         <p>
-          {this.props.labels.secDocSearchRegExP03}
+          {this.state.labels.searchSecDocSearchRegExP03}
         </p>
         <p>
-          {this.props.labels.secDocSearchRegExP04}
+          {this.state.labels.searchSecDocSearchRegExP04}
         </p>
         <p>
-          {this.props.labels.secDocSearchRegExP05}
+          {this.state.labels.searchSecDocSearchRegExP05}
         </p>
         <p>
-          {this.props.labels.secDocSearchRegExP06}
+          {this.state.labels.searchSecDocSearchRegExP06}
         </p>
         <p>
-          {this.props.labels.secDocSearchRegExP07}
+          {this.state.labels.searchSecDocSearchRegExP07}
         </p>
         <SsRegEx/>
         <p/>
         <p>
-          {this.props.labels.secDocSearchRegExP08}
+          {this.state.labels.searchSecDocSearchRegExP08}
         </p>
         <SsRegExResult/>
         <p/>
         <p>
-          {this.props.labels.secDocSearchRegExP09}
+          {this.state.labels.searchSecDocSearchRegExP09}
         </p>
         <ul>
-          <li>{this.props.labels.secDocSearchRegExP10}</li>
-          <li>{this.props.labels.secDocSearchRegExP11}</li>
-          <li>{this.props.labels.secDocSearchRegExP12}</li>
-          <li>{this.props.labels.secDocSearchRegExP13}</li>
-          <li>{this.props.labels.secDocSearchRegExP14}</li>
-          <li>{this.props.labels.secDocSearchRegExP15}</li>
-          <li>{this.props.labels.secDocSearchRegExP16}</li>
-          <li>{this.props.labels.secDocSearchRegExP17}</li>
-          <li>{this.props.labels.secDocSearchRegExP18}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP10}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP11}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP12}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP13}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP14}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP15}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP16}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP17}</li>
+          <li>{this.state.labels.searchSecDocSearchRegExP18}</li>
         </ul>
         <p>
-          {this.props.labels.secDocSearchRegExP19}
+          {this.state.labels.searchSecDocSearchRegExP19}
         </p>
       </div>
     </div>
     )
   }
 }
+
+DocSearchRegularExpressions.propTypes = {
+  session: PropTypes.object.isRequired
+};
 export default DocSearchRegularExpressions;
