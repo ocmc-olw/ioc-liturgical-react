@@ -594,6 +594,7 @@ class Demo extends React.Component {
     // component callbacks
     this.handleAgesIndexCallback = this.handleAgesIndexCallback.bind(this);
     this.handleDomainSelectionCallback = this.handleDomainSelectionCallback.bind(this);
+    this.handleLabelChange = this.handleLabelChange.bind(this);
     this.handleLoginCallback = this.handleLoginCallback.bind(this);
     this.handleSearchCallback = this.handleSearchCallback.bind(this);
     this.handleSearchNotesCallback = this.handleSearchNotesCallback.bind(this);
@@ -627,6 +628,33 @@ class Demo extends React.Component {
   };
 
   handleDelete = () => {
+
+  };
+
+  handleLabelChange = (language, topic, key, value) => {
+    try {
+      let labels = this.state.session.labels;
+      let labelsAll = this.state.session.labelsAll;
+      let labelTopics = this.state.session.labelTopics;
+
+      labelsAll[language][topic][key] = value;
+
+      if (language.endsWith(this.state.session.languageCode)) {
+        labels[topic][key] = value;
+      }
+      if (! labelTopics[topic]){
+        labelTopics[topic] = topic;
+      }
+      this.setState(
+          {
+            labels: labels
+            , labelsAll: labelsAll
+            , labelTopics: labelTopics
+          }
+      );
+    } catch (err) {
+      console.log(err);
+    }
 
   };
 
@@ -781,6 +809,9 @@ class Demo extends React.Component {
     session.dropdowns = dropdowns;
     session.labelsAll = forms.uiLabels;
     session.labels = session.labelsAll[session.languageCode];
+    if (forms.uiLabelTopics) {
+      session.labelTopics = forms.uiLabelTopics;
+    }
     console.log(session);
     this.setState({
       session: session
@@ -857,19 +888,19 @@ class Demo extends React.Component {
     this.setState({
       searching: true
     });
-  }
+  };
 
   showModal = () => {
     this.setState({
       showModal: true
     });
-  }
+  };
 
   closeModal = () => {
     this.setState({
       showModal: false
     });
-  }
+  };
 
   node = (
       id
@@ -1494,7 +1525,8 @@ class Demo extends React.Component {
               { this.state.authenticated && this.state.formsLoaded &&
               <ParaColLabelEditor
                   session={this.state.session}
-                  source={"gr_gr_cog"}
+                  source={"en_sys_ilr"}
+                  callback={this.handleLabelChange}
               />
               }
             </Panel> {/* Parallel Column Label Editor */}

@@ -1052,3 +1052,21 @@ a.rdw-mention-link {
 .App-See-Biblatex {
     margin-top: 30px;
 }
+
+
+
+
+
+.App-Label-Editor-Row {
+    margin-top: 20px;
+}
+.App-Label-Editor-New-Key {
+    margin-bottom: 10px;
+}
+.App-Label-Editor-New-Value {
+    margin-bottom: 10px;
+}
+
+.App-Label-Editor-New-Key-Button {
+
+}

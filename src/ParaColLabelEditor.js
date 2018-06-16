@@ -9,9 +9,13 @@ import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import {
   Button
   , Col
+  , ControlLabel
+  , FormControl
   , FormGroup
   , Grid
   , Row
+  , Tab
+  , Tabs
   , Well
 } from 'react-bootstrap';
 import User from "./classes/User";
@@ -26,18 +30,30 @@ class ParaColLabelEditor extends React.Component {
 
     this.editable = this.editable.bind(this);
     this.fetchData = this.fetchData.bind(this);
+    this.getKeyInputRow = this.getKeyInputRow.bind(this);
+    this.getNewKeyButtonRow = this.getNewKeyButtonRow.bind(this);
+    this.getTabs = this.getTabs.bind(this);
     this.getUiLanguageRow = this.getUiLanguageRow.bind(this);
     this.getUiSystemRow = this.getUiSystemRow.bind(this);
+    this.getUiTopicRow = this.getUiTopicRow.bind(this);
+    this.getUiNewTopicRow = this.getUiNewTopicRow.bind(this);
+    this.getValueInputRow = this.getValueInputRow.bind(this);
     this.handleFetchCallback = this.handleFetchCallback.bind(this);
     this.handleFilterClear = this.handleFilterClear.bind(this);
+    this.handleKeyInputChange = this.handleKeyInputChange.bind(this);
     this.handleLibrarySelection = this.handleLibrarySelection.bind(this);
+    this.handleNewKeySubmit = this.handleNewKeySubmit.bind(this);
+    this.handleNewTopicChange = this.handleNewTopicChange.bind(this);
     this.handleRowSelect = this.handleRowSelect.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSystemSelect = this.handleSystemSelect.bind(this);
     this.handleTopicSelect = this.handleTopicSelect.bind(this);
+    this.handleValueInputChange = this.handleValueInputChange.bind(this);
     this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
     this.onAfterSaveCell = this.onAfterSaveCell.bind(this);
     this.onBeforeSaveCell = this.onBeforeSaveCell.bind(this);
     this.onSizePerPageList = this.onSizePerPageList.bind(this);
+    this.putUiLabel = this.putUiLabel.bind(this);
     this.setTableData = this.setTableData.bind(this);
   }
 
@@ -87,9 +103,6 @@ class ParaColLabelEditor extends React.Component {
       if (currentState.libraries) {
         libraries = currentState.libraries;
       }
-      if (currentState.topic) {
-        topic = currentState.topic;
-      }
       if (currentState.dataFetched) {
         values = currentState.values;
       }
@@ -113,20 +126,22 @@ class ParaColLabelEditor extends React.Component {
     return (
         {
           labels: {
-            thisClass: props.session.labels[props.session.labelTopics.ParaColTextEditor]
+            thisClass: props.session.labels[props.session.labelTopics.ParaColLabelEditor]
             , messages: props.session.labels[props.session.labelTopics.messages]
-          }
-          , labelsToAdd: {
-            system: "Select the system"
-            , language: "Select up to 3 languages in addition to English"
+            , button: props.session.labels[props.session.labelTopics.button]
+            , toAdd: {
+              panelTitle: "View, Create, or Update User Interface Labels"
+            }
           }
           , session: {
             userInfo: userInfo
           }
+          , uiTopicsDropdown: get(this.state, "uiTopicsDropdown", [])
           , messageIcons: MessageIcons.getMessageIcons()
           , messageIcon: MessageIcons.getMessageIcons().info
           , message: message
           , selectedUiSystem: get(this.state, "selectedUiSystem", "ilr")
+          , selectedUiTopic: get(this.state, "selectedUiTopic", "")
           , resultCount: -1
           , topic: topic
           , languages: languages
@@ -134,8 +149,9 @@ class ParaColLabelEditor extends React.Component {
           , dataFetched: dataFetched
           , values: values
           , updatedLanguage: get(this.state,"updatedLanguage", "")
-          , updatedTopic: get(this.state,"updatedTopic", "")
           , updatedKey: get(this.state,"updatedKey","")
+          , updatedSeq: get(this.state,"updatedSeq","")
+          , updatedTopic: get(this.state,"updatedTopic", "")
           , updatedValue: get(this.state,"updatedValue","")
           , about: about
           , libraryKeyValues: libraryKeyValues
@@ -215,14 +231,25 @@ class ParaColLabelEditor extends React.Component {
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
       let data = restCallResult.data.values[0];
-      console.log("Dude, you've got data!");
       console.log(data);
       let libraryKeyValues = data.libraryKeyValues;
       let templateKeys = data.templateKeys;
+      let topics = data.topics.sort();
+      let uiTopicsDropdown = [];
+      try {
+        for(var key in topics) {
+          let topic = topics[key];
+          uiTopicsDropdown.push({label: topic, value: topic});
+        }
+      } catch (err) {
+        console.log(err);
+      }
       this.setState({
         dataFetched: true
         , libraryKeyValues: libraryKeyValues
         , templateKeys: templateKeys
+        , topics: topics
+        , uiTopicsDropdown: uiTopicsDropdown
         , message: this.state.labels.messages.found
         + " "
         + templateKeys.length
@@ -234,22 +261,141 @@ class ParaColLabelEditor extends React.Component {
     }
   };
 
+  getTabs = () => {
+    return (
+        <div className="row">
+            <Tabs id="App-Text-Node-Editor-Tabs" animation={false}>
+              <Tab eventKey={"tabEditor"} title={
+                this.state.labels.thisClass.editor}>
+                <div className="App-Label-Editor-Row col-sm-12 col-md-12 col-lg-12">
+                    <Grid>
+                      <Row>
+                        <Col xs={9} md={9}>
+                          <div className="control-label">
+                            {this.state.labels.thisClass.msg2}
+                          </div>
+                        </Col>
+                        <Col xs={3} md={3}>
+                          <Button
+                              onClick={ this.handleFilterClear }
+                              bsStyle="primary"
+                              className="App-table-filter-clear"
+                          >{this.state.labels.messages.clearFilters}
+                          </Button>
+                        </Col>
+                      </Row>
+                    </Grid>
+                    <BootstrapTable
+                        ref="table"
+                        data={this.state.values}
+                        trClassName={"App-data-tr"}
+                        striped
+                        pagination
+                        options={ this.state.options }
+                        cellEdit={this.state.cellEditProp}
+                    >
+                      <TableHeaderColumn
+                          ref="topicKey"
+                          isKey
+                          dataField='topicKey'
+                          dataSort={ true }
+                          width={this.state.topicKeyColumnSize}
+                          filter={ this.state.tableColumnFilter }
+                      >Topic~Key</TableHeaderColumn>
+                      <TableHeaderColumn
+                          ref="source"
+                          dataSort={ true }
+                          dataField={this.state.libraries[0]}
+                          tdClassname="tdColEditorSource"
+                          width={this.state.libraryValueColumnSize}
+                          editable={this.editable(this.state.libraries[0])}
+                          filter={ this.state.tableColumnFilter }
+                      >{this.state.libraries[0]}
+                      </TableHeaderColumn>
+                      <TableHeaderColumn
+                          ref="lib1"
+                          dataSort={ true }
+                          dataField={this.state.libraries[1]}
+                          editable={this.editable(this.state.libraries[1])}
+                          tdClassname='tdColEditorLib1'
+                          width={this.state.libraryValueColumnSize}
+                          hidden={this.state.libraries[1].length == 0}
+                          filter={ this.state.tableColumnFilter }
+                      >{this.state.libraries[1]}</TableHeaderColumn>
+                      <TableHeaderColumn
+                          ref="lib2"
+                          dataField={this.state.libraries[2]}
+                          dataSort={ true }
+                          tdClassname='tdColEditorLib2'
+                          width={this.state.libraryValueColumnSize}
+                          editable={this.editable(this.state.libraries[2])}
+                          filter={ this.state.tableColumnFilter }
+                          hidden={this.state.libraries[2].length == 0}
+                      >{this.state.libraries[2]}</TableHeaderColumn>
+                      <TableHeaderColumn
+                          ref="lib3"
+                          dataField={this.state.libraries[3]}
+                          dataSort={ true }
+                          editable={this.editable(this.state.libraries[0])}
+                          tdClassname='tdColEditorLib3'
+                          width={this.state.libraryValueColumnSize}
+                          filter={ this.state.tableColumnFilter }
+                          hidden={this.state.libraries[3].length == 0}
+                      >{this.state.libraries[3]}</TableHeaderColumn>
+                    </BootstrapTable>
+                </div>
+              </Tab>
+              <Tab eventKey={"tabAddTopicKey"} title={
+                this.state.labels.thisClass.newKey}>
+                <Well>
+                  {this.getUiTopicRow()}
+                  {this.getUiNewTopicRow()}
+                  {this.getKeyInputRow()}
+                  {this.getValueInputRow()}
+                  {this.getNewKeyButtonRow()}
+                </Well>
+              </Tab>
+            </Tabs>
+        </div>
+    );
+  };
+
+  handleKeyInputChange = (event) => {
+    this.setState({updatedKey: event.target.value});
+  };
+
+  handleNewTopicChange = (event) => {
+    let selectedUiTopic = "";
+    let updatedTopic = event.target.value;
+    if (this.props.session.labelTopics[event.target.value]) {
+      selectedUiTopic = event.target.value;
+    }
+    this.setState({
+      selectedUiTopic: selectedUiTopic
+      , updatedTopic: updatedTopic
+      , updatedLanguage: "en"
+    });
+  };
+
+  handleValueInputChange = (event) => {
+    this.setState({updatedValue: event.target.value});
+  };
+
+
   handleValueUpdateCallback = (restCallResult) => {
     if (restCallResult) {
-      try {
-        let labels = this.props.session.labelsAll;
-
-        labels[this.state.updatedLanguage][this.state.updatedTopic][this.state.updatedKey] = this.state.updatedValue;
-        if (this.state.updatedLanguage.endsWith(this.props.session.languageCode)) {
-          this.props.session.labels[this.state.updatedTopic][this.state.updatedKey] = this.state.updatedValue;
-        }
-      } catch (err) {
-        console.log(err);
+      if (this.props.callback) {
+        this.props.callback(
+            this.state.updatedLanguage
+            , this.state.updatedTopic
+            , this.state.updatedKey
+            , this.state.updatedValue
+        )
       }
       this.setState({
         message: restCallResult.message
         , messageIcon: restCallResult.messageIcon
-      }, this.setTableData);
+      }, this.fetchData);
     }
   };
 
@@ -304,9 +450,17 @@ class ParaColLabelEditor extends React.Component {
     }
   };
 
+  handleSystemSelect = (system) => {
+    this.setState({
+      selectedUiSystem: system.value
+    });
+  };
+
   handleTopicSelect = (topic) => {
     this.setState({
-      topic: topic
+      selectedUiTopic: topic.value
+      , updatedLanguage: "en"
+      , updatedTopic: topic.value
     });
   };
 
@@ -344,29 +498,41 @@ class ParaColLabelEditor extends React.Component {
     }
     // update the local array with the new value
     let libraryKeyValues = this.state.libraryKeyValues;
-    libraryKeyValues[library][this.state.templateKeys[index].libKeysIndex] = value;
+    libraryKeyValues[library][this.state.templateKeys[index].libKeysIndex].value = value;
     this.setState({
       libraryKeyValues: libraryKeyValues
       , updatedLanguage: language
       , updatedTopic: topic
       , updatedKey: key
       , updatedValue: value
-    });
+      , updatedSeq: seq
+      , updatedId: id
+    }, this.putUiLabel);
 
-    // now update the database via a rest call
-    let parms =
-        "i=" + encodeURIComponent(id)
-        + "&t=" + encodeURIComponent("UI Interface Label")
-    ;
+  };
 
-    server.putUiLabel(
-        this.props.session.restServer
-        , this.state.session.userInfo.username
-        , this.state.session.userInfo.password
-        , {value: value, seq: seq}
-        , parms
-        , this.handleValueUpdateCallback
-    )
+  putUiLabel = () => {
+    if (
+        this.state.updatedTopic
+        && this.state.updatedLanguage
+        && this.state.updatedKey
+        && this.state.updatedValue
+        && this.state.updatedId
+    ) {
+      let parms =
+          "i=" + encodeURIComponent(this.state.updatedId)
+          + "&t=" + encodeURIComponent("UI Interface Label")
+      ;
+
+      server.putUiLabel(
+          this.props.session.restServer
+          , this.state.session.userInfo.username
+          , this.state.session.userInfo.password
+          , {value: this.state.updatedValue, seq: this.state.updatedSeq}
+          , parms
+          , this.handleValueUpdateCallback
+      )
+    }
   };
 
   handleLibrarySelection = (selection) => {
@@ -500,7 +666,7 @@ class ParaColLabelEditor extends React.Component {
             <Row>
               <Col xs={12} md={12}>
                 <ResourceSelector
-                    title={this.state.labelsToAdd.language}
+                    title={this.state.labels.thisClass.language}
                     initialValue={this.state.languages.join()}
                     resources={this.props.session.dropdowns.uiLanguagesDropdown}
                     changeHandler={this.handleUiLanguageSelection}
@@ -513,6 +679,88 @@ class ParaColLabelEditor extends React.Component {
     }
   };
 
+  getKeyInputRow = () => {
+    return (
+        <Row className="show-grid App-Generic-Search-Options-Row">
+          <Col xs={12} md={12}>
+            <ControlLabel>{this.state.labels.thisClass.enterNewKey}</ControlLabel>
+            <FormControl
+                id={"fxKeyInputRow"}
+                className={"App-Label-Editor-New-Key"}
+                type="text"
+                value={this.state.value}
+                placeholder={this.state.labels.thisClass.enterNewKey}
+                onChange={this.handleKeyInputChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
+  handleNewKeySubmit = () => {
+    let id = "en_sys_"
+        + this.state.selectedUiSystem
+        + "~"
+        + this.state.updatedTopic
+        + "~"
+        + this.state.updatedKey
+    ;
+    this.setState({
+      updatedId: id
+    }, this.putUiLabel);
+  };
+
+  getNewKeyButtonRow = () => {
+    return (
+        <Row>
+          <Col xs={12} md={12}>
+            <Button
+                onClick={ this.handleNewKeySubmit }
+                bsStyle="primary"
+                className="App-Label-Editor-New-Key-Button"
+            >{this.state.labels.button.submit}
+            </Button>
+          </Col>
+        </Row>
+    );
+  };
+
+  getValueInputRow = () => {
+    return (
+        <Row className="show-grid App-Generic-Search-Options-Row">
+          <Col xs={12} md={12}>
+            <ControlLabel>{this.state.labels.thisClass.enterValue}</ControlLabel>
+            <FormControl
+                id={"fxValueInputRow"}
+                className={"App-Label-Editor-New-Value"}
+                type="text"
+                value={this.state.value}
+                placeholder={this.state.labels.thisClass.enterValue}
+                onChange={this.handleValueInputChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
+  getUiNewTopicRow = () => {
+    return (
+        <Row className="show-grid App-Generic-Search-Options-Row">
+          <Col xs={12} md={12}>
+            <ControlLabel>{this.state.labels.thisClass.newTopic}</ControlLabel>
+            <FormControl
+                id={"fxNewTopicInputRow"}
+                className={"App-Label-Editor-New-Topic"}
+                type="text"
+                value={this.state.value}
+                placeholder={this.state.labels.thisClass.newTopic}
+                onChange={this.handleNewTopicChange}
+            />
+          </Col>
+        </Row>
+    );
+  };
+
   getUiSystemRow = () => {
     if (this.props.session
         && this.props.session.dropdowns
@@ -522,10 +770,32 @@ class ParaColLabelEditor extends React.Component {
             <Row>
               <Col xs={12} md={12}>
                 <ResourceSelector
-                    title={this.state.labelsToAdd.system}
+                    title={this.state.labels.thisClass.system}
                     initialValue={this.state.selectedUiSystem}
                     resources={this.props.session.dropdowns.uiSystemsDropdown}
                     changeHandler={this.handleUiSystemSelection}
+                    multiSelect={false}
+                />
+              </Col>
+            </Row>
+          </div>
+      );
+    }
+  };
+
+  getUiTopicRow = () => {
+    if (this.props.session
+        && this.props.session.dropdowns
+        && this.props.session.dropdowns.uiSystemsDropdown) {
+      return (
+          <div className="App-Label-Editor-Row">
+            <Row>
+              <Col xs={12} md={12}>
+                <ResourceSelector
+                    title={this.state.labels.thisClass.topic}
+                    initialValue={this.state.selectedUiTopic}
+                    resources={this.state.uiTopicsDropdown}
+                    changeHandler={this.handleTopicSelect}
                     multiSelect={false}
                 />
               </Col>
@@ -542,13 +812,14 @@ class ParaColLabelEditor extends React.Component {
             <div className="col-sm-12 col-md-12 col-lg-12">
               <Well className="App-Para-Col-Editor">
                 <form onSubmit={this.handleSubmit}>
-                  <FormGroup controlId="formControlsTextarea">
+                  <FormGroup>
                     <Grid>
                       <Row>
                         <Col xs={12} md={12}>
                           <h3>{this.state.labels.thisClass.panelTitle}</h3>
                         </Col>
                       </Row>
+                      <Well>
                       {this.getUiSystemRow()}
                       {this.getUiLanguageRow()}
                       <Row><Col>&nbsp;</Col></Row>
@@ -569,92 +840,13 @@ class ParaColLabelEditor extends React.Component {
                           </div>
                         </Col>
                       </Row>
+                      </Well>
+                      {this.state.values && this.getTabs()}
                     </Grid>
                   </FormGroup>
                 </form>
               </Well>
             </div>
-            {this.state.values &&
-            <div className="col-sm-12 col-md-12 col-lg-12">
-              <Well>
-                <Grid>
-                  <Row>
-                    <Col xs={9} md={9}>
-                      <div className="control-label">
-                        {this.state.labels.thisClass.msg2}
-                      </div>
-                    </Col>
-                    <Col xs={3} md={3}>
-                      <Button
-                          onClick={ this.handleFilterClear }
-                          bsStyle="primary"
-                          className="App-table-filter-clear"
-                      >{this.state.labels.messages.clearFilters}
-                      </Button>
-                    </Col>
-                  </Row>
-                </Grid>
-                <BootstrapTable
-                    ref="table"
-                    data={this.state.values}
-                    trClassName={"App-data-tr"}
-                    striped
-                    pagination
-                    options={ this.state.options }
-                    cellEdit={this.state.cellEditProp}
-                >
-                  <TableHeaderColumn
-                      ref="topicKey"
-                      isKey
-                      dataField='topicKey'
-                      dataSort={ true }
-                      width={this.state.topicKeyColumnSize}
-                      filter={ this.state.tableColumnFilter }
-                  >Topic~Key</TableHeaderColumn>
-                  <TableHeaderColumn
-                      ref="source"
-                      dataSort={ true }
-                      dataField={this.state.libraries[0]}
-                      tdClassname="tdColEditorSource"
-                      width={this.state.libraryValueColumnSize}
-                      editable={this.editable(this.state.libraries[0])}
-                      filter={ this.state.tableColumnFilter }
-                  >{this.state.libraries[0]}
-                  </TableHeaderColumn>
-                  <TableHeaderColumn
-                      ref="lib1"
-                      dataSort={ true }
-                      dataField={this.state.libraries[1]}
-                      editable={this.editable(this.state.libraries[1])}
-                      tdClassname='tdColEditorLib1'
-                      width={this.state.libraryValueColumnSize}
-                      hidden={this.state.libraries[1].length == 0}
-                      filter={ this.state.tableColumnFilter }
-                  >{this.state.libraries[1]}</TableHeaderColumn>
-                  <TableHeaderColumn
-                      ref="lib2"
-                      dataField={this.state.libraries[2]}
-                      dataSort={ true }
-                      tdClassname='tdColEditorLib2'
-                      width={this.state.libraryValueColumnSize}
-                      editable={this.editable(this.state.libraries[2])}
-                      filter={ this.state.tableColumnFilter }
-                      hidden={this.state.libraries[2].length == 0}
-                  >{this.state.libraries[2]}</TableHeaderColumn>
-                  <TableHeaderColumn
-                      ref="lib3"
-                      dataField={this.state.libraries[3]}
-                      dataSort={ true }
-                      editable={this.editable(this.state.libraries[0])}
-                      tdClassname='tdColEditorLib3'
-                      width={this.state.libraryValueColumnSize}
-                      filter={ this.state.tableColumnFilter }
-                      hidden={this.state.libraries[3].length == 0}
-                  >{this.state.libraries[3]}</TableHeaderColumn>
-                </BootstrapTable>
-              </Well>
-            </div>
-            }
           </div>
         </div>
     )
@@ -664,6 +856,7 @@ class ParaColLabelEditor extends React.Component {
 ParaColLabelEditor.propTypes = {
   session: PropTypes.object.isRequired
   , source: PropTypes.string.isRequired
+  , callback: PropTypes.func
 };
 
 ParaColLabelEditor.defaultProps = {
