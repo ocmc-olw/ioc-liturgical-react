@@ -14,6 +14,7 @@ import Flag from './Flag';
 import FormattedTextNote from './FormattedTextNote';
 import HelpSearch from './HelpSearch';
 import Html5VideoPanel from './modules/Html5VideoPanel';
+import Labels from './Labels';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
 import Login from './Login';
 import NewEntry from './NewEntry';
@@ -32,6 +33,7 @@ import SearchRelationships from './SearchRelationships';
 import Server from './helpers/Server';
 import Session from './classes/Session';
 import Spinner from './helpers/Spinner';
+import StaticLabels from './StaticLabels';
 import TemplateEditor from './TemplateEditor';
 import TextNoteEditor from './TextNoteEditor';
 import TextNotesLister from './TextNotesLister';
@@ -60,6 +62,7 @@ export {
   , HelpSearch
   , Html5VideoPanel
 //  , LifeCycleDemo
+  , Labels
   , LiturgicalDayProperties
   , Login
   , NewEntry
@@ -78,6 +81,7 @@ export {
   , Server
   , Session
   , Spinner
+  , StaticLabels
   , TemplateEditor
   , TextNoteEditor
   , TextNotesLister
