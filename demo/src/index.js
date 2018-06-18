@@ -631,7 +631,7 @@ class Demo extends React.Component {
 
   };
 
-  handleLabelChange = (language, topic, key, value) => {
+  handleLabelChange = (system, language, topic, key, value) => {
     try {
       let labels = this.state.session.labels;
       let labelsAll = this.state.session.labelsAll;
@@ -772,7 +772,6 @@ class Demo extends React.Component {
   // called after a successful login
   handleDropdownsCallback = (response) => {
     let forms = response.data;
-    console.log(forms);
     let session = this.state.session;
     session.userInfo.domains = forms.domains;
 
@@ -807,7 +806,7 @@ class Demo extends React.Component {
         , forms.uiSystems
     );
     session.dropdowns = dropdowns;
-    session.labelsAll = forms.uiLabels;
+    session.labelsAll = forms.uiLabels["ilr"];
     session.labels = session.labelsAll[session.languageCode];
     if (forms.uiLabelTopics) {
       session.labelTopics = forms.uiLabelTopics;

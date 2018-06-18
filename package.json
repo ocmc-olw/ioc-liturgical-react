@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",

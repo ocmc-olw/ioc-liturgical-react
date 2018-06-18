@@ -457,6 +457,7 @@ export class Search extends React.Component {
             <Panel className="App-search-panel" header={this.state.labels.search.advanced} eventKey="2">
               {this.state.dropdowns ?
                   <SearchOptionsAdvanced
+
                       docType={this.state.docType}
                       docTypes={this.state.docTypes}
                       dropDowns={this.state.dropdowns}

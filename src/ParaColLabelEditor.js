@@ -386,7 +386,8 @@ class ParaColLabelEditor extends React.Component {
     if (restCallResult) {
       if (this.props.callback) {
         this.props.callback(
-            this.state.updatedLanguage
+            this.state.selectedUiSystem
+            , this.state.updatedLanguage
             , this.state.updatedTopic
             , this.state.updatedKey
             , this.state.updatedValue
