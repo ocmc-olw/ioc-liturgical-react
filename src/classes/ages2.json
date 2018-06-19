@@ -1,0 +1,32 @@
+{
+  "actors": [
+	{
+		"id": "gr_gr_cog~actors~priest"
+		, "library": "gr_gr_cog"
+		, "topic": "actors"
+		, "key": "priest"
+		, "value": "ΙΕΡΕΥΣ"
+	}
+       ,{
+		"id": "en_us_dedes~actors~priest"
+		, "library": "en_us_dedes"
+                , "topic": "actors"
+                , "key": "priest"
+		, "value": "PRIEST"
+	}
+        , {
+                "id": "gr_gr_cog~actors~priest"
+                , "library": "gr_gr_cog"
+                , "topic": "actors"
+                , "key": "deacon"
+                , "value": "ΔΙΑΚΟΝΟΣ"
+        }
+       ,{
+                "id": "en_us_dedes~actors~priest"
+                , "library": "en_us_dedes"
+                , "topic": "actors"
+                , "key": "deacon"
+                , "value": "DEACON"
+        }
+  ]
+}

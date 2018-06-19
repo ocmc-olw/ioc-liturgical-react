@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
 import server from './helpers/Server';
-import {ControlLabel, DropdownButton, FormGroup, HelpBlock, MenuItem} from 'react-bootstrap';
+import {ControlLabel, DropdownButton, FormGroup, MenuItem} from 'react-bootstrap';
 import DatePicker from 'react-bootstrap-date-picker'
 import Form from 'react-jsonschema-form';
 import ResponseParser from './helpers/ResponseParser'
@@ -102,7 +102,6 @@ class LiturgicalDayProperties extends React.Component {
                     value={this.state.value}
                     onChange={this.handleChange}
                 />
-                <HelpBlock>Help</HelpBlock>
               </FormGroup>
               {this.state.item ?
                   <Form

@@ -1,0 +1,16 @@
+{
+	"en": [
+		{"actors": [
+				{"key": "priest", "value": "PRIEST"}
+				, {"key": "deacon", "value": "DEACON"}
+			]
+		}
+         ]
+	, "gr": [
+		{"actors": [
+				{"key": "priest", "value": "ΙΕΡΕΥΣ"}
+				, {"key": "deacon", "value": "ΔΙΑΚΟΝΟΣ"}
+			]
+		}
+         ]
+}
