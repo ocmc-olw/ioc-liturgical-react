@@ -177,9 +177,10 @@ class ParaColLabelEditor extends React.Component {
             , beforeSaveCell: this.onBeforeSaveCell
             , afterSaveCell: this.onAfterSaveCell
           }
-          , maxCols: 6
+          , maxCols: 7
           , maxLibraries: 4
           , topicKeyColumnSize: "40px"
+          , libraryReviewColumnSize: "20px"
           , libraryValueColumnSize: "80px"
           , tableColumnFilter: {
             defaultValue: ""
@@ -231,7 +232,6 @@ class ParaColLabelEditor extends React.Component {
   handleFetchCallback = (restCallResult) => {
     if (restCallResult) {
       let data = restCallResult.data.values[0];
-      console.log(data);
       let libraryKeyValues = data.libraryKeyValues;
       let templateKeys = data.templateKeys;
       let topics = data.topics.sort();
@@ -302,6 +302,15 @@ class ParaColLabelEditor extends React.Component {
                           width={this.state.topicKeyColumnSize}
                           filter={ this.state.tableColumnFilter }
                       >Topic~Key</TableHeaderColumn>
+                      <TableHeaderColumn
+                          ref="review"
+                          dataSort={ true }
+                          dataField={"review"}
+                          tdClassname="tdColEditorReview"
+                          width={this.state.libraryReviewColumnSize}
+                          editable={false}
+                      >{this.state.labels.thisClass.review}
+                      </TableHeaderColumn>
                       <TableHeaderColumn
                           ref="source"
                           dataSort={ true }
@@ -407,26 +416,48 @@ class ParaColLabelEditor extends React.Component {
       for (let i = 0; i < j; i++) {
         try {
           let topicKey = this.state.templateKeys[i].key;
+          let date = this.state.libraryKeyValues[this.state.libraries[0]][this.state.templateKeys[i].libKeysIndex].modifiedWhen;
           let seq = this.state.libraryKeyValues[this.state.libraries[0]][this.state.templateKeys[i].libKeysIndex].seq;
           let source = this.state.libraryKeyValues[this.state.libraries[0]][this.state.templateKeys[i].libKeysIndex].value;
           let lib1 = "";
+          let lib1Date = "";
           let lib2 = "";
+          let lib2Date = "";
           let lib3 = "";
+          let lib3Date = "";
+          let review = "";
+          let reviewIcon = "< ! >";
           if (this.state.libraries[1].length > 0) {
             try {
               lib1 = this.state.libraryKeyValues[this.state.libraries[1]][this.state.templateKeys[i].libKeysIndex].value;
+              lib1Date = this.state.libraryKeyValues[this.state.libraries[1]][this.state.templateKeys[i].libKeysIndex].modifiedWhen;
+              if (date > lib1Date) {
+                review = reviewIcon;
+              }
             } catch (err) {
             }
           }
           if (this.state.libraries[2].length > 0) {
             try {
               lib2 = this.state.libraryKeyValues[this.state.libraries[2]][this.state.templateKeys[i].libKeysIndex].value;
+              lib2Date = this.state.libraryKeyValues[this.state.libraries[2]][this.state.templateKeys[i].libKeysIndex].modifiedWhen;
+              if (review !== reviewIcon) {
+                if (date > lib2Date) {
+                  review = reviewIcon;
+                }
+              }
             } catch (err) {
             }
           }
           if (this.state.libraries[3].length > 0) {
             try {
               lib3 = this.state.libraryKeyValues[this.state.libraries[3]][this.state.templateKeys[i].libKeysIndex].value;
+              lib3Date = this.state.libraryKeyValues[this.state.libraries[3]][this.state.templateKeys[i].libKeysIndex].modifiedWhen;
+              if (review !== reviewIcon) {
+                if (date > lib3Date) {
+                  review = reviewIcon;
+                }
+              }
             } catch (err) {
             }
           }
@@ -434,6 +465,7 @@ class ParaColLabelEditor extends React.Component {
           row["nbr"] = i;
           row["seq"] = seq;
           row["topicKey"] = topicKey;
+          row["review"] = review;
           row[this.state.libraries[0]] = source;
           row[this.state.libraries[1]] = lib1;
           row[this.state.libraries[2]] = lib2;
@@ -452,7 +484,6 @@ class ParaColLabelEditor extends React.Component {
   };
 
   handleSystemSelect = (system) => {
-    console.log("handleSystemSelect");
     this.setState({
       selectedUiSystem: system.value
     });
