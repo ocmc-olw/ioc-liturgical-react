@@ -304,12 +304,12 @@ class ParaColLabelEditor extends React.Component {
                       >Topic~Key</TableHeaderColumn>
                       <TableHeaderColumn
                           ref="review"
-                          dataSort={ true }
                           dataField={"review"}
                           tdClassname="tdColEditorReview"
                           width={this.state.libraryReviewColumnSize}
                           editable={false}
-                      >{this.state.labels.thisClass.review}
+                          filter={ this.state.tableColumnFilter }
+                      >{"< ! >"}
                       </TableHeaderColumn>
                       <TableHeaderColumn
                           ref="source"
