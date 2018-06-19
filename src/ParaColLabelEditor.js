@@ -452,6 +452,7 @@ class ParaColLabelEditor extends React.Component {
   };
 
   handleSystemSelect = (system) => {
+    console.log("handleSystemSelect");
     this.setState({
       selectedUiSystem: system.value
     });
@@ -575,6 +576,7 @@ class ParaColLabelEditor extends React.Component {
   handleUiSystemSelection = (selection) => {
     this.setState({
       selectedUiSystem: selection.value
+      , dataFetched: false
     });
   };
 
@@ -611,6 +613,7 @@ class ParaColLabelEditor extends React.Component {
       languages: languages
       , message: message
       , messageIcon: messageIcon
+      , dataFetched: false
     });
   };
   /**
@@ -842,7 +845,7 @@ class ParaColLabelEditor extends React.Component {
                         </Col>
                       </Row>
                       </Well>
-                      {this.state.values && this.getTabs()}
+                      {this.state.dataFetched && this.state.values && this.getTabs()}
                     </Grid>
                   </FormGroup>
                 </form>
