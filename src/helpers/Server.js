@@ -521,6 +521,25 @@ export default {
         }
     );
   }
+  , getActivities: (
+      restServer,
+      username
+      , password
+      , parms
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + "activity"
+        , parms
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getResources: (
       restServer,
       username

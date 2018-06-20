@@ -27,7 +27,8 @@ import CodeExample from './helpers/CodeExample';
 import {render} from 'react-dom';
 
 import {
-  Administrator
+  ActivityLister
+  , Administrator
   , AboutDatabase
   , AgesEditor
   , AgesViewer
@@ -1594,6 +1595,18 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Administrator */}
+            <Panel header="ActivityLister" eventKey="activityLister">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  && this.state.formsLoaded &&
+              <ActivityLister
+                  session={this.state.session}
+              />
+              }
+            </Panel> {/* ActivityLister */}
             <Panel header="Template Editor" eventKey="templateNodeEditor">
               { (this.state.authenticated) ?
                   <p></p>

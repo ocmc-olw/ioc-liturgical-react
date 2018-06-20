@@ -415,7 +415,7 @@ export class NotesLister extends React.Component {
       enableAdd = restCallResult.data.valueCount > 0;
     }
     this.setState({enableAdd: enableAdd});
-  }
+  };
 
   verifyTextId = (currentId, nextId) => {
     let needToVerify = true;

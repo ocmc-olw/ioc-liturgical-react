@@ -11,7 +11,7 @@ import {Col, Grid, Row, Well} from 'react-bootstrap';
 import ResourceSelector from './modules/ReactSelector';
 import Form from "react-jsonschema-form";
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
-import auth from './helpers/Auth'
+
 import User from "./classes/User";
 
 class Administrator extends React.Component {
@@ -420,7 +420,7 @@ class Administrator extends React.Component {
   render() {
     return (
         <div>
-        {this.getAdminContent()}
+          <div>{this.getAdminContent()}</div>
         </div>
     )
   }

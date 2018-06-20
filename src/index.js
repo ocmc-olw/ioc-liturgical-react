@@ -1,3 +1,4 @@
+import ActivityLister from './ActivityLister';
 import Administrator from './Administrator';
 import AgesEditor from './AgesEditor';
 import AgesViewer from './AgesViewer';
@@ -45,7 +46,8 @@ import WorkflowForm from './helpers/WorkflowForm';
 import YoutubeVideoPanel from './modules/YoutubeVideoPanel';
 
 export {
-  Administrator
+  ActivityLister
+  , Administrator
   , AgesEditor
   , AgesViewer
   , AboutDatabase
