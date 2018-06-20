@@ -73,7 +73,7 @@ export class ActivityLister extends React.Component {
           , selectedToDate: moment().utc().add(1, "days").format('YYYY-MM-DD')
           , showModalEditor: false
           , idColumnSize: "80px"
-          , title: "Activity"
+          , title: "Activity for the last 7 days as of "
         }
     )
   };
@@ -213,7 +213,7 @@ export class ActivityLister extends React.Component {
           <div className="App-search-results">
             <Panel
                 className="App-Grammar-Site-panel"
-                header={this.state.title}
+                header={this.state.title + moment().utc().format("YYYY-MM-DDTHH:mm:ss.SSS") + "Z"}
                 collapsible
             >
             <div className="row">
