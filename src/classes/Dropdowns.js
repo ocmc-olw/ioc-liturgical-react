@@ -25,6 +25,8 @@ class Dropdowns {
     , uiDomainsDropdown
       , uiLanguagesDropdown
       , uiSystemsDropdown
+      , isoCountries
+      , isoLanguages
     ) {
     this.liturgicalBooksDropdown = (liturgicalBooksDropdown ? liturgicalBooksDropdown : []);
     this.biblicalBooksDropdown = (biblicalBooksDropdown ? biblicalBooksDropdown : []);
@@ -47,6 +49,8 @@ class Dropdowns {
     this.uiDomainsDropdown = (uiDomainsDropdown ? uiDomainsDropdown : []);
     this.uiLanguagesDropdown = (uiLanguagesDropdown ? uiLanguagesDropdown : []);
     this.uiSystemsDropdown = (uiSystemsDropdown ? uiSystemsDropdown : []);
+    this.isoCountries = (isoCountries ? isoCountries : []);
+    this.isoLanguages = (isoLanguages ? isoLanguages : []);
   };
 }
 export default Dropdowns;

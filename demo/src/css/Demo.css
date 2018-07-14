@@ -1067,6 +1067,15 @@ a.rdw-mention-link {
     margin-bottom: 10px;
 }
 
-.App-Label-Editor-New-Key-Button {
-
+.App-Domain-Builder-Well {
+    width: 66vw;
+}
+.App-Domain-Builder {
+    margin-top: 20px;
+}
+.App-Domain-Builder-Checkbox {
+    margin-top: -18px;
+}
+.editMessage {
+    color: red;
 }

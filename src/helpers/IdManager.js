@@ -90,4 +90,4 @@ module.exports = {
   , padPath: function (path) {
      return path.replace(/\//g, " / ");
   }
-}
+};

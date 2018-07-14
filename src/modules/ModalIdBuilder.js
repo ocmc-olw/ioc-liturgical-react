@@ -100,7 +100,7 @@ export class ModalIdBuilder extends React.Component {
     } else {
       return (<div></div>)
     }
-  }
+  };
 
   render() {
     return (<Well>{this.getContent()}</Well>);

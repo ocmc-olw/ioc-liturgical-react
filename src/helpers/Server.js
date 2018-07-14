@@ -49,6 +49,7 @@ const dbDropdownsSearchText = "dropdowns/texts";
 const dbDropdownsSearchTemplates = "dropdowns/templates";
 const dbDropdownsSearchNotes = "dropdowns/notes";
 const dbDropdownsUserRolesForDomain = "domains/userdropdown";
+const dbDomainsCollective = "domains/collective";
 const dbDropdownsOntologyEntites = "dropdowns/ontologyentities";
 const dbDropdownsSearchOntology = "dropdowns/ontology";
 const dbDropdownDomains = "dropdowns/domains";
@@ -636,6 +637,24 @@ export default {
         + dbDropdownsUserRolesForDomain
         + "/"
         + library
+        , undefined
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
+  , getCollectiveDomains: (
+      restServer,
+      username
+      , password
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , adminApi
+        + dbDomainsCollective
         , undefined
         , function (result) {
           callback(result);

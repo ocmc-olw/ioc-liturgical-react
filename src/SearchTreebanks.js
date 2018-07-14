@@ -72,6 +72,8 @@ export class SearchTreebanks extends React.Component {
     axios.get(path, config)
         .then(response => {
           // literals used as keys to get data from the response
+          let sourceKey = "sourceList";
+          let relLabelsKey = "relLabels";
           let valueKey = "dropdown";
           let listKey = "typeList";
           let propsKey = "typeProps";
@@ -81,7 +83,9 @@ export class SearchTreebanks extends React.Component {
           let values = response.data.values[0][valueKey];
           this.setState({
                 dropdowns: {
-                  types: values[listKey]
+                  sources: values[sourceKey]
+                  , relLabels: values[relLabelsKey]
+                  , types: values[listKey]
                   , typeProps: values[propsKey]
                   , typeTags: values[tagsKey]
                   , tagOperators: values[tagOperatorsKey]
@@ -210,14 +214,15 @@ export class SearchTreebanks extends React.Component {
             <div>
             {this.state.dropdowns ?
                 <TreebankSearchOptions
-                    types={this.state.dropdowns.types}
+                    sources={this.state.dropdowns.sources}
                     initialType={this.props.fixedType ? this.props.initialType : this.state.docType}
                     properties={this.state.dropdowns.typeProps}
                     matchers={this.getMatcherTypes()}
                     tags={this.state.dropdowns.typeTags}
                     tagOperators={this.state.dropdowns.tagOperators}
-                    handleSubmit={this.handleAdvancedSearchSubmit}
                     labels={this.state.labels.thisClass}
+                    relationshipLabels={this.state.dropdowns.relLabels}
+                    handleSubmit={this.handleAdvancedSearchSubmit}
                 />
                 : "Loading dropdowns for search..."
             }
@@ -309,6 +314,7 @@ export class SearchTreebanks extends React.Component {
 
   handleAdvancedSearchSubmit = (
       type
+      , relLabel
       , property
       , matcher
       , value
@@ -317,6 +323,7 @@ export class SearchTreebanks extends React.Component {
   ) => {
     this.setState({
           docType: type
+          , relLabel: relLabel
           , docProp: property
           , matcher: matcher
           , query: value
@@ -427,6 +434,7 @@ export class SearchTreebanks extends React.Component {
 
     let parms =
             "?t=" + encodeURIComponent(this.state.docType)
+            + "&r=" + encodeURIComponent(this.state.relLabel)
             + "&q=" + encodeURIComponent(this.state.query)
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)

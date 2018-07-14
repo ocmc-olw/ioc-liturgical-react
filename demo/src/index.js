@@ -34,8 +34,11 @@ import {
   , AgesViewer
   , ChangePassword
   , Configuration
+  , CountryLister
   , BibleRefSelector
   , DependencyDiagram
+  , DomainBuilder
+  , DomainLister
   , DomainSelector
   , DownloadUserRecords
   , Dropdowns
@@ -43,6 +46,7 @@ import {
   , Flag
   , HelpSearch
   , Html5VideoPanel
+  , LanguageLister
   , LiturgicalDayProperties
   , Login
   , NewEntry
@@ -780,6 +784,7 @@ class Demo extends React.Component {
         forms.formsDropdown
         , forms.valueSchemas
         , forms.values
+        , forms.adminForms
     );
     session.uiSchemas = uiSchemas;
 
@@ -805,6 +810,8 @@ class Demo extends React.Component {
         , forms.uiDomains
         , forms.uiLanguages
         , forms.uiSystems
+        , forms.isoCountries
+        , forms.isoLanguages
     );
     session.dropdowns = dropdowns;
     session.labelsAll = forms.uiLabels["ilr"];
@@ -1030,19 +1037,6 @@ class Demo extends React.Component {
             </Alert>
           </Grid>
           <Accordion>
-            <Panel header="Flags and User Interface Labels" eventKey="flags">
-              <p>Labels are provided in a variety of languages for the components.</p>
-              <p>Click a language name below to change the language for the labels used by the demo components:</p>
-              <div id="en" onClick={this.handleLanguageToogle}><Flag code="en"/> English</div>
-              <div id="el" onClick={this.handleLanguageToogle}><Flag code="el"/> Modern Greek</div>
-              <p></p>
-              <p>Changing the language for the demo affects the labels for the components below this section. This also
-                demonstrates the use of the Flag component. There is a flag for each language supported by the user
-                interface. For example, to use the Flag component to get Modern Greek:</p>
-              <CodeExample
-                  codeText="<Flag code='el'/>"
-              />
-            </Panel> {/* Flags and Labels */}
             <Panel header="Login" eventKey="login">
               <Login
                   restServer={this.state.session.restServer}
@@ -1124,11 +1118,42 @@ class Demo extends React.Component {
                     </tbody>
                   </Table>
                   <CodeExample
-                    codeText={loginCallbackSample}
+                      codeText={loginCallbackSample}
                   />
                 </Panel>
               </Accordion>
             </Panel> {/* Login */}
+            <Panel header="Flags and User Interface Labels" eventKey="flags">
+              <p>Labels are provided in a variety of languages for the components.</p>
+              <p>Click a language name below to change the language for the labels used by the demo components:</p>
+              <div id="en" onClick={this.handleLanguageToogle}><Flag code="en"/> English</div>
+              <div id="el" onClick={this.handleLanguageToogle}><Flag code="el"/> Modern Greek</div>
+              <p></p>
+              <p>Changing the language for the demo affects the labels for the components below this section. This also
+                demonstrates the use of the Flag component. There is a flag for each language supported by the user
+                interface. For example, to use the Flag component to get Modern Greek:</p>
+              <CodeExample
+                  codeText="<Flag code='el'/>"
+              />
+            </Panel> {/* Flags and Labels */}
+            <Panel header="Countries" eventKey="countries">
+              <CountryLister session={this.state.session}/>
+            </Panel> {/* countries */}
+            <Panel header="Domains" eventKey="domains">
+              {(this.state.authenticated && this.state.session.userInfo) ?
+                  <div>
+                    <DomainLister session={this.state.session}/>
+                  </div>
+                  :
+                  <p>You won't see the example, below, unless you first login using the Login example above.</p>
+              }
+            </Panel> {/* domains */}
+            <Panel header="Domain Builder" eventKey="domainbuilder">
+              <DomainBuilder session={this.state.session}/>
+            </Panel> {/* countries */}
+            <Panel header="Languages" eventKey="langs">
+              <LanguageLister session={this.state.session}/>
+            </Panel> {/* langs */}
             <Panel header="Change Password" eventKey="changePassword">
               {(this.state.authenticated && this.state.session.userInfo) ?
                   <div>

@@ -123,6 +123,17 @@ class ParaColLabelEditor extends React.Component {
       );
     }
 
+    let clickType = "dbclick";
+    try {
+      if (window.innerWidth < 800) {
+        clickType = "click";
+      }
+    } catch (err) {
+      clickType = "dbclick";
+    }
+
+
+
     return (
         {
           labels: {
@@ -173,7 +184,7 @@ class ParaColLabelEditor extends React.Component {
             , className: "App-row-select"
           }
           , cellEditProp : {
-            mode: 'dbclick'
+            mode: clickType
             , beforeSaveCell: this.onBeforeSaveCell
             , afterSaveCell: this.onAfterSaveCell
           }

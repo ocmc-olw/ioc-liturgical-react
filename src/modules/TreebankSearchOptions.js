@@ -9,13 +9,15 @@ class TreebankSearchOptions extends React.Component {
   constructor(props) {
     super(props);
 
-    let initialType = "PtbWord";
+    let initialType = "UDtbWord";
     if (this.props.initialType) {
       initialType = this.props.initialType;
     }
 
     this.state = {
-      selectedType: initialType
+      selectedSource: "UD_ANCIENT_GREEK_PERSEUS"
+      , selectedRelLabel: "*"
+      , selectedType: initialType
       , selectedProperty: "*"
       , selectedMatcher: "c"
       , value: ""
@@ -28,7 +30,10 @@ class TreebankSearchOptions extends React.Component {
         , initialValue: "*"
       }
     };
-    this.handleDocTypeChange = this.handleDocTypeChange.bind(this);
+    
+    this.handleRelLabelChange = this.handleRelLabelChange.bind(this);
+    this.handleSourceTypeChange = this.handleSourceTypeChange.bind(this);
+//    this.handleDocTypeChange = this.handleDocTypeChange.bind(this);
     this.handlePropertyChange = this.handlePropertyChange.bind(this);
     this.handleMatcherChange = this.handleMatcherChange.bind(this);
     this.handleValueChange = this.handleValueChange.bind(this);
@@ -44,15 +49,29 @@ class TreebankSearchOptions extends React.Component {
   componentWillReceiveProps = (nextProps) => {
   };
 
-  handleDocTypeChange = (selection) => {
-    let type = selection["value"];
+  // handleDocTypeChange = (selection) => {
+  //   let type = selection["value"];
+  //   this.setState({
+  //     selectedType: type
+  //         , dropDownProperties: {
+  //       msg: this.props.labels.domainIs
+  //       , source: this.props.properties[type]
+  //       , initialValue: "*"
+  //     }
+  //   });
+  // };
+
+  handleSourceTypeChange = (selection) => {
+    let source = selection["value"];
     this.setState({
-      selectedType: type
-          , dropDownProperties: {
-        msg: this.props.labels.domainIs
-        , source: this.props.properties[type]
-        , initialValue: "*"
-      }
+      selectedSource: source
+    });
+  };
+
+  handleRelLabelChange = (selection) => {
+    let value = selection["value"];
+    this.setState({
+      selectedRelLabel: value
     });
   };
 
@@ -95,7 +114,8 @@ class TreebankSearchOptions extends React.Component {
 
   handleSubmit = (event) => {
     this.props.handleSubmit(
-        this.state.selectedType
+        this.state.selectedSource
+        , this.state.selectedRelLabel
         , this.state.selectedProperty
         , this.state.selectedMatcher
         , this.state.value
@@ -132,12 +152,36 @@ class TreebankSearchOptions extends React.Component {
         <div className="container App-search-options-container">
           <div>
             <div className="row">
+              {/*<div className="col-sm-12 col-md-12 col-lg-12">*/}
+                {/*<ResourceSelector*/}
+                    {/*title={this.props.labels.findWhereTypeIs}*/}
+                    {/*initialValue={this.state.selectedType}*/}
+                    {/*resources={this.props.types}*/}
+                    {/*changeHandler={this.handleDocTypeChange}*/}
+                    {/*multiSelect={false}*/}
+                {/*/>*/}
+              {/*</div>*/}
+            </div>
+          </div>
+          <div>
+            <div className="row">
               <div className="col-sm-12 col-md-12 col-lg-12">
                 <ResourceSelector
-                    title={this.props.labels.findWhereTypeIs}
-                    initialValue={this.state.selectedType}
-                    resources={this.props.types}
-                    changeHandler={this.handleDocTypeChange}
+                    title={this.props.labels.whereSourceIs}
+                    initialValue={this.state.selectedSource}
+                    resources={this.props.sources}
+                    changeHandler={this.handleSourceTypeChange}
+                    multiSelect={false}
+                />
+              </div>
+            </div>
+            <div className="row">
+              <div className="col-sm-12 col-md-12 col-lg-12">
+                <ResourceSelector
+                    title={this.props.labels.whereDepRel}
+                    initialValue={this.state.selectedRelLabel}
+                    resources={this.props.relationshipLabels}
+                    changeHandler={this.handleRelLabelChange}
                     multiSelect={false}
                 />
               </div>
@@ -205,7 +249,7 @@ class TreebankSearchOptions extends React.Component {
 }
 
 TreebankSearchOptions.propTypes = {
-  types: PropTypes.array.isRequired
+  sources: PropTypes.array.isRequired
   , initialType: PropTypes.string.isRequired
   , properties: PropTypes.object.isRequired
   , matchers: PropTypes.array.isRequired
@@ -213,6 +257,7 @@ TreebankSearchOptions.propTypes = {
   , tagOperators: PropTypes.array.isRequired
   , handleSubmit: PropTypes.func.isRequired
   , labels: PropTypes.object.isRequired
+  , relationshipLabels: PropTypes.array.isRequired
 };
 
 export default TreebankSearchOptions;

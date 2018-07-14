@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import {Alert, Button, Col, ControlLabel, Glyphicon, Grid, Row, Table, Well} from 'react-bootstrap';
 import ModalParaRowEditor from './ModalParaRowEditor';
-
+import { get } from 'lodash';
 import Spinner from './helpers/Spinner';
 import server from './helpers/Server';
 import MessageIcons from './helpers/MessageIcons';
@@ -129,6 +129,9 @@ class AgesEditor extends React.Component {
           , agesIndexValues: agesIndexValues
           , fetchingData: false
           , iconCount: 0
+          , topicKeyCount: get(this.state,"topicKeyCount", 0)
+          , middleBlockCompleteCount: get(this.state,"middleBlockCompleteCount", 0)
+          , percentComplete: get(this.state,"percentComplete", 0)
         }
     )
   };
@@ -196,12 +199,14 @@ class AgesEditor extends React.Component {
       let data = restCallResult.data.values[0];
       let values = data.values;
       let topicKeys = data.topicKeys;
+      let topicKeyCount = topicKeys.length;
       let topElement = data.topElement.children[0].children[0]; // tbody
       this.setState({
         dataFetched: true
         , fetchingData: false
         , values: values
         , topicKeys: topicKeys
+        , topicKeyCount: topicKeyCount
         , topElement: topElement
       }, this.setTable);
     }

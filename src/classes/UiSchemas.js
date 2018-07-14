@@ -14,10 +14,12 @@ class UiSchemas {
       formsDropdown
       , formsSchemas
       , forms
+      , adminForms
   ) {
     this.formsDropdown = formsDropdown;
     this.formsSchemas = formsSchemas;
     this.forms = forms;
+    this.adminForms = adminForms;
   };
 
   getFormsDropdown = () => {

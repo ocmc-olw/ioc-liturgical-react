@@ -435,14 +435,13 @@ export class TreeNode extends React.Component {
           refersTo = (parseInt(refersTo)+1).toString();
         }
       }
-
       nodeText = (
           <span  onClick={this.toggleSelected} style={treeviewSpanStyle}>
             <span className={"App App-DependencyDiagram-Node-Key"}>{key}</span>
             { node.refersTo &&
             <span className={"App App-DependencyDiagram-Node-RefersTo"}>&#8594;{refersTo}</span>
             }
-            <span className={"App App-DependencyDiagram-Node-Label"}>{node.label}</span>
+            <span title={'hi'} className={"App App-DependencyDiagram-Node-Label"}>{node.label}</span>
             <span className={"App App-DependencyDiagram-Node-Token"}>{node.token}</span>
             <span className={"App App-DependencyDiagram-Node-Gloss"}>{node.gloss}</span>
             <span className={"App App-DependencyDiagram-Node-Grammar"}>{node.grammar}</span>
