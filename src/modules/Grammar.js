@@ -12,7 +12,7 @@ import IdManager from '../helpers/IdManager';
 import MessageIcons from '../helpers/MessageIcons';
 import HyperTokenText from './HyperTokenText';
 import DependencyDiagram from './DependencyDiagram';
-import TokenTagger from '../helpers/UdTokenTagger';
+import TokenTagger from '../helpers/TokenTagger'; // When convert to UD gram tags, use UdTokenTagger
 import TreeViewUtils from '../helpers/TreeViewUtils';
 import GrammarSitePanel from './GrammarSitePanel';
 import SearchTreebanks from '../SearchTreebanks';

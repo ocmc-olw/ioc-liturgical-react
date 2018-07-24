@@ -970,8 +970,8 @@ class Demo extends React.Component {
                   session={this.state.session}
                   docType="Liturgical"
                   idLibrary="en_us_dedes"
-                  idTopic="me.m01.d10"
-                  idKey="meMA.Kathisma11.text"
+                  idTopic="he.h.m2"
+                  idKey="VythouAnekalypse.text"
                   value={this.state.translatedText}
                   onSubmit={this.handleParallelTextEditorCallback}
                   canChange={this.state.session.userInfo.isAuthorFor("en_uk_gevsot")}

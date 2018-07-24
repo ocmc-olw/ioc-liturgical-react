@@ -555,9 +555,11 @@ div.App-logo.navbar-header {
 }
 .App-TokenTagger-Lemma {
     width: 45ch;
+    padding-left: 8pt;
 }
 .App-TokenTagger-Gloss {
     width: 45ch;
+    padding-left: 8pt;
 }
 .App-Label-Selector-Help {
     padding-top: 10px;
@@ -1078,4 +1080,14 @@ a.rdw-mention-link {
 }
 .editMessage {
     color: red;
+}
+
+.App-Tagger-Tabs {
+    margin-top: 12px;
+    margin-left: 20px;
+}
+.App-Token-Tagger-OED-glyphicon {
+    margin-left: 20px;
+}
+.input-group-addon {
 }

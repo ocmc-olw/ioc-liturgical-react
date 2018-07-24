@@ -4,6 +4,9 @@ import {
   Button
   , FormControl
   , FormGroup
+  , Tab
+  , Tabs
+  , Well
 } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import { get } from 'lodash';
@@ -36,31 +39,42 @@ class TokenTagger extends React.Component {
 
     this.getAspectComponent = this.getAspectComponent.bind(this);
     this.getCaseComponent = this.getCaseComponent.bind(this);
+    this.getDefiniteComponent = this.getDefiniteComponent.bind(this);
+    this.getDegreeComponent = this.getDegreeComponent.bind(this);
     this.getDependencyComponent = this.getDependencyComponent.bind(this);
     this.getGenderComponent = this.getGenderComponent.bind(this);
     this.getLabelComponent = this.getLabelComponent.bind(this);
     this.getMoodComponent = this.getMoodComponent.bind(this);
     this.getNumberComponent = this.getNumberComponent.bind(this);
+    this.getNumTypeComponent = this.getNumTypeComponent.bind(this);
     this.getPartOfSpeechComponent = this.getPartOfSpeechComponent.bind(this);
+    this.getPossComponent = this.getPossComponent.bind(this);
     this.getPersonComponent = this.getPersonComponent.bind(this);
+    this.getPronTypeComponent = this.getPronTypeComponent.bind(this);
     this.getReferentComponent = this.getReferentComponent.bind(this);
+    this.getTabs = this.getTabs.bind(this);
     this.getTenseComponent = this.getTenseComponent.bind(this);
     this.getVerbNumberComponent = this.getVerbNumberComponent.bind(this);
     this.getVerbFormComponent = this.getVerbFormComponent.bind(this);
     this.getVoiceComponent = this.getVoiceComponent.bind(this);
 
     this.handleAspectChange = this.handleAspectChange.bind(this);
-    this.handleReferentChange = this.handleReferentChange.bind(this);
-    this.handleDependencyChange = this.handleDependencyChange.bind(this);
     this.handleCaseChange = this.handleCaseChange.bind(this);
+    this.handleDefiniteChange = this.handleDefiniteChange.bind(this);
+    this.handleDegreeChange = this.handleDegreeChange.bind(this);
+    this.handleDependencyChange = this.handleDependencyChange.bind(this);
     this.handleGenderChange = this.handleGenderChange.bind(this);
     this.handleGlossChange = this.handleGlossChange.bind(this);
     this.handleLabelChange = this.handleLabelChange.bind(this);
     this.handleLemmaChange = this.handleLemmaChange.bind(this);
     this.handleMoodChange = this.handleMoodChange.bind(this);
     this.handleNumberChange = this.handleNumberChange.bind(this);
+    this.handleNumTypeChange = this.handleNumTypeChange.bind(this);
     this.handlePartOfSpeechChange = this.handlePartOfSpeechChange.bind(this);
     this.handlePersonChange = this.handlePersonChange.bind(this);
+    this.handlePossChange = this.handlePossChange.bind(this);
+    this.handlePronTypeChange = this.handlePronTypeChange.bind(this);
+    this.handleReferentChange = this.handleReferentChange.bind(this);
     this.handleTenseChange = this.handleTenseChange.bind(this);
     this.handleVerbFormChange = this.handleVerbFormChange.bind(this);
     this.handleVoiceChange = this.handleVoiceChange.bind(this);
@@ -87,25 +101,35 @@ class TokenTagger extends React.Component {
     let labelTopics = props.session.labelTopics;
     let labelGrammarTermsTitles = labels[labelTopics.grammarTermsTitles];
     let labelAspect = labels[labelTopics.UDtagsAspect];
-    let labelCase = labels[labelTopics.UDtagsCase]; // grammarTermsCaseValues];
-    let labelCategories = labels[labelTopics.UDtagsDepRel]; //grammarTermsCategoryValues];
-    let labelGender = labels[labelTopics.UDtagsGender]; //grammarTermsGenderValues];
-    let labelNumber = labels[labelTopics.UDtagsNumber]; //grammarTermsNumberValues];
-    let labelPerson = labels[labelTopics.UDtagsPerson]; //grammarTermsPersonValues];
-    let labelPos = labels[labelTopics.UDtagsPos]; //.grammarTermsPosValues];
-    let labelMood = labels[labelTopics.UDtagsMood]; //grammarTermsMoodValues];
-    let labelTense = labels[labelTopics.UDtagsTense]; //grammarTermsTenseValues];
+    let labelCase = labels[labelTopics.UDtagsCase];
+    let labelCategories = labels[labelTopics.UDtagsDepRel];
+    let labelDefinite = labels[labelTopics.UDtagsDefinite];
+    let labelDegree = labels[labelTopics.UDtagsDegree];
+    let labelGender = labels[labelTopics.UDtagsGender];
+    let labelNumber = labels[labelTopics.UDtagsNumber];
+    let labelNumType = labels[labelTopics.UDtagsNumType];
+    let labelPerson = labels[labelTopics.UDtagsPerson];
+    let labelPos = labels[labelTopics.UDtagsPos];
+    let labelPoss = labels[labelTopics.UDtagsPoss];
+    let labelPronType = labels[labelTopics.UDtagsPronType];
+    let labelMood = labels[labelTopics.UDtagsMood];
+    let labelTense = labels[labelTopics.UDtagsTense];
     let labelVerbForm = labels[labelTopics.UDtagsVerbForm];
-    let labelVoice = labels[labelTopics.UDtagsVoice]; //grammarTermsVoiceValues];
+    let labelVoice = labels[labelTopics.UDtagsVoice];
     let grammar = {
       case: {title: labelGrammarTermsTitles.case, values: labelCase}
       , categories: {title: labelGrammarTermsTitles.categories, values: labelCategories}
       , aspect: {title: labelGrammarTermsTitles.aspect, values: labelAspect}
+      , definite: {title: labelGrammarTermsTitles.definite, values: labelDefinite}
+      , degree: {title: labelGrammarTermsTitles.degree, values: labelDegree}
       , gender: {title: labelGrammarTermsTitles.gender, values: labelGender}
       , mood: {title: labelGrammarTermsTitles.mood, values: labelMood}
       , number: {title: labelGrammarTermsTitles.number, values: labelNumber}
+      , numType: {title: labelGrammarTermsTitles.numType, values: labelNumType}
       , person: {title: labelGrammarTermsTitles.person, values: labelPerson}
       , pos: {title: labelGrammarTermsTitles.pos, values: labelPos}
+      , poss: {title: labelGrammarTermsTitles.poss, values: labelPoss}
+      , pronType: {title: labelGrammarTermsTitles.pronType, values: labelPronType}
       , tense: {title: labelGrammarTermsTitles.tense, values: labelTense}
       , verbForm: {title: labelGrammarTermsTitles.verbForm, values: labelVerbForm}
       , voice: {title: labelGrammarTermsTitles.voice, values: labelVoice}
@@ -126,11 +150,16 @@ class TokenTagger extends React.Component {
       let refersTo = get(currentState, "refersTo", props.tokenAnalysis.refersTo);
       let selectedAspect = currentState.selectedAspect;
       let selectedCase = currentState.selectedCase;
+      let selectedDefinite = currentState.selectedDefinite;
+      let selectedDegree = currentState.selectedDegree;
       let selectedGender = currentState.selectedGender;
       let selectedMood = currentState.selectedMood;
       let selectedNumber = currentState.selectedNumber;
+      let selectedNumType = currentState.selectedNumType;
       let selectedPerson = currentState.selectedPerson;
       let selectedPos = currentState.selectedPos;
+      let selectedPoss = currentState.selectedPoss;
+      let selectedPronType = currentState.selectedPronType;
       let selectedTense = currentState.selectedTense;
       let selectedVerbForm = currentState.selectedVerbForm;
       let selectedVoice = currentState.selectedVoice;
@@ -234,11 +263,16 @@ class TokenTagger extends React.Component {
             , index: index
             , selectedAspect: selectedAspect
             , selectedCase: selectedCase
+            , selectedDefinite: selectedDefinite
+            , selectedDegree: selectedDegree
             , selectedGender: selectedGender
             , selectedMood: selectedMood
             , selectedNumber: selectedNumber
+            , selectedNumType: selectedNumType
             , selectedPerson: selectedPerson
             , selectedPos: selectedPos
+            , selectedPoss: selectedPoss
+            , selectedPronType: selectedPronType
             , selectedTense: selectedTense
             , selectedVerbForm: selectedVerbForm
             , selectedVoice: selectedVoice
@@ -272,22 +306,27 @@ class TokenTagger extends React.Component {
             , updatingData: false
             , dataUpdated: false
             , index: index
-            , selectedAspect: tokenAnalysis.aspect ? tokenAnalysis.aspect : ""
-            , selectedCase: tokenAnalysis.gCase ? tokenAnalysis.gCase : ""
-            , selectedGender: tokenAnalysis.gender ? tokenAnalysis.gender : ""
-            , selectedMood: tokenAnalysis.mood ? tokenAnalysis.mood : ""
-            , selectedNumber: tokenAnalysis.number ? tokenAnalysis.number : ""
-            , selectedPerson: tokenAnalysis.person ? tokenAnalysis.person : ""
-            , selectedPos: tokenAnalysis.pos ? tokenAnalysis.pos : ""
-            , selectedTense: tokenAnalysis.tense ? tokenAnalysis.tense : ""
-            , selectedVerbForm: tokenAnalysis.verbForm ? tokenAnalysis.verbForm : ""
-            , selectedVoice: tokenAnalysis.voice ? tokenAnalysis.voice : ""
-            , selectedLabel: tokenAnalysis.label ? tokenAnalysis.label : ""
-            , lemma: tokenAnalysis.lemma ? tokenAnalysis.lemma : ""
-            , gloss: tokenAnalysis.gloss ? tokenAnalysis.gloss : ""
-            , dependsOn: tokenAnalysis.dependsOn ? tokenAnalysis.dependsOn : ""
-            , refersTo: tokenAnalysis.refersTo ? tokenAnalysis.refersTo : ""
-            , grammar: tokenAnalysis.grammar ? tokenAnalysis.grammar : ""
+            , selectedAspect: tokenAnalysis.aspect ? tokenAnalysis.aspect : "_"
+            , selectedCase: tokenAnalysis.gCase ? tokenAnalysis.gCase : "_"
+            , selectedDefinite: tokenAnalysis.definite ? tokenAnalysis.definite : "_"
+            , selectedDegree: tokenAnalysis.degree ? tokenAnalysis.degree : "_"
+            , selectedGender: tokenAnalysis.gender ? tokenAnalysis.gender : "_"
+            , selectedMood: tokenAnalysis.mood ? tokenAnalysis.mood : "_"
+            , selectedNumber: tokenAnalysis.number ? tokenAnalysis.number : "_"
+            , selectedNumType: tokenAnalysis.numType ? tokenAnalysis.numType : "_"
+            , selectedPerson: tokenAnalysis.person ? tokenAnalysis.person : "_"
+            , selectedPos: tokenAnalysis.pos ? tokenAnalysis.pos : "_"
+            , selectedPoss: tokenAnalysis.poss ? tokenAnalysis.poss : "_"
+            , selectedPronType: tokenAnalysis.pronType ? tokenAnalysis.pronType : "_"
+            , selectedTense: tokenAnalysis.tense ? tokenAnalysis.tense : "_"
+            , selectedVerbForm: tokenAnalysis.verbForm ? tokenAnalysis.verbForm : "_"
+            , selectedVoice: tokenAnalysis.voice ? tokenAnalysis.voice : "_"
+            , selectedLabel: tokenAnalysis.label ? tokenAnalysis.label : "_"
+            , lemma: tokenAnalysis.lemma ? tokenAnalysis.lemma : "_"
+            , gloss: tokenAnalysis.gloss ? tokenAnalysis.gloss : "_"
+            , dependsOn: tokenAnalysis.dependsOn ? tokenAnalysis.dependsOn : "_"
+            , refersTo: tokenAnalysis.refersTo ? tokenAnalysis.refersTo : "_"
+            , grammar: tokenAnalysis.grammar ? tokenAnalysis.grammar : "_"
             , tokenAnalysis: tokenAnalysis
           }
       )
@@ -379,6 +418,36 @@ class TokenTagger extends React.Component {
     }, this.toggleSubmit);
   };
 
+  handleDefiniteChange =  (selection) => {
+    this.setState({
+      selectedDefinite: selection["value"]
+    }, this.toggleSubmit);
+  };
+
+  handleDegreeChange =  (selection) => {
+    this.setState({
+      selectedDegree: selection["value"]
+    }, this.toggleSubmit);
+  };
+
+  handleNumTypeChange =  (selection) => {
+    this.setState({
+      selectedNumType: selection["value"]
+    }, this.toggleSubmit);
+  };
+
+  handlePossChange =  (selection) => {
+    this.setState({
+      selectedPoss: selection["value"]
+    }, this.toggleSubmit);
+  };
+
+  handlePronTypeChange =  (selection) => {
+    this.setState({
+      selectedPronType: selection["value"]
+    }, this.toggleSubmit);
+  };
+
   handleVerbFormChange =  (selection) => {
     this.setState({
       selectedVerbForm: selection["value"]
@@ -408,7 +477,7 @@ class TokenTagger extends React.Component {
         values[i] = (i) + ": " + this.props.tokens[i-1];
       }
     }
-    result.title = "Depends On"
+    result.title = "Depends On";
     result.values = values;
     // make adjustments for displaying dependency dropdown
     let initialValue = this.state.dependsOn;
@@ -440,7 +509,7 @@ class TokenTagger extends React.Component {
           values[i] = (i+1) + ": " + this.props.tokens[i];
         }
       }
-      result.title = "Refers to"
+      result.title = "Refers to";
       result.values = values;
       // make adjustments for displaying dropdown index shift
       let initialValue = this.state.refersTo;
@@ -629,6 +698,105 @@ class TokenTagger extends React.Component {
     }
   };
 
+  getDefiniteComponent =  () => {
+    if (this.state.selectedPos.startsWith("ART")
+        || this.state.selectedPos.startsWith("ADJ")
+        || this.state.selectedPos.startsWith("NOUN")
+    ){
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={this.state.labels.grammar.definite}
+                initialValue={this.state.selectedDefinite}
+                changeHandler={this.handleDefiniteChange}
+            />
+          </div>
+      );
+    } else {
+      return (<span/>);
+    }
+  };
+
+  getDegreeComponent =  () => {
+    if (this.state.selectedPos.startsWith("ADJ")
+        || this.state.selectedPos.startsWith("ADV")
+    ){
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={this.state.labels.grammar.degree}
+                initialValue={this.state.selectedDegree}
+                changeHandler={this.handleDegreeChange}
+            />
+          </div>
+      );
+    } else {
+      return (<span/>);
+    }
+  };
+
+  getNumTypeComponent =  () => {
+    if (this.state.selectedPos.startsWith("ADJ")
+        || this.state.selectedPos.startsWith("ADV")
+        || this.state.selectedPos.startsWith("DET")
+        || this.state.selectedPos.startsWith("NUM")
+    ){
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={this.state.labels.grammar.numType}
+                initialValue={this.state.selectedNumType}
+                changeHandler={this.handleNumTypeChange}
+            />
+          </div>
+      );
+    } else {
+      return (<span/>);
+    }
+  };
+
+  getPossComponent =  () => {
+    if (this.state.selectedPos.startsWith("PRON")
+    ){
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={this.state.labels.grammar.poss}
+                initialValue={this.state.selectedPoss}
+                changeHandler={this.handlePossChange}
+            />
+          </div>
+      );
+    } else {
+      return (<span/>);
+    }
+  };
+
+  getPronTypeComponent =  () => {
+    if (this.state.selectedPos.startsWith("PRON")
+        || this.state.selectedPos.startsWith("ADJ")
+        || this.state.selectedPos.startsWith("ADV")
+        || this.state.selectedPos.startsWith("DET")
+    ){
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={this.state.labels.grammar.pronType}
+                initialValue={this.state.selectedPronType}
+                changeHandler={this.handlePronTypeChange}
+            />
+          </div>
+      );
+    } else {
+      return (<span/>);
+    }
+  };
+
   getVerbFormComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
     ){
@@ -709,6 +877,7 @@ class TokenTagger extends React.Component {
     event.preventDefault();
     let tokenAnalysis = this.state.tokenAnalysis;
     let theTaggedNode = this.state.theTaggedNode;
+    tokenAnalysis.annotationSchema = "UD";
     tokenAnalysis.dependsOn = theTaggedNode.dependsOn;
     tokenAnalysis.refersTo = theTaggedNode.refersTo;
     tokenAnalysis.lemma = theTaggedNode.lemma;
@@ -723,6 +892,11 @@ class TokenTagger extends React.Component {
     tokenAnalysis.tense = theTaggedNode.tense;
     tokenAnalysis.voice = theTaggedNode.voice;
     tokenAnalysis.grammar = theTaggedNode.grammar;
+    tokenAnalysis.definite = theTaggedNode.definite;
+    tokenAnalysis.degree = theTaggedNode.degree;
+    tokenAnalysis.numType = theTaggedNode.numType;
+    tokenAnalysis.poss = theTaggedNode.poss;
+    tokenAnalysis.pronType = theTaggedNode.pronType;
     this.setState({
       updatingData: true
       , tokenAnalysis: tokenAnalysis
@@ -792,6 +966,74 @@ class TokenTagger extends React.Component {
     }
   };
 
+  getTabs = () => {
+    return (
+        <div className="row">
+            <Tabs id="App-Text-Node-Editor-Tabs" animation={false}>
+              <Tab eventKey={"morphology"} title={
+                this.state.labels.thisClass.morphology}>
+                <Well>
+                  <FormGroup
+                  >
+                    <div className="container">
+                      <div>
+                        <div className="row">
+                          {this.getPartOfSpeechComponent()}
+                          {this.getPronTypeComponent()}
+                          {this.getNumTypeComponent()}
+                          {this.getDefiniteComponent()}
+                          {this.getDegreeComponent()}
+                          {this.getVerbFormComponent()}
+                          {this.getAspectComponent()}
+                          {this.getPersonComponent()}
+                          {this.getVerbNumberComponent()}
+                          {this.getTenseComponent()}
+                          {this.getVoiceComponent()}
+                          {this.getMoodComponent()}
+                          {this.getGenderComponent()}
+                          {this.getNumberComponent()}
+                          {this.getCaseComponent()}
+                        </div>
+                      </div>
+                    </div>
+                  </FormGroup>
+                </Well>
+              </Tab>
+              <Tab eventKey={"syntax"} title={
+                this.state.labels.thisClass.syntax}>
+                <Well>
+                  <FormGroup
+                  >
+                    <div className="container">
+                      <div>
+                        <div className="row">
+                          {this.getDependencyComponent()}
+                          {this.getLabelComponent()}
+                        </div>
+                      </div>
+                    </div>
+                  </FormGroup>
+                </Well>
+              </Tab>
+              <Tab eventKey={"semantics"} title={
+                this.state.labels.thisClass.semantics}>
+                <Well>
+                  <FormGroup
+                  >
+                    <div className="container">
+                      <div>
+                        <div className="row">
+                          {this.getReferentComponent()}
+                        </div>
+                      </div>
+                    </div>
+                  </FormGroup>
+                </Well>
+              </Tab>
+            </Tabs>
+        </div>
+    );
+  };
 
   render() {
         return (
@@ -806,25 +1048,12 @@ class TokenTagger extends React.Component {
                   </div>
                 </div>
               </div>
+              {this.getTabs()}
               <FormGroup
               >
                 <div className="container">
                   <div>
                     <div className="row">
-                      {this.getPartOfSpeechComponent()}
-                      {this.getVerbFormComponent()}
-                      {this.getAspectComponent()}
-                      {this.getDependencyComponent()}
-                      {this.getLabelComponent()}
-                      {this.getReferentComponent()}
-                      {this.getPersonComponent()}
-                      {this.getVerbNumberComponent()}
-                      {this.getTenseComponent()}
-                      {this.getVoiceComponent()}
-                      {this.getMoodComponent()}
-                      {this.getGenderComponent()}
-                      {this.getNumberComponent()}
-                      {this.getCaseComponent()}
                       <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
                         <div className="resourceSelectorPrompt">{this.state.labels.thisClass.lemma}</div>
                         <FormControl

@@ -4,6 +4,10 @@ import {
   Button
   , FormControl
   , FormGroup
+  , InputGroup
+  , Tab
+  , Tabs
+  , Well
 } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import { get } from 'lodash';
@@ -34,6 +38,7 @@ class TokenTagger extends React.Component {
 
     this.state = this.setTheState(props, "");
 
+    this.getAnswersComponent = this.getAnswersComponent.bind(this);
     this.getAspectComponent = this.getAspectComponent.bind(this);
     this.getCaseComponent = this.getCaseComponent.bind(this);
     this.getDependencyComponent = this.getDependencyComponent.bind(this);
@@ -44,13 +49,15 @@ class TokenTagger extends React.Component {
     this.getPartOfSpeechComponent = this.getPartOfSpeechComponent.bind(this);
     this.getPersonComponent = this.getPersonComponent.bind(this);
     this.getReferentComponent = this.getReferentComponent.bind(this);
+    this.getSubmitMessage = this.getSubmitMessage.bind(this);
+    this.getTabs = this.getTabs.bind(this);
     this.getTenseComponent = this.getTenseComponent.bind(this);
     this.getVerbNumberComponent = this.getVerbNumberComponent.bind(this);
     this.getVoiceComponent = this.getVoiceComponent.bind(this);
 
-    this.handleReferentChange = this.handleReferentChange.bind(this);
-    this.handleDependencyChange = this.handleDependencyChange.bind(this);
+    this.handleAnswersChange = this.handleAnswersChange.bind(this);
     this.handleCaseChange = this.handleCaseChange.bind(this);
+    this.handleDependencyChange = this.handleDependencyChange.bind(this);
     this.handleGenderChange = this.handleGenderChange.bind(this);
     this.handleGlossChange = this.handleGlossChange.bind(this);
     this.handleLabelChange = this.handleLabelChange.bind(this);
@@ -59,14 +66,14 @@ class TokenTagger extends React.Component {
     this.handleNumberChange = this.handleNumberChange.bind(this);
     this.handlePartOfSpeechChange = this.handlePartOfSpeechChange.bind(this);
     this.handlePersonChange = this.handlePersonChange.bind(this);
-    this.handleTenseChange = this.handleTenseChange.bind(this);
-    this.handleVoiceChange = this.handleVoiceChange.bind(this);
+    this.handleReferentChange = this.handleReferentChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleTenseChange = this.handleTenseChange.bind(this);
+    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
+    this.handleVoiceChange = this.handleVoiceChange.bind(this);
+    this.normalizeIndex = this.normalizeIndex.bind(this);
     this.submitUpdate = this.submitUpdate.bind(this);
     this.toggleSubmit = this.toggleSubmit.bind(this);
-    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
-    this.getSubmitMessage = this.getSubmitMessage.bind(this);
-    this.normalizeIndex = this.normalizeIndex.bind(this);
   };
 
   componentWillMount = () => {
@@ -82,9 +89,10 @@ class TokenTagger extends React.Component {
 
     let labels = props.session.labels;
     let labelTopics = props.session.labelTopics;
+    let labelAnswerTags = labels[labelTopics.Answertags];
     let labelGrammarTermsTitles = labels[labelTopics.grammarTermsTitles];
     let labelCase = labels[labelTopics.grammarTermsCaseValues];
-    let labelCategories = labels[labelTopics.grammarTermsCategoryValues];
+    let labelCategories = labels[labelTopics.UDtagsDepRel]; // labels[labelTopics.grammarTermsCategoryValues];
     let labelGender = labels[labelTopics.grammarTermsGenderValues];
     let labelNumber = labels[labelTopics.grammarTermsNumberValues];
     let labelPerson = labels[labelTopics.grammarTermsPersonValues];
@@ -93,7 +101,8 @@ class TokenTagger extends React.Component {
     let labelTense = labels[labelTopics.grammarTermsTenseValues];
     let labelVoice = labels[labelTopics.grammarTermsVoiceValues];
     let grammar = {
-      case: {title: labelGrammarTermsTitles.case, values: labelCase}
+      answersQuestion: {title: labelGrammarTermsTitles.answers, values: labelAnswerTags}
+      , case: {title: labelGrammarTermsTitles.case, values: labelCase}
       , categories: {title: labelGrammarTermsTitles.categories, values: labelCategories}
       , gender: {title: labelGrammarTermsTitles.gender, values: labelGender}
       , mood: {title: labelGrammarTermsTitles.mood, values: labelMood}
@@ -117,6 +126,7 @@ class TokenTagger extends React.Component {
 
       let dependsOn = get(currentState, "dependsOn", props.tokenAnalysis.dependsOn);
       let refersTo = get(currentState, "refersTo", props.tokenAnalysis.refersTo);
+      let answersQuestion = get(currentState, "answersQuestion", props.tokenAnalysis.answersQuestion);
       let selectedCase = currentState.selectedCase;
       let selectedGender = currentState.selectedGender;
       let selectedMood = currentState.selectedMood;
@@ -234,6 +244,7 @@ class TokenTagger extends React.Component {
             , selectedLabel: get(currentState, "selectedLabel", "")
             , dependsOn: dependsOn
             , refersTo: refersTo
+            , answersQuestion: answersQuestion
             , lemma: lemma
             , gloss: gloss
             , propLemma: propLemma
@@ -255,6 +266,7 @@ class TokenTagger extends React.Component {
               , messages: labels[labelTopics.messages]
               , grammar: grammar
             }
+            , session: currentState.session
             , messageIcons: MessageIcons.getMessageIcons()
             , messageIcon: MessageIcons.getMessageIcons().info
             , message: labels[labelTopics.messages].initial
@@ -269,11 +281,12 @@ class TokenTagger extends React.Component {
             , selectedPos: tokenAnalysis.pos ? tokenAnalysis.pos : ""
             , selectedTense: tokenAnalysis.tense ? tokenAnalysis.tense : ""
             , selectedVoice: tokenAnalysis.voice ? tokenAnalysis.voice : ""
-            , selectedLabel: tokenAnalysis.label ? tokenAnalysis.label : ""
+            , selectedLabel: tokenAnalysis.label ? tokenAnalysis.label : "_"
             , lemma: tokenAnalysis.lemma ? tokenAnalysis.lemma : ""
             , gloss: tokenAnalysis.gloss ? tokenAnalysis.gloss : ""
             , dependsOn: tokenAnalysis.dependsOn ? tokenAnalysis.dependsOn : ""
             , refersTo: tokenAnalysis.refersTo ? tokenAnalysis.refersTo : ""
+            , answersQuestion: tokenAnalysis.answersQuestion ? tokenAnalysis.answersQuestion : "_"
             , grammar: tokenAnalysis.grammar ? tokenAnalysis.grammar : ""
             , tokenAnalysis: tokenAnalysis
           }
@@ -282,6 +295,99 @@ class TokenTagger extends React.Component {
     }
   };
 
+
+  getTabs = () => {
+    return (
+        <div className="row App-Tagger-Tabs">
+          <Tabs id="App-Text-Node-Editor-Tabs" animation={false}>
+            <Tab eventKey={"morphology"} title={
+              this.state.labels.thisClass.morphology}>
+              <Well>
+                <FormGroup
+                >
+                  <div className="container">
+                    <div>
+                      <div className="row">
+                        {this.getPartOfSpeechComponent()}
+                        {this.getAspectComponent()}
+                        {this.getPersonComponent()}
+                        {this.getVerbNumberComponent()}
+                        {this.getTenseComponent()}
+                        {this.getVoiceComponent()}
+                        {this.getMoodComponent()}
+                        {this.getGenderComponent()}
+                        {this.getNumberComponent()}
+                        {this.getCaseComponent()}
+                      </div>
+                    </div>
+                  </div>
+                </FormGroup>
+                <div className="row">
+                  <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
+                    <a
+                        href={"http://universaldependencies.org/guidelines.html"}
+                        target="_blank"
+                    >{this.state.labels.thisClass.udGuidelines}</a>
+                  </div>
+                  <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
+                    <a
+                        href="https://github.com/PerseusDL/treebank_data/blob/master/AGDT2/guidelines/Greek_guidelines.md"
+                        target="_blank"
+                    >{this.state.labels.thisClass.help}</a>
+                  </div>
+                  <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
+                    <a
+                        href={"https://www.eva.mpg.de/lingua/resources/glossing-rules.php"}
+                        target="_blank"
+                    >{this.state.labels.thisClass.leipzig}</a>
+                  </div>
+                </div>
+              </Well>
+            </Tab>
+            <Tab eventKey={"syntax"} title={
+              this.state.labels.thisClass.syntax}>
+              <Well>
+                <FormGroup
+                >
+                  <div className="container">
+                    <div>
+                      <div className="row">
+                        {this.getDependencyComponent()}
+                        {this.getLabelComponent()}
+                      </div>
+                    </div>
+                  </div>
+                </FormGroup>
+                <div className="row">
+                  <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Help">
+                    <a
+                        href={"http://universaldependencies.org/guidelines.html"}
+                        target="_blank"
+                    >{this.state.labels.thisClass.udGuidelines}</a>
+                  </div>
+                </div>
+              </Well>
+            </Tab>
+            <Tab eventKey={"semantics"} title={
+              this.state.labels.thisClass.semantics}>
+              <Well>
+                <FormGroup
+                >
+                  <div className="container">
+                    <div>
+                      <div className="row">
+                        {this.getReferentComponent()}
+                        {this.getAnswersComponent()}
+                      </div>
+                    </div>
+                  </div>
+                </FormGroup>
+              </Well>
+            </Tab>
+          </Tabs>
+        </div>
+    );
+  };
 
   handleGlossChange =  (event) => {
     this.setState({
@@ -342,6 +448,12 @@ class TokenTagger extends React.Component {
       }, this.toggleSubmit);
   };
 
+  handleAnswersChange =  (selection) => {
+    this.setState({
+      answersQuestion: selection["value"]
+    }, this.toggleSubmit);
+  };
+
   handleCaseChange =  (selection) => {
     this.setState({
       selectedCase: selection["value"]
@@ -383,7 +495,7 @@ class TokenTagger extends React.Component {
         values[i] = (i) + ": " + this.props.tokens[i-1];
       }
     }
-    result.title = "Depends On"
+    result.title = "Depends On";
     result.values = values;
     // make adjustments for displaying dependency dropdown
     let initialValue = this.state.dependsOn;
@@ -415,7 +527,7 @@ class TokenTagger extends React.Component {
           values[i] = (i+1) + ": " + this.props.tokens[i];
         }
       }
-      result.title = "Refers to"
+      result.title = "Refers to";
       result.values = values;
       // make adjustments for displaying dropdown index shift
       let initialValue = this.state.refersTo;
@@ -438,7 +550,6 @@ class TokenTagger extends React.Component {
       return (<span/>);
     }
   };
-
 
   getLabelComponent = () => {
     return (
@@ -587,6 +698,19 @@ class TokenTagger extends React.Component {
     }
   };
 
+  getAnswersComponent =  () => {
+      return (
+          <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Tense">
+            <LabelSelector
+                languageCode={this.props.session.languageCode}
+                labels={this.state.labels.grammar.answersQuestion}
+                initialValue={this.state.answersQuestion}
+                changeHandler={this.handleAnswersChange}
+            />
+          </div>
+      );
+  };
+
   getAspectComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
         || this.state.selectedPos.startsWith("INF")
@@ -672,6 +796,7 @@ class TokenTagger extends React.Component {
     let tokenAnalysis = this.state.tokenAnalysis;
     let theTaggedNode = this.state.theTaggedNode;
     tokenAnalysis.dependsOn = theTaggedNode.dependsOn;
+    tokenAnalysis.answersQuestion = theTaggedNode.answersQuestion;
     tokenAnalysis.refersTo = theTaggedNode.refersTo;
     tokenAnalysis.lemma = theTaggedNode.lemma;
     tokenAnalysis.gloss = theTaggedNode.gloss;
@@ -685,6 +810,7 @@ class TokenTagger extends React.Component {
     tokenAnalysis.tense = theTaggedNode.tense;
     tokenAnalysis.voice = theTaggedNode.voice;
     tokenAnalysis.grammar = theTaggedNode.grammar;
+    tokenAnalysis.annotationSchema = "HYBRID";
     this.setState({
       updatingData: true
       , tokenAnalysis: tokenAnalysis
@@ -720,6 +846,7 @@ class TokenTagger extends React.Component {
         , this.state.selectedPos
         , this.state.selectedTense
         , this.state.selectedVoice
+        , this.state.answersQuestion
     );
     if (theNode.isComplete()) {
       this.setState({
@@ -754,106 +881,78 @@ class TokenTagger extends React.Component {
     }
   };
 
-
   render() {
-        return (
-            <form onSubmit={this.handleSubmit}>
-              <div className="container">
-                <div>
-                  <div className="row">
-                    <div className="col-sm-12 col-md-12 col-lg-12 resourceSelectorPrompt">{this.state.labels.thisClass.instructions}</div>
-                    <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-POS">
-                      {parseInt(this.props.index)+1} {this.props.token}
-                    </div>
+    return (
+        <form onSubmit={this.handleSubmit}>
+          <div className="container">
+            <div>
+              <div className="row">
+                <div className="col-sm-12 col-md-12 col-lg-12 resourceSelectorPrompt">{this.state.labels.thisClass.instructions}</div>
+                <div className="col-sm-12 col-md-12 col-lg-12 App-Label-Selector-POS">
+                  {parseInt(this.props.index)+1} {this.props.token}
+                </div>
+              </div>
+            </div>
+          </div>
+          <FormGroup
+          >
+            <div className="container">
+              <div>
+                <div className="row">
+                  <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
+                    <div className="resourceSelectorPrompt">{this.state.labels.thisClass.lemma}</div>
+                    <FormControl
+                        id="AppTreeNodeBuilder-Lemma"
+                        className="App App-TokenTagger-Lemma"
+                        type="text"
+                        value={this.state.lemma}
+                        placeholder="Enter lemma"
+                        onChange={this.handleLemmaChange}
+                    />
+                  </div>
+                  <div className="col-sm-6 col-md-6 col-lg-6 App-Token-Tagger-Gloss">
+                    <div className="resourceSelectorPrompt">{this.state.labels.thisClass.gloss}</div>
+                    <InputGroup>
+                    <FormControl
+                        id="AppTreeNodeBuilder-Gloss"
+                        className="App App-TokenTagger-Gloss"
+                        type="text"
+                        value={this.state.gloss}
+                        placeholder="Enter gloss"
+                        onChange={this.handleGlossChange}
+                    />
+                      <InputGroup.Addon className="App-Token-Tagger-OED"><a
+                          href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
+                          + this.state.gloss.toLowerCase()
+                          + "_1?isEntryInOtherDict=false"}
+                          target="_blank"
+                      ><span className="glyphicon glyphicon-search App-Token-Tagger-OED-glyphicon"></span></a></InputGroup.Addon>
+                    </InputGroup>
                   </div>
                 </div>
               </div>
-              <FormGroup
+              {this.getTabs()}
+          <div className="row">
+            <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Button">
+              <Button
+                  bsStyle="primary"
+                  type="submit"
+                  onClick={this.handleSubmit}
+                  disabled={this.state.submitDisabled}
               >
-                <div className="container">
-                  <div>
-                    <div className="row">
-                      {this.getPartOfSpeechComponent()}
-                      {this.getDependencyComponent()}
-                      {this.getLabelComponent()}
-                      {this.getReferentComponent()}
-                      {this.getPersonComponent()}
-                      {this.getVerbNumberComponent()}
-                      {this.getTenseComponent()}
-                      {this.getVoiceComponent()}
-                      {this.getMoodComponent()}
-                      {this.getGenderComponent()}
-                      {this.getNumberComponent()}
-                      {this.getCaseComponent()}
-                      <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
-                        <div className="resourceSelectorPrompt">{this.state.labels.thisClass.lemma}</div>
-                        <FormControl
-                            id="AppTreeNodeBuilder-Lemma"
-                            className="App App-TokenTagger-Lemma"
-                            type="text"
-                            value={this.state.lemma}
-                            placeholder="Enter lemma"
-                            onChange={this.handleLemmaChange}
-                        />
-                      </div>
-                      <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Case">
-                        <div className="resourceSelectorPrompt">{this.state.labels.thisClass.gloss}</div>
-                        <FormControl
-                            id="AppTreeNodeBuilder-Gloss"
-                            className="App App-TokenTagger-Gloss"
-                            type="text"
-                            value={this.state.gloss}
-                            placeholder="Enter gloss"
-                            onChange={this.handleGlossChange}
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </FormGroup>
-              <div className="row">
-                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Button">
-                  <Button
-                    bsStyle="primary"
-                    type="submit"
-                    onClick={this.handleSubmit}
-                    disabled={this.state.submitDisabled}
-                    >
-                    {this.state.labels.messages.submit}
-                  </Button>
-                </div>
-                <div className="col-sm-6 col-md-6 col-lg-6  App-Label-Selector-Retrieving">
-                  {this.getSubmitMessage()}
-                </div>
-                <div className="col-sm-4 col-md-4 col-lg-4  App-Label-Selector-Empty">
-                </div>
-              </div>
-              <div className="row">
-                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
-                  <a
-                      href="https://github.com/PerseusDL/treebank_data/blob/master/AGDT2/guidelines/Greek_guidelines.md"
-                      target="_blank"
-                  >{this.state.labels.thisClass.help}</a>
-                </div>
-                <div className="col-sm-2 col-md-2 col-lg-2  App-Label-Selector-Help">
-                  <a
-                      href={"https://www.eva.mpg.de/lingua/resources/glossing-rules.php"
-                      + this.state.gloss
-                      + "_1?isEntryInOtherDict=false"}
-                      target="_blank"
-                  >{this.state.labels.thisClass.leipzig}</a>
-                </div>
-                <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
-                  <a
-                      href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
-                      + this.state.gloss
-                      + "_1?isEntryInOtherDict=false"}
-                      target="_blank"
-                  >{this.state.labels.thisClass.oxford}</a>
-                </div>
-              </div>
-            </form>
-        )
+                {this.state.labels.messages.submit}
+              </Button>
+            </div>
+            <div className="col-sm-6 col-md-6 col-lg-6  App-Label-Selector-Retrieving">
+              {this.getSubmitMessage()}
+            </div>
+            <div className="col-sm-4 col-md-4 col-lg-4  App-Label-Selector-Empty">
+            </div>
+          </div>
+            </div>
+          </FormGroup>
+        </form>
+    )
   }
 }
 

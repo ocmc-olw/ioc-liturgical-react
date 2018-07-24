@@ -2,7 +2,7 @@
  * Created by mac002 on 6/6/17.
  */
 
-class TreeNode {
+class UdTreeNode {
   constructor(
       id
       , token
@@ -19,12 +19,10 @@ class TreeNode {
       , pos
       , tense
       , voice
-      , answersQuestion
   ) {
     this.id = id;
     this.dependsOn = dependsOn ? dependsOn : "";
     this.refersTo = refersTo ? refersTo: "";
-    this.answersQuestion = answersQuestion ? answersQuestion: "";
     this.token = token;
     this.lemma = lemma;
     this.gloss = gloss;
@@ -49,7 +47,7 @@ class TreeNode {
         + "."
         + this.case
         ;
-  };
+  }
 
   hasGrammarForNounLikeWords = () => {
     if (
@@ -66,7 +64,7 @@ class TreeNode {
     } else {
       return false;
     }
-  };
+  }
 
 
   // e.g. VERB.3.SG.PRS.ACT.IND
@@ -83,7 +81,7 @@ class TreeNode {
         + "."
         + this.mood
         ;
-  };
+  }
 
   hasGrammarForVerb = () => {
     if (
@@ -287,10 +285,6 @@ class TreeNode {
         return true;
         break;
       }
-      case ("PRONCOR"): {
-        return false;
-        break;
-      }
       case ("PRON.COR"): {
         return false;
         break;
@@ -299,28 +293,12 @@ class TreeNode {
         return true;
         break;
       }
-      case ("PRONDEF"): {
-        return true;
-        break;
-      }
       case ("PRON.DEM"): {
-        return true;
-        break;
-      }
-      case ("PRONDEM"): {
         return true;
         break;
       }
       case ("PRON.INDF"): {
         return false;
-        break;
-      }
-      case ("PRONINDF"): {
-        return false;
-        break;
-      }
-      case ("PRONPERS"): {
-        return true;
         break;
       }
       case ("PRON.PERS"): {
@@ -331,15 +309,7 @@ class TreeNode {
         return true;
         break;
       }
-      case ("PRONPOSS"): {
-        return true;
-        break;
-      }
       case ("PRON.Q"): {
-        return false;
-        break;
-      }
-      case ("PRONQ"): {
         return false;
         break;
       }
@@ -348,10 +318,6 @@ class TreeNode {
         break;
       }
       case ("PRON.REL"): {
-        return false;
-        break;
-      }
-      case ("PRONREL"): {
         return false;
         break;
       }
@@ -439,4 +405,4 @@ class TreeNode {
   }
 }
 
-export default TreeNode;
+export default UdTreeNode;
