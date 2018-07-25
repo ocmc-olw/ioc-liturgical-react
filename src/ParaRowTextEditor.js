@@ -548,7 +548,7 @@ export class ParaRowTextEditor extends React.Component {
 
 
   getTextArea = () => {
-    if (this.props.canChange) {
+    if (this.props.canChange && ! this.props.idLibrary.includes("_sys_")) {
       return (
           <div className="row">
           <Well>
@@ -588,7 +588,6 @@ export class ParaRowTextEditor extends React.Component {
       return (<span className="App App-no-display"></span>);
     }
   };
-
 
   handlePdfAuthorChange = (e) => {
     this.setState({pdfAuthor: e.target.value});

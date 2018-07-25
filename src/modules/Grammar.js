@@ -339,30 +339,34 @@ class Grammar extends React.Component {
   };
 
   handleRowSelect = (row) => {
-    let idParts = row["id"].split("~");
-    let conciseParts = row["concise"].split("/");
-    let nodeData =this.state.nodeData;
-    let selectedPerseus = {
-      lemma: row["lemmaGreek"]
-      , gloss: row["glosses"]
-      , pos: row["partOfSpeech"]
-      , grammar: conciseParts[2]
-    };
-    if (selectedPerseus.pos === "ARTICLE") {
-      selectedPerseus.pos = "ART";
+    try {
+      let idParts = row["id"].split("~");
+      let conciseParts = row["concise"].split("/");
+      let nodeData =this.state.nodeData;
+      let selectedPerseus = {
+        lemma: row["lemmaGreek"]
+        , gloss: row["glosses"]
+        , pos: row["partOfSpeech"]
+        , grammar: conciseParts[2]
+      };
+      if (selectedPerseus.pos === "ARTICLE") {
+        selectedPerseus.pos = "ART";
+      }
+      this.setState({
+        selectedId: row["id"]
+        , selectedIdParts: [
+          {key: "domain", label: idParts[0]},
+          {key: "topic", label: idParts[1]},
+          {key: "key", label: idParts[2]}
+        ]
+        , selectedLemma: row["lemmaGreek"]
+        , showIdPartSelector: true
+        , showModalCompareDocs: true
+        , selectedPerseus: selectedPerseus
+      });
+    } catch (err) {
+      console.log(err);
     }
-    this.setState({
-      selectedId: row["id"]
-      , selectedIdParts: [
-        {key: "domain", label: idParts[0]},
-        {key: "topic", label: idParts[1]},
-        {key: "key", label: idParts[2]}
-      ]
-      , selectedLemma: row["lemmaGreek"]
-      , showIdPartSelector: true
-      , showModalCompareDocs: true
-      , selectedPerseus: selectedPerseus
-    });
   };
 
   handleTaggerCallback = (treeNode) => {

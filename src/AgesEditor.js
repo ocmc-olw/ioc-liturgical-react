@@ -85,8 +85,34 @@ class AgesEditor extends React.Component {
       selectedLibrary = currentState.selectedLibrary;
     }
 
+
     let userInfo = {};
     if (props.session && props.session.userInfo) {
+
+      let adminDomains = [];
+      let authorDomains = [];
+
+      adminDomains = props.session.userInfo.domains["admin"].filter(
+          domain => {
+            if (domain.value.endsWith("_sys_linguistics")) {
+              return domain;
+            } else if (! (domain.value.includes("_sys_"))) {
+              return domain;
+            }
+          }
+      );
+
+      authorDomains = props.session.userInfo.domains["admin"].filter(
+          domain => {
+            if (domain.value.endsWith("_sys_linguistics")) {
+              return domain;
+            } else if (! (domain.value.includes("_sys_"))) {
+              return domain;
+            }
+          }
+      );
+      let domains = {admin: adminDomains, author: authorDomains};
+
       userInfo = new User(
           props.session.userInfo.username
           , props.session.userInfo.password
@@ -96,7 +122,7 @@ class AgesEditor extends React.Component {
           , props.session.userInfo.lastname
           , props.session.userInfo.title
           , props.session.userInfo.authenticated
-          , props.session.userInfo.domains
+          , domains
       );
     }
 

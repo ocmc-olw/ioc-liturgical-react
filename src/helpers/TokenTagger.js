@@ -188,19 +188,19 @@ class TokenTagger extends React.Component {
             selectedPos = tag;
             propPos = tag;
           }
-          if (labelCase.values[tag]) {
+          if (grammar.case && grammar.case.values && grammar.case.values[tag]) {
             selectedCase = tag;
-          } else if (grammar.gender.values[tag]) {
+          } else if (grammar.gender && grammar.gender.values && grammar.gender.values[tag]) {
             selectedGender = tag;
-          } else if (grammar.number.values[tag]) {
+          } else if (grammar.number && grammar.number.values && grammar.number.values[tag]) {
             selectedNumber = tag;
-          } else if (grammar.mood.values[tag]) {
+          } else if (grammar.mood && grammar.mood.values && grammar.mood.values[tag]) {
             selectedMood = tag;
-          } else if (grammar.person.values[tag]) {
+          } else if (grammar.person && grammar.person.values && grammar.person.values[tag]) {
             selectedPerson = tag;
-          } else if (grammar.tense.values[tag]) {
+          } else if (grammar.tense && grammar.tense.values && grammar.tense.values[tag]) {
             selectedTense = tag;
-          } else if (grammar.voice.values[tag]) {
+          } else if (grammar.voice && grammar.voice.values && grammar.voice.values[tag]) {
             selectedVoice = tag;
           }
         }
