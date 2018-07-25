@@ -175,105 +175,106 @@ class TreeNode {
   };
 
   isComplete = () => {
-    let result = false;
-    if (
-        this.lemma
-        && this.gloss
-        && this.dependsOn
-        && this.label
-        && this.pos
-
-    ) {
-      switch (this.pos) {
-        case ("ADJ"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("ADJ.COMP"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("ADJ.SUP.ABS"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("ADJ.SUP.REL"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("ART"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("ART.DEF"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("ART.INDF"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.COR"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.DEF"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.DEM"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.INDF"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.PERS"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.POSS"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.Q"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.REFL"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("PRON.REL"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("NOUN"): {
-          result = this.hasGrammarForNounLikeWords();
-          break;
-        }
-        case ("INF"): {
-          result = this.hasGrammarForInfinitive();
-          break;
-        }
-        case ("PTCP"): {
-          result = this.hasGrammarForParticiple();
-          break;
-        }
-        case ("VERB"): {
-          result = this.hasGrammarForVerb();
-          break;
-        }
-        default: {
-          result = true;
-        }
-      }
-    }
+    // TODO: rework.  Not working properly.
+    let result = true;
+    // if (
+    //     this.lemma
+    //     && this.gloss
+    //     && this.dependsOn
+    //     && this.label
+    //     && this.pos
+    //
+    // ) {
+    //   switch (this.pos) {
+    //     case ("ADJ"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("ADJ.COMP"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("ADJ.SUP.ABS"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("ADJ.SUP.REL"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("ART"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("ART.DEF"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("ART.INDF"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.COR"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.DEF"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.DEM"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.INDF"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.PERS"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.POSS"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.Q"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.REFL"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("PRON.REL"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("NOUN"): {
+    //       result = this.hasGrammarForNounLikeWords();
+    //       break;
+    //     }
+    //     case ("INF"): {
+    //       result = this.hasGrammarForInfinitive();
+    //       break;
+    //     }
+    //     case ("PTCP"): {
+    //       result = this.hasGrammarForParticiple();
+    //       break;
+    //     }
+    //     case ("VERB"): {
+    //       result = this.hasGrammarForVerb();
+    //       break;
+    //     }
+    //     default: {
+    //       result = true;
+    //     }
+    //   }
+    // }
     return result;
   };
 

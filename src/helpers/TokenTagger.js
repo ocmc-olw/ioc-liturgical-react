@@ -848,14 +848,19 @@ class TokenTagger extends React.Component {
         , this.state.selectedVoice
         , this.state.answersQuestion
     );
-    if (theNode.isComplete()) {
-      this.setState({
-        theTaggedNode: theNode
-        , submitDisabled: false
-      });
-    } else {
-      this.setState({submitDisabled: true})
-    }
+    this.setState({
+      submitDisabled: false
+      , theTaggedNode: theNode
+    });
+    // TODO: isComplete is return erroneous result;
+    // if (theNode.isComplete()) {
+    //   this.setState({
+    //     theTaggedNode: theNode
+    //     , submitDisabled: false
+    //   });
+    // } else {
+    //   this.setState({submitDisabled: true})
+    // }
   };
 
   getSubmitMessage = () => {
