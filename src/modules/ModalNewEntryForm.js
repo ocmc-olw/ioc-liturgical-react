@@ -28,7 +28,7 @@ export class ModalNewEntryForm extends React.Component {
       , showModal: true
     };
 
-    this.close = this.close.bind(this);
+    this.handleClose = this.handleClose.bind(this);
     this.setMessage = this.setMessage.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   };
@@ -61,7 +61,7 @@ export class ModalNewEntryForm extends React.Component {
     }
   };
 
-  close() {
+  handleClose = () => {
     this.setState({showModal: false});
     if (this.props.onClose) {
       this.props.onClose(this.state.formData);
@@ -75,7 +75,7 @@ export class ModalNewEntryForm extends React.Component {
               backdrop={"static"}
               dialogClassName="App-Modal-New-Entry-Form"
               show={this.state.showModal}
-              onHide={this.close}
+              onHide={this.handleClose}
               keyboard={true}
           >
             <Modal.Header closeButton>
@@ -107,7 +107,7 @@ export class ModalNewEntryForm extends React.Component {
               />
             </Modal.Body>
             <Modal.Footer>
-              <Button onClick={this.close}>{this.state.labels.button.close}</Button>
+              <Button onClick={this.handleClose}>{this.state.labels.buttons.close}</Button>
             </Modal.Footer>
           </Modal>
         </div>

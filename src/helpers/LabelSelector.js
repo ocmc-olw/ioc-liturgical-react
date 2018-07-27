@@ -12,6 +12,7 @@ class LabelSelector extends React.Component {
 
     this.state = this.setTheState(props, "");
 
+    this.compare = this.compare.bind(this);
     this.toArray = this.toArray.bind(this);
   }
 
@@ -20,14 +21,24 @@ class LabelSelector extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
     this.state = this.setTheState(nextProps);
-  }
+  };
 
   setTheState = (props) => {
     return (
         {
         }
     )
-  }
+  };
+
+  compare = (a,b) => {
+    let comparison = 0;
+    if (a.label > b.label) {
+      comparison = 1;
+    } else if (a.label < b.label) {
+      comparison = -1;
+    }
+    return comparison;
+  };
 
   toArray = () => {
     let s = this.props.labels.values;
@@ -42,8 +53,11 @@ class LabelSelector extends React.Component {
           }
       return item;
     });
+    console.log(result);
+    result = result.sort(this.compare);
+    console.log(result);
     return result;
-  }
+  };
 
   render() {
         return (

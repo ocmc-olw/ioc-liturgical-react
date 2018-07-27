@@ -309,7 +309,7 @@ class TokenTagger extends React.Component {
                     <div>
                       <div className="row">
                         {this.getPartOfSpeechComponent()}
-                        {this.getAspectComponent()}
+                        {/*{this.getAspectComponent()}*/}
                         {this.getPersonComponent()}
                         {this.getVerbNumberComponent()}
                         {this.getTenseComponent()}
