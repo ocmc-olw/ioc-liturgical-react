@@ -53,9 +53,9 @@ class LabelSelector extends React.Component {
           }
       return item;
     });
-    console.log(result);
-    result = result.sort(this.compare);
-    console.log(result);
+    if (this.props.sort) {
+      result = result.sort(this.compare);
+    }
     return result;
   };
 
@@ -78,9 +78,11 @@ LabelSelector.propTypes = {
     , labels: PropTypes.object.isRequired
     , initialValue: PropTypes.string.isRequired
     , changeHandler: PropTypes.func.isRequired
+    , sort: PropTypes.bool
 };
 
 LabelSelector.defaultProps = {
+  sort: true
 };
 
 export default LabelSelector;

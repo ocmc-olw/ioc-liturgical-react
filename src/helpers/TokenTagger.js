@@ -511,6 +511,7 @@ class TokenTagger extends React.Component {
               labels={result}
               initialValue={initialValue}
               changeHandler={this.handleDependencyChange}
+              sort={false}
           />
         </div>
     );

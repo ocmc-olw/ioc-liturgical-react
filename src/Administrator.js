@@ -243,7 +243,6 @@ class Administrator extends React.Component {
         , password: this.state.session.userInfo.password
       }
     };
-    console.log(config);
     let path = IdManager.idToPath(this.state.item.id);
     let message = "";
     if (path.startsWith("misc/utilities")) {
@@ -259,14 +258,12 @@ class Administrator extends React.Component {
         , config
     )
         .then(response => {
-          console.log(response);
           message = "updated " + path;
           if (path.startsWith("misc/utilities")) {
             message = path + ": " + response.data.userMessage;
           }
           if (formData.formData && formData.formData.password) {
             if (formData.formData.username === this.props.session.userInfo.username) {
-              console.log("changing session password");
               this.state.session.userInfo.password = formData.formData.password;
             }
           }
@@ -283,8 +280,6 @@ class Administrator extends React.Component {
           this.setState({centerDivVisible: true});
         })
         .catch( (error) => {
-          console.log("error");
-          console.log(error);
           var message = error.message;
           var messageIcon = this.state.messageIcons.error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
