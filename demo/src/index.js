@@ -1626,7 +1626,7 @@ class Demo extends React.Component {
                   :
                   <p>You must log in first in order to see and use this.</p>
               }
-              { this.state.authenticated  && this.state.formsLoaded &&
+              { this.state.authenticated  && this.state.formsLoaded && this.state.session.userInfo.domains.isSuperAdmin &&
               <ActivityLister
                   session={this.state.session}
               />

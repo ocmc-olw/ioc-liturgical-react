@@ -58,10 +58,10 @@ export class ParaRowTextEditor extends React.Component {
           , greekSourceValue: ""
           , greekSourceId: ""
           , showSearchResults: false
-          , message: labels[labelTopics.search].msg1
+          , message: get(this.state,"message", labels[labelTopics.search].msg1)
           , downloadMessage: ""
           ,
-          messageIcon: this.messageIcons.info
+          messageIcon: get(this.state,"messageIcon", this.messageIcons.info)
           ,
           data: {values: [{"id": "", "value:": ""}]}
           ,
@@ -142,6 +142,8 @@ export class ParaRowTextEditor extends React.Component {
     this.handlePropsChange = this.handlePropsChange.bind(this);
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
+    this.notifyParentValueChanged = this.notifyParentValueChanged.bind(this);
     this.setMessage = this.setMessage.bind(this);
   };
 
@@ -173,7 +175,8 @@ export class ParaRowTextEditor extends React.Component {
             , messages: labels[labelTopics.messages]
             , search: labels[labelTopics.search]
           }
-          , message: labels[labelTopics.search].msg1
+          , message: get(prevState,"message", labels[labelTopics.search].msg1)
+          , messageIcon: get(prevState,"messageIcon", this.messageIcons.info)
           , greekSourceValue: ""
           , greekSourceId: ""
           , citeData: citeData
@@ -831,14 +834,53 @@ export class ParaRowTextEditor extends React.Component {
     if (this.props.onChange) {
       this.props.onChange(event.target.value);
     }
-  }
+  };
 
-  handleSubmit = (event) => {
-    if (this.props.onSubmit) {
+  notifyParentValueChanged = () => {
+    if (this.props.onSubmit
+        && this.state.message === this.state.labels.messages.updated) {
       this.props.onSubmit(
           this.state.editorValue
       );
     }
+  };
+
+  handleValueUpdateCallback = (restCallResult) => {
+    if (restCallResult) {
+      let message = restCallResult.message;
+      if (message === "OK") {
+        message = this.state.labels.messages.updated;
+      }
+      this.setState({
+        message: message
+        , messageIcon: restCallResult.messageIcon
+      },this.notifyParentValueChanged);
+    }
+  };
+
+  handleSubmit = (event) => {
+    this.setState({
+      message: this.state.labels.messages.updating
+      , messageIcon: this.messageIcons.info
+    });
+    let parms =
+        "i=" + encodeURIComponent(
+            this.props.idLibrary
+        + "~"
+        + this.props.idTopic
+        + "~" + this.props.idKey
+        )
+        + "&t=" + encodeURIComponent("Liturgical")
+    ;
+    Server.putValue(
+        this.props.session.restServer
+        , this.props.session.userInfo.username
+        , this.props.session.userInfo.password
+        , {value: this.state.editorValue, seq: undefined}
+        , parms
+        , this.handleValueUpdateCallback
+    );
+
   };
 
   getParaRows = () => {
@@ -910,8 +952,6 @@ ParaRowTextEditor.propTypes = {
   , canReview: PropTypes.bool
   , onSubmit: PropTypes.func
   , onChange: PropTypes.func
-  , message: PropTypes.string
-  , messageIcon: PropTypes.string
 };
 export default ParaRowTextEditor;
 

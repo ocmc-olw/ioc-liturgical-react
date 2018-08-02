@@ -74,6 +74,8 @@ export class ActivityLister extends React.Component {
           , showModalEditor: false
           , idColumnSize: "80px"
           , title: "Activity for the last 7 days as of "
+          , lastSearchTime: ""
+          , searchCount: ""
         }
     )
   };

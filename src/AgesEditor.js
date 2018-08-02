@@ -259,39 +259,32 @@ class AgesEditor extends React.Component {
       this.setState({
             changedText: value
             , values: values
-            , showModalEditor: false
           }
           , this.setTable
       );
-      // now update the database via a rest call
-      let parms =
-          "i=" + encodeURIComponent(this.state.selectedId)
-          + "&t=" + encodeURIComponent("Liturgical")
-      ;
-
-      server.putValue(
-          this.props.session.restServer
-          , this.state.session.userInfo.username
-          , this.state.session.userInfo.password
-          , {value: value, seq: undefined}
-          , parms
-          , this.handleValueUpdateCallback
-      )
-    } else {
-      this.setState(
-          {
-            showModalEditor: false
-          }
-      );
+      // // now update the database via a rest call
+      // let parms =
+      //     "i=" + encodeURIComponent(this.state.selectedId)
+      //     + "&t=" + encodeURIComponent("Liturgical")
+      // ;
+      //
+      // server.putValue(
+      //     this.props.session.restServer
+      //     , this.state.session.userInfo.username
+      //     , this.state.session.userInfo.password
+      //     , {value: value, seq: undefined}
+      //     , parms
+      //     , this.handleValueUpdateCallback
+      // )
     }
-  }
+  };
 
   handleValueUpdateCallback = (restCallResult) => {
     if (restCallResult) {
       this.setState({
         message: restCallResult.message
         , messageIcon: restCallResult.messageIcon
-      }, this.setTableData);
+      });
     }
   };
 
