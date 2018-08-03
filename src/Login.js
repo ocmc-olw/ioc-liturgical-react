@@ -40,10 +40,15 @@ class Login extends React.Component {
               , formData.password
               , response.data.values // [0] = domain, email, firstname, lastname, title, and [1] = prefs
           );
+          let parms =
+              "l=" + encodeURIComponent(this.props.location)
+          ;
+
           server.getResources(
               this.props.restServer
               , formData.username
               , formData.password
+              , parms
               , this.props.dropdownsCallback
           );
 
@@ -129,9 +134,10 @@ Login.propTypes = {
   , dropdownsCallback: PropTypes.func.isRequired
   , formPrompt: PropTypes.string.isRequired
   , formMsg: PropTypes.string.isRequired
+  , location: PropTypes.string
 };
 Login.defaultProps = {
-
+  location: "countryCode|country|region|regionName|city"
 };
 
 export default Login;

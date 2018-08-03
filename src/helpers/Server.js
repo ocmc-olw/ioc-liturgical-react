@@ -187,6 +187,63 @@ const restGetPdf = (
   })
 };
 
+const restGetAddress = (callback) => {
+  return new Promise((resolve, reject) => {
+    let path = "https://api.ipify.org/?format=json";
+    let result = {
+      ip: ""
+      , status: 0
+    };
+
+    axios.get(path)
+        .then(response => {
+          result.status = response.status;
+          result.ip = response.data.ip;
+          callback(result);
+        })
+        .catch((error) => {
+          result.message = error.message;
+          result.messageIcon = messageIcons.error;
+          result.status = error.status;
+          callback(result);
+        });
+  })
+};
+
+const restGetLocation = (address, callback) => {
+  return new Promise((resolve, reject) => {
+    let path = "http://ip-api.com/json/" + address;
+
+    let result = {
+      location: ""
+      , userMessage: "OK"
+      , developerMessage: "OK"
+      , messageIcon: messageIcons.info
+      , status: 200
+    };
+
+    axios.get(path)
+        .then(response => {
+          result.status = response.status;
+          result.location = response.data.countryCode
+              + "|"
+              + response.data.country
+              + "|"
+              + response.data.region
+              + "|"
+              + response.data.regionName
+              + "|"
+              + response.data.city
+          ;
+          callback(result);
+        })
+        .catch((error) => {
+          result.status = error.status;
+          callback(result);
+        });
+  })
+};
+
 const restGetUserDocs = (
     restServer
     , serverPath
@@ -316,9 +373,9 @@ const restGet = (
 
   axios.get(path, config)
       .then(response => {
-        result.userMessage = response.data.status.userMessage
-        result.developerMessage = response.data.status.developerMessage
-        result.code = response.data.status.code
+        result.userMessage = response.data.status.userMessage;
+        result.developerMessage = response.data.status.developerMessage;
+        result.code = response.data.status.code;
         result.data = response.data;
         callback(result);
       })
@@ -545,6 +602,7 @@ export default {
       restServer,
       username
       , password
+      , parms
       , callback
   ) => {
     restGet(
@@ -555,7 +613,7 @@ export default {
         + resources
         + "/"
         + username
-        , undefined
+        , parms
         , function (result) {
           callback(result);
         }
@@ -1039,6 +1097,22 @@ export default {
         , serverPath
         , username
         , password
+    );
+  }
+  , restGetAddress: (
+      callback
+  ) => {
+    return restGetAddress(
+        callback
+    );
+  }
+  , restGetLocation: (
+      address
+      , callback
+  ) => {
+    return restGetLocation(
+      address
+      , callback
     );
   }
   , restDelete: (

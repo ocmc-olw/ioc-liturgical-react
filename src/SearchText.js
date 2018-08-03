@@ -762,7 +762,7 @@ export class Search extends React.Component {
     this.setState({
       options: {sizePerPage: sizePerPage}
     });
-  }
+  };
 
   /**
    * font-awesome icons for messages
@@ -785,7 +785,7 @@ export class Search extends React.Component {
     simple: "simple"
     , advanced: "advanced"
     , idPattern: "id"
-  }
+  };
 
   setMessage(message) {
     this.setState({
@@ -814,6 +814,7 @@ export class Search extends React.Component {
             + "&q=" + encodeURIComponent(this.state.query)
             + "&p=" + encodeURIComponent(this.state.docProp)
             + "&m=" + encodeURIComponent(this.state.matcher)
+            + "&l=" + encodeURIComponent(this.props.session.location)
         ;
     let path = this.props.session.restServer + Server.getWsServerDbApi() + 'docs' + parms;
     axios.get(path, config)

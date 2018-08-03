@@ -20,6 +20,7 @@ class Session {
       , dropdowns
       , labels
   ) {
+    let emptyLocation =  "countryCode|country|region|regionName|city";
     this.restServer = (restServer ? restServer : "");
     this.languageCode = (languageCode ? languageCode : "en");
     this.userInfo = (userInfo ? userInfo : new User());
@@ -28,6 +29,7 @@ class Session {
     this.labelsAll = (this.labelsAll ? this.labelsAll : labelsJson);
     this.labels = (labels ? labels[this.languageCode] : labelsJson[this.languageCode]);
     this.labelTopics = (this.labelTopics ? this.labelTopics : LabelTopics);
+    this.location = (this.location ? this.location : emptyLocation);
   };
 }
 export default Session;

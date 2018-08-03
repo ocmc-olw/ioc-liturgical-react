@@ -953,10 +953,10 @@ class Demo extends React.Component {
     return (
         result
     );
-  }
+  };
 
   doNothingHandler = () => {
-  }
+  };
 
 
 
