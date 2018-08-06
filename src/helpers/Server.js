@@ -134,6 +134,54 @@ const restGetPromise = (
   })
 };
 
+const restGetPublicPromise = (
+    restServer
+    , serverPath
+    , parms
+    , callback
+) => {
+  return new Promise((resolve, reject) => {
+    let responseType = "application/json";
+    if (serverPath.includes('pdf')) {
+      responseType = "blob";
+    }
+    let config = {
+      responseType: responseType
+    };
+
+    let path = restServer
+        + serverPath
+    ;
+
+    if (parms && parms.length > 0) {
+      path = path + "?" + parms
+    }
+
+    let result = {
+      data: {}
+      , userMessage: "OK"
+      , developerMessage: "OK"
+      , messageIcon: messageIcons.info
+      , status: 200
+    };
+
+    axios.get(path, config)
+        .then(response => {
+          result.userMessage = response.data.status.userMessage;
+          result.developerMessage = response.data.status.developerMessage;
+          result.code = response.data.status.code;
+          result.data = response.data;
+          callback(result);
+        })
+        .catch((error) => {
+          result.message = error.message;
+          result.messageIcon = messageIcons.error;
+          result.status = error.status;
+          callback(result);
+        });
+  })
+};
+
 const restGetPdf = (
     restServer
     , serverPath
@@ -1113,6 +1161,18 @@ export default {
     return restGetLocation(
       address
       , callback
+    );
+  }
+  , restGetPublications: (
+      restServer
+      , callback
+  ) => {
+    return restGetPublicPromise(
+        restServer
+        , dbApi
+        + "publications"
+        , undefined
+        , callback
     );
   }
   , restDelete: (

@@ -24,9 +24,9 @@ class WorkflowForm extends React.Component {
       , message: labels[labelTopics.messages].initial
       , library: props.library
       , selectedStatus: props.status
-      , selectedStatusIcon: "edit"
+      , selectedStatusIcon: this.getStatusIcon(props.status)
       , selectedVisibility: props.visibility
-      , selectedVisibilityIcon: "lock"
+      , selectedVisibilityIcon: this.getVisibilityIcon(props.visibility)
       , selectedUser: props.session.userInfo.username
       , workflow: {
         userRolesForLibrary: {
@@ -53,6 +53,8 @@ class WorkflowForm extends React.Component {
       }
     };
 
+    this.getStatusIcon = this.getStatusIcon.bind(this);
+    this.getVisibilityIcon = this.getVisibilityIcon.bind(this);
     this.handleStatusChange = this.handleStatusChange.bind(this);
     this.handleVisibilityChange = this.handleVisibilityChange.bind(this);
     this.handleUserChange = this.handleUserChange.bind(this);
@@ -86,6 +88,8 @@ class WorkflowForm extends React.Component {
           , message: labels[labelTopics.messages].initial
           , selectedStatus: nextProps.status
           , selectedVisibility: nextProps.visibility
+          , selectedStatusIcon: this.getStatusIcon(nextProps.status)
+          , selectedVisibilityIcon: this.getVisibilityIcon(nextProps.visibility)
           , statusDropdown: [
             {value: "EDITING", label: thisClassLabels.statusTypesEdit}
             , {value: "REVIEWING", label: thisClassLabels.statusTypesReview}
@@ -156,6 +160,50 @@ class WorkflowForm extends React.Component {
         , this.state.selectedStatus
         , this.state.selectedUser
     );
+  };
+
+  getStatusIcon = (status) => {
+    let statusIcon = "edit";
+    switch (status) {
+      case ("EDITING"): {
+        statusIcon = "edit";
+        break;
+      }
+      case ("REVIEWING"): {
+        statusIcon = "eye-open";
+        break;
+      }
+      case ("FINALIZED"): {
+        statusIcon = "check";
+        break;
+      }
+      default: {
+        let statusIcon = "edit";
+      }
+    }
+    return statusIcon;
+  };
+
+  getVisibilityIcon = (visibility) => {
+    let visibilityIcon = "lock";
+    switch (visibility) {
+      case ("PERSONAL"): {
+        visibilityIcon = "lock"; // user-secret
+        break;
+      }
+      case ("PRIVATE"): {
+        visibilityIcon = "share-alt";
+        break;
+      }
+      case ("PUBLIC"): {
+        visibilityIcon = "globe";
+        break;
+      }
+      default: {
+        let visibilityIcon = "lock";
+      }
+    }
+    return visibilityIcon;
   };
 
   handleStatusChange = (selection) => {
@@ -240,25 +288,6 @@ class WorkflowForm extends React.Component {
     return (
       <Well>
         <Grid>
-          <Row  className="show-grid App App-Workflow-Selector-Row">
-            <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
-              <ControlLabel><FontAwesome  className="App-Workflow-Selector-icon"
-                  name={this.state.selectedVisibilityIcon}/>Visibility:
-              </ControlLabel>
-            </Col>
-            <Col className="App-Workflow-Selector-Dropdown" xs={10} md={10}>
-              <Select
-                  name="App-Workflow-Selector-Visibility"
-                  className="App App-Workflow-Selector-Visibility"
-                  value={this.state.selectedVisibility}
-                  options={this.state.workflow.visibilityDropdown}
-                  onChange={this.handleVisibilityChange}
-                  multi={false}
-                  autosize={true}
-                  clearable
-              />
-            </Col>
-          </Row>
         <Row  className="show-grid App App-Workflow-Selector-Row">
           <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
             <ControlLabel>
@@ -281,6 +310,25 @@ class WorkflowForm extends React.Component {
             />
           </Col>
         </Row>
+          <Row  className="show-grid App App-Workflow-Selector-Row">
+            <Col className="App App-Workflow-Selector-Label" xs={2} md={2}>
+              <ControlLabel><FontAwesome  className="App-Workflow-Selector-icon"
+                                          name={this.state.selectedVisibilityIcon}/>Visibility:
+              </ControlLabel>
+            </Col>
+            <Col className="App-Workflow-Selector-Dropdown" xs={10} md={10}>
+              <Select
+                  name="App-Workflow-Selector-Visibility"
+                  className="App App-Workflow-Selector-Visibility"
+                  value={this.state.selectedVisibility}
+                  options={this.state.workflow.visibilityDropdown}
+                  onChange={this.handleVisibilityChange}
+                  multi={false}
+                  autosize={true}
+                  clearable
+              />
+            </Col>
+          </Row>
         </Grid>
       </Well>
     )

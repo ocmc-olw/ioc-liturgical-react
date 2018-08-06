@@ -30,6 +30,7 @@ class NewEntryForm extends React.Component {
     };
 
     this.handleStateChange = this.handleStateChange.bind(this);
+    this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
   }
 
@@ -61,6 +62,14 @@ class NewEntryForm extends React.Component {
     // call a function if needed
   };
 
+  onChange = ({formData}) => {
+    this.setState({
+      message: this.state.labels.search.creating
+      , messageIcon: this.state.messageIcons.info
+      , formData: formData
+    });
+  };
+
   onSubmit = ({formData}) => {
     this.setState({
       message: this.state.labels.search.creating
@@ -82,6 +91,8 @@ class NewEntryForm extends React.Component {
         , config
     )
         .then(response => {
+          console.log("New Entry Form");
+          console.log(formData);
           this.setState({
             message: this.state.labels.search.created,
             formData: formData
@@ -104,6 +115,7 @@ class NewEntryForm extends React.Component {
                 uiSchema={this.props.uiSchema}
                 formData={this.state.formData}
                 onSubmit={this.onSubmit}
+                onChange={this.onChange}
           >
             <div>
               <Button

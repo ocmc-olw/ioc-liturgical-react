@@ -1,4 +1,5 @@
 import React from 'react';
+import { get } from 'lodash';
 import PropTypes from 'prop-types';
 import Server from '../helpers/Server';
 import {
@@ -158,7 +159,10 @@ class Grammar extends React.Component {
           , selectedPerseus: selectedPerseus ? selectedPerseus : {}
           , selectedToken: selectedToken
           , selectedTokenIsWord: selectedTokenIsWord
+          , selectedTokenIndex: get(this.state, "selectedTokenIndex", 0)
           , selectedTokenIndexNumber: selectedTokenIndexNumber ? selectedTokenIndexNumber : 1
+          , tokenAnalysis: get(this.state,"tokenAnalysis", {})
+          , selectedNodeData: get(this.state,"selectedNodeData", {})
       }
     )
   };

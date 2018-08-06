@@ -6,6 +6,7 @@ import {
   , Col
   , ControlLabel
   , FormControl
+  , Glyphicon
   , Grid
   , Row
   , Tab
@@ -22,6 +23,8 @@ import Grammar from './modules/Grammar';
 import Spinner from './helpers/Spinner';
 import TextNotesLister from './TextNotesLister';
 import ResourceSelector from './modules/ReactSelector';
+import WorkflowForm from './helpers/WorkflowForm';
+
 /**
  * Display a text to edit, with source and models as rows.
  */
@@ -117,6 +120,7 @@ export class ParaRowTextEditor extends React.Component {
           , showDownloadLinks: false
           , preparingDownloads: false
           , biblatex: "http://ftp.math.purdue.edu/mirrors/ctan.org/macros/latex/contrib/biblatex/doc/biblatex.pdf"
+          , submitDisabled: true
     };
 
     this.fetchData = this.fetchData.bind(this);
@@ -125,6 +129,9 @@ export class ParaRowTextEditor extends React.Component {
     this.getTabs = this.getTabs.bind(this);
     this.getTextArea = this.getTextArea.bind(this);
     this.getTitleRow = this.getTitleRow.bind(this);
+    this.getWorkflowPanel = this.getWorkflowPanel.bind(this);
+    this.getStatusIcon = this.getStatusIcon.bind(this);
+    this.getVisibilityIcon = this.getVisibilityIcon.bind(this);
     this.handleciteStyleChange = this.handleciteStyleChange.bind(this);
     this.handleDownloadRequest = this.handleDownloadRequest.bind(this);
     this.handleDownloadCallback = this.handleDownloadCallback.bind(this);
@@ -143,8 +150,10 @@ export class ParaRowTextEditor extends React.Component {
     this.handleStateChange = this.handleStateChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleValueUpdateCallback = this.handleValueUpdateCallback.bind(this);
+    this.handleWorkflowCallback = this.handleWorkflowCallback.bind(this);
     this.notifyParentValueChanged = this.notifyParentValueChanged.bind(this);
     this.setMessage = this.setMessage.bind(this);
+    this.submitDisabled = this.submitDisabled.bind(this);
   };
 
   componentWillMount = () => {
@@ -286,13 +295,49 @@ export class ParaRowTextEditor extends React.Component {
               }
             }
           }
+          let thisText = response.data.values.find( o => o.id === (this.props.idLibrary
+            + "~"
+              + this.props.idTopic
+              + "~"
+              + this.props.idKey
+          ));
+          let workflow = {
+            assignedTo: ""
+            , status: "EDITING"
+            , visibility: "PRIVATE"
+            , statusIcon: "edit"
+            , visibilityIcon: "share-alt"
+          };
+          let originalWorkflow = {
+            assignedTo: ""
+            , status: "EDITING"
+            , visibility: "PRIVATE"
+          };
+          try {
+            if (thisText) {
+              if (thisText.status) {
+                let theStatus = thisText.status;
+                workflow.status = thisText.status;
+                originalWorkflow.status = theStatus;
+                workflow.statusIcon = this.getStatusIcon(thisText.status);
+              }
+              if (thisText.visibility) {
+                let theVisibility = thisText.visibility;
+                workflow.visibility = thisText.visibility;
+                originalWorkflow.visibility = theVisibility;
+                workflow.visibilityIcon = this.getVisibilityIcon(thisText.visibility);
+              }
+            }
+          } catch (err) {
+            console.log(err);
+          }
           let values = response.data.values.filter((row) => {
             return row.value.length > 0;
           });
           response.data.values = values;
 
           let resultCount = 0;
-          let message = this.state.labels.search.foundNone
+          let message = this.state.labels.search.foundNone;
           let found = this.state.labels.search.foundMany;
           if (values) {
             resultCount = values.length;
@@ -308,7 +353,6 @@ export class ParaRowTextEditor extends React.Component {
             }
           }
 
-
           this.setState({
                 message: message
                 , messageIcon: this.messageIcons.info
@@ -317,6 +361,9 @@ export class ParaRowTextEditor extends React.Component {
                 , greekSourceId: greekSourceId
                 , greekSourceValue: greekSourceValue
                 , pdfTitle: pdfTitle
+                , thisText: thisText
+                , workflow: workflow
+                , originalWorkflow: originalWorkflow
               }
           );
         })
@@ -464,6 +511,88 @@ export class ParaRowTextEditor extends React.Component {
     );
   };
 
+  getWorkflowPanel = () => {
+    if (this.props.canChange && ! this.props.idLibrary.includes("_sys_")) {
+      return (
+          <Tab eventKey={"workflow"} title={this.state.labels.thisClass.workflowPanel}>
+            <Well>
+              <WorkflowForm
+                  session={this.props.session}
+                  callback={this.handleWorkflowCallback}
+                  library={this.props.idLibrary}
+                  status={this.state.workflow.status}
+                  visibility={this.state.workflow.visibility}
+              />
+            </Well>
+          </Tab>
+      );
+    }
+  };
+
+  getStatusIcon = (status) => {
+    let statusIcon = "edit";
+    switch (status) {
+      case ("EDITING"): {
+        statusIcon = "edit";
+        break;
+      }
+      case ("REVIEWING"): {
+        statusIcon = "eye-open";
+        break;
+      }
+      case ("FINALIZED"): {
+        statusIcon = "check";
+        break;
+      }
+      default: {
+        let statusIcon = "edit";
+      }
+    }
+    return statusIcon;
+  };
+
+  getVisibilityIcon = (visibility) => {
+    let visibilityIcon = "lock";
+    switch (visibility) {
+      case ("PERSONAL"): {
+        visibilityIcon = "lock"; // user-secret
+        break;
+      }
+      case ("PRIVATE"): {
+        visibilityIcon = "share-alt";
+        break;
+      }
+      case ("PUBLIC"): {
+        visibilityIcon = "globe";
+        break;
+      }
+      default: {
+        let visibilityIcon = "lock";
+      }
+    }
+    return visibilityIcon;
+  };
+
+  handleWorkflowCallback = ( visibility, status, assignedTo ) => {
+    if (visibility && status) {
+      let statusIcon = this.getStatusIcon(status);
+      let visibilityIcon = this.getVisibilityIcon(visibility);
+      let workflow = this.state.workflow;
+      workflow.status = status;
+      workflow.visibility = visibility;
+      workflow.assignedToUser = assignedTo;
+      workflow.visibilityIcon = visibilityIcon;
+      workflow.statusIcon = statusIcon;
+      this.setState(
+          {
+            workflow: workflow
+          }, this.submitDisabled()
+      );
+    }
+  };
+
+
+
   getPdf = () => {
     this.setState({
       preparingDownloads: true
@@ -574,7 +703,7 @@ export class ParaRowTextEditor extends React.Component {
                 <Button
                     type="submit"
                     bsStyle="primary"
-                    disabled={this.state.editorValue === this.props.value}
+                    disabled={this.state.submitDisabled}
                     onClick={this.handleSubmit}
                 >
                   {this.state.labels.thisClass.submit}
@@ -583,12 +712,27 @@ export class ParaRowTextEditor extends React.Component {
                     name={this.state.messageIcon}/>
                   {this.state.message}
                 </span>
+                <span className="App App-Text-Editor-Workflow-Glyph">
+              <Glyphicon glyph={this.state.workflow.statusIcon}/>
+              <FontAwesome name={this.state.workflow.visibilityIcon}/>
+            </span>
               </div>
               </Well>
             </div>
       )
     } else {
       return (<span className="App App-no-display"></span>);
+    }
+  };
+
+  submitDisabled = () => {
+    if (this.state.editorValue === this.props.value
+      && this.state.originalWorkflow.status === this.state.workflow.status
+        && this.state.originalWorkflow.visibility === this.state.workflow.visibility
+    ) {
+      this.setState({submitDisabled: true});
+    } else {
+      this.setState({submitDisabled: false});
     }
   };
 
@@ -820,6 +964,7 @@ export class ParaRowTextEditor extends React.Component {
                   {this.getDownloadLinks()}
                 </Well>
               </Tab>
+              {this.getWorkflowPanel()}
             </Tabs>
           </Well>
           </div>
@@ -830,7 +975,7 @@ export class ParaRowTextEditor extends React.Component {
   handleEditorChange = (event) => {
     this.setState({
       editorValue: event.target.value
-    });
+    }, this.submitDisabled);
     if (this.props.onChange) {
       this.props.onChange(event.target.value);
     }
@@ -876,7 +1021,12 @@ export class ParaRowTextEditor extends React.Component {
         this.props.session.restServer
         , this.props.session.userInfo.username
         , this.props.session.userInfo.password
-        , {value: this.state.editorValue, seq: undefined}
+        , {
+          value: this.state.editorValue
+          , seq: undefined
+          , status: this.state.workflow.status
+          , visibility: this.state.workflow.visibility
+        }
         , parms
         , this.handleValueUpdateCallback
     );

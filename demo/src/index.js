@@ -52,6 +52,7 @@ import {
   , NewEntry
   , ParaColLabelEditor
   , ParaRowTextEditor
+  , PublicationsLister
   , SearchNotes
   , SearchOntology
   , SearchTemplates
@@ -1632,6 +1633,12 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* ActivityLister */}
+            <Panel header="Publications Lister" eventKey="publicationsLister">
+              <p>Lists publications, e.g. PDF files for services.</p>
+              <PublicationsLister
+                  session={this.state.session}
+              />
+            </Panel> {/* PublicationsLister */}
             <Panel header="Template Editor" eventKey="templateNodeEditor">
               { (this.state.authenticated) ?
                   <p></p>

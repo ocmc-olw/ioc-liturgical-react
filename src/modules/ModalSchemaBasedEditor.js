@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
-import {ControlLabel, Button, ButtonGroup, Modal, Well} from 'react-bootstrap';
+import { Col, ControlLabel, Button, Modal, Row, Well} from 'react-bootstrap';
 import Form from "react-jsonschema-form";
 import FontAwesome from 'react-fontawesome';
 import MessageIcons from '../helpers/MessageIcons';
@@ -191,18 +191,20 @@ export class ModalSchemaBasedEditor extends React.Component {
     if (this.state.formData && this.state.formData.id) {
       return (
           <div>
-            <ButtonGroup role="toolbar">
-            <Button onClick={this.close}>{this.state.labels.buttons.close}</Button>
-            </ButtonGroup>
-            <ButtonGroup>
-            <DeleteButton
-                session={this.props.session}
-                idLibrary={this.state.formData.library}
-                idTopic={this.state.formData.topic}
-                idKey={this.state.formData.key}
-                onDelete={this.onDelete}
-            />
-            </ButtonGroup>
+            <Row className="App show-grid App-PDF-Title-Row">
+              <Col xs={3} md={3}>
+                <Button className={"App-Modal-Close-Button"} onClick={this.close}>{this.state.labels.buttons.close}</Button>
+              </Col>
+              <Col xs={9} md={9}>
+                <DeleteButton
+                    session={this.props.session}
+                    idLibrary={this.state.formData.library}
+                    idTopic={this.state.formData.topic}
+                    idKey={this.state.formData.key}
+                    onDelete={this.onDelete}
+                />
+              </Col>
+            </Row>
           </div>
       )
     }  else {

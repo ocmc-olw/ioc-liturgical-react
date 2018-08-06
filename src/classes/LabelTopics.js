@@ -98,4 +98,7 @@ LabelTopics.UDtagsPos = 'UDtagsPos';
 LabelTopics.UDtagsTense = 'UDtagsTense';
 LabelTopics.UDtagsVerbForm = 'UDtagsVerbForm';
 LabelTopics.UDtagsVoice = 'UDtagsVoice';
+LabelTopics.publications = 'publications';
+LabelTopics.languages = 'languages';
+LabelTopics.countries = 'countries';
 export default LabelTopics;

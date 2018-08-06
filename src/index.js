@@ -27,6 +27,7 @@ import NotesLister from './NotesLister';
 import ParaColLabelEditor from './ParaColLabelEditor';
 import ParaColTextEditor from './ParaColTextEditor';
 import ParaRowTextEditor from './ParaRowTextEditor';
+import PublicationsLister from './PublicationsLister';
 import SearchGeneric from './SearchGeneric';
 import SearchNotes from './SearchNotes';
 import SearchTextNotes from './SearchTextNotes';
@@ -80,6 +81,7 @@ export {
   , ParaColLabelEditor
   , ParaColTextEditor
   , ParaRowTextEditor
+  , PublicationsLister
   , SearchGeneric
   , SearchNotes
   , SearchTextNotes

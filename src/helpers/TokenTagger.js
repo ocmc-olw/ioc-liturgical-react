@@ -258,7 +258,7 @@ class TokenTagger extends React.Component {
             , dataUpdated: currentState.dataUpdated
           }
       )
-    } else {
+    } else if (index && tokenAnalysis) {
       return (
           {
             labels: {
@@ -291,7 +291,22 @@ class TokenTagger extends React.Component {
             , tokenAnalysis: tokenAnalysis
           }
       )
-
+    } else {
+      return (
+          {
+            labels: {
+              thisClass: labels[labelTopics.TokenTagger]
+              , messages: labels[labelTopics.messages]
+              , grammar: grammar
+            }
+            , session: currentState.session
+            , messageIcons: MessageIcons.getMessageIcons()
+            , messageIcon: MessageIcons.getMessageIcons().info
+            , message: labels[labelTopics.messages].initial
+            , updatingData: false
+            , dataUpdated: false
+          }
+      )
     }
   };
 

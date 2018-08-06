@@ -42,12 +42,12 @@ class LinkSearchOptions extends React.Component {
   }
 
   PropTypesWillMount = () => {
-  }
+  };
 
   PropTypesWillReceiveProps = (nextProps) => {
     this.setState({
     });
-  }
+  };
 
   handleDocTypeChange = (selection) => {
     let type = selection["value"];

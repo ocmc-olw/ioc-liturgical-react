@@ -676,7 +676,7 @@ export class Search extends React.Component {
     this.refs.theTable.setState({
       selectedRowKeys: []
     });
-  }
+  };
 
   handleCloseDocComparison = (id, value, seq) => {
     if (id && id.length > 0) {
@@ -779,7 +779,7 @@ export class Search extends React.Component {
     , simpleSearch: "minus"
     , advancedSearch: "bars"
     , idPatternSearch: "key"
-  }
+  };
 
   searchFormTypes = {
     simple: "simple"

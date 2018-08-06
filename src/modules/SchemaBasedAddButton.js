@@ -167,6 +167,8 @@ class SchemaBasedAddButton extends React.Component {
 
   handleModalSubmit = ({formData}) => {
     if (this.props.onSubmit) {
+      console.log("SchemaBasedAddButton.handleModalSubmit");
+      console.log(formData);
       this.props.onSubmit(formData);
     }
   };
@@ -203,7 +205,7 @@ class SchemaBasedAddButton extends React.Component {
                 toText={this.state.idKeyValue}
                 fromTitle={this.state.labels.references.theText}
                 toTitle={this.state.labels.references.refersTo}
-                onSubmit={this.handleSubmit}
+                onSubmit={this.handleModalSubmit}
                 onClose={this.handleModalClose}
             />
         )
