@@ -150,7 +150,6 @@ class AgesEditor extends React.Component {
           , serviceDow: serviceDow
           , serviceType: serviceType
           , selectedService: selectedService
-          , selectedLibrary: ""
           , agesIndexFetched: agesIndexFetched
           , agesIndexValues: agesIndexValues
           , fetchingData: false

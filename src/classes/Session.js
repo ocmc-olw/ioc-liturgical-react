@@ -20,7 +20,8 @@ class Session {
       , dropdowns
       , labels
   ) {
-    let emptyLocation =  "countryCode|country|region|regionName|city";
+//    let emptyLocation =  "countryCode|country|region|regionName|city";
+    let emptyLocation =  "unknown|unknown|unknown|unknown|unknown";
     this.restServer = (restServer ? restServer : "");
     this.languageCode = (languageCode ? languageCode : "en");
     this.userInfo = (userInfo ? userInfo : new User());

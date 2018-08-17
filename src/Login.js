@@ -137,7 +137,7 @@ Login.propTypes = {
   , location: PropTypes.string
 };
 Login.defaultProps = {
-  location: "countryCode|country|region|regionName|city"
+  location: "unknown|unknown|unknown|unknown|unknown"
 };
 
 export default Login;
