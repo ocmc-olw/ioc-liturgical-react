@@ -261,20 +261,6 @@ class AgesEditor extends React.Component {
           }
           , this.setTable
       );
-      // // now update the database via a rest call
-      // let parms =
-      //     "i=" + encodeURIComponent(this.state.selectedId)
-      //     + "&t=" + encodeURIComponent("Liturgical")
-      // ;
-      //
-      // server.putValue(
-      //     this.props.session.restServer
-      //     , this.state.session.userInfo.username
-      //     , this.state.session.userInfo.password
-      //     , {value: value, seq: undefined}
-      //     , parms
-      //     , this.handleValueUpdateCallback
-      // )
     }
   };
 
