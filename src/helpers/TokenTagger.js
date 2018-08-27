@@ -595,6 +595,7 @@ class TokenTagger extends React.Component {
 
   getPersonComponent =  () => {
     if (this.state.selectedPos.startsWith("VERB")
+        || (this.state.selectedPos.startsWith("PRON"))
     ){
       return (
           <div className="col-sm-12 col-md-12 col-lg-12  App-Label-Selector-Person">
