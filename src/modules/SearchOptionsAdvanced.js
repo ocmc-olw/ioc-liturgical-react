@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import ResourceSelector from './ReactSelector'
 import { Button } from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
+import { get } from 'lodash';
 
 /**
  * To future maintainers of this code.
@@ -39,7 +40,7 @@ class SearchOptions extends React.Component {
         , initialValue: "*"
       }
       ,
-      dropDownChapters: {
+      dropdownChapters: {
         show: false
         , msg: ""
         , initialValue: "*"
@@ -87,12 +88,12 @@ class SearchOptions extends React.Component {
               , topics: this.props.dropDowns.Liturgical.topics
             }
             , loaded: true
-        } , function () {
-          this.handleDocTypeChange({
-            label: this.props.docType
-            , value: this.props.docTyped
-          })
-        }
+          } , function () {
+            this.handleDocTypeChange({
+              label: this.props.docType
+              , value: this.props.docTyped
+            })
+          }
         }
     )
   };
@@ -111,6 +112,7 @@ class SearchOptions extends React.Component {
     let property = "nnp";
     let matcher = "c";
     let value = "";
+    let dropdownChapters = {};
 
     if (this.state) {
       if (this.state.docType) {
@@ -134,19 +136,30 @@ class SearchOptions extends React.Component {
       if (this.state.value) {
         value = this.state.value;
       }
+      if (this.state.dropdownChapters) {
+        dropdownChapters = this.state.dropdownChapters;
+      } else {
+        dropdownChapters =  {
+          show: false
+          , msg: ""
+          , initialValue: "*"
+          , source: []
+        }
+
+      }
     }
 
 
     this.setState(
         {
-        docType: docType
-        , domain: domain
-        , selectedBook: selectedBook
-        , selectedChapter: selectedChapter
-        , property: property
-        , matcher: matcher
-        , value: value
-        ,  dropdowns: {
+          docType: docType
+          , domain: domain
+          , selectedBook: selectedBook
+          , selectedChapter: selectedChapter
+          , property: property
+          , matcher: matcher
+          , value: value
+          ,  dropdowns: {
             Biblical: {
               all: {
                 books: nextProps.dropDowns.Biblical.all.books
@@ -164,8 +177,9 @@ class SearchOptions extends React.Component {
             }
             , loaded: true
           }
+          , dropdownChapters: dropdownChapters
         }, this.cascadeDocTypeChange(docType)
-  )
+    )
   };
 
   isDisabled = () => {
@@ -287,10 +301,10 @@ class SearchOptions extends React.Component {
   handleChapterChange = (selection) => {
     this.setState({
       selectedChapter: selection["value"]
-      , dropDownChapters: {
-        show: this.state.dropDownChapters.show
-        , msg: this.state.dropDownChapters.msg
-        , source: this.state.dropDownChapters.source
+      , dropdownChapters: {
+        show: this.state.dropdownChapters.show
+        , msg: this.state.dropdownChapters.msg
+        , source: this.state.dropdownChapters.source
         , initialValue: selection["value"]
       }
     });
@@ -345,7 +359,7 @@ class SearchOptions extends React.Component {
         , source: bookSource
         , initialValue: "*"
       },
-      dropDownChapters: {
+      dropdownChapters: {
         show: false
         , msg: ""
         , source: []
@@ -378,7 +392,7 @@ class SearchOptions extends React.Component {
       });
     } catch (error) {
       this.setState({
-          msg: error.message
+        msg: error.message
       });
     }
   }; // end of method
@@ -464,7 +478,7 @@ class SearchOptions extends React.Component {
     } // end of if
     this.setState({
       selectedChapter: "*"
-      , dropDownChapters: {
+      , dropdownChapters: {
         show: show
         , msg: msg
         , source: source
@@ -483,7 +497,7 @@ class SearchOptions extends React.Component {
       source = this.state.dropdowns.Biblical.all.chapters;
     } // end of if
     this.setState({
-      dropDownChapters: {
+      dropdownChapters: {
         show: show
         , msg: msg
         , source: source
@@ -610,13 +624,13 @@ class SearchOptions extends React.Component {
               </div>
             </div>
             }
-            {this.state.dropDownChapters.show &&
+            {this.state.dropdownChapters.show &&
             <div className="row">
               <div className="col-sm-12 col-md-12 col-lg-12">
                 <ResourceSelector
                     title={this.getDropdownChapterTitle()}
                     initialValue={this.state.selectedChapter}
-                    resources={this.state.dropDownChapters.source}
+                    resources={this.state.dropdownChapters.source}
                     changeHandler={this.handleChapterChange}
                     multiSelect={false}
                 />
@@ -637,13 +651,13 @@ class SearchOptions extends React.Component {
               <form className={"App-Search-Options-Text-Form"} onSubmit={this.handleSubmit}>
                 <div className="control-label">{this.props.labels.propertyTextIs}</div>
                 <div className={"App-Search-Options-Text-Div"}>
-                <input
-                    type="text"
-                    onChange={this.handleValueChange}
-                    className="App-search-text-input"
-                    name="search"
-                    value={this.state.value}
-                />
+                  <input
+                      type="text"
+                      onChange={this.handleValueChange}
+                      className="App-search-text-input"
+                      name="search"
+                      value={this.state.value}
+                  />
                 </div>
                 <ResourceSelector
                     title={this.props.labels.matcherIs}

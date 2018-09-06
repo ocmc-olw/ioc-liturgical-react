@@ -37,8 +37,8 @@ import {
   , CountryLister
   , BibleRefSelector
   , DependencyDiagram
-  , DomainBuilder
-  , DomainLister
+//  , DomainBuilder
+//  , DomainLister // getting a deconstructor error on title
   , DomainSelector
   , DownloadUserRecords
   , Dropdowns
@@ -1140,18 +1140,18 @@ class Demo extends React.Component {
             <Panel header="Countries" eventKey="countries">
               <CountryLister session={this.state.session}/>
             </Panel> {/* countries */}
-            <Panel header="Domains" eventKey="domains">
-              {(this.state.authenticated && this.state.session.userInfo) ?
-                  <div>
-                    <DomainLister session={this.state.session}/>
-                  </div>
-                  :
-                  <p>You won't see the example, below, unless you first login using the Login example above.</p>
-              }
-            </Panel> {/* domains */}
-            <Panel header="Domain Builder" eventKey="domainbuilder">
-              <DomainBuilder session={this.state.session}/>
-            </Panel> {/* countries */}
+            {/*<Panel header="Domains" eventKey="domains">*/}
+              {/*{(this.state.authenticated && this.state.session.userInfo  && this.state.formsLoaded) ?*/}
+                  {/*<div>*/}
+                    {/*<DomainLister session={this.state.session}/>*/}
+                  {/*</div>*/}
+                  {/*:*/}
+                  {/*<p>You won't see the example, below, unless you first login using the Login example above.</p>*/}
+              {/*}*/}
+            {/*</Panel> /!* domains *!/*/}
+            {/*<Panel header="Domain Builder" eventKey="domainbuilder">*/}
+              {/*<DomainBuilder session={this.state.session}/>*/}
+            {/*</Panel> /!* countries *!/*/}
             <Panel header="Languages" eventKey="langs">
               <LanguageLister session={this.state.session}/>
             </Panel> {/* langs */}
