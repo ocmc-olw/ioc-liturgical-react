@@ -369,72 +369,26 @@ class TreeNode {
    * them also in LTKDbTokenAnalysis.
    */
   getGrammar = () => {
-    switch (this.pos) {
-      case ("ADJ"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("ADJ.COMP"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("ADJ.SUP.ABS"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("ADJ.SUP.REL"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("ART"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("ART.DEF"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("ART.INDF"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("INF"): {
-        return this.getGrammarForInfinitive();
-      }
-      case ("PTCP"): {
-        return this.getGrammarForParticiple();
-      }
-      case ("PRON"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.COR"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.DEF"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.DEM"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.INDF"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.PERS"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.POSS"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.Q"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.REFL"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("PRON.REL"): {
-        return  this.getGrammarForNounLikeWords();
-      }
-      case ("NOUN"): {
-        return this.getGrammarForNounLikeWords();
-      }
-      case ("VERB"): {
-        return this.getGrammarForVerb();
-      }
-      default: {
-        return this.pos;
+    if (this.pos.startsWith("ADJ")
+        || this.pos.startsWith("ART")
+        || this.pos.startsWith("PRON")
+        || this.pos.startsWith("NOUN")
+    ) {
+      return this.getGrammarForInfinitive();
+    } else {
+      switch (this.pos) {
+        case ("INF"): {
+          return this.getGrammarForInfinitive();
+        }
+        case ("PTCP"): {
+          return this.getGrammarForParticiple();
+        }
+        case ("VERB"): {
+          return this.getGrammarForVerb();
+        }
+        default: {
+          return this.pos;
+        }
       }
     }
   }
