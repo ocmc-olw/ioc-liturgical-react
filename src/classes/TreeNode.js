@@ -37,7 +37,11 @@ class TreeNode {
     this.pos = pos;
     this.tense = tense;
     this.voice = voice;
-    this.grammar = this.getGrammar()
+    if (this.pos) {
+      this.grammar = this.getGrammar();
+    } else {
+      this.grammar = "TBD";
+    }
   };
 
   getGrammarForNounLikeWords = () => {
@@ -374,7 +378,7 @@ class TreeNode {
         || this.pos.startsWith("PRON")
         || this.pos.startsWith("NOUN")
     ) {
-      return this.getGrammarForInfinitive();
+      return this.getGrammarForNounLikeWords();
     } else {
       switch (this.pos) {
         case ("INF"): {

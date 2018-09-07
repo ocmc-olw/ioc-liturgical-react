@@ -4172,6 +4172,10 @@ https-browserify@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/https-browserify/-/https-browserify-1.0.0.tgz#ec06c10e0a34c0f2faf199f7fd7fc78fffd03c73"
 
+i18n-iso-countries@^3.7.0:
+  version "3.7.6"
+  resolved "https://registry.yarnpkg.com/i18n-iso-countries/-/i18n-iso-countries-3.7.6.tgz#af1b09311591d1a6db943276f834e05429e50ff1"
+
 iconv-lite@0.4.19, iconv-lite@^0.4.17, iconv-lite@~0.4.13:
   version "0.4.19"
   resolved "https://registry.yarnpkg.com/iconv-lite/-/iconv-lite-0.4.19.tgz#f7468f60135f5e5dad3399c0a81be9a1603a082b"
@@ -7204,6 +7208,10 @@ react-sortable-tree@^1.5.2:
     react-dnd-html5-backend "2.5.4"
     react-dnd-scrollzone "^4.0.0"
     react-virtualized "^9.16.1"
+
+react-splitter-layout@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/react-splitter-layout/-/react-splitter-layout-3.0.1.tgz#c2e00e69b35d240ab7a44f395d41803c5f4b70ef"
 
 react-transform-catch-errors@1.0.2:
   version "1.0.2"

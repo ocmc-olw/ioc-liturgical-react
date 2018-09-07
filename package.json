@@ -1,6 +1,6 @@
 {
   "name": "ioc-liturgical-react",
-  "version": "0.8.2",
+  "version": "0.8.3",
   "description": "ioc-liturgical-react React component",
   "main": "lib/index.js",
   "module": "es/index.js",
@@ -71,6 +71,7 @@
     "react-richtext": "^1.1.0",
     "react-select": "^1.0.0-rc.5",
     "react-sortable-tree": "^1.5.2",
+    "react-splitter-layout": "^3.0.1",
     "react-virtualized-select": "^3.1.0",
     "react-youtube" : "^7.6.0",
     "svgo": "^0.7.2",

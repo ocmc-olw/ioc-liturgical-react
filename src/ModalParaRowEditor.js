@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import {Alert, Button, Glyphicon, Modal, Panel} from 'react-bootstrap';
+import {Alert, Button, Glyphicon, Modal} from 'react-bootstrap';
 
 import IdManager from './helpers/IdManager';
 import MessageIcons from './helpers/MessageIcons';
