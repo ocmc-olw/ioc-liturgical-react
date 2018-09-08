@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import axios from 'axios';
 import SearchOptionsAdvanced from "./modules/SearchOptionsAdvanced";
 import SearchOptionsSimple from "./modules/SearchOptionsSimple";
+import SearchTextResultsTable from "./modules/SearchTextResultsTable";
 import ModalCompareDocs from './modules/ModalCompareDocs';
 import FontAwesome from 'react-fontawesome';
 import {
@@ -180,7 +181,8 @@ export class Search extends React.Component {
         , password: this.props.session.userInfo.password
       }
     };
-    let path = this.props.session.restServer + Server.getDbServerDropdownsSearchTextApi();
+    let path = this.props.session.restServer
+        + Server.getDbServerDropdownsSearchTextApi();
     axios.get(path, config)
         .then(response => {
           let liturgicalDomains = response.data.values[1]["domains"];
@@ -648,20 +650,20 @@ export class Search extends React.Component {
   onRowDoubleClick = (row) => {
   };
 
-  handleRowSelect = (row, isSelected, e) => {
-    let idParts = row["id"].split("~");
+  handleRowSelect = (id, value, schemaId) => {
+    let idParts = id.split("~");
     this.setState({
-      selectedId: row["id"]
+      selectedId: id
       , selectedIdParts: [
         {key: "domain", label: idParts[0]},
         {key: "topic", label: idParts[1]},
         {key: "key", label: idParts[2]}
       ]
-      , selectedValue: row["value"]
-      , selectedSchema: row["_valueSchemaId"]
+      , selectedValue: value
+      , selectedSchema: schemaId
       , showIdPartSelector: true
       , showModalWindow: true
-    }, this.showRowComparison(row["id"], row["value"]));
+    }, this.showRowComparison(id, value));
   };
 
   showRowComparison = (id, value) => {
@@ -893,9 +895,15 @@ export class Search extends React.Component {
           <Spinner message={this.state.labels.messages.retrieving}/>      );
     } else {
       if (this.state.showSearchResults) {
+        console.log("hit if showSearchResults");
         return (
             <div>
               {this.state.labels.search.msg5} {this.state.labels.search.msg6}
+              <SearchTextResultsTable
+                  session={this.props.session}
+                  data={this.state.data.values}
+                  callBack={this.handleRowSelect}
+              />
             </div>
         );
       }
@@ -920,59 +928,7 @@ export class Search extends React.Component {
           </div>
           {this.showResultsStatus()}
           {this.state.showModalWindow && this.getDocComparison()}
-          {this.state.showSearchResults &&
-          <div className="App-search-results">
-            <div className="row">
-              <BootstrapTable
-                  ref="theTable"
-                  data={this.state.data.values}
-                  exportCSV={ false }
-                  trClassName={"App-data-tr"}
-                  search
-                  searchPlaceholder={this.state.labels.resultsTable.filterPrompt}
-                  striped
-                  hover
-                  pagination
-                  options={ this.state.options }
-                  selectRow={ this.state.selectRow }
-              >
-                <TableHeaderColumn
-                    isKey
-                    dataField='id'
-                    dataSort={ true }
-                    export={ true }
-                    hidden
-                >ID</TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='library'
-                    dataSort={ true }
-                    export={ false }
-                    tdClassname="tdDomain"
-                    width={this.state.idColumnSize}>{this.state.labels.resultsTable.headerDomain}</TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='topic'
-                    dataSort={ true }
-                    export={ false }
-                    width={this.state.idColumnSize}>{this.state.labels.resultsTable.headerTopic}</TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='key'
-                    export={ false }
-                    dataSort={ true }
-                    width={this.state.idColumnSize}>{this.state.labels.resultsTable.headerKey}</TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='value'
-                    dataSort={ true }
-                >{this.state.labels.resultsTable.headerValue}</TableHeaderColumn>
-                <TableHeaderColumn
-                    dataField='_valueSchemaId'
-                    export={ false }
-                    hidden
-                >
-                </TableHeaderColumn>
-              </BootstrapTable>
-            </div>
-          </div>
-          }
+
         </div>
     )
   }

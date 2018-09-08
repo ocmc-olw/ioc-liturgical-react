@@ -128,8 +128,6 @@ export class NotesLister extends React.Component {
           ,
           resultCount: get(this.state, "resultCount", 0)
           ,
-          data: {values: [{"id": "", "value:": ""}]}
-          ,
           options: {
             sizePerPage: 30
             , sizePerPageList: [5, 15, 30]
@@ -156,7 +154,7 @@ export class NotesLister extends React.Component {
           , showModalEditor: false
           , idColumnSize: "80px"
           , enableAdd: get(this.state, "enableAdd", false)
-          , data: get(this.state,"data",[])
+          , data: get(this.state,"data",{values: [{"id": "", "value:": ""}]})
           , topicId: topicId
         }
     )

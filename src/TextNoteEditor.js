@@ -554,13 +554,12 @@ class TextNoteEditor extends React.Component {
           }
         })
         .catch( (error) => {
-          var message = Labels.getHttpMessage(
-              this.props.session.languageCode
-              , error.response.status
-              , error.response.statusText
-          );
-          var messageIcon = this.state.messageIcons.error;
-          this.setState( { data: message, message: message, messageIcon: messageIcon });
+          let message = error.message;
+          let messageIcon = this.state.messageIcons.error;
+          this.setState( {
+            message: message
+            , messageIcon: messageIcon
+          }, console.log(error));
         });
   };
 
@@ -1184,18 +1183,20 @@ class TextNoteEditor extends React.Component {
   };
 
   noteFormatter = (cell, row, formatExtraData) => {
-    return (
-        <FormattedTextNote
-            session={formatExtraData}
-            note={row["valueFormatted"]}
-            type={row["type"]}
-            title={row["title"]}
-            scopeLiturgical={row["liturgicalScope"]}
-            lemmaLiturgical={row["liturgicalLemma"]}
-            scopeBiblical={row["biblicalScope"]}
-            lemmaBiblical={row["biblicalLemma"]}
-        />
-    );
+    if (row && row["type"]) {
+      return (
+          <FormattedTextNote
+              session={formatExtraData}
+              note={row["valueFormatted"]}
+              type={row["type"]}
+              title={row["title"]}
+              scopeLiturgical={row["liturgicalScope"]}
+              lemmaLiturgical={row["liturgicalLemma"]}
+              scopeBiblical={row["biblicalScope"]}
+              lemmaBiblical={row["biblicalLemma"]}
+          />
+      );
+    }
   };
 
   getNoteOrderingRow = () => {
