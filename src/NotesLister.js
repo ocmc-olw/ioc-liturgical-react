@@ -4,7 +4,7 @@ import axios from 'axios';
 import { get } from 'lodash';
 import ModalSchemaBasedEditor from './modules/ModalSchemaBasedEditor';
 import FontAwesome from 'react-fontawesome';
-import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel, PanelGroup} from 'react-bootstrap';
+import {Button, ButtonGroup, ControlLabel, FormControl, FormGroup, Panel } from 'react-bootstrap';
 import {BootstrapTable, TableHeaderColumn} from 'react-bootstrap-table';
 import UiSchemas from './classes/UiSchemas';
 import Server from './helpers/Server';

@@ -20,6 +20,12 @@ import { SuperTypes } from './classes/ENUMS';
 import User from './classes/User';
 import Server from './helpers/Server';
 
+/**
+ * If a schema is not included in the dropdown
+ * it probably means in ioc-liturgical-schemas
+ * NEW_FORM_CLASSES_DB_API that the include
+ * in Schema editor = false
+ */
 export class SearchGeneric extends React.Component {
 
   constructor(props) {
@@ -71,7 +77,7 @@ export class SearchGeneric extends React.Component {
         , password: this.state.session.userInfo.password
       }
     };
-    let path = this.props.session.restServer + Server.getDbServerDropdownsSearchGenericApi();
+    let path = this.props.session.restServer + Server.getDbServerDropdownsSearchBibliographyApi();
     axios.get(path, config)
         .then(response => {
           // literals used as keys to get data from the response

@@ -62,6 +62,7 @@ import {
   , SearchTreebanks
   , SearchRelationships
   , Session
+  , SplitTemplateEditor
   , Spinner
   , TemplateEditor
   , TextNoteEditor
@@ -1654,6 +1655,21 @@ class Demo extends React.Component {
               />
               }
             </Panel> {/* Template Editor */}
+            <Panel header="Split-Pane Template Editor" eventKey="templateNodeEditor">
+              { (this.state.authenticated) ?
+                  <p></p>
+                  :
+                  <p>You must log in first in order to see and use this.</p>
+              }
+              { this.state.authenticated  && this.state.formsLoaded &&
+            <SplitTemplateEditor
+                session={this.state.session}
+                treeData={this.state.templateTreeData}
+                idLibrary={"en_us_dedes"}
+                idTopic={"se.m01.d01.li"}
+            />
+            }
+          </Panel> {/* SplitTemplate Editor */}
             <Panel header="User Records Download" eventKey="userRecords">
               { (this.state.authenticated) ?
                   <DownloadUserRecords

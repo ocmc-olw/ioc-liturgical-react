@@ -38,6 +38,7 @@ import SearchTreebanks from './SearchTreebanks';
 import SearchRelationships from './SearchRelationships';
 import Server from './helpers/Server';
 import Session from './classes/Session';
+import SplitTemplateEditor from './SplitTemplateEditor'
 import Spinner from './helpers/Spinner';
 import StaticLabels from './StaticLabels';
 import TemplateEditor from './TemplateEditor';
@@ -92,6 +93,7 @@ export {
   , SearchRelationships
   , Server
   , Session
+  , SplitTemplateEditor
   , Spinner
   , StaticLabels
   , TemplateEditor

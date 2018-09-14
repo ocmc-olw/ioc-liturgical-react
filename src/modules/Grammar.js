@@ -490,7 +490,7 @@ class Grammar extends React.Component {
           <GrammarSitePanel
               languageCode={this.props.session.languageCode}
               lemmas={this.state.selectedLemmas}
-              url={"http://logeion.uchicago.edu/index.html#"}
+              url={"http://logeion.uchicago.edu/"}
               title={this.state.labels.thisClass.panelLogeionSite}
           />
       )

@@ -226,6 +226,7 @@ class AgesEditor extends React.Component {
       let topicKeys = data.topicKeys;
       let topicKeyCount = topicKeys.length;
       let topElement = data.topElement.children[0].children[0]; // tbody
+console.log(topElement);
       this.setState({
         dataFetched: true
         , fetchingData: false

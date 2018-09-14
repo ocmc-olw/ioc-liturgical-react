@@ -1,14 +1,15 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
-import {Col, ControlLabel, Button, Grid, Modal, Row, Well} from 'react-bootstrap';
+import {Col, ControlLabel, Button, Grid, Row, Well} from 'react-bootstrap';
 import FontAwesome from 'react-fontawesome';
 import SortableTree, {
   addNodeUnderParent
-  , changeNodeAtPath
   , removeNodeAtPath
   , toggleExpandedForAll
 } from "react-sortable-tree";
+import SplitterLayout from 'react-splitter-layout';
+
 import Spinner from './helpers/Spinner';
 import MessageIcons from './helpers/MessageIcons';
 import ModalTemplateNodeEditor from './modules/ModalTemplateNodeEditor';
@@ -23,8 +24,7 @@ import Server from './helpers/Server';
  * line appear and it won't let you drop where you would like to,
  * the issue is the value for maxDepth.  It needs to be increased.
  */
-// TODO: rename class
-class TemplateEditor extends React.Component {
+class SplitTemplateEditor extends React.Component {
   constructor(props) {
     super(props);
 
@@ -207,13 +207,9 @@ class TemplateEditor extends React.Component {
     if (this.props.formData) {
       return (
           <Grid>
-            <Row className="show-grid App-Template-Editor-Submit-Row">
+            <Row className="show-grid">
               <Col sm={12} md={12}>
-                <Button
-                    className={"App-Template-Editor-Submit-Button"}
-                    bsStyle="primary"
-                    onClick={this.onSubmit}
-                >
+                <Button bsStyle="primary" onClick={this.onSubmit}>
                   {this.state.labels.buttons.submit}
                 </Button>
                 {this.getMessages()}
@@ -240,7 +236,6 @@ class TemplateEditor extends React.Component {
       )
     }
   };
-
 
   render() {
 
@@ -297,144 +292,154 @@ class TemplateEditor extends React.Component {
     return (
         <div className="App App-Template-Editor">
           {this.state.showModalEditor && this.getNodeEditor()}
-          <Well>
-          <h3>{this.state.labels.thisClass.panelTitle}</h3>
-          <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.expandAll}>{this.state.labels.thisClass.expandAll}</Button>
-          <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.collapseAll}>{this.state.labels.thisClass.collapseAll}</Button>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-          <form
-              style={{ display: 'inline-block' }}
-              onSubmit={event => {
-                event.preventDefault();
-              }}
+          <SplitterLayout
+              percentage={true}
+              primaryIndex={1}
           >
-            <label htmlFor="find-box">
-              Search:&nbsp;
-              <input
-                  id="find-box"
-                  type="text"
-                  value={searchString}
-                  onChange={event =>
-                      this.setState({ searchString: event.target.value })
-                  }
-              />
-            </label>
+            <div className={"app-pane-left"}>
+              <Well>
+                <h3>{this.state.labels.thisClass.panelTitle}</h3>
+                <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.expandAll}>{this.state.labels.thisClass.expandAll}</Button>
+                <Button className="App-Template-Editor-Button" bsStyle="primary" bsSize="small" onClick={this.collapseAll}>{this.state.labels.thisClass.collapseAll}</Button>
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <form
+                    style={{ display: 'inline-block' }}
+                    onSubmit={event => {
+                      event.preventDefault();
+                    }}
+                >
+                  <label htmlFor="find-box">
+                    Search:&nbsp;
+                    <input
+                        id="find-box-split"
+                        type="text"
+                        value={searchString}
+                        onChange={event =>
+                            this.setState({ searchString: event.target.value })
+                        }
+                    />
+                  </label>
 
-            <Button
-                className="App-Template-Editor-Button"
-                bsStyle="primary"
-                bsSize="xsmall"
-                type="button"
-                disabled={!searchFoundCount}
-                onClick={selectPrevMatch}
-            >
-              &lt;
-            </Button>
+                  <Button
+                      className="App-Template-Editor-Button"
+                      bsStyle="primary"
+                      bsSize="xsmall"
+                      type="button"
+                      disabled={!searchFoundCount}
+                      onClick={selectPrevMatch}
+                  >
+                    &lt;
+                  </Button>
 
-            <Button
-                className="App-Template-Editor-Button-Search"
-                bsStyle="primary"
-                bsSize="xsmall"
-                type="submit"
-                disabled={!searchFoundCount}
-                onClick={selectNextMatch}
-            >
-              &gt;
-            </Button>
+                  <Button
+                      className="App-Template-Editor-Button-Search"
+                      bsStyle="primary"
+                      bsSize="xsmall"
+                      type="submit"
+                      disabled={!searchFoundCount}
+                      onClick={selectNextMatch}
+                  >
+                    &gt;
+                  </Button>
 
-            <span>
+                  <span>
               &nbsp;
-              {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
-              &nbsp;/&nbsp;
-              {searchFoundCount || 0}
+                    {searchFoundCount > 0 ? searchFocusIndex + 1 : 0}
+                    &nbsp;/&nbsp;
+                    {searchFoundCount || 0}
             </span>
-          </form>
-          <div style={treeContainerStyle}>
-            <SortableTree
-                treeData={this.state.treeData}
-                onChange={this.updateTreeData}
-                onMoveNode={({ node, treeIndex, path }) =>
-                    console.debug(
-                        'node:',
-                        node,
-                        'treeIndex:',
-                        treeIndex,
-                        'path:',
-                        path
-                    )
-                }
-                maxDepth={maxDepth}
-                searchQuery={searchString}
-                searchFocusOffset={searchFocusIndex}
-                canDrag={({ node }) => !node.noDragging}
-                canDrop={({ nextParent }) =>
-                    !nextParent || !nextParent.noChildren
-                }
-                searchFinishCallback={matches =>
-                    this.setState({
-                      searchFoundCount: matches.length,
-                      searchFocusIndex:
-                          matches.length > 0 ? searchFocusIndex % matches.length : 0,
-                    })
-                }
-                isVirtualized={isVirtualized}
-                generateNodeProps={({ node, path, treeIndex }) => ({
-                  buttons: [
-                    <Button
-                        className="App-Template-Editor-Node-Button"
-                        bsStyle="default"
-                        bsSize="xsmall"
-                        onClick={() => handleEditRequest(node, path, treeIndex)}
-                    >
-                      <FontAwesome name={this.state.messageIcons.pencil}/>
-                    </Button>,
-                    <Button
-                        className="App-Template-Editor-Node-Button"
-                        bsStyle="default"
-                        bsSize="xsmall"
-                        onClick={() =>
-                            this.setState(state => ({
-                              treeData: addNodeUnderParent({
-                                treeData: state.treeData,
-                                parentKey: path[path.length - 1],
-                                expandParent: true,
-                                getNodeKey,
-                                newNode: {
-                                  title: "tbd", subtitle: "", config: ""},
-                              }).treeData,
-                            }))
-                        }
-                    >
-                    <FontAwesome name={this.state.messageIcons.plus}/>
-                    </Button>,
-                    <Button
-                        className="App-Template-Editor-Node-Button"
-                        bsStyle="default"
-                        bsSize="xsmall"
-                        onClick={() =>
-                            this.setState(state => ({
-                              treeData: removeNodeAtPath({
-                                treeData: state.treeData,
-                                path,
-                                getNodeKey,
-                              }),
-                            }))
-                        }
-                    >
-                      <FontAwesome name={this.state.messageIcons.trash}/>
-                    </Button>,
-                  ],
-                })}
-            />
-            {this.getSubmitButton()}
-          </div>
-          </Well>
+                </form>
+                <div style={treeContainerStyle}>
+                  <SortableTree
+                      treeData={this.state.treeData}
+                      onChange={this.updateTreeData}
+                      onMoveNode={({ node, treeIndex, path }) =>
+                          console.debug(
+                              'node:',
+                              node,
+                              'treeIndex:',
+                              treeIndex,
+                              'path:',
+                              path
+                          )
+                      }
+                      maxDepth={maxDepth}
+                      searchQuery={searchString}
+                      searchFocusOffset={searchFocusIndex}
+                      canDrag={({ node }) => !node.noDragging}
+                      canDrop={({ nextParent }) =>
+                          !nextParent || !nextParent.noChildren
+                      }
+                      searchFinishCallback={matches =>
+                          this.setState({
+                            searchFoundCount: matches.length,
+                            searchFocusIndex:
+                                matches.length > 0 ? searchFocusIndex % matches.length : 0,
+                          })
+                      }
+                      isVirtualized={isVirtualized}
+                      generateNodeProps={({ node, path, treeIndex }) => ({
+                        buttons: [
+                          <Button
+                              className="App-Template-Editor-Node-Button"
+                              bsStyle="default"
+                              bsSize="xsmall"
+                              onClick={() => handleEditRequest(node, path, treeIndex)}
+                          >
+                            <FontAwesome name={this.state.messageIcons.pencil}/>
+                          </Button>,
+                          <Button
+                              className="App-Template-Editor-Node-Button"
+                              bsStyle="default"
+                              bsSize="xsmall"
+                              onClick={() =>
+                                  this.setState(state => ({
+                                    treeData: addNodeUnderParent({
+                                      treeData: state.treeData,
+                                      parentKey: path[path.length - 1],
+                                      expandParent: true,
+                                      getNodeKey,
+                                      newNode: {
+                                        title: "tbd", subtitle: "", config: ""},
+                                    }).treeData,
+                                  }))
+                              }
+                          >
+                            <FontAwesome name={this.state.messageIcons.plus}/>
+                          </Button>,
+                          <Button
+                              className="App-Template-Editor-Node-Button"
+                              bsStyle="default"
+                              bsSize="xsmall"
+                              onClick={() =>
+                                  this.setState(state => ({
+                                    treeData: removeNodeAtPath({
+                                      treeData: state.treeData,
+                                      path,
+                                      getNodeKey,
+                                    }),
+                                  }))
+                              }
+                          >
+                            <FontAwesome name={this.state.messageIcons.trash}/>
+                          </Button>,
+                        ],
+                      })}
+                  />
+                </div>
+              </Well>
+            </div>
+            <div className={"app-pane-right"}>Right
+            </div>
+          </SplitterLayout>
+
+          {this.getSubmitButton()}
         </div>
     )
   }
 }
 
-TemplateEditor.propTypes = {
+SplitTemplateEditor.propTypes = {
   session: PropTypes.object.isRequired
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired
@@ -445,7 +450,7 @@ TemplateEditor.propTypes = {
   , schema: PropTypes.object
 };
 
-TemplateEditor.defaultProps = {
+SplitTemplateEditor.defaultProps = {
   languageCode: "en"
   , treeData: [
     {
@@ -464,11 +469,11 @@ TemplateEditor.defaultProps = {
   , maxDepth: 20
 };
 
-TemplateEditor.propTypes = {
+SplitTemplateEditor.propTypes = {
   session: PropTypes.object.isRequired
   , treeData: PropTypes.array.isRequired
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired
 };
 
-export default TemplateEditor;
+export default SplitTemplateEditor;

@@ -4,12 +4,13 @@ import axios from 'axios';
 import {ControlLabel, Button, Modal, Well} from 'react-bootstrap';
 import MessageIcons from '../helpers/MessageIcons';
 import Spinner from '../helpers/Spinner';
-import TemplateEditor from '../TemplateEditor';
+import SplitTemplateEditor from '../SplitTemplateEditor';
+import ReactModal from 'react-modal-resizable-draggable'
 
 /**
  * Display modal content.
  */
-export class ModalTemplateEditor extends React.Component {
+export class ModalSplitTemplateEditor extends React.Component {
 
   constructor(props) {
     super(props);
@@ -143,7 +144,7 @@ export class ModalTemplateEditor extends React.Component {
   getEditor = () => {
     if (this.state.dataFetched) {
       return (
-          <TemplateEditor
+          <SplitTemplateEditor
               session={this.props.session}
               treeData={this.state.treeData}
               idLibrary={this.props.idLibrary}
@@ -165,7 +166,7 @@ export class ModalTemplateEditor extends React.Component {
         <div>
           <Modal
               backdrop={"static"}
-              dialogClassName="App-Modal-Para-Row-Editor"
+              dialogClassName="App-Modal-Template-Editor"
               show={this.state.showModal}
               onHide={this.close}
               keyboard={true}
@@ -200,7 +201,7 @@ export class ModalTemplateEditor extends React.Component {
     );
   }
 }
-ModalTemplateEditor.propTypes = {
+ModalSplitTemplateEditor.propTypes = {
   session: PropTypes.object.isRequired
   , restPath: PropTypes.string.isRequired
   , onClose: PropTypes.func.isRequired
@@ -211,9 +212,9 @@ ModalTemplateEditor.propTypes = {
   , idKey: PropTypes.string.isRequired
   , canUpdate: PropTypes.bool
 };
-ModalTemplateEditor.defaultProps = {
+ModalSplitTemplateEditor.defaultProps = {
   canUpdate: true
 };
 
-export default ModalTemplateEditor;
+export default ModalSplitTemplateEditor;
 

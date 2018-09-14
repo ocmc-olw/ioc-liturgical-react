@@ -21,7 +21,13 @@ import Server from './../helpers/Server';
 import UiSchemas from "../classes/UiSchemas";
 
 /**
- * This component provides a schema based form editor
+ * This component provides a schema based form editor.
+ * To add a new schema to the list, do so via
+ * ioc-liturgical-schemas.NEW_FORM_CLASSES_DB_API
+ * and set the entry's includeForSchemaEditor parameter to true.
+ * Also, in this class, check the getTopic function.  Make sure
+ * it handles the new schema.  Otherwise it's topic will be overwritten.
+ *
  */
 class GenericNewEntryForm extends React.Component {
   constructor(props) {
@@ -291,51 +297,58 @@ class GenericNewEntryForm extends React.Component {
         value = value.substring(0, value.length-4);
       }
       return value;
+    } else if (label.startsWith("Dictionary")) {
+      return "words";
     } else {
       return undefined;
     }
   };
 
   handleSchemaTypeChange = (selection) => {
-    let type = selection["value"];
-    let label = selection["label"];
-    let topic = this.getTopic(selection);
-    let schemaId = type;
-    let schema = {};
-    let uiSchema = {};
-    let formData = {};
-    let newEntryLibrary = this.state.newEntryLibrary;
+    if (selection) {
+      let type = selection["value"];
+      let label = selection["label"];
+      let topic = this.getTopic(selection);
+      let schemaId = type;
+      let schema = {};
+      let uiSchema = {};
+      let formData = {};
+      let newEntryLibrary = this.state.newEntryLibrary;
 
-    let libraries = this.props.session.userInfo.domains.author;
+      let libraries = this.props.session.userInfo.domains.author;
 
-    if (label.includes("Ontology")) {
-      libraries = libraries.filter(function(el) {
-        return el.value === "en_sys_ontology";
+      if (label.includes("Ontology")) {
+        libraries = libraries.filter(function(el) {
+          return el.value === "en_sys_ontology";
+        });
+        newEntryLibrary = "en_sys_ontology";
+      } else if (label.startsWith("Dictionary")) {
+        newEntryLibrary = "en_sys_translib";
+      }
+
+      let message = "";
+      if (libraries.length === 0) {
+        message = this.state.messages.notAuthorized;
+      }
+      if (type && this.props.session
+          && this.state.session.uiSchemas
+      ) {
+        schema = this.state.session.uiSchemas.getSchema(schemaId);
+        uiSchema = this.state.session.uiSchemas.getUiSchema(schemaId);
+        formData = this.state.session.uiSchemas.getForm(schemaId);
+      }
+      this.setState({
+        newEntryType: type
+        , schema: schema
+        , uiSchema: uiSchema
+        , formData: formData
+        , newEntryTopic: topic
+        , showForm: false
+        , libraries: libraries
+        , newEntryLibrary: newEntryLibrary
+        , message: message
       });
-      newEntryLibrary = "en_sys_ontology";
     }
-    let message = "";
-    if (libraries.length === 0) {
-      message = this.state.messages.notAuthorized;
-    }
-    if (type && this.props.session
-        && this.state.session.uiSchemas
-    ) {
-      schema = this.state.session.uiSchemas.getSchema(schemaId);
-      uiSchema = this.state.session.uiSchemas.getUiSchema(schemaId);
-      formData = this.state.session.uiSchemas.getForm(schemaId);
-    }
-    this.setState({
-      newEntryType: type
-      , schema: schema
-      , uiSchema: uiSchema
-      , formData: formData
-      , newEntryTopic: topic
-      , showForm: false
-      , libraries: libraries
-      , newEntryLibrary: newEntryLibrary
-      , message: message
-    });
   };
 
   handleNewEntryKeyChange = (event) => {

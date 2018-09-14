@@ -1102,3 +1102,76 @@ a.rdw-mention-link {
 .App-Pub-Date-Selector {
     margin-bottom: 5px;
 }
+
+
+.App-Template-Editor-Submit-Row {
+    padding-top: 20px;
+}
+.App-Modal-Template-Editor .modal-content {
+    height: 90% !important;
+    min-height: 90% !important;
+    width: 90% !important;
+    max-width: 90% !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+}
+
+.App-Modal-Template-Editor .modal-body {
+    height: auto !important;
+    min-height: 100vw !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+}
+
+.splitter-layout {
+    margin: 0 !important;
+    padding: 0 !important;
+    border-radius: 0 !important;
+    overflow: visible !important;
+    max-width: 76vw !important;
+}
+
+.splitter-layout .layout-pane {
+    position: relative;
+    flex: 0 0 auto;
+    overflow: auto;
+    max-width: 90vw;
+}
+
+.splitter-layout .layout-pane.layout-pane-primary {
+    flex: 1 1 auto;
+}
+
+.splitter-layout > .layout-splitter {
+    flex: 0 0 auto;
+    width: 4px;
+    height: 100%;
+    cursor: col-resize;
+    background-color: #ccc;
+}
+
+.splitter-layout .layout-splitter:hover {
+    background-color: #bbb;
+}
+
+.splitter-layout.layout-changing {
+    cursor: col-resize;
+}
+
+.splitter-layout.layout-changing > .layout-splitter {
+    background-color: #aaa;
+}
+
+.splitter-layout.splitter-layout-vertical {
+    flex-direction: column;
+}
+
+.splitter-layout.splitter-layout-vertical.layout-changing {
+    cursor: row-resize;
+}
+
+.splitter-layout.splitter-layout-vertical > .layout-splitter {
+    width: 100%;
+    height: 4px;
+    cursor: row-resize;
+}
