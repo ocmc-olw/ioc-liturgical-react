@@ -675,9 +675,11 @@ export class Search extends React.Component {
   };
 
   deselectAllRows = () => {
-    this.refs.theTable.setState({
-      selectedRowKeys: []
-    });
+    if (this.refs && this.refs.theTable) {
+      this.refs.theTable.setState({
+        selectedRowKeys: []
+      });
+    }
   };
 
   handleCloseDocComparison = (id, value, seq) => {
