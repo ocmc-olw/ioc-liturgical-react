@@ -20,6 +20,14 @@ class NewComponentTemplate extends React.Component {
     this.handleStateChange = this.handleStateChange.bind(this);
   };
 
+  componentDidMount = () => {
+    this.setState({_isMounted: true});
+  };
+
+  componentWillUnmount = () => {
+    this.setState({_isMounted: false});
+  };
+
   componentWillMount = () => {
   };
 
@@ -52,6 +60,7 @@ class NewComponentTemplate extends React.Component {
       , messageIcons: MessageIcons.getMessageIcons()
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: labels[labelTopics.messages].initial
+      , _isMounted: get(currentState,"_isMounted",true)
     }, function () { return this.handleStateChange("place holder")})
   };
 
