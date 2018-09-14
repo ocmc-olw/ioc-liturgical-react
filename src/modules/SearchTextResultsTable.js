@@ -32,7 +32,6 @@ class SearchTextResultsTable extends React.Component {
 
     let labels = props.session.labels;
     let labelTopics = props.session.labelTopics;
-    console.log(labels[labelTopics.resultsTable]);
 
     return ({
       labels: labels[labelTopics.resultsTable]

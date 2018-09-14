@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { get } from 'lodash';
 import MessageIcons from './helpers/MessageIcons';
+import Server from "../helpers/Server";
 
 /**
  * This is a template for a new component.
@@ -9,6 +10,18 @@ import MessageIcons from './helpers/MessageIcons';
  * 1. Rename all occurrences of NewComponentTemplate to your component name.
  * 2. Replace Labels.getViewReferenceLabels with a call to get your component's labels
  * 3. Add content to the render function, etc...
+ *
+ * Note that if you use the Server with a callback,
+ * you need to:
+ *     let requestTokens = this.state._requestTokens;
+ *     const requestToken = Server.getCancelToken();
+ *     requestTokens.set(requestToken,"live");
+ *     ...and pass requestToken via the Server call.
+ *     If the component unmounts before the promise
+ *     is fulfilled, the componentWillUnmount will
+ *     remove it from the Server's list, thus avoiding
+ *     the setState on unmounted component error.
+
  */
 // TODO: rename class
 class NewComponentTemplate extends React.Component {
@@ -25,8 +38,16 @@ class NewComponentTemplate extends React.Component {
   };
 
   componentWillUnmount = () => {
+    for (let token of this.state._requestTokens.keys()) {
+      try {
+        Server.cancelRequest(token);
+      } catch (error) {
+        console.log(error);
+      }
+    }
     this.setState({_isMounted: false});
   };
+
 
   componentWillMount = () => {
   };
@@ -61,6 +82,7 @@ class NewComponentTemplate extends React.Component {
       , messageIcon: MessageIcons.getMessageIcons().info
       , message: labels[labelTopics.messages].initial
       , _isMounted: get(currentState,"_isMounted",true)
+      , _requestTokens: get(currentState,"_requestTokens", new Map())
     }, function () { return this.handleStateChange("place holder")})
   };
 

@@ -58,6 +58,7 @@ const dbDropdownsSearchTreebanks = "dropdowns/treebanks";
 const dbDropdownsGrLibTopics = "dropdowns/grlibtopics";
 const ldp = "ldp";
 const messageIcons = MessageIcons.getMessageIcons();
+let requests = new Map();
 
 const getTimestamp = () => {
   let date = new Date();
@@ -79,6 +80,26 @@ const getTimestamp = () => {
       + second
   ;
   return idKey;
+};
+
+/**
+ * The request tokens are used to cancel
+ * promises when a component unmounts before
+ * the promise has been fulfilled.  The
+ * component needs to do this in the componentWillUnmount
+ * method.  See Grammar as an example.
+ * @returns {string}
+ */
+const getRequestToken = () => {
+  let token = getTimestamp();
+  requests.set(token, "live");
+  return token;
+};
+
+const cancelRequest = (token) => {
+  if (requests.has(token)) {
+    requests.delete(token);
+  }
 };
 
 const restGetPromise = (
@@ -393,9 +414,10 @@ const restGet = (
     , serverPath
     , parms
     , callback
+    , requestToken
 ) => {
 
-  let config = {
+  let config = config = {
     auth: {
       username: username
       , password: password
@@ -421,17 +443,24 @@ const restGet = (
 
   axios.get(path, config)
       .then(response => {
-        result.userMessage = response.data.status.userMessage;
-        result.developerMessage = response.data.status.developerMessage;
-        result.code = response.data.status.code;
-        result.data = response.data;
-        callback(result);
+        if (requests.has(requestToken)) {
+          requests.delete(requestToken);
+          result.userMessage = response.data.status.userMessage;
+          result.developerMessage = response.data.status.developerMessage;
+          result.code = response.data.status.code;
+          result.data = response.data;
+          callback(result);
+        }
       })
       .catch((error) => {
-        result.message = error.message;
-        result.messageIcon = messageIcons.error;
-        result.status = error.status;
-        callback(result);
+        if (requests.includes(requestToken)) {
+          console.log('axios.catch');
+          requests.delete(requestToken);
+          result.message = error.message;
+          result.messageIcon = messageIcons.error;
+          result.status = error.status;
+          callback(result);
+        }
       });
 };
 
@@ -557,6 +586,8 @@ const restPut = (
 
 export default {
   tableLexiconOald
+  , getRequestToken: () => { return getRequestToken()}
+  , cancelRequest: (token) => { cancelRequest(token)}
   , getWsServerAdminApi: () => { return adminApi;}
   , getWsServerLdpApi: () => { return ldpApi;}
   , getWsServerDbApi: () => { return dbApi;}
@@ -673,6 +704,7 @@ export default {
       , password
       , id
       , callback
+      , cancelToken
   ) => {
     restGet(
         restServer
@@ -686,6 +718,28 @@ export default {
         , function (result) {
           callback(result);
         }
+        , cancelToken
+    );
+  }
+  , getTextComparison: (
+      restServer,
+      username
+      , password
+      , parms
+      , callback
+      , cancelToken
+  ) => {
+    restGet(
+        restServer
+        , username
+        , password
+        , dbApi
+        + docs
+        , parms
+        , function (result) {
+          callback(result);
+        }
+        , cancelToken
     );
   }
   , getTextDownloads: (

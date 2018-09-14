@@ -57,6 +57,24 @@ class Grammar extends React.Component {
     this.treeViewSelectCallback = this.treeViewSelectCallback.bind(this);
   }
 
+  componentDidMount = () => {
+    this.setState({_isMounted: true});
+  };
+
+  componentWillUnmount = () => {
+    if (this.state && this.state._requestTokens) {
+      for (let token of this.state._requestTokens.keys()) {
+        try {
+          Server.cancelRequest(token);
+        } catch (error) {
+          // ignore
+        }
+      }
+    }
+    this.setState({_isMounted: false});
+  };
+
+
   componentWillMount = () => {
     this.fetchData();
   };
@@ -163,17 +181,23 @@ class Grammar extends React.Component {
           , selectedTokenIndexNumber: selectedTokenIndexNumber ? selectedTokenIndexNumber : 1
           , tokenAnalysis: get(this.state,"tokenAnalysis", {})
           , selectedNodeData: get(this.state,"selectedNodeData", {})
+          , _isMounted: get(this.state,"_isMounted", false)
+          , _requestTokens: get(this.state,"_requestTokens", new Map())
       }
     )
   };
 
   fetchData = () => {
+    let requestTokens = this.state._requestTokens;
+    const requestToken = Server.getRequestToken();
+    requestTokens.set(requestToken,"live");
     Server.getTextAnalysis(
         this.props.session.restServer
         , this.props.session.userInfo.username
         , this.props.session.userInfo.password
         , this.state.id
         , this.setTextInfo
+        , requestToken
     );
     if (this.state.full) {
       Server.getTable(
@@ -184,6 +208,7 @@ class Grammar extends React.Component {
           , this.handleEnglishLexiconCallback
       );
     }
+    this.setState({_requestTokens: requestTokens});
   };
 
   handleEnglishLexiconCallback = (restCallResult) => {
@@ -205,7 +230,7 @@ class Grammar extends React.Component {
   }
 
   setTextInfo = (restCallResult) => {
-    if (restCallResult && restCallResult.data && restCallResult.data.values) {
+    if (this.state._isMounted && restCallResult && restCallResult.data && restCallResult.data.values) {
       if (restCallResult.data.values.length > 3) {
         let nodeData = restCallResult.data.values[3].nodes;
         let treeViewUtils = new TreeViewUtils(nodeData);

@@ -897,7 +897,6 @@ export class Search extends React.Component {
           <Spinner message={this.state.labels.messages.retrieving}/>      );
     } else {
       if (this.state.showSearchResults) {
-        console.log("hit if showSearchResults");
         return (
             <div>
               {this.state.labels.search.msg5} {this.state.labels.search.msg6}
