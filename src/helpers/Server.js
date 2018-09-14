@@ -443,8 +443,16 @@ const restGet = (
 
   axios.get(path, config)
       .then(response => {
-        if (requests.has(requestToken)) {
-          requests.delete(requestToken);
+        if (requestToken) {
+          if (requests.has(requestToken)) {
+            requests.delete(requestToken);
+            result.userMessage = response.data.status.userMessage;
+            result.developerMessage = response.data.status.developerMessage;
+            result.code = response.data.status.code;
+            result.data = response.data;
+            callback(result);
+          }
+        } else {
           result.userMessage = response.data.status.userMessage;
           result.developerMessage = response.data.status.developerMessage;
           result.code = response.data.status.code;
@@ -453,8 +461,15 @@ const restGet = (
         }
       })
       .catch((error) => {
-        if (requests.includes(requestToken)) {
-          console.log('axios.catch');
+        if (requestToken) {
+          if (requests.includes(requestToken)) {
+            requests.delete(requestToken);
+            result.message = error.message;
+            result.messageIcon = messageIcons.error;
+            result.status = error.status;
+            callback(result);
+          }
+        } else {
           requests.delete(requestToken);
           result.message = error.message;
           result.messageIcon = messageIcons.error;
