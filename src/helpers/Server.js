@@ -364,7 +364,9 @@ const restDelete = (
     restServer
     , username
     , password
-    , parms
+    , library
+    , topic
+    , key
     , callback
 ) => {
 
@@ -375,13 +377,15 @@ const restDelete = (
     }
   };
 
+
   let path = restServer
       + dbApi
-      + "/delete"
+      + library
+      + "/"
+      + topic
+      + "/"
+      + key
   ;
-
-    path += "?";
-    path += parms;
 
   let result = {
     data: {}
@@ -1248,14 +1252,18 @@ export default {
       restServer
       , username
       , password
-      , parms
+      , library
+      , topic
+      , key
       , callback
   ) => {
     return restDelete(
         restServer
         , username
         , password
-        , parms
+        , library
+        , topic
+        , key
         , callback
     );
   }

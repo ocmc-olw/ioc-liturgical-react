@@ -67,24 +67,13 @@ class DeleteButton extends React.Component {
   }
 
   handleDelete() {
-      let config = {
-        auth: {
-          username: this.props.session.userInfo.username
-          , password: this.props.session.userInfo.password
-        }
-      };
-
-    let parms =
-        "l=" + encodeURIComponent(this.props.idLibrary)
-        + "&t=" + encodeURIComponent(this.props.idTopic)
-        + "&k=" + encodeURIComponent(this.props.idKey)
-    ;
-
     Server.restDelete(
           this.props.session.restServer
           , this.props.session.userInfo.username
           , this.props.session.userInfo.password
-          , parms
+          , this.props.idLibrary
+          , this.props.idTopic
+          , this.props.idKey
           , this.handleDeleteCallback
       );
   }
