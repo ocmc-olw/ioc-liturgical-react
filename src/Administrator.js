@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import axios from 'axios';
+import { get } from 'lodash';
 import IdManager from './helpers/IdManager';
 import server from './helpers/Server';
 import Button from './helpers/Button';
@@ -21,6 +22,7 @@ class Administrator extends React.Component {
 
     this.state = this.setTheState(props, this.state);
 
+    this.handleDelete = this.handleDelete.bind(this);
     this.setPath = this.setPath.bind(this);
     this.setItemDetails = this.setItemDetails.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
@@ -110,6 +112,7 @@ class Administrator extends React.Component {
           , itemSelected: itemSelected
           , resources: resources
           , submitButtonHidden: submitButtonHidden
+          , deleteButtonVisible: get(currentState,"deleteButtonVisible", true)
           , centerDivVisible: centerDivVisible
           , submitIsAPost: submitIsAPost
           , options: {
@@ -149,7 +152,8 @@ class Administrator extends React.Component {
   }
 
   setItemDetails(id, uiSchema, schema, value) {
-    var hidden = false;
+    let hidden = false;
+    let deleteVisible = ! id.includes("~new~");
     if (uiSchema["ui:readonly"]) {
       hidden = true;
     }
@@ -157,6 +161,7 @@ class Administrator extends React.Component {
       item: { id: id, uiSchema: uiSchema, schema: schema, value: value}
       , itemSelected: true
       , submitButtonHidden: hidden
+      , deleteButtonVisible: deleteVisible
       , centerDivVisible: true
     });
   }
@@ -205,7 +210,34 @@ class Administrator extends React.Component {
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });
   }
-
+// /delete/user
+  handleDelete() {
+    alert(this.state.item.id);
+    var config = {
+      auth: {
+        username: this.state.session.userInfo.username
+        , password: this.state.session.userInfo.password
+      }
+    };
+    axios.delete(
+        this.props.session.restServer
+        + server.getWsServerAdminApi()
+        + IdManager.idToPath(this.state.item.id)
+        , config
+    )
+    .then(response => {
+      this.setState({
+        message: "deleted " + IdManager.idToPaddedPath(this.state.item.id)
+      });
+      this.setPath(this.state.path);
+      this.setState({centerDivVisible: true, submitIsDelete: false});
+    })
+    .catch( (error) => {
+      var message = error.response.data.userMessage;
+      var messageIcon = this.state.messageIcons.error;
+      this.setState( { data: message, message: message, messageIcon: messageIcon });
+    });
+  }
 
   handlePost(formData) {
     var config = {
@@ -382,7 +414,17 @@ class Administrator extends React.Component {
                         uiSchema={this.state.item.uiSchema}
                         formData={this.state.item.value}
                         onSubmit={this.onSubmit}>
-                      <div><Button label="Submit" hidden={this.state.submitButtonHidden}/></div>
+                      <div>
+                        <Button label="Submit" hidden={this.state.submitButtonHidden}/>
+                        {this.state.deleteButtonVisible &&
+                        <button
+                            type="button"
+                            className="App-Form-Delete-Button"
+                            onClick={this.handleDelete}
+                        >Delete
+                        </button>
+                        }
+                      </div>
                     </Form>
                   </Well>
                 </div>

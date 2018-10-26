@@ -1175,3 +1175,6 @@ a.rdw-mention-link {
     height: 4px;
     cursor: row-resize;
 }
+.App-Form-Delete-Button {
+    margin-left: 100px;
+}
