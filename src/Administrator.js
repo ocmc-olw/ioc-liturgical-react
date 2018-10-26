@@ -212,8 +212,7 @@ class Administrator extends React.Component {
   }
 // /delete/user
   handleDelete() {
-    alert(this.state.item.id);
-    var config = {
+    let config = {
       auth: {
         username: this.state.session.userInfo.username
         , password: this.state.session.userInfo.password
