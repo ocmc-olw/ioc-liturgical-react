@@ -945,7 +945,7 @@ class TokenTagger extends React.Component {
                         onChange={this.handleGlossChange}
                     />
                       <InputGroup.Addon className="App-Token-Tagger-OED"><a
-                          href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
+                          href={"https://www.oxfordlearnersdictionaries.com/definition/english/"
                           + this.state.gloss.toLowerCase()
                           + "_1?isEntryInOtherDict=false"}
                           target="_blank"

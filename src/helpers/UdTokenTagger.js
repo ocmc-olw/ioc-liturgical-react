@@ -1114,7 +1114,7 @@ class TokenTagger extends React.Component {
                 </div>
                 <div className="col-sm-3 col-md-3 col-lg-3  App-Label-Selector-Help">
                   <a
-                      href={"http://www.oxfordlearnersdictionaries.com/definition/english/"
+                      href={"https://www.oxfordlearnersdictionaries.com/definition/english/"
                       + this.state.gloss
                       + "_1?isEntryInOtherDict=false"}
                       target="_blank"
