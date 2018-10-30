@@ -359,6 +359,7 @@ class TextNoteEditor extends React.Component {
       form.id = form.library + "~" + form.topic + "~" + key;
       form.liturgicalGreekId = nextProps.textId;
       form.liturgicalTranslationId = form.topic;
+      form.noteTitle = " ";
       formIsValid = true;
       selectedTag = form.tags[0];
       selectedType = form.noteType;
@@ -415,7 +416,7 @@ class TextNoteEditor extends React.Component {
         valid = (
             this.state.form.liturgicalScope.length > 0
             && this.state.form.liturgicalLemma.length > 0
-            && this.state.form.noteTitle.length > 0
+            // && this.state.form.noteTitle.length > 0
             && this.state.form.biblicalScope.length > 0
             && this.state.form.biblicalLemma.length > 0
             && this.state.form.biblicalGreekId.length > 0
@@ -429,13 +430,13 @@ class TextNoteEditor extends React.Component {
       }  else if (this.state.form.noteType === "UNIT") {
         valid = (
             this.state.form.liturgicalScope.length > 0
-            && this.state.form.noteTitle.length > 0
+            // && this.state.form.noteTitle.length > 0
         );
       } else {
         valid = (
             this.state.form.liturgicalScope.length > 0
             && this.state.form.liturgicalLemma.length > 0
-            && this.state.form.noteTitle.length > 0
+            // && this.state.form.noteTitle.length > 0
         );
       }
     }
@@ -1707,7 +1708,7 @@ class TextNoteEditor extends React.Component {
             {this.getNoteTypeRow()}
             {this.getLiturgicalScopeRow()}
             {this.getLiturgicalLemmaRow()}
-            {this.getTitleRow()}
+            {/*{this.getTitleRow()}*/}
             {this.getBibleRefRow()}
             {this.getBiblicalScopeRow()}
             {this.getBiblicalLemmaRow()}
