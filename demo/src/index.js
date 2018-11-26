@@ -1,5 +1,6 @@
 import '../../node_modules/bootstrap/dist/css/bootstrap.css'
 import '../../node_modules/font-awesome/css/font-awesome.css'
+import '../../node_modules/prismjs/themes/prism.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import '../../node_modules/react-bootstrap-table/css/react-bootstrap-table.css'
 import './css/alwb.css';
