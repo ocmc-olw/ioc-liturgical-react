@@ -84,7 +84,7 @@ class FormattedTextNote extends React.Component {
                 </span>
           </div>
       );
-    } else if (this.props.type.startsWith("REF_TO")) {
+    } else if (this.props.type && this.props.type.startsWith("REF_TO")) {
       return (
           <div className="App App-Text-Note-formatted">
               <span className="App App-Text-Note-Header-Scope">
