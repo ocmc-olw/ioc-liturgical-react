@@ -20,7 +20,7 @@ class RichEditor extends React.Component {
     const contentState = ContentState.createFromBlockArray(contentBlocks, entityMap);
     const editorState = EditorState.createWithContent(contentState);
 
-    let mention = undefined;
+    let mention = {};
     if (props.suggestions) {
       mention={
         separator: ' ',
@@ -53,7 +53,7 @@ class RichEditor extends React.Component {
 
   componentWillReceiveProps = (nextProps) => {
       let languageCode = nextProps.session.languageCode;
-      let mention = undefined;
+      let mention = {};
       if (nextProps.suggestions) {
         mention={
           separator: ' ',

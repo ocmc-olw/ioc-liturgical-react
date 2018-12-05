@@ -733,6 +733,9 @@ class TextNoteEditor extends React.Component {
           result += " (" + date + "). ";
         }
         result += o.title;
+        // TODO:  currently in OWL, the hyperlink for citation does not work.
+        // Probably you need to do something with url: o.id below, e.g.
+        // prepend with /data
         return {text: result , value:  o.key, url: o.id} ;
       });
 

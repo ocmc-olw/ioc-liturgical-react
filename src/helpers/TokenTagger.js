@@ -30,8 +30,8 @@ import UiSchemas from "../classes/UiSchemas";
  * the selected values are copied and become parms to the TokenTagger.
  * The new values are saved back to the database.
  *
- * Note: the grammar tags are set by TreeNode.getGrammar()
- * Note: the values for the dropdowns come from labels
+ * Notes: the grammar tags are set by TreeNode.getGrammar()
+ *        the values for the dropdowns come from labels
  */
 class TokenTagger extends React.Component {
   constructor(props) {
