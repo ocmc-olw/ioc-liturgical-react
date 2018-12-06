@@ -424,6 +424,7 @@ export class ParaRowTextEditor extends React.Component {
               <a href={url + ".tex"} target={"_blank"}>{this.state.labels.buttons.downloadAsTex}</a>
             </Col>
             <Col className="App-Download-Col" xs={5} md={5}>
+              <a href={url + ".bib"} target={"_blank"}>{this.state.labels.buttons.downloadAsTexBib}</a>
             </Col>
           </Row>
       );
