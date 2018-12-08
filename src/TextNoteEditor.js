@@ -37,6 +37,7 @@ import WorkflowForm from './helpers/WorkflowForm';
 import CompareDocs from './modules/CompareDocs';
 import axios from "axios/index";
 import UiSchemas from "./classes/UiSchemas";
+import * as Labels from "../es/Labels";
 
 /**
  * Note: The form properties need to be remapped in the server:
@@ -55,6 +56,10 @@ class TextNoteEditor extends React.Component {
   constructor(props) {
     super(props);
 
+    let created = false;
+    if (props.form && props.form.noteType) {
+      created = true;
+    }
     let labels = props.session.labels;
     let labelTopics = props.session.labelTopics;
     let thisClassLabels = labels[labelTopics.TextNoteEditor];
@@ -174,6 +179,7 @@ class TextNoteEditor extends React.Component {
       , notesList: notesList
       , textIdParts: textIdParts
       , form: props.form
+      , created: created
       , editor: null
       , editorId: editorId
       , note: ""
@@ -330,6 +336,14 @@ class TextNoteEditor extends React.Component {
     let messages = labels[labelTopics.messages]
     let textIdParts = IdManager.getParts(nextProps.textId);
     let formIsValid = false;
+    let created = false;
+    if (this.state.created) {
+      created = true;
+    } else {
+      if (nextProps.form && nextProps.form.noteType) {
+        created = true;
+      }
+    }
     let form = {};
     let tags = [];
     let selectedTag = "";
@@ -404,6 +418,7 @@ class TextNoteEditor extends React.Component {
         , selectedTag: selectedTag
         , selectedType: selectedType
         , predecessorNote: get(this.state,"predecessorNote", "")
+        , created: created
       }
     });
   };
@@ -513,7 +528,7 @@ class TextNoteEditor extends React.Component {
   };
 
   onSubmit = () => {
-    if (this.props.form && this.props.form.noteType) {
+    if (this.state.created) {
       this.submitPut();
     } else {
       this.submitPost();
@@ -549,6 +564,7 @@ class TextNoteEditor extends React.Component {
           this.setState({
             message: this.state.labels.messages.created
             , form: formData
+            , created: true
           });
           if (this.props.onSubmit) {
             this.props.onSubmit(formData);
@@ -560,7 +576,7 @@ class TextNoteEditor extends React.Component {
           this.setState( {
             message: message
             , messageIcon: messageIcon
-          }, console.log(error));
+          });
         });
   };
 
@@ -605,12 +621,12 @@ class TextNoteEditor extends React.Component {
           }
         })
         .catch( (error) => {
-          var message = Labels.getHttpMessage(
+          let message = Labels.getHttpMessage(
               this.props.session.languageCode
               , error.response.status
               , error.response.statusText
           );
-          var messageIcon = this.state.messageIcons.error;
+          let messageIcon = this.state.messageIcons.error;
           this.setState( { data: message, message: message, messageIcon: messageIcon });
         });
   };

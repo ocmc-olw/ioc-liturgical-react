@@ -109,21 +109,23 @@ class WorkflowForm extends React.Component {
     // call a function if needed
   };
 
-  fetchData = (library) => {
-    if (library && library === this.state.library) {
+  fetchData = (libraryToFetch) => {
+    if (libraryToFetch && libraryToFetch === this.state.library) {
       // ignore.  No need to call the web service
     } else {
       let library = this.props.library;
       if (library === "" || library === " ") {
         library = this.props.session.userInfo.domain;
       }
-      server.getDropdownUsersForLibrary(
-          this.props.session.restServer
-          , this.props.session.userInfo.username
-          , this.props.session.userInfo.password
-          , library
-          , this.handleFetchCallback
-      );
+      if (library) {
+        server.getDropdownUsersForLibrary(
+            this.props.session.restServer
+            , this.props.session.userInfo.username
+            , this.props.session.userInfo.password
+            , library
+            , this.handleFetchCallback
+        );
+      }
     }
   };
 
