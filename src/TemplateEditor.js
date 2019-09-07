@@ -5,7 +5,6 @@ import {Col, ControlLabel, Button, Grid, Modal, Row, Well} from 'react-bootstrap
 import FontAwesome from 'react-fontawesome';
 import SortableTree, {
   addNodeUnderParent
-  , changeNodeAtPath
   , removeNodeAtPath
   , toggleExpandedForAll
 } from "react-sortable-tree";
@@ -23,7 +22,6 @@ import Server from './helpers/Server';
  * line appear and it won't let you drop where you would like to,
  * the issue is the value for maxDepth.  It needs to be increased.
  */
-// TODO: rename class
 class TemplateEditor extends React.Component {
   constructor(props) {
     super(props);
