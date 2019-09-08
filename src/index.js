@@ -19,6 +19,7 @@ import FormattedTextNote from './FormattedTextNote';
 import HelpSearch from './HelpSearch';
 import Html5VideoPanel from './modules/Html5VideoPanel';
 import Labels from './Labels';
+import Lookup from './Lookup';
 import LanguageLister from './LanguageLister';
 import LiturgicalDayProperties from './LiturgicalDayProperties';
 import Login from './Login';
@@ -76,6 +77,7 @@ export {
   , Labels
   , LanguageLister
   , LiturgicalDayProperties
+  , Lookup
   , Login
   , NewEntry
   , NotesLister

@@ -12,6 +12,7 @@ import IdManager from './IdManager';
 
 const adminApi = "/admin/api/v1/";
 const dbApi = "/db/api/v1/";
+const lookupApi = dbApi + "id/";
 const uilabels = "docs/uilabels";
 const ldpApi = "/ldp/api/v1/";
 const resources = "docs/new";
@@ -609,6 +610,7 @@ export default {
   , cancelRequest: (token) => { cancelRequest(token)}
   , getWsServerAdminApi: () => { return adminApi;}
   , getWsServerLdpApi: () => { return ldpApi;}
+  , getWsServerLookupApi: () => { return lookupApi;}
   , getWsServerDbApi: () => { return dbApi;}
   , getWsServerLoginApi: () => { return adminApi + login;}
   , getWsServerPasswordChangeApi: () => { return adminApi + changePassword;}
@@ -635,6 +637,24 @@ export default {
   , getDbServerTreebanksApi: () => {return dbApi + treebanks;}
   , getWsServerLiturgicalDayPropertiesApi: () => {return ldpApi + ldp;}
   , getDbServerWordAnalysisApi: () => {return dbApi + wordAnalysis;}
+  , getLookupResult: (
+      restServer
+      , library
+      , topic
+      , key
+      , callback
+  ) => {
+    restGet(
+        restServer
+        , ""
+        , ""
+        , lookupApi + library + "/" + topic + "/" + key
+        ,  ""
+        , function (result) {
+          callback(result);
+        }
+    );
+  }
   , getGenericExistsResult: (
       restServer,
       username

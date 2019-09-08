@@ -334,7 +334,7 @@ export class Search extends React.Component {
          }
      );
     }
-  }
+  };
 
   handleValueUpdateCallback = (restCallResult) => {
     if (restCallResult) {
@@ -343,7 +343,7 @@ export class Search extends React.Component {
         , messageIcon: restCallResult.messageIcon
       }, this.setTableData);
     }
-  }
+  };
 
   /**
    * Does the user have permission to edit records in this library?

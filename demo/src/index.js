@@ -49,6 +49,7 @@ import {
   , Html5VideoPanel
   , LanguageLister
   , LiturgicalDayProperties
+    , Lookup
   , Login
   , NewEntry
   , ParaColLabelEditor
@@ -1479,6 +1480,7 @@ class Demo extends React.Component {
                 </Panel> {/* Search Generic */}
               </Accordion>
             </Panel> {/* Search */}
+
             <Panel header="Liturgical Day Properties" eventKey="ldp">
               <p>Each day of the year has certain liturgical properties, e.g. the mode of the week, what day of the
                 Triodion or Pentecostarion it might be, what the Eothinon is, etc.</p>
@@ -1490,6 +1492,17 @@ class Demo extends React.Component {
                   callback={this.handleLdpCallback}
               />
             </Panel> {/* LiturgicalDayProperties */}
+
+
+            <Panel header="Lookup" eventKey="ldp">
+              <Lookup
+                  session={this.state.session}
+                  idDomain={"gr_gr_cog"}
+                  idTopic={"me.m09.d09"}
+                  idKey={"meVE.SticGlory.text"}
+              />
+            </Panel> {/* Lookup */}
+
             <Html5VideoPanel
                 title={"Html5 Video Panel"}
                 text={"This is the text of the video panel."}
