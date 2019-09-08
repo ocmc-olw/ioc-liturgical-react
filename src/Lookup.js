@@ -69,13 +69,18 @@ class Lookup extends React.Component {
       if (this.props && this.props.idDomain) {
         return (
             <div className="App-New-Component-Template">
-              Loading {this.props.idDomain}~{this.props.idTopic}~{this.props.idKey}
+              <table>
+                <tbody>
+                <tr>
+                  <td style={cellStyle}>{this.props.idDomain}~{this.props.idTopic}~{this.props.idKey}</td>  <td style={cellStyle}> </td>
+                </tr>
+                </tbody>
+              </table>
             </div>
         )
       } else {
         return (
             <div className="App-New-Component-Template">
-              Loading
             </div>
         )
       }
