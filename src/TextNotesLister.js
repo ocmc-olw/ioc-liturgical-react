@@ -15,6 +15,12 @@ import User from "./classes/User";
  *
  * The TextNotesLister searches for notes about the liturgical text and its references
  *
+ * Trouble-shooting: if notes are in the database, but not being returned, it is likely
+ * that the notes were created while logged in as wsadmin.  The notes only show for
+ * the user who logged in.  So, if you log in as your self you will not see notes
+ * you created while logged in as wsadmin.  You need to update the createdBy property
+ * of the notes to change them from wsadmin to your user id.
+ *
  */
 export class TextNotesLister extends React.Component {
 
