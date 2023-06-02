@@ -107,7 +107,7 @@ export class ModalSchemaBasedEditor extends React.Component {
     ;
     axios.get(path, config)
         .then(response => {
-          if (response.data.valueCount && response.data.valueCount > 0) {
+          if (response && response.data && response.data.valueCount && response.data.valueCount > 0) {
             let data = response.data.values[0];
             let schemaId = data._valueSchemaId;
             let dataSchema = response.data.valueSchemas[schemaId].schema;
@@ -124,12 +124,18 @@ export class ModalSchemaBasedEditor extends React.Component {
           }
         })
         .catch((error) => {
-          let message = error.message;
-          let messageIcon = MessageIcons.getMessageIcons().error;
-          if (error && error.response && error.response.status === 404) {
-            message = this.state.labels.messages.foundNone;
-            messageIcon = MessageIcons.getMessageIcons().warning;
-            this.setState({data: message, message: message, messageIcon: messageIcon});
+          if (error) {
+            if (error.message) {
+              let message = error.message;
+              let messageIcon = MessageIcons.getMessageIcons().error;
+              if (error && error.response && error.response.status === 404) {
+//                message = this.state.labels.messages.foundNone;
+                messageIcon = MessageIcons.getMessageIcons().warning;
+                this.setState({data: message, message: message, messageIcon: messageIcon});
+              }
+            } else {
+              alert(JSON.stringify(error))
+            }
           }
         });
   };

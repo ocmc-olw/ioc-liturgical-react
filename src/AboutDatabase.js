@@ -33,7 +33,7 @@ class AboutDatabase extends React.Component {
       </div>
       <h2>{this.props.session.labels.pageAbout.acknowledgements}</h2>
       <div className="jumbotron">
-        <p>{this.props.session.labels.pageAbout.ackPara01s1} <a href="https://www.agesinitiatives.com/dcs/public/dcs/about.html" target="_blank">{this.props.session.labels.pageAbout.ackPara01s2}</a> {this.props.session.labels.pageAbout.ackPara01s3}</p>
+        <p>{this.props.session.labels.pageAbout.ackPara01s1} <a href="https://dcs.goarch.org/goa/dcs/about.html" target="_blank">{this.props.session.labels.pageAbout.ackPara01s2}</a> {this.props.session.labels.pageAbout.ackPara01s3}</p>
         <p/>
         <p>{this.props.session.labels.pageAbout.ackPara02s1} <a href="https://ccat.sas.upenn.edu/gopher/text/religion/biblical/lxxmorph/" target="_blank">{this.props.session.labels.pageAbout.website}</a>.</p>
         <p/>

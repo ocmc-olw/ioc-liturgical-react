@@ -122,7 +122,6 @@ ModalNewEntryForm.propTypes = {
   , uiSchema: PropTypes.object.isRequired
   , formData: PropTypes.object.isRequired
   , title: PropTypes.string.isRequired
-  , title: PropTypes.string.isRequired
   , fromTitle: PropTypes.string
   , fromId: PropTypes.string
   , fromText: PropTypes.string

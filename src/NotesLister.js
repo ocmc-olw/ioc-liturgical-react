@@ -357,7 +357,6 @@ export class NotesLister extends React.Component {
     this.fetchData();
   };
 
-
   getAddButton = () => {
     if (this.state.enableAdd
       && this.state.session

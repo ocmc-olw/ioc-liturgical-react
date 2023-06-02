@@ -167,23 +167,39 @@ class SchemaBasedAddButton extends React.Component {
 
   handleModalSubmit = ({formData}) => {
     if (this.props.onSubmit) {
-      console.log("SchemaBasedAddButton.handleModalSubmit");
-      console.log(formData);
       this.props.onSubmit(formData);
     }
   };
 
   setFormData = () => {
+    let date = new Date();
+    let month = (date.getMonth()+1).toString().padStart(2,"0");
+    let day = date.getDate().toString().padStart(2,"0");
+    let hour = date.getHours().toString().padStart(2,"0");
+    let minute = date.getMinutes().toString().padStart(2,"0");
+    let second = date.getSeconds().toString().padStart(2,"0");
+    let key = date.getFullYear()
+        + "."
+        + month
+        + "."
+        + day
+        + ".T"
+        + hour
+        + "."
+        + minute
+        + "."
+        + second
+    ;
     let formData = this.state.formData;
     formData.library = this.props.idLibrary;
     formData.topic = this.props.idTopic;
-    formData.key = this.state.idKey;
+    formData.key = key; //this.state.idKey;
     formData.id = this.props.idLibrary
         +"~"
         + this.props.idTopic
         +"~"
-        + this.state.idKey;
-    formData.seq = this.props.seq;
+        + key;
+    formData.seq = formData.id;
     formData.status = "FINALIZED";
     return formData;
   };
@@ -259,7 +275,6 @@ SchemaBasedAddButton.propTypes = {
   , uiSchema: PropTypes.object.isRequired
   , schema: PropTypes.object.isRequired
   , formData: PropTypes.object.isRequired
-  , title: PropTypes.string
   , idLibrary: PropTypes.string.isRequired
   , idTopic: PropTypes.string.isRequired
   , idKey: PropTypes.string.isRequired

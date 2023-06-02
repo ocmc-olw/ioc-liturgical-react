@@ -5,6 +5,7 @@ import Form from "react-jsonschema-form";
 import { Button} from 'react-bootstrap'
 import FontAwesome from 'react-fontawesome';
 import axios from 'axios';
+import IdManager from "../helpers/IdManager";
 
 /**
  * This component provides a schema based form editor
@@ -53,7 +54,8 @@ class NewEntryForm extends React.Component {
             , search: labels[labelTopics.search]
           }
           , message: labels[labelTopics.messages].initial
-        }
+          , formData: this.props.formData
+      }
       }, function () { return this.handleStateChange("place holder")});
   };
 
@@ -64,11 +66,12 @@ class NewEntryForm extends React.Component {
 
   onChange = ({formData}) => {
     this.setState({
-      message: this.state.labels.search.creating
+      message: this.state.labels.search.initial
       , messageIcon: this.state.messageIcons.info
       , formData: formData
     });
   };
+
 
   onSubmit = ({formData}) => {
     this.setState({
@@ -76,7 +79,7 @@ class NewEntryForm extends React.Component {
       , messageIcon: this.state.messageIcons.info
     });
 
-    let config = {
+      let config = {
       auth: {
         username: this.props.session.userInfo.username
         , password: this.props.session.userInfo.password
@@ -92,20 +95,33 @@ class NewEntryForm extends React.Component {
     )
         .then(response => {
           console.log("New Entry Form");
-          console.log(formData);
+          console.log(JSON.stringify(response, null, 3));
           this.setState({
             message: this.state.labels.search.created,
             formData: formData
           });
           if (this.props.onSubmit) {
-            this.props.onSubmit(formData);
+            console.log("calling this.props.OnSubmit");
+            //this.props.onSubmit(formData);
           }
         })
         .catch( (error) => {
-          var message = error.response.statusText;
-          var messageIcon = this.state.messageIcons.error;
+          console.log("oh no!  caught error");
+          console.log(JSON.stringify(error, null, 3));
+          let message = "";
+          let messageIcon = this.state.messageIcons.error;
+          if (error) {
+            if (error.response) {
+              message = error.response.statusText;
+            } else {
+              message = JSON.stringify(error)
+            }
+          } else {
+            message = "unknown error";
+          }
           this.setState( { data: message, message: message, messageIcon: messageIcon });
-        });
+        }
+        );
   };
 
   render() {

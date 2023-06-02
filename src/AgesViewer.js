@@ -175,6 +175,7 @@ class AgesViewer extends React.Component {
           , fallbackArray: [
             {value: "en_us_ages", label: "AGES English translations"}
             , {value: "gr_gr_ages", label: "AGES Greek"}
+            , {value: "none", label: "No Fallback"}
           ]
         }
     )
