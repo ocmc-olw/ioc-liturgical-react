@@ -94,20 +94,12 @@ class NewEntryForm extends React.Component {
         , config
     )
         .then(response => {
-          console.log("New Entry Form");
-          console.log(JSON.stringify(response, null, 3));
           this.setState({
             message: this.state.labels.search.created,
             formData: formData
           });
-          if (this.props.onSubmit) {
-            console.log("calling this.props.OnSubmit");
-            //this.props.onSubmit(formData);
-          }
         })
         .catch( (error) => {
-          console.log("oh no!  caught error");
-          console.log(JSON.stringify(error, null, 3));
           let message = "";
           let messageIcon = this.state.messageIcons.error;
           if (error) {
