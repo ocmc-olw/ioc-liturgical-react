@@ -209,11 +209,16 @@ class AgesViewer extends React.Component {
   };
 
   handleFetchAgesIndexCallback = (restCallResult) => {
-    if (restCallResult) {
+    if (restCallResult && restCallResult.code == "200" && restCallResult.data && restCallResult.data.values) {
       let values = restCallResult.data.values[0];
       this.setState({
         agesIndexFetched: true
         , agesIndexValues: values.tableData
+      });
+    } else {
+      console.log(JSON.stringify(restCallResult))
+      this.setState({
+        agesIndexFetched: true
       });
     }
   };
@@ -281,7 +286,7 @@ class AgesViewer extends React.Component {
   };
 
   handleFetchCallback = (restCallResult) => {
-    if (restCallResult && restCallResult.data && restCallResult.data.values) {
+    if (restCallResult && restCallResult.code == "200" && restCallResult.data && restCallResult.data.values) {
       let data = restCallResult.data.values[0];
       let values = data.values;
       let topicKeys = data.topicKeys;
@@ -297,6 +302,20 @@ class AgesViewer extends React.Component {
         , pdfId: pdfId
         , pdfFilename: pdfFilename
       }, this.setTable);
+    } else {
+      alert("An error occurred while trying to create a template out of the html file you selected.");
+      if (restCallResult && restCallResult.data && restCallResult.data.status) {
+        console.log(JSON.stringify(restCallResult, null, 3));
+      }
+      this.setState({
+        dataFetched: false
+        , fetchingData: false
+        , values: null
+        , topicKeys: null
+        , topElement: null
+        , pdfId: null
+        , pdfFilename: null
+      });
     }
   };
 
